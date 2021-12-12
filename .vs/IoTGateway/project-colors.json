@@ -35,7 +35,17 @@
       "ProjectGuid": "16f2c5cc-d881-4fdf-82de-d6df3525d65d",
       "DisplayName": "IoTGateway.Test",
       "ColorIndex": 6
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "杂项文件",
+      "ColorIndex": -1
+    },
+    "e5f79995-ab61-41f4-820d-ba39967b406b": {
+      "ProjectGuid": "e5f79995-ab61-41f4-820d-ba39967b406b",
+      "DisplayName": "PluginInterface",
+      "ColorIndex": 7
     }
   },
-  "NextColorIndex": 7
+  "NextColorIndex": 8
 }
