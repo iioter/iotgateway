@@ -1,0 +1,118 @@
+﻿@model WalkingTec.Mvvm.Core.BaseVM
+@using System.Text.Json
+
+<div class="layui-row layui-col-space15" id="frontpage">
+  <div class="layui-col-md12">
+    <div class="layui-row layui-col-space15">
+      <div class="layui-col-md12"  style="display:none;">
+        <div class="layui-card">
+          <div class="layui-card-header">快捷方式</div>
+          <div class="layui-card-body">
+
+            <div class="layui-carousel layadmin-carousel layadmin-shortcut">
+              <div carousel-item>
+                <ul class="layui-row layui-col-space15">
+                  <li class="layui-col-xs2">
+                    <a lay-href="_Admin/FrameworkUser/Index">
+                      <i class="layui-icon layui-icon-username"></i>
+                      <cite>用户</cite>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs2">
+                    <a lay-href="_Admin/FrameworkRole/Index">
+                      <i class="layui-icon layui-icon-tabs"></i>
+                      <cite>角色</cite>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs2">
+                    <a lay-href="_Admin/FrameworkMenu/Index">
+                      <i class="layui-icon layui-icon-app"></i>
+                      <cite>菜单</cite>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs2">
+                    <a lay-href="_Admin/FrameworkGroup/Index">
+                      <i class="layui-icon layui-icon-user"></i>
+                      <cite>用户组</cite>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs2">
+                    <a lay-href="_Admin/DataPrivilege/Index">
+                      <i class="layui-icon layui-icon-auz"></i>
+                      <cite>数据权限</cite>
+                    </a>
+                  </li>
+                  <li class="layui-col-xs2">
+                    <a lay-href="_Admin/ActionLog/Index">
+                      <i class="layui-icon layui-icon-console"></i>
+                      <cite>日志</cite>
+                    </a>
+                  </li>
+                </ul>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="layui-col-md6">
+        <div class="layui-card">
+          <div class="layui-card-header">控制器</div>
+          <div class="layui-card-body">
+                  <wt:chart is-horizontal="true" show-legend="true" show-tooltip="true" type="Bar"  height="300" trigger-url="/Home/GetActionChart" />
+          </div>
+        </div>
+      </div>
+      <div class="layui-col-md6">
+        <div class="layui-card">
+          <div class="layui-card-header">模型</div>
+          <div class="layui-card-body">
+            <wt:chart  show-legend="false" show-tooltip="true" type="Pie" height="300" trigger-url="/Home/GetModelChart" />
+          </div>
+        </div>
+      </div>
+      <div class="layui-col-md12">
+        <div class="layui-card">
+          <div class="layui-card-header">模拟数据</div>
+          <div class="layui-card-body">
+            <wt:chart is-horizontal="true" type="Scatter" height="400" trigger-url="/Home/GetSampleChart"  radius="50" name-x="X" name-y="Y" name-category="C" name-addition="A"/>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+<script>
+  $("#frontpage").parents(".layui-card").css("background-color", "#eee").css("height","unset");
+
+  //区块轮播切换
+  layui.use(['admin', 'carousel'], function () {
+    var $ = layui.$
+      , admin = layui.admin
+      , carousel = layui.carousel
+      , element = layui.element
+      , device = layui.device();
+
+    //轮播切换
+    $('.layadmin-carousel').each(function () {
+      var othis = $(this);
+      carousel.render({
+        elem: this
+        , width: '100%'
+        , arrow: 'none'
+        , interval: othis.data('interval')
+        , autoplay: othis.data('autoplay') === true
+        , trigger: (device.ios || device.android) ? 'click' : 'hover'
+        , anim: othis.data('anim')
+      });
+    });
+
+    element.render('progress');
+
+  });
+
+</script>

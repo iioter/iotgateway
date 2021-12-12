@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <PreserveCompilationReferences>true</PreserveCompilationReferences>
+ </PropertyGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\IoTGateway.Model\IoTGateway.Model.csproj" />
+    <ProjectReference Include="..\Plugins\Plugin\Plugin.csproj" />
+  </ItemGroup>
+</Project>
+

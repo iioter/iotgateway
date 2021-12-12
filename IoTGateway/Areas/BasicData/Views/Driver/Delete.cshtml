@@ -1,0 +1,17 @@
+﻿@model IoTGateway.ViewModel.BasicData.DriverVMs.DriverVM
+@inject IStringLocalizer<Program> Localizer;
+
+<wt:form vm="@Model">
+	<wt:quote>@Localizer["Sys.DeleteConfirm"]</wt:quote>
+<wt:row items-per-row="ItemsPerRowEnum.Two">
+<wt:display field="Entity.DriverName" />
+<wt:display field="Entity.FileName" />
+<wt:display field="Entity.AssembleName" />
+<wt:display field="Entity.AuthorizesNum" />
+</wt:row>
+    <wt:hidden field="Entity.ID" />
+    <wt:row align="AlignEnum.Right">
+        <wt:submitbutton theme=" ButtonThemeEnum.Warm" text="@Localizer["Sys.Delete"]"/>
+        <wt:closebutton />
+    </wt:row>
+</wt:form>

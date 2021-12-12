@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<OutputPath>../../../IoTGateway/bin/Debug/net5.0/drivers</OutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="NModbus4.Core" Version="1.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\PluginInterface\PluginInterface.csproj" />
+	</ItemGroup>
+
+</Project>

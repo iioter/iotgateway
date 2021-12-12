@@ -1,0 +1,20 @@
+﻿@model IoTGateway.ViewModel.BasicData.DeviceVariableVMs.DeviceVariableVM
+@inject IStringLocalizer<Program> Localizer;
+
+<wt:form vm="@Model">
+    <wt:row items-per-row="ItemsPerRowEnum.Two">
+        <wt:combobox field="Entity.DeviceId" items="AllDevices" />
+        <wt:textbox field="Entity.Name" />
+        <wt:textbox field="Entity.Description" />
+        <wt:combobox field="Entity.Method" items=AllMethods />
+        <wt:textbox field="Entity.DeviceAddress" />
+        <wt:combobox field="Entity.DataType" />
+        <wt:textbox field="Entity.ValueFactor" />
+        <wt:combobox field="Entity.ProtectType" />
+    </wt:row>
+    <wt:hidden field="Entity.ID" />
+    <wt:row align="AlignEnum.Right">
+        <wt:submitbutton />
+        <wt:closebutton />
+    </wt:row>
+</wt:form>

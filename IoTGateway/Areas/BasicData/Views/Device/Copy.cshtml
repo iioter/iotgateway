@@ -1,0 +1,15 @@
+﻿@model IoTGateway.ViewModel.BasicData.DeviceVMs.CopyVM
+@inject IStringLocalizer<Program> Localizer;
+
+
+<wt:form vm="@Model" >
+    <wt:row items-per-row="ItemsPerRowEnum.One">
+        <wt:quote>@Model.设备名称</wt:quote>
+        <wt:textbox field=复制数量/>
+    </wt:row>
+
+    <wt:row align="AlignEnum.Right">
+        <wt:submitbutton text="复制" />
+        <wt:closebutton text="取消" />
+    </wt:row>
+</wt:form>

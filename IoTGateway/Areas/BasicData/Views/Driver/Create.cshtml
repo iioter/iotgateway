@@ -1,0 +1,14 @@
+﻿@model IoTGateway.ViewModel.BasicData.DriverVMs.DriverVM
+@inject IStringLocalizer<Program> Localizer;
+
+<wt:form vm="@Model">
+<wt:row items-per-row="ItemsPerRowEnum.Two">
+<wt:textbox field="Entity.DriverName" />
+<wt:textbox field="Entity.FileName" />
+<wt:textbox field="Entity.AuthorizesNum" />
+</wt:row>
+    <wt:row align="AlignEnum.Right">
+        <wt:submitbutton />
+        <wt:closebutton />
+    </wt:row>
+</wt:form>

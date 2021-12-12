@@ -1,0 +1,13 @@
+﻿@model IoTGateway.ViewModel.BasicData.DeviceConfigVMs.DeviceConfigListVM
+@inject IStringLocalizer<Program> Localizer;
+
+<wt:treecontainer items="AllDevices" id-field="Searcher.DeviceId" height="500">
+    <wt:searchpanel vm="@Model" reset-btn="true">
+        <wt:row items-per-row="ItemsPerRowEnum.Three">
+            <wt:textbox field="Searcher.DeviceConfigName" />
+            <wt:textbox field="Searcher.Value" />
+            <wt:combobox field="Searcher.DeviceId" items="Searcher.AllDevices" empty-text="@Localizer["Sys.All"]" />
+        </wt:row>
+    </wt:searchpanel>
+    <wt:grid vm="@Model" url="/BasicData/DeviceConfig/Search" />
+</wt:treecontainer>

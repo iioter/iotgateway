@@ -1,0 +1,44 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
+using WalkingTec.Mvvm.Core;
+using WalkingTec.Mvvm.Core.Extensions;
+using IoTGateway.Model;
+using PluginInterface;
+
+
+namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
+{
+    public partial class DeviceVariableTemplateVM : BaseTemplateVM
+    {
+        [Display(Name = "变量名")]
+        public ExcelPropety Name_Excel = ExcelPropety.CreateProperty<DeviceVariable>(x => x.Name);
+        [Display(Name = "描述")]
+        public ExcelPropety Description_Excel = ExcelPropety.CreateProperty<DeviceVariable>(x => x.Description);
+        [Display(Name = "方法")]
+        public ExcelPropety Method_Excel = ExcelPropety.CreateProperty<DeviceVariable>(x => x.Method);
+        [Display(Name = "地址")]
+        public ExcelPropety DeviceAddress_Excel = ExcelPropety.CreateProperty<DeviceVariable>(x => x.DeviceAddress);
+        [Display(Name = "数据类型")]
+        public ExcelPropety DataType_Excel = ExcelPropety.CreateProperty<DeviceVariable>(x => x.DataType);
+        [Display(Name = "倍率")]
+        public ExcelPropety ValueFactor_Excel = ExcelPropety.CreateProperty<DeviceVariable>(x => x.ValueFactor);
+        [Display(Name = "权限")]
+        public ExcelPropety ProtectType_Excel = ExcelPropety.CreateProperty<DeviceVariable>(x => x.ProtectType);
+        public ExcelPropety Device_Excel = ExcelPropety.CreateProperty<DeviceVariable>(x => x.DeviceId);
+
+        protected override void InitVM()
+        {
+            Device_Excel.DataType = ColumnDataType.ComboBox;
+            Device_Excel.ListItems = DC.Set<Device>().GetSelectListItems(Wtm, y => y.DeviceName);
+        }
+    }
+
+    public class DeviceVariableImportVM : BaseImportVM<DeviceVariableTemplateVM, DeviceVariable>
+    {
+
+    }
+
+}

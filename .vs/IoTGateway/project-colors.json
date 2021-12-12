@@ -1,0 +1,41 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "61d79f77-09ef-4a98-a50b-043b1d72c111": {
+      "ProjectGuid": "61d79f77-09ef-4a98-a50b-043b1d72c111",
+      "DisplayName": "Plugin",
+      "ColorIndex": 0
+    },
+    "68abbdf2-1485-4756-9a94-6afa874d69a3": {
+      "ProjectGuid": "68abbdf2-1485-4756-9a94-6afa874d69a3",
+      "DisplayName": "IoTGateway",
+      "ColorIndex": 1
+    },
+    "00e91fc1-d5cf-416a-aaaf-61567e368dcd": {
+      "ProjectGuid": "00e91fc1-d5cf-416a-aaaf-61567e368dcd",
+      "DisplayName": "IoTGateway.ViewModel",
+      "ColorIndex": 2
+    },
+    "9e7c8c77-643f-45cf-8edc-5b032c51d563": {
+      "ProjectGuid": "9e7c8c77-643f-45cf-8edc-5b032c51d563",
+      "DisplayName": "IoTGateway.DataAccess",
+      "ColorIndex": 3
+    },
+    "c2978e5d-e71e-4882-8ef1-4014e8565a77": {
+      "ProjectGuid": "c2978e5d-e71e-4882-8ef1-4014e8565a77",
+      "DisplayName": "IoTGateway.Model",
+      "ColorIndex": 4
+    },
+    "7b432fc9-57e6-44bf-b8a7-2a1fb31d6add": {
+      "ProjectGuid": "7b432fc9-57e6-44bf-b8a7-2a1fb31d6add",
+      "DisplayName": "DriverModbusTCP",
+      "ColorIndex": 5
+    },
+    "16f2c5cc-d881-4fdf-82de-d6df3525d65d": {
+      "ProjectGuid": "16f2c5cc-d881-4fdf-82de-d6df3525d65d",
+      "DisplayName": "IoTGateway.Test",
+      "ColorIndex": 6
+    }
+  },
+  "NextColorIndex": 7
+}

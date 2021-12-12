@@ -1,0 +1,15 @@
+﻿@model IoTGateway.ViewModel.BasicData.DeviceConfigVMs.DeviceConfigVM
+@inject IStringLocalizer<Program> Localizer;
+
+<wt:form vm="@Model">
+<wt:row items-per-row="ItemsPerRowEnum.Two">
+<wt:display field="Entity.DeviceConfigName" />
+<wt:display field="Entity.Description" />
+<wt:display field="Entity.Value" />
+<wt:display field="Entity.EnumInfo" />
+<wt:display field="Entity.Device.DeviceName" />
+</wt:row>
+    <wt:row align="AlignEnum.Right">
+        <wt:closebutton />
+    </wt:row>
+</wt:form>
