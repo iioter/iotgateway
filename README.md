@@ -7,7 +7,20 @@
 * 支持驱动二次开发（短期内会提供西门子三菱通讯）
 * 数据通过mqtt推送，支持thingsboard
 * 目前只支持遥测数据上传，后续支持属性的双向通信
-# 页面展示
+# 运行
+## windows运行：
+1. [下载Releasev0.01](https://github.com/iioter/iotgateway/releases/download/v0.01/iotgateway-winx64-v0.01.zip)发布版本
+2. [下载.net5](https://dotnet.microsoft.com/en-us/download/dotnet/5.0) sdk或runtime
+3. 安装.net5 
+4. 解压release包，运行IoTGateway.exe
+5. 访问[iotgateway](http://localhost:518/)后台：http://localhost:518
+## docker运行
+1. docker push 15261671110/iotgateway
+2. docker run -d -p 518:518 --name iotgateway --restart always 15261671110/iotgateway
+## 登入系统
+1. 用户名 admin,密码 000000
+2. 打开发布文件路径下的ReadMe文件夹中的手摸手，按照顺序添加设备进行采集
+# 采集配置
 ![1 登录](https://user-images.githubusercontent.com/29589505/145705166-d5818557-4ba1-4e7b-b8d8-8f5f4b28868f.png)
 ![2 首页](https://user-images.githubusercontent.com/29589505/145705168-94b3ff0c-2f5c-4a31-8e83-c2ed799320ce.png)
 ![3 网关配置](https://user-images.githubusercontent.com/29589505/145705172-2a10d11b-436d-4a2c-86bf-cf6aa5dade07.png)
