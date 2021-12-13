@@ -8,6 +8,16 @@
 * 支持驱动二次开发（短期内会提供西门子三菱通讯）
 * 数据通过mqtt推送，支持thingsboard
 * 目前只支持遥测数据上传，后续支持属性的双向通信
+# 体验
+1. 在线体验[iotgateway](http://wanghaidong.cloud:518/)后台：http://wanghaidong.cloud:518/
+2. 用户名 admin 密码 000000
+3. 内置Modbustcp模拟设备 ip 172.17.0.1 port 16051 不要修改，否则连不上
+4. 其中modbus地址0-1为固定值，2-9为随机值，10-19为0
+5. 想要通过mqtt接收数据，请连接mqttserver:wanghaidong.cloud,11883 admin 0000；订阅topic: v1/gateway/telemetry
+![image](https://user-images.githubusercontent.com/29589505/145837715-c0529db4-f2aa-47f7-aca6-db101642f820.png)
+
+
+
 # 运行
 ## windows运行：
 1. [下载Releasev0.01](https://github.com/iioter/iotgateway/releases/download/v0.01/iotgateway-winx64-v0.01.zip)发布版本
