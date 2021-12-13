@@ -13,7 +13,8 @@
 2. 用户名 admin 密码 000000
 3. 内置Modbustcp模拟设备 ip 172.17.0.1 port 16051 不要修改，否则连不上
 4. 其中modbus地址0-1为固定值，2-9为随机值，10-19为0
-5. 想要通过mqtt接收数据，请连接mqttserver:wanghaidong.cloud,11883 admin 0000；订阅topic: v1/gateway/telemetry
+5. 想要外网访问modbus设备，请连接:wanghaidong.cloud:16051，进行标准modbus协议读写
+6. 想要通过mqtt接收数据，请连接mqttserver:wanghaidong.cloud,11883 admin 0000；订阅topic: v1/gateway/telemetry
 ![image](https://user-images.githubusercontent.com/29589505/145837715-c0529db4-f2aa-47f7-aca6-db101642f820.png)
 
 
