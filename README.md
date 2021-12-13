@@ -1,4 +1,6 @@
 # iotgateway
+# github地址:[iotgateway](https://github.com/iioter/iotgateway/) https://github.com/iioter/iotgateway
+# gitee地址:[iotgateway](https://gitee.com/wang_haidong/iotgateway/) https://gitee.com/wang_haidong/iotgateway
 基于.net5的跨平台物联网网关。通过可视化配置，轻松的连接到你的任何设备和系统(如PLC、扫码枪、CNC、数据库、串口设备、上位机、OPC Server、OPC UA Server、Mqtt Server等)，从而与 Thingsboard、IoTSharp或您自己的物联网平台进行双向数据通讯。提供简单的驱动开发接口；当然也可以进行边缘计算。
 * 物联网网关mqtt输出，支持thingsboard
 * 抛砖引玉，共同进步
@@ -14,7 +16,7 @@
 3. 内置Modbustcp模拟设备 ip 172.17.0.1 port 16051 不要修改，否则连不上
 4. 其中modbus地址0-1为固定值，2-9为随机值，10-19为0
 5. 想要外网访问modbus设备，请连接:wanghaidong.cloud:16051，进行标准modbus协议读写
-6. 想要通过mqtt接收数据，请连接mqttserver:wanghaidong.cloud,11883 admin 0000；订阅topic: v1/gateway/telemetry
+6. 想要通过mqtt接收数据，请连接mqttserver:wanghaidong.cloud,11883 admin 000000；订阅topic: v1/gateway/telemetry
 ![image](https://user-images.githubusercontent.com/29589505/145837715-c0529db4-f2aa-47f7-aca6-db101642f820.png)
 
 
