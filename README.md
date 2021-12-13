@@ -15,7 +15,7 @@
 3. 安装.net5 
 4. 解压release包，运行IoTGateway.exe
 5. 访问[iotgateway](http://localhost:518/)后台：http://localhost:518
-## docker运行
+## linux docker运行
 1. docker pull 15261671110/iotgateway
 2. docker run -d -p 518:518 --name iotgateway --restart always 15261671110/iotgateway
 ## 登入系统
