@@ -45,7 +45,27 @@
       "ProjectGuid": "e5f79995-ab61-41f4-820d-ba39967b406b",
       "DisplayName": "PluginInterface",
       "ColorIndex": 7
+    },
+    "c2672620-8e65-486c-b967-c4c673f8da0f": {
+      "ProjectGuid": "c2672620-8e65-486c-b967-c4c673f8da0f",
+      "DisplayName": "WalkingTec.Mvvm.Core",
+      "ColorIndex": 8
+    },
+    "b370f699-965b-4d86-93b1-0f022c95b5c9": {
+      "ProjectGuid": "b370f699-965b-4d86-93b1-0f022c95b5c9",
+      "DisplayName": "WalkingTec.Mvvm.Mvc",
+      "ColorIndex": 9
+    },
+    "81cbfd0e-1d89-440a-8cc3-e32672504ff4": {
+      "ProjectGuid": "81cbfd0e-1d89-440a-8cc3-e32672504ff4",
+      "DisplayName": "WalkingTec.Mvvm.TagHelpers.LayUI",
+      "ColorIndex": 10
+    },
+    "402e5b3a-ad95-4b6a-a4b0-c8ffcbf494c3": {
+      "ProjectGuid": "402e5b3a-ad95-4b6a-a4b0-c8ffcbf494c3",
+      "DisplayName": "test",
+      "ColorIndex": 11
     }
   },
-  "NextColorIndex": 8
+  "NextColorIndex": 12
 }

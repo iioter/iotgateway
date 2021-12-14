@@ -1,0 +1,74 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Description>WalkingTec.Mvvm</Description>
+    <AssemblyName>WalkingTec.Mvvm.Mvc</AssemblyName>
+    <CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>
+    <LangVersion>latest</LangVersion>
+    <Title>$(AssemblyName)</Title>
+    <OutputType>Library</OutputType>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <EmbeddedResource Include="GeneratorFiles\Spa\Vue\**\*.txt" />
+    <EmbeddedResource Include="Views\**\*.cshtml" />
+    <None Remove="GeneratorFiles\Spa\Blazor\Controller.txt" />
+    <None Remove="GeneratorFiles\Spa\Blazor\Create.txt" />
+    <None Remove="GeneratorFiles\Spa\Blazor\Details.txt" />
+    <None Remove="GeneratorFiles\Spa\Blazor\Edit.txt" />
+    <None Remove="GeneratorFiles\Spa\Blazor\Import.txt" />
+    <None Remove="GeneratorFiles\Spa\Blazor\Index.txt" />
+    <EmbeddedResource Include="framework_layui.js" />
+    <EmbeddedResource Include="GeneratorFiles\ApiTest.txt" />
+    <EmbeddedResource Include="GeneratorFiles\ApiTestTopPoco.txt" />
+    <EmbeddedResource Include="GeneratorFiles\BatchVM.txt" />
+    <EmbeddedResource Include="GeneratorFiles\ControllerTest.txt" />
+    <EmbeddedResource Include="GeneratorFiles\ControllerTestTopPoco.txt" />
+    <EmbeddedResource Include="GeneratorFiles\CrudVM.txt" />
+    <EmbeddedResource Include="GeneratorFiles\HeaderFormat.txt" />
+    <EmbeddedResource Include="GeneratorFiles\ImportVM.txt" />
+    <EmbeddedResource Include="GeneratorFiles\ListVM.txt" />
+    <EmbeddedResource Include="GeneratorFiles\Mvc\BatchDeleteView.txt" />
+    <EmbeddedResource Include="GeneratorFiles\Mvc\BatchEditView.txt" />
+    <EmbeddedResource Include="GeneratorFiles\Mvc\Controller.txt" />
+    <EmbeddedResource Include="GeneratorFiles\Mvc\EditView.txt" />
+    <EmbeddedResource Include="GeneratorFiles\Mvc\ImportView.txt" />
+    <EmbeddedResource Include="GeneratorFiles\Mvc\ListView.txt" />
+    <EmbeddedResource Include="GeneratorFiles\Searcher.txt" />
+    <EmbeddedResource Include="GeneratorFiles\Spa\Blazor\Controller.txt" />
+    <EmbeddedResource Include="GeneratorFiles\Spa\Blazor\Details.txt" />
+    <EmbeddedResource Include="GeneratorFiles\Spa\Blazor\Import.txt" />
+    <EmbeddedResource Include="GeneratorFiles\Spa\Blazor\Edit.txt" />
+    <EmbeddedResource Include="GeneratorFiles\Spa\Blazor\Create.txt" />
+    <EmbeddedResource Include="GeneratorFiles\Spa\Blazor\Index.txt" />
+    <EmbeddedResource Include="GeneratorFiles\Spa\Controller.txt" />
+    <EmbeddedResource Include="GeneratorFiles\Spa\React\index.txt" />
+    <EmbeddedResource Include="GeneratorFiles\Spa\React\store\index.txt" />
+    <EmbeddedResource Include="GeneratorFiles\Spa\React\style.txt" />
+    <EmbeddedResource Include="GeneratorFiles\Spa\React\views\action.txt" />
+    <EmbeddedResource Include="GeneratorFiles\Spa\React\views\forms.txt" />
+    <EmbeddedResource Include="GeneratorFiles\Spa\React\views\models.txt" />
+    <EmbeddedResource Include="GeneratorFiles\Spa\React\views\other.txt" />
+    <EmbeddedResource Include="GeneratorFiles\Spa\React\views\search.txt" />
+    <EmbeddedResource Include="GeneratorFiles\Spa\React\views\table.txt" />
+    <EmbeddedResource Include="GeneratorFiles\Mvc\CreateView.txt" />
+    <EmbeddedResource Include="GeneratorFiles\Mvc\DeleteView.txt" />
+    <EmbeddedResource Include="GeneratorFiles\Mvc\DetailsView.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="5.0.9" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.5" />
+    <PackageReference Include="VueCliMiddleware" Version="5.0.0" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\WalkingTec.Mvvm.TagHelpers.LayUI\WalkingTec.Mvvm.TagHelpers.LayUI.csproj" />
+  </ItemGroup>
+
+</Project>

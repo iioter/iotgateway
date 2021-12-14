@@ -16,8 +16,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.13" />
-    <PackageReference Include="WalkingTec.Mvvm.TagHelpers.LayUI" Version="5.7.0" />
-    <PackageReference Include="WalkingTec.Mvvm.Mvc" Version="5.7.0" />
 </ItemGroup>
 
   <ItemGroup>
@@ -25,6 +23,8 @@
     <ProjectReference Include="..\IoTGateway.DataAccess\IoTGateway.DataAccess.csproj" />
     <ProjectReference Include="..\IoTGateway.ViewModel\IoTGateway.ViewModel.csproj" />
     <ProjectReference Include="..\Plugins\Plugin\Plugin.csproj" />
+    <ProjectReference Include="..\WalkingTec.Mvvm\WalkingTec.Mvvm.Mvc\WalkingTec.Mvvm.Mvc.csproj" />
+    <ProjectReference Include="..\WalkingTec.Mvvm\WalkingTec.Mvvm.TagHelpers.LayUI\WalkingTec.Mvvm.TagHelpers.LayUI.csproj" />
  </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>

@@ -1,0 +1,40 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using WalkingTec.Mvvm.Core;
+using WalkingTec.Mvvm.Core.Extensions;
+using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using $modelnamespace$;
+$othernamespace$
+
+namespace $vmnamespace$
+{
+    public partial class $classname$ListVM : BasePagedListVM<$classname$_View, $classname$Searcher>
+    {$actions$
+
+        protected override IEnumerable<IGridColumn<$classname$_View>> InitGridHeader()
+        {
+            return new List<GridColumn<$classname$_View>>{$headers$
+                this.MakeGridHeaderAction(width: 200)
+            };
+        }$format$
+
+        public override IOrderedQueryable<$classname$_View> GetSearchQuery()
+        {
+            var query = DC.Set<$modelname$>()$where$
+                .Select(x => new $classname$_View
+                {
+				    ID = x.ID,$select$
+                })
+                .OrderBy(x => x.ID);
+            return query;
+        }
+
+    }
+
+    public class $classname$_View : $modelname${$subpros$
+
+    }
+}
