@@ -126,9 +126,9 @@ namespace Plugin
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                Console.WriteLine("驱动加载失败，一般是驱动项目引用的nuget或dll没有复制到驱动文件夹");
             }
 
         }

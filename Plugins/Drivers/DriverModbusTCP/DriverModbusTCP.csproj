@@ -5,15 +5,19 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<OutputPath>../../../IoTGateway/bin/Debug/net5.0/drivers</OutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="NModbus4.Core" Version="1.0.2" />
+		<ProjectReference Include="..\..\PluginInterface\PluginInterface.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\PluginInterface\PluginInterface.csproj" />
+	  <Reference Include="System.IO.Ports">
+	    <HintPath>System.IO.Ports.dll</HintPath>
+	    <Private>true</Private>
+	  </Reference>
 	</ItemGroup>
 
 </Project>

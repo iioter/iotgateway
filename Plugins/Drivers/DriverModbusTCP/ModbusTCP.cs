@@ -1,7 +1,9 @@
 ﻿using Modbus.Device;
+using Modbus.Serial;
 using PluginInterface;
 using System;
 using System.Collections.Generic;
+using System.IO.Ports;
 using System.Net;
 using System.Net.Sockets;
 
@@ -9,12 +11,16 @@ namespace DriverModbusTCP
 {
     [DriverSupported("ModbusTCP")]
     [DriverSupported("ModbusUDP")]
-    [DriverInfoAttribute("ModbusTCP", "V1.0.0", "Copyright WHD© 2021-12-19")]
+    [DriverSupported("ModbusRtu")]
+    [DriverSupported("ModbusAscii")]
+    [DriverInfoAttribute("ModbusMaster", "V1.0.0", "Copyright WHD© 2021-12-19")]
     public class ModbusTCP : IDriver
     {
-        private TcpClient client = null;
-        private ModbusIpMaster master = null;
-
+        private TcpClient clientTcp = null;
+        private UdpClient clientUdp = null;
+        private SerialPort port = null;
+        private ModbusMaster master = null;
+        private SerialPortAdapter adapter = null;
         #region 配置参数
 
         [ConfigParameter("设备Id")]
@@ -23,14 +29,32 @@ namespace DriverModbusTCP
         [ConfigParameter("PLC类型")]
         public PLC_TYPE PLCType { get; set; } = PLC_TYPE.S71200;
 
+        [ConfigParameter("主站类型")]
+        public Master_TYPE Master_TYPE { get; set; } = Master_TYPE.Tcp;
+
         [ConfigParameter("IP地址")]
         public string IpAddress { get; set; } = "127.0.0.1";
 
         [ConfigParameter("端口号")]
         public int Port { get; set; } = 502;
 
-        [ConfigParameter("站号")]
-        public byte SlaveId { get; set; } = 1;
+        [ConfigParameter("串口名")]
+        public string PortName { get; set; } = "COM1";
+
+        [ConfigParameter("波特率")]
+        public int BaudRate { get; set; } = 9600;
+
+        [ConfigParameter("数据位")]
+        public int DataBits { get; set; } = 8;
+
+        [ConfigParameter("校验位")]
+        public Parity Parity { get; set; } = Parity.None;
+
+        [ConfigParameter("停止位")]
+        public StopBits StopBits { get; set; } = StopBits.One;
+
+        [ConfigParameter("从站号")]
+        public byte SlaveAddress { get; set; } = 1;
 
         [ConfigParameter("超时时间ms")]
         public uint Timeout { get; set; } = 3000;
@@ -50,7 +74,7 @@ namespace DriverModbusTCP
         {
             get
             {
-                return client != null && master != null && client.Connected;
+                return clientTcp != null && master != null && clientTcp.Connected;
             }
         }
 
@@ -58,8 +82,47 @@ namespace DriverModbusTCP
         {
             try
             {
-                client = new TcpClient(IpAddress.ToString(), Port);
-                master = ModbusIpMaster.CreateIp(client);
+                switch (Master_TYPE)
+                {
+                    case Master_TYPE.Tcp:
+                        clientTcp = new TcpClient(IpAddress.ToString(), Port);
+                        master = ModbusIpMaster.CreateIp(clientTcp);
+                        break;
+                    case Master_TYPE.Udp:
+                        clientUdp = new UdpClient(IpAddress.ToString(), Port);
+                        master = ModbusIpMaster.CreateIp(clientUdp);
+                        break;
+                    case Master_TYPE.Rtu:
+                        port = new SerialPort(PortName, BaudRate, Parity, DataBits, StopBits);
+                        port.Open();
+                        adapter = new SerialPortAdapter(port);
+                        master = ModbusSerialMaster.CreateRtu(adapter);
+                        break;
+                    case Master_TYPE.RtuOnTcp:
+                        clientTcp = new TcpClient(IpAddress.ToString(), Port);
+                        master = ModbusSerialMaster.CreateRtu(clientTcp);
+                        break;
+                    case Master_TYPE.RtuOnUdp:
+                        clientUdp = new UdpClient(IpAddress.ToString(), Port);
+                        master = ModbusSerialMaster.CreateRtu(clientUdp);
+                        break;
+                    case Master_TYPE.Ascii:
+                        port = new SerialPort(PortName, BaudRate, Parity, DataBits, StopBits);
+                        port.Open();
+                        adapter = new SerialPortAdapter(port);
+                        master = ModbusSerialMaster.CreateAscii(adapter);
+                        break;
+                    case Master_TYPE.AsciiOnTcp:
+                        clientTcp = new TcpClient(IpAddress.ToString(), Port);
+                        master = ModbusSerialMaster.CreateAscii(clientTcp);
+                        break;
+                    case Master_TYPE.AsciiOnUdp:
+                        clientUdp = new UdpClient(IpAddress.ToString(), Port);
+                        master = ModbusSerialMaster.CreateAscii(clientUdp);
+                        break;
+                    default:
+                        break;
+                }
             }
             catch (Exception)
             {
@@ -72,7 +135,9 @@ namespace DriverModbusTCP
         {
             try
             {
-                client?.Close();
+                clientTcp?.Close();
+                clientUdp?.Close();
+                port?.Close();
                 return !IsConnected;
             }
             catch (Exception)
@@ -86,7 +151,9 @@ namespace DriverModbusTCP
         {
             try
             {
-                client?.Dispose();
+                clientTcp?.Dispose();
+                clientUdp?.Dispose();
+                port?.Dispose();
                 master?.Dispose();
             }
             catch (Exception)
@@ -158,7 +225,7 @@ namespace DriverModbusTCP
         private DriverReturnValueModel ReadRegistersBuffers(byte FunCode, DriverAddressIoArgModel ioarg)
         {
             DriverReturnValueModel ret = new() { StatusType = VaribaleStatusTypeEnum.Good };
-            if (!client.Connected)
+            if (!clientTcp.Connected)
                 ret.StatusType = VaribaleStatusTypeEnum.Bad;
             else
             {
@@ -172,9 +239,9 @@ namespace DriverModbusTCP
                     {
                         var rawBuffers = new ushort[] { };
                         if (FunCode == 3)
-                            rawBuffers = master.ReadHoldingRegisters(SlaveId, startAddress, count);
+                            rawBuffers = master.ReadHoldingRegisters(SlaveAddress, startAddress, count);
                         else if (FunCode == 4)
-                            rawBuffers = master.ReadHoldingRegisters(SlaveId, startAddress, count);
+                            rawBuffers = master.ReadHoldingRegisters(SlaveAddress, startAddress, count);
 
                         var retBuffers = ChangeBuffersOrder(rawBuffers, ioarg.ValueType);
                         if (ioarg.ValueType.ToString().Contains("Uint16"))
@@ -279,5 +346,17 @@ namespace DriverModbusTCP
         S7400 = 2,
         S71200 = 3,
         S71500 = 4,
+    }
+
+    public enum Master_TYPE
+    {
+        Tcp = 0,
+        Udp = 1,
+        Rtu = 2,
+        RtuOnTcp = 3,
+        RtuOnUdp = 4,
+        Ascii = 5,
+        AsciiOnTcp = 6,
+        AsciiOnUdp = 7,
     }
 }

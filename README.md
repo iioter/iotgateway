@@ -1,6 +1,6 @@
 # iotgateway
-# github地址:[iotgateway](https://github.com/iioter/iotgateway/) https://github.com/iioter/iotgateway
-# gitee地址:[iotgateway](https://gitee.com/wang_haidong/iotgateway/) https://gitee.com/wang_haidong/iotgateway
+## github地址:[iotgateway](https://github.com/iioter/iotgateway/) https://github.com/iioter/iotgateway
+## gitee地址:[iotgateway](https://gitee.com/wang_haidong/iotgateway/) https://gitee.com/wang_haidong/iotgateway
 基于.net5的跨平台物联网网关。通过可视化配置，轻松的连接到你的任何设备和系统(如PLC、扫码枪、CNC、数据库、串口设备、上位机、OPC Server、OPC UA Server、Mqtt Server等)，从而与 Thingsboard、IoTSharp或您自己的物联网平台进行双向数据通讯。提供简单的驱动开发接口；当然也可以进行边缘计算。
 * 物联网网关mqtt输出，支持thingsboard
 * 抛砖引玉，共同进步
@@ -53,3 +53,12 @@
 ![6 gateway 修改设备为自启动](https://user-images.githubusercontent.com/29589505/145705269-c816789c-cd67-4c01-973f-ae4f10eb41d9.png)
 ![7 thingsboard 查看到设备和数据](https://user-images.githubusercontent.com/29589505/145705270-31d8884f-7f6f-4ff5-a6bb-1d57a97012f4.png)
 ![8 gateway 查看到数据](https://user-images.githubusercontent.com/29589505/145705271-cb80b80e-006e-4312-8843-6d0ae9457cb1.png)
+
+
+# 声明
+## 君子性非异也，善假于物也
+1. [WTM(MIT)](https://github.com/dotnetcore/WTM)
+2. [NModbus4(MIT)](https://github.com/NModbus4/NModbus4)
+3. [EFCore(MIT)](https://github.com/dotnet/efcore)
+4. [LayUI(MIT)](https://github.com/sentsin/layui)
+5. [SQLite](https://github.com/sqlite/sqlite)
