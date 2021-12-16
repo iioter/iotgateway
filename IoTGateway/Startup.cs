@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using MQTTnet.AspNetCore;
+using MQTTnet.AspNetCore.Extensions;
 using Plugin;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
@@ -30,7 +32,7 @@ namespace IoTGateway
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDistributedMemoryCache();
-            services.AddWtmSession(3600, ConfigRoot);
+            services.AddWtmSession(36000, ConfigRoot);
             services.AddWtmCrossDomain(ConfigRoot);
             services.AddWtmAuthentication(ConfigRoot);
             services.AddWtmHttpClient(ConfigRoot);
@@ -41,7 +43,8 @@ namespace IoTGateway
             {
                 options.UseWtmMvcOptions();
             })
-            .AddJsonOptions(options => {
+            .AddJsonOptions(options =>
+            {
                 options.UseWtmJsonOptions();
             })
             .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
@@ -51,23 +54,30 @@ namespace IoTGateway
             })
             .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
             .AddWtmDataAnnotationsLocalization(typeof(Program));
-            
-            services.AddWtmContext(ConfigRoot, (options)=> {
+
+            services.AddWtmContext(ConfigRoot, (options) =>
+            {
                 options.DataPrivileges = DataPrivilegeSettings();
                 options.CsSelector = CSSelector;
                 options.FileSubDirSelector = SubDirSelector;
                 options.ReloadUserFunc = ReloadUser;
             });
+
+            //MQTTServer
+            services.AddHostedMqttServer(mqttServer =>
+                {
+                    mqttServer.WithoutDefaultEndpoint();
+                })
+                .AddMqttConnectionHandler()
+                .AddConnections();
+
+
             services.AddHostedService<IoTBackgroundService>();
             services.AddSingleton<DeviceService>();
             services.AddSingleton<DrvierService>();
             services.AddSingleton<MyMqttClient>();
         }
 
-        //public void ConfigureContainer(ContainerBuilder containerBuilder)
-        //{
-        //    containerBuilder.RegisterModule<ConfigureAutofac>();
-        //}
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IOptionsMonitor<Configs> configs, DeviceService deviceService)
         {
@@ -87,6 +97,12 @@ namespace IoTGateway
 
             app.UseEndpoints(endpoints =>
             {
+                //MqttServerWebSocket
+                endpoints.MapConnectionHandler<MqttConnectionHandler>("/mqtt", options =>
+                {
+                    options.WebSockets.SubProtocolSelector = MqttSubProtocolSelector.SelectSubProtocol;
+                });
+
                 endpoints.MapControllerRoute(
                    name: "areaRoute",
                    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");

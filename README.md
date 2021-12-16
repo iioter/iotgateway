@@ -6,7 +6,9 @@
 * 抛砖引玉，共同进步
 * 可视化的配置方式实现数据采集(使用wtm开发)
 * 基于.net5的开源物联网网关
-* 内置ModbusTcp驱动(使用nmodbus4)
+* 内置Mqtt服务端,支持websocket，端口1888,/mqtt
+* 内置ModbusTcp驱动
+* 内置西门子PLC驱动
 * 支持驱动二次开发（短期内会提供西门子三菱通讯）
 * 数据通过mqtt推送，支持thingsboard
 * 目前只支持遥测数据上传，后续支持属性的双向通信
@@ -31,7 +33,7 @@
 ## linux docker运行
 1. docker pull registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway
 2. docker tag registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway 15261671110/iotgateway
-3. docker run -d -p 518:518 --name iotgateway --restart always 15261671110/iotgateway
+3. docker run -d -p 518:518 -p 1888:1888 --name iotgateway --restart always 15261671110/iotgateway
 ## 登入系统
 1. 用户名 admin,密码 000000
 2. 打开发布文件路径下的ReadMe文件夹中的手摸手，按照顺序添加设备进行采集
@@ -60,6 +62,8 @@
 ## 君子性非异也，善假于物也
 1. [WTM(MIT)](https://github.com/dotnetcore/WTM)
 2. [NModbus4(MIT)](https://github.com/NModbus4/NModbus4)
+2. [S7NetPlus(MIT)](https://github.com/S7NetPlus/s7netplus)
+2. [MQTTnet(MIT)](https://github.com/chkr1011/MQTTnet)
 3. [EFCore(MIT)](https://github.com/dotnet/efcore)
 4. [LayUI(MIT)](https://github.com/sentsin/layui)
 5. [SQLite](https://github.com/sqlite/sqlite)

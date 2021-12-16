@@ -7,19 +7,19 @@ using System.IO.Ports;
 using System.Net;
 using System.Net.Sockets;
 
-namespace DriverModbusTCP
+namespace DriverModbusMaster
 {
     [DriverSupported("ModbusTCP")]
     [DriverSupported("ModbusUDP")]
     [DriverSupported("ModbusRtu")]
     [DriverSupported("ModbusAscii")]
     [DriverInfoAttribute("ModbusMaster", "V1.0.0", "Copyright WHD© 2021-12-19")]
-    public class ModbusTCP : IDriver
+    public class ModbusMaster : IDriver
     {
         private TcpClient clientTcp = null;
         private UdpClient clientUdp = null;
         private SerialPort port = null;
-        private ModbusMaster master = null;
+        private Modbus.Device.ModbusMaster master = null;
         private SerialPortAdapter adapter = null;
         #region 配置参数
 
@@ -60,11 +60,11 @@ namespace DriverModbusTCP
         public uint Timeout { get; set; } = 3000;
 
         [ConfigParameter("最小通讯周期ms")]
-        public uint MinPeriod { get; set; } = 30000;
+        public uint MinPeriod { get; set; } = 3000;
 
         #endregion
 
-        public ModbusTCP(Guid deviceId)
+        public ModbusMaster(Guid deviceId)
         {
             DeviceId = deviceId;
         }

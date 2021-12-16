@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using MQTTnet.AspNetCore.Extensions;
 using WalkingTec.Mvvm.Core;
 
 namespace IoTGateway
@@ -35,10 +36,10 @@ namespace IoTGateway
                      webBuilder.UseStartup<Startup>();
                      webBuilder.UseKestrel(option =>
                      {
+                         option.ListenAnyIP(1888, l => l.UseMqtt());
                          option.ListenAnyIP(518);
                      });
                  });
-                //.UseServiceProviderFactory(new AutofacServiceProviderFactory());
         }
     }
 }
