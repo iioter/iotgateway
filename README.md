@@ -29,8 +29,9 @@
 4. 解压release包，运行IoTGateway.exe
 5. 访问[iotgateway](http://localhost:518/)后台：http://localhost:518
 ## linux docker运行
-1. docker pull 15261671110/iotgateway
-2. docker run -d -p 518:518 --name iotgateway --restart always 15261671110/iotgateway
+1. docker pull registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway
+2. docker tag registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway 15261671110/iotgateway
+3. docker run -d -p 518:518 --name iotgateway --restart always 15261671110/iotgateway
 ## 登入系统
 1. 用户名 admin,密码 000000
 2. 打开发布文件路径下的ReadMe文件夹中的手摸手，按照顺序添加设备进行采集
