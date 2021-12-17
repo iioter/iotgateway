@@ -50,11 +50,11 @@ namespace IoTGateway.ViewModel.BasicData.DeviceConfigVMs
         protected override IEnumerable<IGridColumn<DeviceConfig_View>> InitGridHeader()
         {
             return new List<GridColumn<DeviceConfig_View>>{
-                this.MakeGridHeader(x => x.DeviceConfigName),
-                this.MakeGridHeader(x => x.Description),
-                this.MakeGridHeader(x => x.Value),
+                this.MakeGridHeader(x => x.DeviceConfigName).SetWidth(100),
+                this.MakeGridHeader(x => x.Description).SetWidth(100),
+                this.MakeGridHeader(x => x.Value).SetWidth(100),
+                this.MakeGridHeader(x => x.DeviceName_view).SetWidth(100),
                 this.MakeGridHeader(x => x.EnumInfo),
-                this.MakeGridHeader(x => x.DeviceName_view),
                 this.MakeGridHeaderAction(width: 200)
             };
         }
@@ -74,7 +74,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceConfigVMs
                     EnumInfo = x.EnumInfo,
                     DeviceName_view = x.Device.DeviceName,
                 })
-                .OrderBy(x => x.ID);
+                .OrderBy(x => x.DeviceName_view).ThenBy(x=>x.DeviceConfigName);
             return query;
         }
 

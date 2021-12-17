@@ -58,7 +58,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                 this.MakeGridHeader(x => x.Value).SetWidth(80),
                 this.MakeGridHeader(x => x.CookedValue).SetWidth(80),
                 this.MakeGridHeader(x => x.State).SetWidth(80),
-                this.MakeGridHeader(x => x.Expressions).SetSort(true).SetWidth(80),
+                this.MakeGridHeader(x => x.Expressions).SetWidth(150),
                 //this.MakeGridHeader(x => x.ProtectType).SetSort(true),
                 this.MakeGridHeader(x => x.DeviceName_view).SetSort(true).SetWidth(90),
                 this.MakeGridHeader(x=> "detail").SetHide().SetFormat((a,b)=>{
@@ -104,7 +104,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                     ProtectType = x.ProtectType,
                     DeviceName_view = x.Device.DeviceName,
                 })
-                .OrderBy(x => x.ID);
+                .OrderBy(x => x.DeviceName_view).ThenBy(x => x.DeviceAddress);
             return query;
         }
 

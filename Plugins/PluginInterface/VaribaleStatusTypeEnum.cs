@@ -11,6 +11,7 @@ namespace PluginInterface
         Good=0,
         AddressError,
         MethodError,
+        ExpressionError,
         Bad,
         UnKnow,
         Custome1,

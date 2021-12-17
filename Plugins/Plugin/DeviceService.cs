@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
 using IoTGateway.DataAccess;
 using IoTGateway.Model;
+using DynamicExpresso;
 
 namespace Plugin
 {
@@ -25,6 +26,7 @@ namespace Plugin
         public MyMqttClient _MyMqttClient;
         private string connnectSetting = IoTBackgroundService.connnectSetting;
         private DBTypeEnum DBType = IoTBackgroundService.DBType;
+        private Interpreter interpreter = new();
 
         public DeviceService(IConfiguration ConfigRoot, DrvierService drvierManager, MyMqttClient myMqttClient)
         {
@@ -133,7 +135,7 @@ namespace Plugin
                         p.SetValue(DeviceObj, value);
                     }
 
-                    var deviceThread = new DeviceThread(Device, DeviceObj, systemManage.GatewayName, _MyMqttClient);
+                    var deviceThread = new DeviceThread(Device, DeviceObj, systemManage.GatewayName, _MyMqttClient, interpreter);
                     DeviceThreads.Add(deviceThread);
                 }
 
@@ -149,12 +151,15 @@ namespace Plugin
 
         public void RemoveDeviceThread(Device Device)
         {
-            var DeviceThread = DeviceThreads.Where(x => x.Device.ID == Device.ID).FirstOrDefault();
-            if (DeviceThread != null)
+            if (Device != null)
             {
-                DeviceThread.StopThread();
-                DeviceThread.Dispose();
-                DeviceThreads.Remove(DeviceThread);
+                var DeviceThread = DeviceThreads.Where(x => x.Device.ID == Device.ID).FirstOrDefault();
+                if (DeviceThread != null)
+                {
+                    DeviceThread.StopThread();
+                    DeviceThread.Dispose();
+                    DeviceThreads.Remove(DeviceThread);
+                }
             }
         }
 

@@ -22,12 +22,13 @@ namespace Plugin
         private Task task { get; set; } = null;
         private DateTime TsStartDt = new DateTime(1970, 1, 1);
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
-        private Interpreter interpreter = new Interpreter();
+        private Interpreter Interpreter = null;
 
-        public DeviceThread(Device device, IDriver driver, string ProjectId, MyMqttClient myMqttClient)
+        public DeviceThread(Device device, IDriver driver, string ProjectId, MyMqttClient myMqttClient, Interpreter interpreter)
         {
             Device = device;
             Driver = driver;
+            Interpreter = interpreter;
             Methods = Driver.GetType().GetMethods().Where(x => x.GetCustomAttribute(typeof(MethodAttribute)) != null).ToList();
             if (Device.AutoStart)
             {
@@ -83,7 +84,16 @@ namespace Plugin
 
                                         DeviceValues[item.ID] = ret;
                                         if (ret.StatusType == VaribaleStatusTypeEnum.Good && !string.IsNullOrWhiteSpace(item.Expressions?.Trim()))
-                                            ret.CookedValue = interpreter.Eval(item.Expressions.Replace("raw", ret.Value.ToString()));
+                                        {
+                                            try
+                                            {
+                                                ret.CookedValue = interpreter.Eval(DealMysqlStr(item.Expressions).Replace("raw", ret.Value.ToString()));
+                                            }
+                                            catch (Exception)
+                                            {
+                                                ret.StatusType = VaribaleStatusTypeEnum.ExpressionError;
+                                            }
+                                        }    
                                         else
                                             ret.CookedValue = ret.Value;
 
@@ -138,6 +148,12 @@ namespace Plugin
         {
             Driver.Dispose();
             Console.WriteLine($"{Device.DeviceName},释放");
+        }
+
+        //mysql会把一些符号转义，没找到原因，先临时处理下
+        private string DealMysqlStr(string Expression)
+        {
+            return Expression.Replace("&lt;", ">").Replace("&gt;", "<").Replace("&amp;", "&");
         }
     }
 

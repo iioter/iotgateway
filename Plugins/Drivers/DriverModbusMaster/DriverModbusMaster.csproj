@@ -2,11 +2,8 @@
 
 	<PropertyGroup>
 		<TargetFramework>net5.0</TargetFramework>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<OutputPath>../../../IoTGateway/bin/Debug/net5.0/drivers</OutputPath>
+    <OutputPath>../../../IoTGateway/bin/Debug/net5.0/drivers</OutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>
