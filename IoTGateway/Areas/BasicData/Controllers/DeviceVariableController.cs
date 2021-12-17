@@ -43,7 +43,6 @@ namespace IoTGateway.Controllers
         public ActionResult Create()
         {
             var vm = Wtm.CreateVM<DeviceVariableVM>();
-            vm.Entity.ValueFactor = 1;
             return PartialView(vm);
         }
 

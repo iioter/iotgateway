@@ -19,8 +19,6 @@ COPY ["IoTGateway.Model/IoTGateway.Model.csproj", "IoTGateway.Model/"]
 COPY ["WalkingTec.Mvvm/WalkingTec.Mvvm.Core/WalkingTec.Mvvm.Core.csproj", "WalkingTec.Mvvm/WalkingTec.Mvvm.Core/"]
 COPY ["Plugins/PluginInterface/PluginInterface.csproj", "Plugins/PluginInterface/"]
 COPY ["IoTGateway.DataAccess/IoTGateway.DataAccess.csproj", "IoTGateway.DataAccess/"]
-COPY ["Plugins/Drivers/DriverSiemensS7/DriverSiemensS7.csproj", "Plugins/Drivers/DriverSiemensS7/"]
-COPY ["Plugins/Drivers/DriverModbusMaster/DriverModbusMaster.csproj", "Plugins/Drivers/DriverModbusMaster/"]
 COPY ["WalkingTec.Mvvm/WalkingTec.Mvvm.TagHelpers.LayUI/WalkingTec.Mvvm.TagHelpers.LayUI.csproj", "WalkingTec.Mvvm/WalkingTec.Mvvm.TagHelpers.LayUI/"]
 COPY ["WalkingTec.Mvvm/WalkingTec.Mvvm.Mvc/WalkingTec.Mvvm.Mvc.csproj", "WalkingTec.Mvvm/WalkingTec.Mvvm.Mvc/"]
 

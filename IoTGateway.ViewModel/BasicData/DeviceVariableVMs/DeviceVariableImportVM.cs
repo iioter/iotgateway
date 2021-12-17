@@ -23,8 +23,8 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
         public ExcelPropety DeviceAddress_Excel = ExcelPropety.CreateProperty<DeviceVariable>(x => x.DeviceAddress);
         [Display(Name = "数据类型")]
         public ExcelPropety DataType_Excel = ExcelPropety.CreateProperty<DeviceVariable>(x => x.DataType);
-        [Display(Name = "倍率")]
-        public ExcelPropety ValueFactor_Excel = ExcelPropety.CreateProperty<DeviceVariable>(x => x.ValueFactor);
+        [Display(Name = "表达式")]
+        public ExcelPropety Expressions_Excel = ExcelPropety.CreateProperty<DeviceVariable>(x => x.Expressions);
         [Display(Name = "权限")]
         public ExcelPropety ProtectType_Excel = ExcelPropety.CreateProperty<DeviceVariable>(x => x.ProtectType);
         public ExcelPropety Device_Excel = ExcelPropety.CreateProperty<DeviceVariable>(x => x.DeviceId);

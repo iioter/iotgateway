@@ -65,7 +65,17 @@
       "ProjectGuid": "402e5b3a-ad95-4b6a-a4b0-c8ffcbf494c3",
       "DisplayName": "test",
       "ColorIndex": 11
+    },
+    "b884fbe3-c8c5-471e-b629-12eca0fc5dac": {
+      "ProjectGuid": "b884fbe3-c8c5-471e-b629-12eca0fc5dac",
+      "DisplayName": "DriverSiemensS7",
+      "ColorIndex": 12
+    },
+    "4fc43620-00b1-48c1-a5a0-02fcc038fb08": {
+      "ProjectGuid": "4fc43620-00b1-48c1-a5a0-02fcc038fb08",
+      "DisplayName": "DriverModbusMaster",
+      "ColorIndex": 13
     }
   },
-  "NextColorIndex": 12
+  "NextColorIndex": 14
 }

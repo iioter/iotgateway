@@ -19,11 +19,11 @@ namespace IoTGateway.Model
         [Display(Name = "地址")]
         public string DeviceAddress { get; set; }
 
-        [Display(Name = "数据类型")]
+        [Display(Name = "类型")]
         public PluginInterface.DataTypeEnum DataType { get; set; }
 
-        [Display(Name = "倍率")]
-        public double ValueFactor { get; set; }
+        [Display(Name = "表达式")]
+        public string Expressions { get; set; }
 
         [Display(Name = "权限")]
         public ProtectTypeEnum ProtectType { get; set; }

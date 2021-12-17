@@ -9,6 +9,7 @@ namespace PluginInterface
     public class DriverReturnValueModel
     {
         public object Value { get; set; }
+        public object CookedValue { get; set; }
         public string Message { get; set; }
         public VaribaleStatusTypeEnum StatusType { get; set; }
     }

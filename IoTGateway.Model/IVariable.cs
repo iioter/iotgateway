@@ -17,8 +17,8 @@ namespace IoTGateway.Model
         [Display(Name = "数据类型")]
         public PluginInterface.DataTypeEnum DataType { get; set; }
 
-        [Display(Name = "倍率")]
-        public double ValueFactor { get; set; }
+        [Display(Name = "表达式")]
+        public string Expressions { get; set; }
 
         [Display(Name = "权限")]
         public ProtectTypeEnum ProtectType { get; set; }

@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DynamicExpresso.Core" Version="2.9.7" />
     <PackageReference Include="MQTTnet" Version="3.1.1" />
   </ItemGroup>
 

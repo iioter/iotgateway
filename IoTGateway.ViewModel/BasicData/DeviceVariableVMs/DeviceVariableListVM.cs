@@ -50,20 +50,21 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
         protected override IEnumerable<IGridColumn<DeviceVariable_View>> InitGridHeader()
         {
             return new List<GridColumn<DeviceVariable_View>>{
-                this.MakeGridHeader(x => x.Name).SetSort(true).SetWidth(120),
+                this.MakeGridHeader(x => x.Name).SetSort(true).SetWidth(100),
                 //this.MakeGridHeader(x => x.Description),
                 this.MakeGridHeader(x => x.Method).SetSort(true).SetWidth(160),
                 this.MakeGridHeader(x => x.DeviceAddress).SetSort(true).SetWidth(80),
-                this.MakeGridHeader(x => x.DataType).SetSort(true).SetWidth(110),
+                this.MakeGridHeader(x => x.DataType).SetSort(true).SetWidth(80),
                 this.MakeGridHeader(x => x.Value).SetWidth(80),
+                this.MakeGridHeader(x => x.CookedValue).SetWidth(80),
                 this.MakeGridHeader(x => x.State).SetWidth(80),
-                this.MakeGridHeader(x => x.ValueFactor).SetSort(true).SetWidth(80),
+                this.MakeGridHeader(x => x.Expressions).SetSort(true).SetWidth(80),
                 //this.MakeGridHeader(x => x.ProtectType).SetSort(true),
                 this.MakeGridHeader(x => x.DeviceName_view).SetSort(true).SetWidth(90),
                 this.MakeGridHeader(x=> "detail").SetHide().SetFormat((a,b)=>{
                     return "false";
                 }),
-                this.MakeGridHeaderAction(width: 150)
+                this.MakeGridHeaderAction(width: 115)
             };
         }
 
@@ -76,6 +77,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                 if (DapThread?.DeviceValues != null && DapThread.DeviceValues.ContainsKey(item.ID))
                 {
                     item.Value = DapThread.DeviceValues[item.ID].Value?.ToString();
+                    item.CookedValue = DapThread.DeviceValues[item.ID].CookedValue?.ToString();
                     item.State = DapThread.DeviceValues[item.ID].StatusType.ToString();
                 }
             }
@@ -98,7 +100,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                     Method = x.Method,
                     DeviceAddress = x.DeviceAddress,
                     DataType = x.DataType,
-                    ValueFactor = x.ValueFactor,
+                    Expressions = x.Expressions,
                     ProtectType = x.ProtectType,
                     DeviceName_view = x.Device.DeviceName,
                 })
@@ -112,8 +114,10 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
     {
         [Display(Name = "设备名")]
         public String DeviceName_view { get; set; }
-        [Display(Name = "值")]
+        [Display(Name = "原值")]
         public String Value { get; set; }
+        [Display(Name = "值")]
+        public String CookedValue { get; set; }
         [Display(Name = "状态")]
         public String State { get; set; }
 

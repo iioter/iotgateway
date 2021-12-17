@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using IoTGateway.DataAccess;
 using IoTGateway.Model;
 using WalkingTec.Mvvm.Core;
+using DynamicExpresso;
 
 namespace Plugin
 {
@@ -21,6 +22,7 @@ namespace Plugin
         private Task task { get; set; } = null;
         private DateTime TsStartDt = new DateTime(1970, 1, 1);
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
+        private Interpreter interpreter = new Interpreter();
 
         public DeviceThread(Device device, IDriver driver, string ProjectId, MyMqttClient myMqttClient)
         {
@@ -80,15 +82,17 @@ namespace Plugin
                                             ret = (DriverReturnValueModel)method.Invoke(Driver, new object[1] { ioarg });
 
                                         DeviceValues[item.ID] = ret;
-                                        if (!(item.ValueFactor == 1 || item.ValueFactor == 0))
-                                            ret.Value = ret.Value == null ? null : double.Parse(ret.Value?.ToString()) * item.ValueFactor;
+                                        if (ret.StatusType == VaribaleStatusTypeEnum.Good && !string.IsNullOrWhiteSpace(item.Expressions?.Trim()))
+                                            ret.CookedValue = interpreter.Eval(item.Expressions.Replace("raw", ret.Value.ToString()));
+                                        else
+                                            ret.CookedValue = ret.Value;
 
                                         if (ret.StatusType == VaribaleStatusTypeEnum.Bad)
                                             Console.WriteLine(Driver.Connect());
 
-                                        payLoad.Values[item.Name] = ret.Value;
+                                        payLoad.Values[item.Name] = ret.CookedValue;
                                     }
-                                    payLoad.TS = (long)(DateTime.Now- TsStartDt).TotalMilliseconds;
+                                    payLoad.TS = (long)(DateTime.Now - TsStartDt).TotalMilliseconds;
 
                                     if (DeviceValues.Any(x => x.Value.StatusType != VaribaleStatusTypeEnum.Good))
                                     {

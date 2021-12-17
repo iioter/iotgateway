@@ -74,7 +74,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                                     DataType = deviceVariable.DataType,
                                     Method = deviceVariable.Method,
                                     ProtectType = deviceVariable.ProtectType,
-                                    ValueFactor = deviceVariable.ValueFactor,
+                                    Expressions = deviceVariable.Expressions,
                                     DeviceAddress = deviceVariable.DeviceAddress
                                 };
                                 DC.Set<DeviceVariable>().Add(newDeviceVariable);
