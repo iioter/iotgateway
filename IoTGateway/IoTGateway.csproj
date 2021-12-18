@@ -20,6 +20,7 @@
     <PackageReference Include="MQTTnet.AspNetCore" Version="3.1.1" />
     <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="3.1.1" />
     <PackageReference Include="MQTTnet.Extensions.Rpc" Version="3.1.1" />
+    <PackageReference Include="System.IO.Ports" Version="6.0.0" />
 </ItemGroup>
 
   <ItemGroup>

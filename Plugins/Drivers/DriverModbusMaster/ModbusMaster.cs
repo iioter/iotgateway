@@ -74,7 +74,22 @@ namespace DriverModbusMaster
         {
             get
             {
-                return clientTcp != null && master != null && clientTcp.Connected;
+                switch (Master_TYPE)
+                {
+                    case Master_TYPE.Tcp:
+                    case Master_TYPE.RtuOnTcp:
+                    case Master_TYPE.AsciiOnTcp:
+                        return clientTcp != null && master != null && clientTcp.Connected;
+                    case Master_TYPE.Udp:
+                    case Master_TYPE.RtuOnUdp:
+                    case Master_TYPE.AsciiOnUdp:
+                        return clientUdp != null && master != null && clientUdp.Client.Connected ;
+                    case Master_TYPE.Rtu:
+                    case Master_TYPE.Ascii:
+                        return port != null && master != null && port.IsOpen;
+                    default:
+                        return false;
+                }
             }
         }
 
@@ -124,7 +139,7 @@ namespace DriverModbusMaster
                         break;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return false;
             }
@@ -225,7 +240,7 @@ namespace DriverModbusMaster
         private DriverReturnValueModel ReadRegistersBuffers(byte FunCode, DriverAddressIoArgModel ioarg)
         {
             DriverReturnValueModel ret = new() { StatusType = VaribaleStatusTypeEnum.Good };
-            if (!clientTcp.Connected)
+            if (!IsConnected)
                 ret.StatusType = VaribaleStatusTypeEnum.Bad;
             else
             {
