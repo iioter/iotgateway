@@ -10,7 +10,7 @@
 * 内置Modbus驱动全协议支持
 * 内置西门子PLC驱动
 * 增加计算表达式
-* 支持驱动二次开发（短期内会提供西门子三菱通讯）
+* 支持驱动二次开发（短期内会提供三菱、fanuc通讯）
 * 数据通过mqtt推送，支持thingsboard
 * 目前只支持遥测数据上传，后续支持属性的双向通信
 # 体验
@@ -21,8 +21,7 @@
 5. 想要外网访问modbus设备，请连接:wanghaidong.cloud:16051，进行标准modbus协议读写
 6. 想要通过mqtt接收数据，请连接mqttserver:wanghaidong.cloud,1888 admin 000000；订阅topic: v1/gateway/telemetry
 ![image](https://user-images.githubusercontent.com/29589505/145837715-c0529db4-f2aa-47f7-aca6-db101642f820.png)
-![3209c4cb14551e819ce0af5665729bb](https://user-images.githubusercontent.com/29589505/146512872-61e1dfe5-2f4c-45b4-8a9a-5249db551356.png)
-
+![image](https://user-images.githubusercontent.com/29589505/146733538-d9a83a0e-b2af-40f9-acb5-4cb9fa5aa3c8.png)
 
 
 # 运行
