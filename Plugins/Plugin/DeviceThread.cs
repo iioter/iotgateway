@@ -40,7 +40,7 @@ namespace Plugin
                     {
                         foreach (var item in Device.DeviceVariables)
                         {
-                            DeviceValues[item.ID] = new();
+                            DeviceValues[item.ID] = new() { StatusType = VaribaleStatusTypeEnum.Bad };
                         }
                     }
                 }
