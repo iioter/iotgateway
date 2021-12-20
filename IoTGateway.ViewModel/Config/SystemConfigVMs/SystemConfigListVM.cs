@@ -37,6 +37,7 @@ namespace IoTGateway.ViewModel.Config.SystemConfigVMs
                 this.MakeGridHeader(x => x.MqttPort),
                 this.MakeGridHeader(x => x.MqttUName),
                 this.MakeGridHeader(x => x.MqttUPwd),
+                this.MakeGridHeader(x => x.Disperse),
                 this.MakeGridHeaderAction(width: 200)
             };
         }
@@ -52,6 +53,7 @@ namespace IoTGateway.ViewModel.Config.SystemConfigVMs
                     MqttPort = x.MqttPort,
                     MqttUName = x.MqttUName,
                     MqttUPwd = x.MqttUPwd,
+                    Disperse = x.Disperse,
                 })
                 .OrderBy(x => x.ID);
             return query;

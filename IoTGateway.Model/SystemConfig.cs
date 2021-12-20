@@ -15,5 +15,7 @@ namespace IoTGateway.Model
         public string MqttUName { get; set; }
         [Display(Name = "Mqtt密码")]
         public string MqttUPwd { get; set; }
+        [Display(Name = "离散输出")]
+        public bool Disperse { get; set; }
     }
 }

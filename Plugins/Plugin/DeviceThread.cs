@@ -113,7 +113,7 @@ namespace Plugin
                                     {
                                         payLoad.DeviceStatus = DeviceStatusTypeEnum.Good;
                                         sendModel[Device.DeviceName] = new List<PayLoad> { payLoad };
-                                        myMqttClient.Publish("v1/gateway/telemetry", sendModel);
+                                        myMqttClient.Publish(Device,sendModel);
                                     }
                                 }
 

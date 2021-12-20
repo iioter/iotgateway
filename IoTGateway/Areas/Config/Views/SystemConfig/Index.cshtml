@@ -2,7 +2,8 @@
 @inject IStringLocalizer<Program> Localizer;
 
 <wt:searchpanel vm="@Model" reset-btn="true">
-<wt:row items-per-row="ItemsPerRowEnum.Three">
-</wt:row>
+    <wt:row items-per-row="ItemsPerRowEnum.Three">
+    </wt:row>
 </wt:searchpanel>
-<wt:grid vm="@Model" url="/Config/SystemConfig/Search"/>
+<wt:quote>注意：tb只能使用非离散输出模式，否则平台无法解析</wt:quote>
+<wt:grid vm="@Model" url="/Config/SystemConfig/Search" />

@@ -21,6 +21,7 @@ namespace Plugin
     {
         private static IMqttClient _mqttClient = null;
         private static MqttClientOptionsBuilder builder = null;
+        private SystemConfig systemConfig = null;
         public MyMqttClient()
         {
             InitClient();
@@ -34,8 +35,8 @@ namespace Plugin
 
                 using (var DC = new DataContext(IoTBackgroundService.connnectSetting, IoTBackgroundService.DBType))
                 {
-                    var systemManage = DC.Set<SystemConfig>().FirstOrDefault();
-                    if (systemManage == null)
+                    systemConfig = DC.Set<SystemConfig>().FirstOrDefault();
+                    if (systemConfig == null)
                         Console.WriteLine("配置信息错误，无法启动");
                     else
                     {
@@ -46,9 +47,9 @@ namespace Plugin
                         builder = new MqttClientOptionsBuilder()
                             .WithCommunicationTimeout(TimeSpan.FromSeconds(60))
                             .WithKeepAlivePeriod(TimeSpan.FromSeconds(20))
-                            .WithTcpServer(systemManage.MqttIp, systemManage.MqttPort)
-                            .WithClientId(systemManage.MqttUName + Guid.NewGuid().ToString())
-                            .WithCredentials(systemManage.MqttUName, systemManage.MqttUPwd);
+                            .WithTcpServer(systemConfig.MqttIp, systemConfig.MqttPort)
+                            .WithClientId(systemConfig.MqttUName + Guid.NewGuid().ToString())
+                            .WithCredentials(systemConfig.MqttUName, systemConfig.MqttUPwd);
 
                         _mqttClient.ConnectAsync(builder.Build());
                     }
@@ -58,12 +59,32 @@ namespace Plugin
             {
 
             }
-            
+
         }
 
-        public void Publish(string Topic, Dictionary<string, List<PayLoad>> SendModel)
+        public void Publish(Device device, Dictionary<string, List<PayLoad>> SendModel)
         {
-            _mqttClient.PublishAsync(Topic, JsonConvert.SerializeObject(SendModel));
+            try
+            {
+                string TopicBase = "v1/gateway/telemetry";
+                if (!systemConfig.Disperse)
+                    _mqttClient.PublishAsync(TopicBase, JsonConvert.SerializeObject(SendModel));
+                else
+                {
+                    foreach (var payload in SendModel[device.DeviceName])
+                    {
+                        foreach (var kv in payload.Values)
+                        {
+                            _mqttClient.PublishAsync($"{TopicBase}/{device.DeviceName}/{kv.Key}", kv.Value.ToString());
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
         }
 
         private void OnReceived(MqttApplicationMessageReceivedEventArgs obj)
