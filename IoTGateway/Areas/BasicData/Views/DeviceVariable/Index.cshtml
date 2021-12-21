@@ -11,5 +11,36 @@
             <wt:combobox field="Searcher.DataType" empty-text="@Localizer["Sys.All"]" />
         </wt:row>
     </wt:searchpanel>
-    <wt:grid vm="@Model" url="/BasicData/DeviceVariable/Search" hidden-grid-index="true"/>
+    <wt:grid vm="@Model" url="/BasicData/DeviceVariable/Search" hidden-grid-index="true" done-func="inimqttclient" />
 </wt:treecontainer>
+<link href="~/sitecss/animate.min.css" rel="stylesheet" />
+<script src="~/mqtt.min.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    function inimqttclient() {
+        var options = {
+            //mqtt客户端的id，这里面应该还可以加上其他参数，具体看官方文档
+            clientId: 'mqttjs_' + (Math.random() * 10000000).toString()
+        }
+        var client = mqtt.connect('ws://' + window.location.host + '/mqtt', options);
+        client.on('connect', function () {
+            client.subscribe('internal/v1/gateway/telemetry/+/+', function (err) {
+                if (!err) {
+                    console.log("订阅成功!")
+                } else {
+                    console.log(err)
+                }
+            })
+        })
+
+        client.on('message', function (topic, message) {
+            var objmsg = $.parseJSON(message.toString());
+            $('#id' + objmsg.VarId + '_Value').text(objmsg.Value);
+            //$('#id' + objmsg.VarId + '_Value').addClass('fadeIn animated');
+            $('#id' + objmsg.VarId + '_CookedValue').text(objmsg.CookedValue);
+            //$('#id' + objmsg.VarId + '_CookedValue').addClass('fadeIn animated');
+            $('#id' + objmsg.VarId + '_StatusType').text(objmsg.StatusType);
+            //$('#id' + objmsg.VarId + '_StatusType').addClass('fadeIn animated');
+        })
+    }
+</script>

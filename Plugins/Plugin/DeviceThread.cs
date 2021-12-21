@@ -10,6 +10,8 @@ using IoTGateway.DataAccess;
 using IoTGateway.Model;
 using WalkingTec.Mvvm.Core;
 using DynamicExpresso;
+using MQTTnet.Server;
+using Newtonsoft.Json;
 
 namespace Plugin
 {
@@ -24,7 +26,7 @@ namespace Plugin
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
         private Interpreter Interpreter = null;
 
-        public DeviceThread(Device device, IDriver driver, string ProjectId, MyMqttClient myMqttClient, Interpreter interpreter)
+        public DeviceThread(Device device, IDriver driver, string ProjectId, MyMqttClient myMqttClient, Interpreter interpreter, IMqttServer mqttServer)
         {
             Device = device;
             Driver = driver;
@@ -93,7 +95,7 @@ namespace Plugin
                                             {
                                                 ret.StatusType = VaribaleStatusTypeEnum.ExpressionError;
                                             }
-                                        }    
+                                        }
                                         else
                                             ret.CookedValue = ret.Value;
 
@@ -101,6 +103,10 @@ namespace Plugin
                                             Console.WriteLine(Driver.Connect());
 
                                         payLoad.Values[item.Name] = ret.CookedValue;
+
+                                        ret.VarId = item.ID;
+                                        mqttServer.PublishAsync($"internal/v1/gateway/telemetry/{Device.DeviceName}/{item.Name}", JsonConvert.SerializeObject(ret));
+
                                     }
                                     payLoad.TS = (long)(DateTime.Now - TsStartDt).TotalMilliseconds;
 

@@ -12,5 +12,6 @@ namespace PluginInterface
         public object CookedValue { get; set; }
         public string Message { get; set; }
         public VaribaleStatusTypeEnum StatusType { get; set; }
+        public Guid VarId { get; set; }
     }
 }

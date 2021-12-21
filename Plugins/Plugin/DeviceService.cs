@@ -15,6 +15,7 @@ using WalkingTec.Mvvm.Core;
 using IoTGateway.DataAccess;
 using IoTGateway.Model;
 using DynamicExpresso;
+using MQTTnet.Server;
 
 namespace Plugin
 {
@@ -23,16 +24,17 @@ namespace Plugin
         public DrvierService _DrvierManager;
 
         public List<DeviceThread> DeviceThreads = new List<DeviceThread>();
-        public MyMqttClient _MyMqttClient;
+        private MyMqttClient _MyMqttClient;
+        private IMqttServer _MqttServer;
         private string connnectSetting = IoTBackgroundService.connnectSetting;
         private DBTypeEnum DBType = IoTBackgroundService.DBType;
         private Interpreter interpreter = new();
 
-        public DeviceService(IConfiguration ConfigRoot, DrvierService drvierManager, MyMqttClient myMqttClient)
+        public DeviceService(IConfiguration ConfigRoot, DrvierService drvierManager, MyMqttClient myMqttClient, IMqttServer mqttServer)
         {
             _DrvierManager = drvierManager;
             _MyMqttClient = myMqttClient;
-
+            _MqttServer = mqttServer;
 
             try
             {
@@ -135,7 +137,7 @@ namespace Plugin
                         p.SetValue(DeviceObj, value);
                     }
 
-                    var deviceThread = new DeviceThread(Device, DeviceObj, systemManage.GatewayName, _MyMqttClient, interpreter);
+                    var deviceThread = new DeviceThread(Device, DeviceObj, systemManage.GatewayName, _MyMqttClient, interpreter, _MqttServer);
                     DeviceThreads.Add(deviceThread);
                 }
 

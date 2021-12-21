@@ -55,9 +55,15 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                 this.MakeGridHeader(x => x.Method).SetSort(true).SetWidth(160),
                 this.MakeGridHeader(x => x.DeviceAddress).SetSort(true).SetWidth(80),
                 this.MakeGridHeader(x => x.DataType).SetSort(true).SetWidth(80),
-                this.MakeGridHeader(x => x.Value).SetWidth(80),
-                this.MakeGridHeader(x => x.CookedValue).SetWidth(80),
-                this.MakeGridHeader(x => x.State).SetWidth(80),
+                this.MakeGridHeader(x => x.Value).SetWidth(80).SetFormat((a,b)=>{
+                    return $"<div id='id{a.ID}_Value'>{a.Value}</div>";
+                }),
+                this.MakeGridHeader(x => x.CookedValue).SetWidth(80).SetFormat((a,b)=>{
+                    return $"<div id='id{a.ID}_CookedValue'>{a.CookedValue}</div>";
+                }),
+                this.MakeGridHeader(x => x.State).SetWidth(80).SetFormat((a,b)=>{
+                    return $"<div id='id{a.ID}_State'>{a.State}</div>";
+                }),
                 this.MakeGridHeader(x => x.Expressions).SetWidth(150),
                 //this.MakeGridHeader(x => x.ProtectType).SetSort(true),
                 this.MakeGridHeader(x => x.DeviceName_view).SetSort(true).SetWidth(90),
