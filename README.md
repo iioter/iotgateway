@@ -13,6 +13,7 @@
 * 支持驱动二次开发（短期内会提供三菱、fanuc通讯）
 * 数据通过mqtt推送，支持thingsboard
 * 目前只支持遥测数据上传，后续支持属性的双向通信
+* 简单集成了web组态项目
 # 体验
 1. 在线体验[iotgateway](http://wanghaidong.cloud:518/)后台：http://wanghaidong.cloud:518/
 2. 用户名 admin 密码 000000
@@ -22,6 +23,8 @@
 6. 想要通过mqtt接收数据，请连接mqttserver:wanghaidong.cloud,1888 admin 000000；订阅topic: v1/gateway/telemetry
 ![image](https://user-images.githubusercontent.com/29589505/145837715-c0529db4-f2aa-47f7-aca6-db101642f820.png)
 ![image](https://user-images.githubusercontent.com/29589505/146733538-d9a83a0e-b2af-40f9-acb5-4cb9fa5aa3c8.png)
+![image](https://user-images.githubusercontent.com/29589505/146880197-7dc76b67-71c0-47d1-80a1-74ca898da8dd.png)
+![image](https://user-images.githubusercontent.com/29589505/146880219-454ffa90-a153-47a9-9b54-962bf95bfa7f.png)
 
 
 # 运行
