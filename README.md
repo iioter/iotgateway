@@ -29,7 +29,7 @@
 
 # 运行
 ## windows运行：
-1. [下载Releasev0.01](https://github.com/iioter/iotgateway/releases/download/v0.01/iotgateway-winx64-v0.01.zip)发布版本
+1. [下载Releasev0.02](https://github.com/iioter/iotgateway/releases/download/v0.01/iotgateway-winx64-v0.02.zip)发布版本
 2. [下载.net5](https://dotnet.microsoft.com/en-us/download/dotnet/5.0) sdk或runtime
 3. 安装.net5 
 4. 解压release包，运行IoTGateway.exe
