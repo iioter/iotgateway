@@ -36,11 +36,23 @@
         client.on('message', function (topic, message) {
             var objmsg = $.parseJSON(message.toString());
             $('#id' + objmsg.VarId + '_Value').text(objmsg.Value);
-            //$('#id' + objmsg.VarId + '_Value').addClass('fadeIn animated');
+            $('#id' + objmsg.VarId + '_Value').addClass('animated bounce');
+            setTimeout(function(){
+                $('#id' + objmsg.VarId + '_Value').removeClass('bounce');
+            }, 500);
+
             $('#id' + objmsg.VarId + '_CookedValue').text(objmsg.CookedValue);
-            //$('#id' + objmsg.VarId + '_CookedValue').addClass('fadeIn animated');
+            $('#id' + objmsg.VarId + '_CookedValue').addClass('animated bounce');            
+            setTimeout(function(){
+                $('#id' + objmsg.VarId + '_CookedValue').removeClass('bounce');
+            }, 500);
             $('#id' + objmsg.VarId + '_StatusType').text(objmsg.StatusType);
-            //$('#id' + objmsg.VarId + '_StatusType').addClass('fadeIn animated');
+            $('#id' + objmsg.VarId + '_StatusType').addClass('animated bounce');
+            
+            setTimeout(function(){
+                 $('#id' + objmsg.VarId + '_StatusType').removeClass('bounce');
+            }, 500);
+            //$('#id' + objmsg.VarId + '_Value').addClass('fadeIn animated');
         })
     }
 </script>
