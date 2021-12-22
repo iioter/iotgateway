@@ -22,7 +22,7 @@
 5. 想要外网访问modbus设备，请连接:wanghaidong.cloud:16051，进行标准modbus协议读写
 6. 想要通过mqtt接收数据，请连接mqttserver:wanghaidong.cloud,1888 admin 000000；订阅topic: v1/gateway/telemetry
 ![image](https://user-images.githubusercontent.com/29589505/145837715-c0529db4-f2aa-47f7-aca6-db101642f820.png)
-![image](https://user-images.githubusercontent.com/29589505/146733538-d9a83a0e-b2af-40f9-acb5-4cb9fa5aa3c8.png)
+![iotgateway](https://user-images.githubusercontent.com/29589505/147055534-3954039c-2723-4fc3-8981-c9ce3bb0163e.gif)
 ![image](https://user-images.githubusercontent.com/29589505/146880197-7dc76b67-71c0-47d1-80a1-74ca898da8dd.png)
 ![image](https://user-images.githubusercontent.com/29589505/146880219-454ffa90-a153-47a9-9b54-962bf95bfa7f.png)
 
