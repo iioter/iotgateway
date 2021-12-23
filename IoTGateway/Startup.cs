@@ -73,6 +73,7 @@ namespace IoTGateway
 
 
             services.AddHostedService<IoTBackgroundService>();
+            services.AddHostedService<UAService>();
             services.AddSingleton<DeviceService>();
             services.AddSingleton<DrvierService>();
             services.AddSingleton<MyMqttClient>();
