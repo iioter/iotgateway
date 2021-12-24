@@ -2,10 +2,11 @@
 ## github地址:[iotgateway](https://github.com/iioter/iotgateway/) https://github.com/iioter/iotgateway
 ## gitee地址:[iotgateway](https://gitee.com/wang_haidong/iotgateway/) https://gitee.com/wang_haidong/iotgateway
 基于.net5的跨平台物联网网关。通过可视化配置，轻松的连接到你的任何设备和系统(如PLC、扫码枪、CNC、数据库、串口设备、上位机、OPC Server、OPC UA Server、Mqtt Server等)，从而与 Thingsboard、IoTSharp或您自己的物联网平台进行双向数据通讯。提供简单的驱动开发接口；当然也可以进行边缘计算。
-* 物联网网关mqtt+opcua输出，支持thingsboard、iotsharp等
+
 * 抛砖引玉，共同进步
-* 可视化的配置方式实现数据采集(使用wtm开发)
 * 基于.net5的开源物联网网关
+* 可视化的配置方式实现数据采集(使用wtm开发)
+* 物联网网关mqtt+opcua输出，支持thingsboard、iotsharp等
 * 内置Mqtt服务端,支持websocket，进行标准mqtt输出。本地端口1888 admin 000000
 * 内置OPCUA服务端,数据实时更新。匿名本地访问:opc.tcp://localhost:62541/Quickstarts/ReferenceServer
 * 内置Modbus驱动全协议支持
@@ -20,7 +21,7 @@
 
 # 免责声明
 ## 生产环境使用请做好评估；
-## 项目仅用作学习及测试，如使用OPC协议请联系基金会进行授权，产生一切纠纷与本项目无关
+## 项目中OPCUA相关功能仅用作学习及测试，如使用OPCUA协议请联系OPC基金会进行授权，产生一切纠纷与本项目无关
 
 # 体验
 1. 在线体验[iotgateway](http://wanghaidong.cloud:518/)后台：http://wanghaidong.cloud:518/
@@ -45,10 +46,22 @@
 3. 安装.net5 
 4. 解压release包，运行IoTGateway.exe
 5. 访问[iotgateway](http://localhost:518/)后台：http://localhost:518
-## linux docker运行
-1. docker pull registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway
+## linux/amd64 docker运行(阿里仓)
+1. docker pull registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway 
 2. docker tag registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway 15261671110/iotgateway
-3. docker run -d -p 518:518 -p 1888:1888 --name iotgateway --restart always 15261671110/iotgateway
+3. docker run -d -p 518:518 -p 1888:1888 -p 62541:62541 --name iotgateway --restart always 15261671110/iotgateway
+## linux/amd64 docker运行(官方仓)
+1. docker pull 15261671110/iotgateway
+2. docker run -d -p 518:518 -p 1888:1888 -p 62541:62541 --name iotgateway --restart always 15261671110/iotgateway
+## linux/arm docker运行(阿里仓)
+1. docker pull registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway:arm 
+2. docker tag registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway:arm 15261671110/iotgateway
+3. docker run -d -p 518:518 -p 1888:1888 -p 62541:62541 --name iotgateway --restart always 15261671110/iotgateway
+## linux/arm docker运行(官方仓)
+1. docker pull 15261671110/iotgateway:arm 
+2. docker tag 15261671110/iotgateway:arm 15261671110/iotgateway
+3. docker run -d -p 518:518 -p 1888:1888 -p 62541:62541 --name iotgateway --restart always 15261671110/iotgateway
+
 ## 登入系统
 1. 用户名 admin,密码 000000
 2. 打开发布文件路径下的ReadMe文件夹中的手摸手，按照顺序添加设备进行采集
