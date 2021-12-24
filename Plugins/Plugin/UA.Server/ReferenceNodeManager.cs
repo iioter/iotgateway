@@ -2788,7 +2788,7 @@ namespace Quickstarts.ReferenceServer
                                 {
                                     //先把变量加进去，都用float有瑕疵，属性先不做，
 
-                                    CreateIoTGatewayVariable(staticFolder, $"{device.DeviceName}_{variable.Name}", $"{device.DeviceName}_{variable.Name}", DataTypeIds.Float, ValueRanks.Scalar);
+                                    CreateIoTGatewayVariable(staticFolder, $"{group.DeviceName}_{device.DeviceName}_{variable.Name}", $"{variable.Name}", DataTypeIds.Float, ValueRanks.Scalar);
                                 }
                             }
                         }
