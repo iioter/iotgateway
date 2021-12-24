@@ -82,7 +82,7 @@ namespace Plugin
                             _mqttClient.PublishAsync($"{TopicBase}/{device.DeviceName}/{kv.Key}", kv.Value.ToString());
 
                             //更新到UAService
-                            _uaNodeManager.UpdateNode($"{device.DeviceName}_{kv.Key}", kv.Value);
+                            _uaNodeManager.UpdateNode($"{device.Parent.DeviceName}_{device.DeviceName}_{kv.Key}", kv.Value);
                         }
                     }
                 }
