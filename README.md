@@ -40,12 +40,21 @@
 
 
 # 运行
-## windows运行：
+## windows主机运行：
 1. [下载Releasev0.03](https://github.com/iioter/iotgateway/releases/download/v0.03/iotgateway-winx64-v0.03.zip)发布版本
 2. [下载.net5](https://dotnet.microsoft.com/en-us/download/dotnet/5.0) sdk或runtime
 3. 安装.net5 
 4. 解压release包，运行IoTGateway.exe
 5. 访问[iotgateway](http://localhost:518/)后台：http://localhost:518
+## windows docker运行(阿里仓)
+1. docker pull registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway:win 
+2. docker tag registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway:win 15261671110/iotgateway
+3. docker run -d -p 518:518 -p 1888:1888 -p 62541:62541 --name iotgateway --restart always 15261671110/iotgateway
+## linux/amd64 docker运行(官方仓)
+1. docker pull 15261671110/iotgateway:win
+2. docker tag 15261671110/iotgateway:win 15261671110/iotgateway
+2. docker run -d -p 518:518 -p 1888:1888 -p 62541:62541 --name iotgateway --restart always 15261671110/iotgateway
+
 ## linux/amd64 docker运行(阿里仓)
 1. docker pull registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway 
 2. docker tag registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway 15261671110/iotgateway
@@ -53,6 +62,7 @@
 ## linux/amd64 docker运行(官方仓)
 1. docker pull 15261671110/iotgateway
 2. docker run -d -p 518:518 -p 1888:1888 -p 62541:62541 --name iotgateway --restart always 15261671110/iotgateway
+ 
 ## linux/arm docker运行(阿里仓)
 1. docker pull registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway:arm 
 2. docker tag registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway:arm 15261671110/iotgateway
