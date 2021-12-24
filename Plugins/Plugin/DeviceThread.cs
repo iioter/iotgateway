@@ -98,9 +98,6 @@ namespace Plugin
                                         else
                                             ret.CookedValue = ret.Value;
 
-                                        if (ret.StatusType == VaribaleStatusTypeEnum.Bad)
-                                            Console.WriteLine(Driver.Connect());
-
                                         payLoad.Values[item.Name] = ret.CookedValue;
 
                                         ret.VarId = item.ID;

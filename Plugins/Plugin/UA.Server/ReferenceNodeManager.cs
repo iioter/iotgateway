@@ -2243,11 +2243,17 @@ namespace Quickstarts.ReferenceServer
         /// <summary>
         /// Creates a new variable.
         /// </summary>
-        private BaseDataVariableState CreateIoTGatewayVariable(NodeState parent, string path, string name, NodeId dataType, int valueRank)
+        private void CreateIoTGatewayVariable(NodeState parent, string path, string name, NodeId dataType, int valueRank)
         {
-            BaseDataVariableState variable = CreateVariable(parent, path, name, dataType, valueRank, false);
-            m_iotgatewayNodes.Add(variable);
-            return variable;
+            try
+            {
+                BaseDataVariableState variable = CreateVariable(parent, path, name, dataType, valueRank, false);
+                m_iotgatewayNodes.Add(variable);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"节点创建失败,{name},{ex}");
+            }
         }
         
 
