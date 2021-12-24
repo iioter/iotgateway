@@ -14,6 +14,12 @@
 * 数据通过mqtt推送，支持thingsboard
 * 目前只支持遥测数据上传，后续支持属性的双向通信
 * 简单集成了web组态项目
+
+
+# 免责声明
+## 生产环境使用请做好评估；
+## 项目仅用作学习及测试，如使用OPC协议请联系基金会进行授权，产生一切纠纷与本项目无关
+
 # 体验
 1. 在线体验[iotgateway](http://wanghaidong.cloud:518/)后台：http://wanghaidong.cloud:518/
 2. 用户名 admin 密码 000000
@@ -62,13 +68,15 @@
 ![8 gateway 查看到数据](https://user-images.githubusercontent.com/29589505/145705271-cb80b80e-006e-4312-8843-6d0ae9457cb1.png)
 
 
-# 声明
-## 君子性非异也，善假于物也
+
+
+# 善于假于物
 1. [WTM(MIT)](https://github.com/dotnetcore/WTM)
-2. [NModbus4(MIT)](https://github.com/NModbus4/NModbus4)
-2. [S7NetPlus(MIT)](https://github.com/S7NetPlus/s7netplus)
-2. [MQTTnet(MIT)](https://github.com/chkr1011/MQTTnet)
-4. [DynamicExpresso(MIT)](https://github.com/dynamicexpresso/DynamicExpresso)
-3. [EFCore(MIT)](https://github.com/dotnet/efcore)
-4. [LayUI(MIT)](https://github.com/sentsin/layui)
-5. [SQLite](https://github.com/sqlite/sqlite)
+2. [OPCUA(OPCUA)](https://github.com/OPCFoundation/UA-.NETStandard)
+3. [NModbus4(MIT)](https://github.com/NModbus4/NModbus4)
+4. [S7NetPlus(MIT)](https://github.com/S7NetPlus/s7netplus)
+5. [MQTTnet(MIT)](https://github.com/chkr1011/MQTTnet)
+6. [DynamicExpresso(MIT)](https://github.com/dynamicexpresso/DynamicExpresso)
+7. [EFCore(MIT)](https://github.com/dotnet/efcore)
+8. [LayUI(MIT)](https://github.com/sentsin/layui)
+9. [SQLite](https://github.com/sqlite/sqlite)

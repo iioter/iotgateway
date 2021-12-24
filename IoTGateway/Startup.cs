@@ -73,14 +73,14 @@ namespace IoTGateway
 
 
             services.AddHostedService<IoTBackgroundService>();
+            services.AddSingleton<UAService>();
             services.AddSingleton<DeviceService>();
             services.AddSingleton<DrvierService>();
-            services.AddSingleton<UAService>();
             services.AddSingleton<MyMqttClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IOptionsMonitor<Configs> configs, DeviceService deviceService, UAService uAService)
+        public void Configure(IApplicationBuilder app, IOptionsMonitor<Configs> configs, UAService uAService, DeviceService deviceService)
         {
             IconFontsHelper.GenerateIconFont();
 
