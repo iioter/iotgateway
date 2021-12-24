@@ -2777,11 +2777,11 @@ namespace Quickstarts.ReferenceServer
                     #region IoTGatewayDevice
                     using (var DC = new DataContext(IoTBackgroundService.connnectSetting, IoTBackgroundService.DBType))
                     {
-                        foreach (var group in DC.Set<Device>().Where(x => x.DeviceTypeEnum == DeviceTypeEnum.Group).OrderBy(x => x.Index))
+                        foreach (var group in DC.Set<Device>().AsNoTracking().Where(x => x.DeviceTypeEnum == DeviceTypeEnum.Group).OrderBy(x => x.Index).ToList())
                         {
                             FolderState deviceGroupFolder = CreateFolder(root, group.DeviceName, group.DeviceName);
 
-                            foreach (var device in DC.Set<Device>().Where(x => x.ParentId == group.ID).Include(x => x.DeviceVariables).Include(x => x.DeviceConfigs).OrderBy(x => x.Index))
+                            foreach (var device in DC.Set<Device>().AsNoTracking().Where(x => x.ParentId == group.ID).Include(x => x.DeviceVariables).Include(x => x.DeviceConfigs).OrderBy(x => x.Index).ToList())
                             {
                                 FolderState staticFolder = CreateFolder(deviceGroupFolder, device.DeviceName, device.DeviceName);
                                 foreach (var variable in device.DeviceVariables)

@@ -30,7 +30,7 @@ namespace Plugin
         private DBTypeEnum DBType = IoTBackgroundService.DBType;
         private Interpreter interpreter = new();
 
-        public DeviceService(IConfiguration ConfigRoot, DrvierService drvierManager, MyMqttClient myMqttClient, IMqttServer mqttServer)
+        public DeviceService(IConfiguration ConfigRoot, DrvierService drvierManager, MyMqttClient myMqttClient, UAService uAService, IMqttServer mqttServer )
         {
             _DrvierManager = drvierManager;
             _MyMqttClient = myMqttClient;
