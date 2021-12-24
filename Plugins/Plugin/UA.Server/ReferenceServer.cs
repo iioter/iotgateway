@@ -62,7 +62,6 @@ namespace Quickstarts.ReferenceServer
         protected override MasterNodeManager CreateMasterNodeManager(IServerInternal server, ApplicationConfiguration configuration)
         {
 
-            List<INodeManager> nodeManagers = new List<INodeManager>();
 
             // create the custom node managers.
             nodeManagers.Add(new ReferenceNodeManager(server, configuration));
@@ -375,5 +374,8 @@ namespace Quickstarts.ReferenceServer
         private IList<INodeManagerFactory> m_nodeManagerFactory;
         private ICertificateValidator m_userCertificateValidator;
         #endregion
+
+
+        public List<INodeManager> nodeManagers = new List<INodeManager>();
     }
 }

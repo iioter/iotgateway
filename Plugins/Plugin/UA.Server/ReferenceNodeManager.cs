@@ -35,6 +35,11 @@ using System.Numerics;
 using Opc.Ua;
 using Opc.Ua.Server;
 using Range = Opc.Ua.Range;
+using IoTGateway.DataAccess;
+using Plugin;
+using IoTGateway.Model;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Quickstarts.ReferenceServer
 {
@@ -62,6 +67,7 @@ namespace Quickstarts.ReferenceServer
             }
 
             m_dynamicNodes = new List<BaseDataVariableState>();
+            m_iotgatewayNodes = new List<BaseDataVariableState>();
         }
         #endregion
 
@@ -171,7 +177,7 @@ namespace Quickstarts.ReferenceServer
         /// in other node managers. For example, the 'Objects' node is managed by the CoreNodeManager and
         /// should have a reference to the root folder node(s) exposed by this node manager.  
         /// </remarks>
-        public override void CreateAddressSpace(IDictionary<NodeId, IList<IReference>> externalReferences)
+        public void CreateAddressSpaceFoundation(IDictionary<NodeId, IList<IReference>> externalReferences)
         {
             lock (Lock)
             {
@@ -2157,7 +2163,7 @@ namespace Quickstarts.ReferenceServer
         /// <summary>
         /// Creates a new variable.
         /// </summary>
-        private BaseDataVariableState CreateVariable(NodeState parent, string path, string name, NodeId dataType, int valueRank)
+        private BaseDataVariableState CreateVariable(NodeState parent, string path, string name, NodeId dataType, int valueRank,bool ini=true)
         {
             BaseDataVariableState variable = new BaseDataVariableState(parent);
 
@@ -2174,8 +2180,8 @@ namespace Quickstarts.ReferenceServer
             variable.AccessLevel = AccessLevels.CurrentReadOrWrite;
             variable.UserAccessLevel = AccessLevels.CurrentReadOrWrite;
             variable.Historizing = false;
-            variable.Value = GetNewValue(variable);
-            variable.StatusCode = StatusCodes.Good;
+            variable.Value = ini ? GetNewValue(variable) : null;
+            variable.StatusCode = ini ? StatusCodes.Good : StatusCodes.Bad;
             variable.Timestamp = DateTime.UtcNow;
 
             if (valueRank == ValueRanks.OneDimension)
@@ -2233,6 +2239,17 @@ namespace Quickstarts.ReferenceServer
             m_dynamicNodes.Add(variable);
             return variable;
         }
+
+        /// <summary>
+        /// Creates a new variable.
+        /// </summary>
+        private BaseDataVariableState CreateIoTGatewayVariable(NodeState parent, string path, string name, NodeId dataType, int valueRank)
+        {
+            BaseDataVariableState variable = CreateVariable(parent, path, name, dataType, valueRank, false);
+            m_iotgatewayNodes.Add(variable);
+            return variable;
+        }
+        
 
         private BaseDataVariableState[] CreateDynamicVariables(NodeState parent, string path, string name, BuiltInType dataType, int valueRank, uint numVariables)
         {
@@ -2725,6 +2742,201 @@ namespace Quickstarts.ReferenceServer
         private UInt16 m_simulationInterval = 1000;
         private bool m_simulationEnabled = true;
         private List<BaseDataVariableState> m_dynamicNodes;
+        public List<BaseDataVariableState> m_iotgatewayNodes;
         #endregion
+
+
+
+        public override void CreateAddressSpace(IDictionary<NodeId, IList<IReference>> externalReferences)
+        {
+            lock (Lock)
+            {
+                IList<IReference> references = null;
+
+                if (!externalReferences.TryGetValue(ObjectIds.ObjectsFolder, out references))
+                {
+                    externalReferences[ObjectIds.ObjectsFolder] = references = new List<IReference>();
+                }
+
+                FolderState root = CreateFolder(null, "IoTGateway", "IoTGateway");
+                root.AddReference(ReferenceTypes.Organizes, true, ObjectIds.ObjectsFolder);
+                references.Add(new NodeStateReference(ReferenceTypes.Organizes, false, root.NodeId));
+                root.EventNotifier = EventNotifiers.SubscribeToEvents;
+                AddRootNotifier(root);
+
+                List<BaseDataVariableState> variables = new List<BaseDataVariableState>();
+
+                try
+                {
+                    #region IoTGatewayDevice
+                    using (var DC = new DataContext(IoTBackgroundService.connnectSetting, IoTBackgroundService.DBType))
+                    {
+                        foreach (var group in DC.Set<Device>().Where(x => x.DeviceTypeEnum == DeviceTypeEnum.Group).OrderBy(x => x.Index))
+                        {
+                            FolderState deviceGroupFolder = CreateFolder(root, group.DeviceName, group.DeviceName);
+
+                            foreach (var device in DC.Set<Device>().Where(x => x.ParentId == group.ID).Include(x => x.DeviceVariables).Include(x => x.DeviceConfigs).OrderBy(x => x.Index))
+                            {
+                                FolderState staticFolder = CreateFolder(deviceGroupFolder, device.DeviceName, device.DeviceName);
+                                foreach (var variable in device.DeviceVariables)
+                                {
+                                    //先把变量加进去，都用float有瑕疵，属性先不做，
+
+                                    CreateIoTGatewayVariable(staticFolder, $"{device.DeviceName}_{variable.Name}", $"{device.DeviceName}_{variable.Name}", DataTypeIds.Float, ValueRanks.Scalar);
+                                }
+                            }
+                        }
+
+                    }
+
+
+                    #endregion
+
+                    #region Scalar_Simulation
+                    FolderState scalarFolder = CreateFolder(root, "常量", "常量");
+                    FolderState simulationFolder = CreateFolder(scalarFolder, "实时模拟", "实时模拟");
+                    const string scalarSimulation = "Scalar_Simulation_";
+                    CreateDynamicVariable(simulationFolder, scalarSimulation + "Boolean", "Boolean", DataTypeIds.Boolean, ValueRanks.Scalar);
+                    CreateDynamicVariable(simulationFolder, scalarSimulation + "Byte", "Byte", DataTypeIds.Byte, ValueRanks.Scalar);
+                    CreateDynamicVariable(simulationFolder, scalarSimulation + "ByteString", "ByteString", DataTypeIds.ByteString, ValueRanks.Scalar);
+                    CreateDynamicVariable(simulationFolder, scalarSimulation + "DateTime", "DateTime", DataTypeIds.DateTime, ValueRanks.Scalar);
+                    CreateDynamicVariable(simulationFolder, scalarSimulation + "Double", "Double", DataTypeIds.Double, ValueRanks.Scalar);
+                    CreateDynamicVariable(simulationFolder, scalarSimulation + "Duration", "Duration", DataTypeIds.Duration, ValueRanks.Scalar);
+                    CreateDynamicVariable(simulationFolder, scalarSimulation + "Float", "Float", DataTypeIds.Float, ValueRanks.Scalar);
+                    CreateDynamicVariable(simulationFolder, scalarSimulation + "Guid", "Guid", DataTypeIds.Guid, ValueRanks.Scalar);
+                    CreateDynamicVariable(simulationFolder, scalarSimulation + "Int16", "Int16", DataTypeIds.Int16, ValueRanks.Scalar);
+                    CreateDynamicVariable(simulationFolder, scalarSimulation + "Int32", "Int32", DataTypeIds.Int32, ValueRanks.Scalar);
+                    CreateDynamicVariable(simulationFolder, scalarSimulation + "Int64", "Int64", DataTypeIds.Int64, ValueRanks.Scalar);
+                    CreateDynamicVariable(simulationFolder, scalarSimulation + "Integer", "Integer", DataTypeIds.Integer, ValueRanks.Scalar);
+                    CreateDynamicVariable(simulationFolder, scalarSimulation + "LocaleId", "LocaleId", DataTypeIds.LocaleId, ValueRanks.Scalar);
+                    CreateDynamicVariable(simulationFolder, scalarSimulation + "LocalizedText", "LocalizedText", DataTypeIds.LocalizedText, ValueRanks.Scalar);
+                    CreateDynamicVariable(simulationFolder, scalarSimulation + "NodeId", "NodeId", DataTypeIds.NodeId, ValueRanks.Scalar);
+                    CreateDynamicVariable(simulationFolder, scalarSimulation + "Number", "Number", DataTypeIds.Number, ValueRanks.Scalar);
+                    CreateDynamicVariable(simulationFolder, scalarSimulation + "QualifiedName", "QualifiedName", DataTypeIds.QualifiedName, ValueRanks.Scalar);
+                    CreateDynamicVariable(simulationFolder, scalarSimulation + "SByte", "SByte", DataTypeIds.SByte, ValueRanks.Scalar);
+                    CreateDynamicVariable(simulationFolder, scalarSimulation + "String", "String", DataTypeIds.String, ValueRanks.Scalar);
+                    CreateDynamicVariable(simulationFolder, scalarSimulation + "UInt16", "UInt16", DataTypeIds.UInt16, ValueRanks.Scalar);
+                    CreateDynamicVariable(simulationFolder, scalarSimulation + "UInt32", "UInt32", DataTypeIds.UInt32, ValueRanks.Scalar);
+                    CreateDynamicVariable(simulationFolder, scalarSimulation + "UInt64", "UInt64", DataTypeIds.UInt64, ValueRanks.Scalar);
+                    CreateDynamicVariable(simulationFolder, scalarSimulation + "UInteger", "UInteger", DataTypeIds.UInteger, ValueRanks.Scalar);
+                    CreateDynamicVariable(simulationFolder, scalarSimulation + "UtcTime", "UtcTime", DataTypeIds.UtcTime, ValueRanks.Scalar);
+                    CreateDynamicVariable(simulationFolder, scalarSimulation + "Variant", "Variant", BuiltInType.Variant, ValueRanks.Scalar);
+                    CreateDynamicVariable(simulationFolder, scalarSimulation + "XmlElement", "XmlElement", DataTypeIds.XmlElement, ValueRanks.Scalar);
+
+                    BaseDataVariableState intervalVariable = CreateVariable(simulationFolder, scalarSimulation + "Interval", "Interval", DataTypeIds.UInt16, ValueRanks.Scalar);
+                    intervalVariable.Value = m_simulationInterval;
+                    intervalVariable.OnSimpleWriteValue = OnWriteInterval;
+
+                    BaseDataVariableState enabledVariable = CreateVariable(simulationFolder, scalarSimulation + "Enabled", "Enabled", DataTypeIds.Boolean, ValueRanks.Scalar);
+                    enabledVariable.Value = m_simulationEnabled;
+                    enabledVariable.OnSimpleWriteValue = OnWriteEnabled;
+                    #endregion
+
+                    #region Methods
+                    FolderState methodsFolder = CreateFolder(root, "方法", "方法");
+                    const string methods = "Methods_";
+
+                    BaseDataVariableState methodsInstructions = CreateVariable(methodsFolder, methods + "Instructions", "Instructions", DataTypeIds.String, ValueRanks.Scalar);
+                    methodsInstructions.Value = "Contains methods with varying parameter definitions.";
+                    variables.Add(methodsInstructions);
+
+                    MethodState voidMethod = CreateMethod(methodsFolder, methods + "Void", "Void");
+                    voidMethod.OnCallMethod = new GenericMethodCalledEventHandler(OnVoidCall);
+
+                    #region Add Method
+                    MethodState addMethod = CreateMethod(methodsFolder, methods + "Add", "Add");
+                    // set input arguments
+                    addMethod.InputArguments = new PropertyState<Argument[]>(addMethod);
+                    addMethod.InputArguments.NodeId = new NodeId(addMethod.BrowseName.Name + "InArgs", NamespaceIndex);
+                    addMethod.InputArguments.BrowseName = BrowseNames.InputArguments;
+                    addMethod.InputArguments.DisplayName = addMethod.InputArguments.BrowseName.Name;
+                    addMethod.InputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
+                    addMethod.InputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
+                    addMethod.InputArguments.DataType = DataTypeIds.Argument;
+                    addMethod.InputArguments.ValueRank = ValueRanks.OneDimension;
+
+                    addMethod.InputArguments.Value = new Argument[]
+                    {
+                        new Argument() { Name = "Float value", Description = "Float value",  DataType = DataTypeIds.Float, ValueRank = ValueRanks.Scalar },
+                        new Argument() { Name = "UInt32 value", Description = "UInt32 value",  DataType = DataTypeIds.UInt32, ValueRank = ValueRanks.Scalar }
+                    };
+
+                    // set output arguments
+                    addMethod.OutputArguments = new PropertyState<Argument[]>(addMethod);
+                    addMethod.OutputArguments.NodeId = new NodeId(addMethod.BrowseName.Name + "OutArgs", NamespaceIndex);
+                    addMethod.OutputArguments.BrowseName = BrowseNames.OutputArguments;
+                    addMethod.OutputArguments.DisplayName = addMethod.OutputArguments.BrowseName.Name;
+                    addMethod.OutputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
+                    addMethod.OutputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
+                    addMethod.OutputArguments.DataType = DataTypeIds.Argument;
+                    addMethod.OutputArguments.ValueRank = ValueRanks.OneDimension;
+
+                    addMethod.OutputArguments.Value = new Argument[]
+                    {
+                        new Argument() { Name = "Add Result", Description = "Add Result",  DataType = DataTypeIds.Float, ValueRank = ValueRanks.Scalar }
+                    };
+
+                    addMethod.OnCallMethod = new GenericMethodCalledEventHandler(OnAddCall);
+                    #endregion
+
+                    #region Input Method
+                    MethodState inputMethod = CreateMethod(methodsFolder, methods + "Input", "Input");
+                    // set input arguments
+                    inputMethod.InputArguments = new PropertyState<Argument[]>(inputMethod);
+                    inputMethod.InputArguments.NodeId = new NodeId(inputMethod.BrowseName.Name + "InArgs", NamespaceIndex);
+                    inputMethod.InputArguments.BrowseName = BrowseNames.InputArguments;
+                    inputMethod.InputArguments.DisplayName = inputMethod.InputArguments.BrowseName.Name;
+                    inputMethod.InputArguments.TypeDefinitionId = VariableTypeIds.PropertyType;
+                    inputMethod.InputArguments.ReferenceTypeId = ReferenceTypeIds.HasProperty;
+                    inputMethod.InputArguments.DataType = DataTypeIds.Argument;
+                    inputMethod.InputArguments.ValueRank = ValueRanks.OneDimension;
+
+                    inputMethod.InputArguments.Value = new Argument[]
+                    {
+                        new Argument() { Name = "String value", Description = "String value",  DataType = DataTypeIds.String, ValueRank = ValueRanks.Scalar }
+                    };
+
+                    inputMethod.OnCallMethod = new GenericMethodCalledEventHandler(OnInputCall);
+                    #endregion
+
+                    #endregion
+
+                    #region Contact
+                    FolderState myCompanyFolder = CreateFolder(root, "联系", "联系");
+                    const string myCompany = "Contact_";
+
+                    BaseDataVariableState myContactInstructions = CreateVariable(myCompanyFolder, myCompany + "联系方式", "联系方式", DataTypeIds.String, ValueRanks.Scalar);
+                    myContactInstructions.Value = "https://github.com/iioter/iotgateway.";
+                    variables.Add(myContactInstructions);
+                    #endregion
+                }
+                catch (Exception e)
+                {
+                }
+
+                AddPredefinedNode(SystemContext, root);
+                m_simulationTimer = new Timer(DoSimulation, null, 1000, 1000);
+            }
+        }
+
+        public void UpdateNode(string nodeName,object value)
+        {
+            try
+            {
+                var variable = m_iotgatewayNodes.Where(x => x.NodeId.Identifier.ToString() == nodeName).FirstOrDefault();
+                if (variable != null)
+                {
+                    variable.Value = value;
+                    variable.Timestamp = DateTime.UtcNow;
+                    variable.StatusCode = StatusCodes.Good;
+                    variable.ClearChangeMasks(SystemContext, false);
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
     }
 }

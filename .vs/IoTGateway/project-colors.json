@@ -75,7 +75,17 @@
       "ProjectGuid": "4fc43620-00b1-48c1-a5a0-02fcc038fb08",
       "DisplayName": "DriverModbusMaster",
       "ColorIndex": 13
+    },
+    "25e57fd9-1e9b-4235-9ba8-214fa93fcbb7": {
+      "ProjectGuid": "25e57fd9-1e9b-4235-9ba8-214fa93fcbb7",
+      "DisplayName": "DriverOPCUaClient",
+      "ColorIndex": 14
+    },
+    "dabb562d-5eb7-4f9d-90ef-424c2bf63a4d": {
+      "ProjectGuid": "dabb562d-5eb7-4f9d-90ef-424c2bf63a4d",
+      "DisplayName": "DriverOPCUaClient",
+      "ColorIndex": 15
     }
   },
-  "NextColorIndex": 14
+  "NextColorIndex": 0
 }

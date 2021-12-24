@@ -21,7 +21,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
             {
                 try
                 {
-                    var device = DC.Set<Device>().Where(x => x.ID == Guid.Parse(FC["id"].ToString())).Include(x => x.Driver).FirstOrDefault();
+                    var device = DC.Set<Device>().Where(x => x.ID == Guid.Parse(FC["id"].ToString())).Include(x => x.Parent).Include(x => x.Driver).FirstOrDefault();
                     var devices = new List<Device>();
                     if (device == null)
                         复制结果 = "复制失败，找不到采集点";
@@ -44,7 +44,8 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                                 Driver = device.Driver,
                                 DriverId = device.DriverId,
                                 Description = device.Description,
-                                DeviceTypeEnum = device.DeviceTypeEnum
+                                DeviceTypeEnum = device.DeviceTypeEnum,
+                                Parent= device.Parent
                             };
                             DC.Set<Device>().Add(newDevice);
                             devices.Add(newDevice);

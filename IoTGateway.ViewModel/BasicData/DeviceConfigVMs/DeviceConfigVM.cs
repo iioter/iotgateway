@@ -77,5 +77,11 @@ namespace IoTGateway.ViewModel.BasicData.DeviceConfigVMs
             UpdateDevices.UpdateConfig(DC, deviceService, FC);
 
         }
+
+        public override DuplicatedInfo<DeviceConfig> SetDuplicatedCheck()
+        {
+            var rv = CreateFieldsInfo(SimpleField(x => x.DeviceId), SimpleField(x => x.DeviceConfigName));
+            return rv;
+        }
     }
 }

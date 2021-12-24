@@ -14,16 +14,20 @@ using IoTGateway.Model;
 using System.Linq;
 using PluginInterface;
 using Microsoft.Extensions.DependencyInjection;
+using Quickstarts.ReferenceServer;
+using Opc.Ua;
 
 namespace Plugin
 {
     public class MyMqttClient//: IDependency
     {
-        private static IMqttClient _mqttClient = null;
-        private static MqttClientOptionsBuilder builder = null;
+        private IMqttClient _mqttClient = null;
+        private ReferenceNodeManager _uaNodeManager = null;
+        private MqttClientOptionsBuilder builder = null;
         private SystemConfig systemConfig = null;
-        public MyMqttClient()
+        public MyMqttClient(UAService uaService)
         {
+            _uaNodeManager = uaService.server.m_server.nodeManagers[0] as ReferenceNodeManager;
             InitClient();
         }
         public void InitClient()
@@ -76,15 +80,26 @@ namespace Plugin
                         foreach (var kv in payload.Values)
                         {
                             _mqttClient.PublishAsync($"{TopicBase}/{device.DeviceName}/{kv.Key}", kv.Value.ToString());
+
+                            //更新到UAService
+                            _uaNodeManager.UpdateNode($"{device.DeviceName}_{kv.Key}", kv.Value);
                         }
                     }
                 }
+
+
+
             }
             catch (Exception ex)
             {
 
             }
 
+        }
+
+        private void Update2UAService()
+        {
+            int i = 0;
         }
 
         private void OnReceived(MqttApplicationMessageReceivedEventArgs obj)

@@ -38,7 +38,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                 {
                     var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
                     deviceService._DrvierManager.AddConfigs(this.Entity.ID, this.Entity.DriverId);
-                    var dap = DC.Set<Device>().Where(x => x.ID == Entity.ID).Include(x => x.Driver).SingleOrDefault();
+                    var dap = DC.Set<Device>().Where(x => x.ID == Entity.ID).Include(x=>x.Parent).Include(x => x.Driver).SingleOrDefault();
                     deviceService.CreateDeviceThread(dap);
                 }
             }
@@ -64,6 +64,11 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
             var ret = DeleteDevices.doDelete(pluginManager, DC, Ids);
             if (!ret.IsSuccess)
                 MSD.AddModelError("", ret.Message);
+        }
+        public override DuplicatedInfo<Device> SetDuplicatedCheck()
+        {
+            var rv = CreateFieldsInfo(SimpleField(x => x.DeviceName));
+            return rv;
         }
     }
 }

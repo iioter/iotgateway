@@ -65,5 +65,10 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
             UpdateDevices.UpdateVaribale(DC, deviceService, FC);
 
         }
+        public override DuplicatedInfo<DeviceVariable> SetDuplicatedCheck()
+        {
+            var rv = CreateFieldsInfo(SimpleField(x => x.DeviceId), SimpleField(x => x.Name));
+            return rv;
+        }
     }
 }

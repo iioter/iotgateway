@@ -1,24 +1,24 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net5.0</TargetFramework>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <OutputPath>../../../IoTGateway/bin/Debug/net5.0/drivers</OutputPath>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<OutputPath>../../../IoTGateway/bin/Debug/net5.0/drivers</OutputPath>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="System.IO.Ports" Version="6.0.0" />
+		<PackageReference Include="System.IO.Ports" Version="6.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\PluginInterface\PluginInterface.csproj" />
+		<ProjectReference Include="..\..\PluginInterface\PluginInterface.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Reference Include="System.IO.Ports">
-	    <HintPath>System.IO.Ports.dll</HintPath>
-	    <Private>true</Private>
-	  </Reference>
+		<Reference Include="System.IO.Ports">
+			<HintPath>System.IO.Ports.dll</HintPath>
+			<Private>true</Private>
+		</Reference>
 	</ItemGroup>
 
 </Project>

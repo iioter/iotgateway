@@ -84,7 +84,6 @@ namespace Plugin
                                         else
                                             ret = (DriverReturnValueModel)method.Invoke(Driver, new object[1] { ioarg });
 
-                                        DeviceValues[item.ID] = ret;
                                         if (ret.StatusType == VaribaleStatusTypeEnum.Good && !string.IsNullOrWhiteSpace(item.Expressions?.Trim()))
                                         {
                                             try
@@ -105,7 +104,12 @@ namespace Plugin
                                         payLoad.Values[item.Name] = ret.CookedValue;
 
                                         ret.VarId = item.ID;
-                                        mqttServer.PublishAsync($"internal/v1/gateway/telemetry/{Device.DeviceName}/{item.Name}", JsonConvert.SerializeObject(ret));
+
+                                        //变化了才推送到mqttserver，用于前端展示
+                                        if (DeviceValues[item.ID].StatusType != ret.StatusType || DeviceValues[item.ID].Value?.ToString() != ret.Value?.ToString() || DeviceValues[item.ID].CookedValue?.ToString() != ret.CookedValue?.ToString())
+                                            mqttServer.PublishAsync($"internal/v1/gateway/telemetry/{Device.DeviceName}/{item.Name}", JsonConvert.SerializeObject(ret));
+
+                                        DeviceValues[item.ID] = ret;
 
                                     }
                                     payLoad.TS = (long)(DateTime.Now - TsStartDt).TotalMilliseconds;

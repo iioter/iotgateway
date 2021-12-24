@@ -258,7 +258,7 @@ namespace Quickstarts
         #region Private Members
         private readonly TextWriter m_output;
         private ApplicationInstance m_application;
-        private T m_server;
+        public T m_server;
         private Task m_status;
         private DateTime m_lastEventTime;
         #endregion

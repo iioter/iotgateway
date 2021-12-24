@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net5.0</TargetFramework>
+		<OutputPath>../../../IoTGateway/bin/Debug/net5.0/drivers</OutputPath>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Client" Version="1.4.367.75" />
+	  <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Configuration" Version="1.4.367.75" />
+	  <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Core" Version="1.4.367.75" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\PluginInterface\PluginInterface.csproj" />
+	</ItemGroup>
+
+</Project>

@@ -11,14 +11,14 @@ using System.Threading.Tasks;
 
 namespace Plugin
 {
-    public class UAService : IHostedService
+    public class UAService :IDisposable
     {
         string applicationName = "ConsoleReferenceServer";
         string configSectionName = "Quickstarts.ReferenceServer";
 
-        UAServer<ReferenceServer> server = null;
+        public UAServer<ReferenceServer> server = null;
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        public UAService()
         {
             server = new UAServer<ReferenceServer>(null)
             {
@@ -29,14 +29,11 @@ namespace Plugin
             server.LoadAsync(applicationName, configSectionName).ConfigureAwait(false);
             server.CheckCertificateAsync(false).ConfigureAwait(false);
             server.StartAsync().ConfigureAwait(false);
-
-            return Task.CompletedTask;
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
+        public void Dispose()
         {
             server.StopAsync().ConfigureAwait(false);
-            return Task.CompletedTask;
         }
     }
 }

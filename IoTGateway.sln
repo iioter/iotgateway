@@ -31,6 +31,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DriverModbusMaster", "Plugi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DriverSiemensS7", "Plugins\Drivers\DriverSiemensS7\DriverSiemensS7.csproj", "{B884FBE3-C8C5-471E-B629-12ECA0FC5DAC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DriverOPCUaClient", "Plugins\Drivers\DriverOPCUaClient\DriverOPCUaClient.csproj", "{DABB562D-5EB7-4F9D-90EF-424C2BF63A4D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{B884FBE3-C8C5-471E-B629-12ECA0FC5DAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B884FBE3-C8C5-471E-B629-12ECA0FC5DAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B884FBE3-C8C5-471E-B629-12ECA0FC5DAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DABB562D-5EB7-4F9D-90EF-424C2BF63A4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DABB562D-5EB7-4F9D-90EF-424C2BF63A4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DABB562D-5EB7-4F9D-90EF-424C2BF63A4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DABB562D-5EB7-4F9D-90EF-424C2BF63A4D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,6 +100,7 @@ Global
 		{81CBFD0E-1D89-440A-8CC3-E32672504FF4} = {98B1C9F0-028C-48D8-8148-54B69CCA4590}
 		{4FC43620-00B1-48C1-A5A0-02FCC038FB08} = {52D96C24-2F2F-49B5-9F29-00414DEA41D8}
 		{B884FBE3-C8C5-471E-B629-12ECA0FC5DAC} = {52D96C24-2F2F-49B5-9F29-00414DEA41D8}
+		{DABB562D-5EB7-4F9D-90EF-424C2BF63A4D} = {52D96C24-2F2F-49B5-9F29-00414DEA41D8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1F219808-E6E8-4C1D-B846-41F2F7CF20FA}
