@@ -2,13 +2,15 @@
 ## github地址:[iotgateway](https://github.com/iioter/iotgateway/) https://github.com/iioter/iotgateway
 ## gitee地址:[iotgateway](https://gitee.com/wang_haidong/iotgateway/) https://gitee.com/wang_haidong/iotgateway
 基于.net5的跨平台物联网网关。通过可视化配置，轻松的连接到你的任何设备和系统(如PLC、扫码枪、CNC、数据库、串口设备、上位机、OPC Server、OPC UA Server、Mqtt Server等)，从而与 Thingsboard、IoTSharp或您自己的物联网平台进行双向数据通讯。提供简单的驱动开发接口；当然也可以进行边缘计算。
-* 物联网网关mqtt输出，支持thingsboard
+* 物联网网关mqtt+opcua输出，支持thingsboard、iotsharp等
 * 抛砖引玉，共同进步
 * 可视化的配置方式实现数据采集(使用wtm开发)
 * 基于.net5的开源物联网网关
-* 内置Mqtt服务端,支持websocket，端口1888,/mqtt，可查看客户端列表
+* 内置Mqtt服务端,支持websocket，进行标准mqtt输出。本地端口1888 admin 000000
+* 内置OPCUA服务端,数据实时更新。匿名本地访问:opc.tcp://localhost:62541/Quickstarts/ReferenceServer
 * 内置Modbus驱动全协议支持
 * 内置西门子PLC驱动
+* 内置OPCUA客户端驱动
 * 增加计算表达式
 * 支持驱动二次开发（短期内会提供三菱、fanuc通讯）
 * 数据通过mqtt推送，支持thingsboard
@@ -25,9 +27,12 @@
 2. 用户名 admin 密码 000000
 3. 内置Modbustcp模拟设备 ip 172.17.0.1 port 16051 不要修改，否则连不上
 4. 其中modbus地址0-1为固定值，2-9为随机值，10-19为0
-5. 想要外网访问modbus设备，请连接:wanghaidong.cloud:16051，进行标准modbus协议读写
-6. 想要通过mqtt接收数据，请连接mqttserver:wanghaidong.cloud,1888 admin 000000；订阅topic: v1/gateway/telemetry
+5. 外网访问测试modbus设备，请连接:wanghaidong.cloud:16051，进行标准modbus协议读写
+6. 外网访问测试mqtt服务器，wanghaidong.cloud:1888 admin 000000
+7. 外网访问测试opcua服务，opc.tcp://wanghaidong.cloud:62541/Quickstarts/ReferenceServer 匿名访问
+8. 想要通过mqtt接收数据，请连接mqttserver:wanghaidong.cloud,1888 admin 000000；订阅topic: v1/gateway/telemetry
 ![iotgateway](https://user-images.githubusercontent.com/29589505/147055534-3954039c-2723-4fc3-8981-c9ce3bb0163e.gif)
+![795d56161e78c770a2ca4d32f8e6b73](https://user-images.githubusercontent.com/29589505/147349299-f1fc1152-c758-47a4-a0c1-85da1895db9c.png)
 ![iotgateway](https://user-images.githubusercontent.com/29589505/147056511-14611d19-8498-4a3c-bd67-3749ab75462f.gif)
 ![image](https://user-images.githubusercontent.com/29589505/146880219-454ffa90-a153-47a9-9b54-962bf95bfa7f.png)
 ![image](https://user-images.githubusercontent.com/29589505/145837715-c0529db4-f2aa-47f7-aca6-db101642f820.png)
