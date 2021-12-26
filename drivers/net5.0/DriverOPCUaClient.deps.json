@@ -9,8 +9,6 @@
       "DriverOPCUaClient/1.0.0": {
         "dependencies": {
           "OPCFoundation.NetStandard.Opc.Ua.Client": "1.4.367.75",
-          "OPCFoundation.NetStandard.Opc.Ua.Configuration": "1.4.367.75",
-          "OPCFoundation.NetStandard.Opc.Ua.Core": "1.4.367.75",
           "PluginInterface": "1.0.0"
         },
         "runtime": {

@@ -51,10 +51,10 @@
             }, 1500);
 
             //状态
-            $('#id' + objmsg.VarId + '_StatusType').text(objmsg.StatusType);
-            $('#id' + objmsg.VarId + '_StatusType').addClass('animated bounceIn');            
+            $('#id' + objmsg.VarId + '_State').text(objmsg.StatusType);
+            $('#id' + objmsg.VarId + '_State').addClass('animated bounceIn');
             setTimeout(function(){
-                 $('#id' + objmsg.VarId + '_StatusType').removeClass('bounceIn');
+                 $('#id' + objmsg.VarId + '_State').removeClass('bounceIn');
             }, 1500);
         })
     }
