@@ -24,14 +24,14 @@
 ## 项目中OPCUA相关功能仅用作学习及测试，如使用OPCUA协议请联系OPC基金会进行授权，产生一切纠纷与本项目无关
 
 # 体验
-1. 在线体验[iotgateway](http://wanghaidong.cloud:518/)后台：http://wanghaidong.cloud:518/
+1. 在线体验[iotgateway](http://42.193.160.84:518/)后台：http://42.193.160.84:518/
 2. 用户名 admin 密码 000000
 3. 内置Modbustcp模拟设备 ip 172.17.0.1 port 16051 不要修改，否则连不上
 4. 其中modbus地址0-1为固定值，2-9为随机值，10-19为0
-5. 外网访问测试modbus设备，请连接:wanghaidong.cloud:16051，进行标准modbus协议读写
-6. 外网访问测试mqtt服务器，wanghaidong.cloud:1888 admin 000000
-7. 外网访问测试opcua服务，opc.tcp://wanghaidong.cloud:62541/Quickstarts/ReferenceServer 匿名访问
-8. 想要通过mqtt接收数据，请连接mqttserver:wanghaidong.cloud,1888 admin 000000；订阅topic: v1/gateway/telemetry
+5. 外网访问测试modbus设备，请连接:42.193.160.84:16051，进行标准modbus协议读写
+6. 外网访问测试mqtt服务器，42.193.160.84:1888 admin 000000
+7. 外网访问测试opcua服务，opc.tcp://42.193.160.84:62541/Quickstarts/ReferenceServer 匿名访问
+8. 想要通过mqtt接收数据，请连接mqttserver:42.193.160.84,1888 admin 000000；订阅topic: v1/gateway/telemetry
 ![iotgateway](https://user-images.githubusercontent.com/29589505/147055534-3954039c-2723-4fc3-8981-c9ce3bb0163e.gif)
 ![795d56161e78c770a2ca4d32f8e6b73](https://user-images.githubusercontent.com/29589505/147349299-f1fc1152-c758-47a4-a0c1-85da1895db9c.png)
 ![iotgateway](https://user-images.githubusercontent.com/29589505/147056511-14611d19-8498-4a3c-bd67-3749ab75462f.gif)
