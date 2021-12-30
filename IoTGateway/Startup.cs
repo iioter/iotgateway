@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using MQTTnet.AspNetCore;
 using MQTTnet.AspNetCore.Extensions;
@@ -84,8 +88,29 @@ namespace IoTGateway
         {
             IconFontsHelper.GenerateIconFont();
 
+            var pvd = new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot")),
+                RequestPath = new PathString(""),
+                //设置不限制content-type 该设置可以下载所有类型的文件，但是不建议这么设置，因为不安全
+                //下面设置可以下载apk和nupkg类型的文件
+                ContentTypeProvider = new FileExtensionContentTypeProvider(new Dictionary<string, string>
+                {
+                    { ".html", "text/html" },
+                    { ".glb", "model/gltf-binary" },
+                    { ".js", "application/javascript" },
+                    { ".css", "text/css" },
+                    { ".wasm", "application/wasm" },
+                    { ".png", "image/png" },
+                    { ".woff", "application/font-woff" },
+                    { ".woff2", "application/font-woff" },
+                    { ".ico", "image/x-icon" },
+                })
+            };
+
+
             app.UseExceptionHandler(configs.CurrentValue.ErrorHandler);
-            app.UseStaticFiles();
+            app.UseStaticFiles(pvd);
             app.UseWtmStaticFiles();
             app.UseRouting();
             app.UseWtmMultiLanguages();

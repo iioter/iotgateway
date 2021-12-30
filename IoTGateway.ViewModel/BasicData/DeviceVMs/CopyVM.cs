@@ -12,7 +12,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
     public class CopyVM : BaseVM
     {
         public string 设备名称 { get; set; }
-        public uint 复制数量 { get; set; } = 20;
+        public uint 复制数量 { get; set; } = 1;
         public string 复制结果 { get; set; }
 
         public void Copy()

@@ -88,7 +88,7 @@ namespace Plugin
                                         {
                                             try
                                             {
-                                                ret.CookedValue = interpreter.Eval(DealMysqlStr(item.Expressions).Replace("raw", ret.Value.ToString()));
+                                                ret.CookedValue = interpreter.Eval(DealMysqlStr(item.Expressions).Replace("raw", ret.Value?.ToString()));
                                             }
                                             catch (Exception)
                                             {
