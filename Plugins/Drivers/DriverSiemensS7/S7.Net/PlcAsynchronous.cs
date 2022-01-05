@@ -80,7 +80,7 @@ namespace S7.Net
                 throw new WrongNumberOfBytesException("Not enough data received in response to Communication Setup");
 
             //Check for S7 Ack Data
-            if (s7data[1] != 0x03)
+            if (s7data[1] != 0x03&& s7data[1] != 0x01)
                 throw new InvalidDataException("Error reading Communication Setup response", s7data, 1, 0x03);
 
             if (s7data.Length < 20)

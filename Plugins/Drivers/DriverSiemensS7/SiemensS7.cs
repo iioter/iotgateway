@@ -1,6 +1,7 @@
 ﻿using PluginInterface;
 using S7.Net;
 using System;
+using System.Text;
 
 namespace DriverSiemensS7
 {
@@ -45,7 +46,6 @@ namespace DriverSiemensS7
         public SiemensS7(Guid deviceId)
         {
             DeviceId = deviceId;
-            plc = new Plc(CpuType, IpAddress, Port, Rack, Slot);
         }
 
 
@@ -61,6 +61,7 @@ namespace DriverSiemensS7
         {
             try
             {
+                plc = new Plc(CpuType, IpAddress, Port, Rack, Slot);
                 plc.Open();
             }
             catch (Exception)
@@ -96,7 +97,7 @@ namespace DriverSiemensS7
             }
         }
 
-        [Method("读西门子PLC", description: "读西门子PLC")]
+        [Method("读西门子PLC标准地址", description: "读西门子PLC标准地址")]
         public DriverReturnValueModel Read(DriverAddressIoArgModel ioarg)
         {
             var ret = new DriverReturnValueModel { StatusType = VaribaleStatusTypeEnum.Good };
@@ -106,6 +107,46 @@ namespace DriverSiemensS7
                 try
                 {
                     ret.Value = plc.Read(ioarg.Address);
+                    if (ioarg.ValueType == DataTypeEnum.Float)
+                    {
+                        var buffer = new byte[4];
+
+                        buffer[3] = (byte)((uint)ret.Value >> 24);
+                        buffer[2] = (byte)((uint)ret.Value >> 16);
+                        buffer[1] = (byte)((uint)ret.Value >> 8);
+                        buffer[0] = (byte)((uint)ret.Value >> 0);
+                        ret.Value = BitConverter.ToSingle(buffer, 0);
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                    ret.StatusType = VaribaleStatusTypeEnum.Bad;
+                    ret.Message = $"读取失败,{ex.Message}";
+                }
+            }
+            else
+            {
+                ret.StatusType = VaribaleStatusTypeEnum.Bad;
+                ret.Message = "连接失败";
+            }
+            return ret;
+        }
+
+        [Method("读字符串", description: "读字符串")]
+        public DriverReturnValueModel ReadString(DriverAddressIoArgModel ioarg)
+        {
+            var ret = new DriverReturnValueModel { StatusType = VaribaleStatusTypeEnum.Good };
+
+            if (plc != null && plc.IsConnected)
+            {
+                try
+                {
+                    int db = int.Parse(ioarg.Address.Trim().Split(',')[0]);
+                    int startAdr = int.Parse(ioarg.Address.Trim().Split(',')[1]);
+                    int count = int.Parse(ioarg.Address.Trim().Split(',')[2]);
+                    var buffers = plc.ReadBytes(DataType.DataBlock, db, startAdr, count);
+                    ret.Value = Encoding.ASCII.GetString(buffers);
                 }
                 catch (Exception ex)
                 {
