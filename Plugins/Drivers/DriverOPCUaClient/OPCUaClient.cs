@@ -25,7 +25,7 @@ namespace DriverOPCUaClient
         public string Uri { get; set; } = "opc.tcp://localhost:62541/Quickstarts/ReferenceServer";
 
         [ConfigParameter("超时时间ms")]
-        public uint Timeout { get; set; } = 3000;
+        public int Timeout { get; set; } = 3000;
 
         [ConfigParameter("最小通讯周期ms")]
         public uint MinPeriod { get; set; } = 3000;
@@ -36,7 +36,6 @@ namespace DriverOPCUaClient
         {
             DeviceId = deviceId;
 
-            opcUaClient = new OpcUaClientHelper();
         }
 
 
@@ -53,7 +52,8 @@ namespace DriverOPCUaClient
         {
             try
             {
-                opcUaClient.ConnectServer(Uri).Wait((int)Timeout);
+                opcUaClient = new OpcUaClientHelper();
+                opcUaClient.ConnectServer(Uri).Wait(Timeout);
             }
             catch (Exception)
             {

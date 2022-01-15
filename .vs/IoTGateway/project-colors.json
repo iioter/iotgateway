@@ -85,7 +85,27 @@
       "ProjectGuid": "dabb562d-5eb7-4f9d-90ef-424c2bf63a4d",
       "DisplayName": "DriverOPCUaClient",
       "ColorIndex": 15
+    },
+    "0602dc6c-fb26-41b1-972e-298679826e3f": {
+      "ProjectGuid": "0602dc6c-fb26-41b1-972e-298679826e3f",
+      "DisplayName": "DriverMTConnect",
+      "ColorIndex": 0
+    },
+    "6d926cd7-5ff9-489b-9049-7030ae8059c9": {
+      "ProjectGuid": "6d926cd7-5ff9-489b-9049-7030ae8059c9",
+      "DisplayName": "DriverMitsubishi",
+      "ColorIndex": 1
+    },
+    "92e2bb84-c7ec-418e-879a-40b891cae6e7": {
+      "ProjectGuid": "92e2bb84-c7ec-418e-879a-40b891cae6e7",
+      "DisplayName": "DriverOmronFins",
+      "ColorIndex": 2
+    },
+    "c8c82c05-defd-4e79-9772-b5ea3d2e5d88": {
+      "ProjectGuid": "c8c82c05-defd-4e79-9772-b5ea3d2e5d88",
+      "DisplayName": "DriverAllenBradley",
+      "ColorIndex": 3
     }
   },
-  "NextColorIndex": 0
+  "NextColorIndex": 4
 }

@@ -36,7 +36,7 @@ namespace DriverSiemensS7
         public short Slot { get; set; } = 0;
 
         [ConfigParameter("超时时间ms")]
-        public uint Timeout { get; set; } = 3000;
+        public int Timeout { get; set; } = 3000;
 
         [ConfigParameter("最小通讯周期ms")]
         public uint MinPeriod { get; set; } = 3000;
@@ -62,6 +62,8 @@ namespace DriverSiemensS7
             try
             {
                 plc = new Plc(CpuType, IpAddress, Port, Rack, Slot);
+                plc.ReadTimeout = Timeout;
+                plc.WriteTimeout = Timeout;
                 plc.Open();
             }
             catch (Exception)

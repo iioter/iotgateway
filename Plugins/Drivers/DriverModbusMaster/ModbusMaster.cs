@@ -57,7 +57,7 @@ namespace DriverModbusMaster
         public byte SlaveAddress { get; set; } = 1;
 
         [ConfigParameter("超时时间ms")]
-        public uint Timeout { get; set; } = 3000;
+        public int Timeout { get; set; } = 3000;
 
         [ConfigParameter("最小通讯周期ms")]
         public uint MinPeriod { get; set; } = 3000;
@@ -101,43 +101,61 @@ namespace DriverModbusMaster
                 {
                     case Master_TYPE.Tcp:
                         clientTcp = new TcpClient(IpAddress.ToString(), Port);
+                        clientTcp.ReceiveTimeout = Timeout;
+                        clientTcp.SendTimeout = Timeout;
                         master = ModbusIpMaster.CreateIp(clientTcp);
                         break;
                     case Master_TYPE.Udp:
                         clientUdp = new UdpClient(IpAddress.ToString(), Port);
+                        clientUdp.Client.ReceiveTimeout = Timeout;
+                        clientUdp.Client.SendTimeout = Timeout;
                         master = ModbusIpMaster.CreateIp(clientUdp);
                         break;
                     case Master_TYPE.Rtu:
                         port = new SerialPort(PortName, BaudRate, Parity, DataBits, StopBits);
+                        port.ReadTimeout = Timeout;
+                        port.WriteTimeout = Timeout;
                         port.Open();
                         adapter = new SerialPortAdapter(port);
                         master = ModbusSerialMaster.CreateRtu(adapter);
                         break;
                     case Master_TYPE.RtuOnTcp:
                         clientTcp = new TcpClient(IpAddress.ToString(), Port);
+                        clientTcp.ReceiveTimeout = Timeout;
+                        clientTcp.SendTimeout = Timeout;
                         master = ModbusSerialMaster.CreateRtu(clientTcp);
                         break;
                     case Master_TYPE.RtuOnUdp:
                         clientUdp = new UdpClient(IpAddress.ToString(), Port);
+                        clientUdp.Client.ReceiveTimeout = Timeout;
+                        clientUdp.Client.SendTimeout = Timeout;
                         master = ModbusSerialMaster.CreateRtu(clientUdp);
                         break;
                     case Master_TYPE.Ascii:
                         port = new SerialPort(PortName, BaudRate, Parity, DataBits, StopBits);
+                        port.ReadTimeout = Timeout;
+                        port.WriteTimeout = Timeout;
                         port.Open();
                         adapter = new SerialPortAdapter(port);
                         master = ModbusSerialMaster.CreateAscii(adapter);
                         break;
                     case Master_TYPE.AsciiOnTcp:
                         clientTcp = new TcpClient(IpAddress.ToString(), Port);
+                        clientTcp.ReceiveTimeout = Timeout;
+                        clientTcp.SendTimeout = Timeout;
                         master = ModbusSerialMaster.CreateAscii(clientTcp);
                         break;
                     case Master_TYPE.AsciiOnUdp:
                         clientUdp = new UdpClient(IpAddress.ToString(), Port);
+                        clientUdp.Client.ReceiveTimeout = Timeout;
+                        clientUdp.Client.SendTimeout = Timeout;
                         master = ModbusSerialMaster.CreateAscii(clientUdp);
                         break;
                     default:
                         break;
                 }
+                master.Transport.ReadTimeout = Timeout;
+                master.Transport.WriteTimeout = Timeout;
             }
             catch (Exception ex)
             {
@@ -223,6 +241,76 @@ namespace DriverModbusMaster
             }
             return ret;
         }
+
+
+        [Method("功能码:01", description: "ReadCoil读线圈")]
+        public DriverReturnValueModel ReadCoil(DriverAddressIoArgModel ioarg)
+        {
+            DriverReturnValueModel ret = new();
+            try
+            {
+                if (IsConnected)
+                {
+                    var retBool = master.ReadCoils(SlaveAddress, ushort.Parse(ioarg.Address), 1)[0];
+                    if (ioarg.ValueType == DataTypeEnum.Bit)
+                    {
+                        if (retBool)
+                            ret.Value = 1;
+                        else
+                            ret.Value = 0;
+                    }
+                    else
+                        ret.Value = retBool;
+                }
+                else
+                {
+                    ret.StatusType = VaribaleStatusTypeEnum.Bad;
+                    ret.Message = "TCP连接异常";
+                }
+            }
+            catch (Exception ex)
+            {
+                ret.StatusType = VaribaleStatusTypeEnum.UnKnow;
+                ret.Message = ex.Message;
+
+            }
+            return ret;
+        }
+
+        [Method("功能码:02", description: "ReadInput读输入")]
+        public DriverReturnValueModel ReadInput(DriverAddressIoArgModel ioarg)
+        {
+            DriverReturnValueModel ret = new();
+            try
+            {
+                if (IsConnected)
+                {
+                    var retBool = master.ReadInputs(SlaveAddress, ushort.Parse(ioarg.Address), 1)[0];
+                    if (ioarg.ValueType == DataTypeEnum.Bit)
+                    {
+                        if (retBool)
+                            ret.Value = 1;
+                        else
+                            ret.Value = 0;
+                    }
+                    else
+                        ret.Value = retBool;
+                }
+                else
+                {
+                    ret.StatusType = VaribaleStatusTypeEnum.Bad;
+                    ret.Message = "TCP连接异常";
+                }
+            }
+            catch (Exception ex)
+            {
+                ret.StatusType = VaribaleStatusTypeEnum.UnKnow;
+                ret.Message = ex.Message;
+
+            }
+            return ret;
+        }
+
 
         [Method("Read方法样例", description: "Read方法样例描述")]
         public DriverReturnValueModel Read(DriverAddressIoArgModel ioarg)

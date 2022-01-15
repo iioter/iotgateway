@@ -1,6 +1,7 @@
 /**
  
- @Name：tree 树组件
+ @Name：layui.tree 树
+ @Author：star1029
  @License：MIT
 
  */
@@ -27,7 +28,7 @@ layui.define('form', function(exports){
       return that;
     }
     
-    //事件
+    //事件监听
     ,on: function(events, callback){
       return layui.onevent.call(this, MOD_NAME, events, callback);
     }
@@ -183,7 +184,7 @@ layui.define('form', function(exports){
                 if(hasChild){
                   return '<span class="layui-tree-iconClick layui-tree-icon"><i class="layui-icon '+ (item.spread ? "layui-icon-subtraction" : "layui-icon-addition") +'"></i></span>';
                 }else{
-                  return '<span class="layui-tree-iconClick"><i class="layui-icon layui-icon-file"></i></span>';
+                  return '<span class="layui-tree-iconClick"></span>';
                 };
               }else{
                 return '<span class="layui-tree-iconClick"><i class="layui-tree-iconArrow '+ (hasChild ? "": HIDE) +'"></i></span>';
@@ -199,8 +200,9 @@ layui.define('form', function(exports){
             ,function(){
               if(options.isJump && item.href){
                 return '<a href="'+ item.href +'" target="_blank" class="'+ ELEM_TEXT +'">'+ (item.title || item.label || options.text.defaultNodeName) +'</a>';
-              }else{
-                return '<span class="'+ ELEM_TEXT + (item.disabled ? ' '+ DISABLED : '') +'">'+ (item.title || item.label || options.text.defaultNodeName) +'</span>';
+              } else {
+                  return '<span class="' + ELEM_TEXT + (item.disabled ? ' ' + DISABLED : '') + '"><i class="layui-icon ' + (item.icon || '') + '"></i>' + (item.title || item.label || options.text.defaultNodeName) + '</span>';
+                //return '<span class="' + ELEM_TEXT + (item.disabled ? ' ' + DISABLED : '') + '">' + (item.title || item.label || options.text.defaultNodeName) + '</span>';
               }
             }()
       ,'</div>'

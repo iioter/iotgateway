@@ -6,7 +6,7 @@ namespace PluginInterface
     {
         public Guid DeviceId { get; }
         public bool IsConnected { get; }
-        public uint Timeout { get; }
+        public int Timeout { get; }
         public uint MinPeriod { get; }
         public bool Connect();
         public bool Close();

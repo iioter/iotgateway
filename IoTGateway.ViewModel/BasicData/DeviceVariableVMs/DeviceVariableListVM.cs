@@ -9,12 +9,14 @@ using System.ComponentModel.DataAnnotations;
 using IoTGateway.Model;
 using PluginInterface;
 using Plugin;
+using Newtonsoft.Json;
 
 namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
 {
     public partial class DeviceVariableListVM : BasePagedListVM<DeviceVariable_View, DeviceVariableSearcher>
     {
         public List<TreeSelectListItem> AllDevices { get; set; }
+        public List<LayuiTreeItem> DevicesTree { get; set; }
         protected override List<GridAction> InitGridAction()
         {
             return new List<GridAction>
@@ -36,15 +38,20 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                 .OrderBy(x => x.Parent.Index).ThenBy(x => x.Parent.DeviceName)
                 .OrderBy(x => x.Index).ThenBy(x => x.DeviceName)
                 .GetTreeSelectListItems(Wtm, x => x.DeviceName);
+
+            var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
             foreach (var device in AllDevices)
             {
                 foreach (var item in device.Children)
                 {
+                    var deviceThread = deviceService.DeviceThreads.Where(x => x.Device.ID.ToString() == (string)item.Value).FirstOrDefault();
+
                     item.Text = item.Text;
-                    item.Icon = "layui-icon layui-icon-link";
+                    item.Icon = deviceThread.Device.AutoStart ? (deviceThread.Driver.IsConnected ? "layui-icon-link" : "layui-icon-unlink") : "layui-icon-pause";
                     item.Expended = true;
                 }
             }
+            DevicesTree = GetLayuiTree(AllDevices);
             base.InitListVM();
         }
         protected override IEnumerable<IGridColumn<DeviceVariable_View>> InitGridHeader()
@@ -114,6 +121,60 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
             return query;
         }
 
+        private List<LayuiTreeItem> GetLayuiTree(List<TreeSelectListItem> tree, int level = 0)
+        {
+            List<LayuiTreeItem> rv = new List<LayuiTreeItem>();
+            foreach (var s in tree)
+            {
+                var news = new LayuiTreeItem
+                {
+                    Id = (string)s.Value,
+                    Title = s.Text,
+                    Icon = s.Icon,
+                    Url = s.Url,
+                    Expand = s.Expended,
+                    Level = level,
+                    Checked = s.Selected
+                    //Children = new List<LayuiTreeItem>()
+                };
+                if (s.Children != null && s.Children.Count > 0)
+                {
+                    news.Children = GetLayuiTree(s.Children, level + 1);
+                    if (news.Children.Where(x => x.Checked == true || x.Expand == true).Count() > 0)
+                    {
+                        news.Expand = true;
+                    }
+                }
+                rv.Add(news);
+            }
+            return rv;
+        }
+        public class LayuiTreeItem
+        {
+            [JsonProperty(PropertyName = "title")]
+            public string Title { get; set; }
+
+            [JsonProperty(PropertyName = "icon")]
+            public string Icon { get; set; }
+
+            [JsonProperty(PropertyName = "id")]
+            public string Id { get; set; }
+
+            [JsonProperty(PropertyName = "children")]
+            public List<LayuiTreeItem> Children { get; set; }
+
+            [JsonProperty(PropertyName = "href")]
+            public string Url { get; set; }
+
+            [JsonProperty(PropertyName = "spread")]
+            public bool Expand { get; set; }
+
+            [JsonProperty(PropertyName = "checked")]
+            public bool Checked { get; set; }
+
+            [JsonProperty(PropertyName = "level")]
+            public int Level { get; set; }
+        }
     }
 
     public class DeviceVariable_View : DeviceVariable
