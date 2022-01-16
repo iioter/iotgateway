@@ -11,6 +11,9 @@
 * 内置OPCUA服务端,数据实时更新。匿名本地访问:opc.tcp://localhost:62541/Quickstarts/ReferenceServer
 * 内置Modbus驱动全协议支持
 * 内置西门子PLC驱动
+* 内置三菱PLC驱动
+* 内置欧姆龙PLC驱动
+* 内置AB(罗克韦尔)PLC驱动
 * 内置OPCUA客户端驱动
 * 增加计算表达式
 * 支持驱动二次开发（短期内会提供三菱、fanuc通讯）

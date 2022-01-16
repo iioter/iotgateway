@@ -100,46 +100,102 @@ namespace DriverMitsubishi
                     switch (ioarg.ValueType)
                     {
                         case PluginInterface.DataTypeEnum.Bit:
-                            ret.Value = plc.ReadBoolean(ioarg.Address).Value == true ? 1 : 0;
+                            var resultBit = plc.ReadBoolean(ioarg.Address);
+                            if (resultBit.IsSucceed)
+                                ret.Value = resultBit.Value == true ? 1 : 0;
+                            else
+                                ret.StatusType = VaribaleStatusTypeEnum.Bad;
                             break;
                         case PluginInterface.DataTypeEnum.Bool:
-                            ret.Value = plc.ReadBoolean(ioarg.Address).Value;
+                            var resultBool = plc.ReadBoolean(ioarg.Address);
+                            if (resultBool.IsSucceed)
+                                ret.Value = resultBool.Value == true ? 1 : 0;
+                            else
+                                ret.StatusType = VaribaleStatusTypeEnum.Bad;
                             break;
                         case PluginInterface.DataTypeEnum.UByte:
-                            ret.Value = plc.ReadByte(ioarg.Address).Value;
+                            var resultUByte = plc.ReadByte(ioarg.Address);
+                            if (resultUByte.IsSucceed)
+                                ret.Value = resultUByte.Value;
+                            else
+                                ret.StatusType = VaribaleStatusTypeEnum.Bad;
                             break;
                         case PluginInterface.DataTypeEnum.Byte:
-                            ret.Value = (sbyte)plc.ReadByte(ioarg.Address).Value;
+                            var resultByte = plc.ReadByte(ioarg.Address);
+                            if (resultByte.IsSucceed)
+                                ret.Value = (sbyte)resultByte.Value;
+                            else
+                                ret.StatusType = VaribaleStatusTypeEnum.Bad;
                             break;
                         case PluginInterface.DataTypeEnum.Uint16:
-                            ret.Value =plc.ReadUInt16(ioarg.Address).Value;
+                            var resultUint = plc.ReadUInt16(ioarg.Address);
+                            if (resultUint.IsSucceed)
+                                ret.Value = resultUint.Value;
+                            else
+                                ret.StatusType = VaribaleStatusTypeEnum.Bad;
                             break;
                         case PluginInterface.DataTypeEnum.Int16:
-                            ret.Value = plc.ReadInt16(ioarg.Address).Value;
+                            var resultInt = plc.ReadInt16(ioarg.Address);
+                            if (resultInt.IsSucceed)
+                                ret.Value = resultInt.Value;
+                            else
+                                ret.StatusType = VaribaleStatusTypeEnum.Bad;
                             break;
                         case PluginInterface.DataTypeEnum.Uint32:
-                            ret.Value =plc.ReadUInt32(ioarg.Address).Value;
+                            var resultUint32 = plc.ReadUInt32(ioarg.Address);
+                            if (resultUint32.IsSucceed)
+                                ret.Value = resultUint32.Value;
+                            else
+                                ret.StatusType = VaribaleStatusTypeEnum.Bad;
                             break;
                         case PluginInterface.DataTypeEnum.Int32:
-                            ret.Value = plc.ReadInt32(ioarg.Address).Value;
+                            var resultInt32 = plc.ReadInt32(ioarg.Address);
+                            if (resultInt32.IsSucceed)
+                                ret.Value = resultInt32.Value;
+                            else
+                                ret.StatusType = VaribaleStatusTypeEnum.Bad;
                             break;
                         case PluginInterface.DataTypeEnum.Float:
-                            ret.Value = plc.ReadFloat(ioarg.Address).Value;
+                            var resultFloat = plc.ReadFloat(ioarg.Address);
+                            if (resultFloat.IsSucceed)
+                                ret.Value = resultFloat.Value;
+                            else
+                                ret.StatusType = VaribaleStatusTypeEnum.Bad;
                             break;
                         case PluginInterface.DataTypeEnum.Double:
-                            ret.Value = plc.ReadDouble(ioarg.Address).Value;
+                            var resultDouble = plc.ReadDouble(ioarg.Address);
+                            if (resultDouble.IsSucceed)
+                                ret.Value = resultDouble.Value;
+                            else
+                                ret.StatusType = VaribaleStatusTypeEnum.Bad;
                             break;
                         case PluginInterface.DataTypeEnum.Uint64:
-                            ret.Value = plc.ReadUInt64(ioarg.Address).Value;
+                            var resultUint64 = plc.ReadUInt64(ioarg.Address);
+                            if (resultUint64.IsSucceed)
+                                ret.Value = resultUint64.Value;
+                            else
+                                ret.StatusType = VaribaleStatusTypeEnum.Bad;
                             break;
                         case PluginInterface.DataTypeEnum.Int64:
-                            ret.Value = plc.ReadInt64(ioarg.Address).Value;
+                            var resultInt64 = plc.ReadInt64(ioarg.Address);
+                            if (resultInt64.IsSucceed)
+                                ret.Value = resultInt64.Value;
+                            else
+                                ret.StatusType = VaribaleStatusTypeEnum.Bad;
                             break;
                         case PluginInterface.DataTypeEnum.AsciiString:
-                            ret.Value = plc.ReadString(ioarg.Address);
+                            var resultIntAsciiStr = plc.ReadString(ioarg.Address);
+                            if (resultIntAsciiStr.IsSucceed)
+                                ret.Value = resultIntAsciiStr.Value;
+                            else
+                                ret.StatusType = VaribaleStatusTypeEnum.Bad;
                             break;
                         case PluginInterface.DataTypeEnum.Utf8String:
-                            ret.Value = plc.ReadString(ioarg.Address);
+                            var resultIntUtf8Str = plc.ReadString(ioarg.Address);
+                            if (resultIntUtf8Str.IsSucceed)
+                                ret.Value = resultIntUtf8Str.Value;
+                            else
+                                ret.StatusType = VaribaleStatusTypeEnum.Bad;
                             break;
                         default:
                             break;
