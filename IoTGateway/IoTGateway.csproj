@@ -9,6 +9,8 @@
     <CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>
   
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  
+    <UserSecretsId>109f0b79-49c8-4cb6-9aa4-44ab3b35b753</UserSecretsId>
 </PropertyGroup>
 
 
