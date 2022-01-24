@@ -230,7 +230,7 @@ namespace Quickstarts
                     }
                     item.AppendFormat(":{0}", session.Id);
                 }
-                Console.WriteLine(item.ToString());
+                //Console.WriteLine(item.ToString());
             }
         }
 

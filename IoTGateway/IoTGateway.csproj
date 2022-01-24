@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
     <SatelliteResourceLanguages>zh-Hans,en</SatelliteResourceLanguages>
@@ -9,32 +9,24 @@
     <CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>
   
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-  
-    <UserSecretsId>109f0b79-49c8-4cb6-9aa4-44ab3b35b753</UserSecretsId>
 </PropertyGroup>
 
-
-
-
   <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.13" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
     <PackageReference Include="MQTTnet" Version="3.1.1" />
     <PackageReference Include="MQTTnet.AspNetCore" Version="3.1.1" />
     <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="3.1.1" />
     <PackageReference Include="MQTTnet.Extensions.Rpc" Version="3.1.1" />
     <PackageReference Include="System.IO.Ports" Version="6.0.0" />
-</ItemGroup>
+  </ItemGroup>
 
   <ItemGroup>
    <ProjectReference Include="..\IoTGateway.Model\IoTGateway.Model.csproj" />
     <ProjectReference Include="..\IoTGateway.DataAccess\IoTGateway.DataAccess.csproj" />
     <ProjectReference Include="..\IoTGateway.ViewModel\IoTGateway.ViewModel.csproj" />
-    <ProjectReference Include="..\Plugins\Plugin\Plugin.csproj" />
     <ProjectReference Include="..\WalkingTec.Mvvm\WalkingTec.Mvvm.Mvc\WalkingTec.Mvvm.Mvc.csproj" />
     <ProjectReference Include="..\WalkingTec.Mvvm\WalkingTec.Mvvm.TagHelpers.LayUI\WalkingTec.Mvvm.TagHelpers.LayUI.csproj" />
  </ItemGroup>
-
-  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 </Project>
 
 

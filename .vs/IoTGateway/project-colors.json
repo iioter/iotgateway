@@ -105,7 +105,22 @@
       "ProjectGuid": "c8c82c05-defd-4e79-9772-b5ea3d2e5d88",
       "DisplayName": "DriverAllenBradley",
       "ColorIndex": 3
+    },
+    "1f9122c1-19de-4a8b-9a00-d59e592ecc3a": {
+      "ProjectGuid": "1f9122c1-19de-4a8b-9a00-d59e592ecc3a",
+      "DisplayName": "IoTGateway",
+      "ColorIndex": 4
+    },
+    "5c12ebfb-b152-48c6-aa52-71128f246594": {
+      "ProjectGuid": "5c12ebfb-b152-48c6-aa52-71128f246594",
+      "DisplayName": "Plugin",
+      "ColorIndex": 5
+    },
+    "96d436b4-4703-4448-a879-b69ace89ca11": {
+      "ProjectGuid": "96d436b4-4703-4448-a879-b69ace89ca11",
+      "DisplayName": "WalkingTec.Mvvm.Mvc",
+      "ColorIndex": 6
     }
   },
-  "NextColorIndex": 4
+  "NextColorIndex": 7
 }

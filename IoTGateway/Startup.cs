@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -36,7 +35,7 @@ namespace IoTGateway
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDistributedMemoryCache();
-            services.AddWtmSession(36000, ConfigRoot);
+            services.AddWtmSession(360000, ConfigRoot);
             services.AddWtmCrossDomain(ConfigRoot);
             services.AddWtmAuthentication(ConfigRoot);
             services.AddWtmHttpClient(ConfigRoot);
@@ -47,20 +46,18 @@ namespace IoTGateway
             {
                 options.UseWtmMvcOptions();
             })
-            .AddJsonOptions(options =>
-            {
+            .AddJsonOptions(options => {
                 options.UseWtmJsonOptions();
             })
-            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+            
             .ConfigureApiBehaviorOptions(options =>
             {
                 options.UseWtmApiOptions();
             })
             .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
             .AddWtmDataAnnotationsLocalization(typeof(Program));
-
-            services.AddWtmContext(ConfigRoot, (options) =>
-            {
+            
+            services.AddWtmContext(ConfigRoot, (options)=> {
                 options.DataPrivileges = DataPrivilegeSettings();
                 options.CsSelector = CSSelector;
                 options.FileSubDirSelector = SubDirSelector;
@@ -69,9 +66,9 @@ namespace IoTGateway
 
             //MQTTServer
             services.AddHostedMqttServer(mqttServer =>
-                {
-                    mqttServer.WithoutDefaultEndpoint();
-                })
+            {
+                mqttServer.WithoutDefaultEndpoint();
+            })
                 .AddMqttConnectionHandler()
                 .AddConnections();
 
@@ -81,6 +78,7 @@ namespace IoTGateway
             services.AddSingleton<DrvierService>();
             services.AddSingleton<UAService>();
             services.AddSingleton<MyMqttClient>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -107,7 +105,6 @@ namespace IoTGateway
                     { ".ico", "image/x-icon" },
                 })
             };
-
 
             app.UseExceptionHandler(configs.CurrentValue.ErrorHandler);
             app.UseStaticFiles(pvd);
@@ -138,6 +135,8 @@ namespace IoTGateway
             });
 
             app.UseWtmContext();
+
+            
         }
 
         /// <summary>

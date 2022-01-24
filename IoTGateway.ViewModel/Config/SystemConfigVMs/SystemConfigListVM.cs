@@ -33,11 +33,11 @@ namespace IoTGateway.ViewModel.Config.SystemConfigVMs
         {
             return new List<GridColumn<SystemConfig_View>>{
                 this.MakeGridHeader(x => x.GatewayName),
+                this.MakeGridHeader(x => x.IoTPlatformType),
                 this.MakeGridHeader(x => x.MqttIp),
                 this.MakeGridHeader(x => x.MqttPort),
                 this.MakeGridHeader(x => x.MqttUName),
                 this.MakeGridHeader(x => x.MqttUPwd),
-                this.MakeGridHeader(x => x.Disperse),
                 this.MakeGridHeaderAction(width: 200)
             };
         }
@@ -53,7 +53,7 @@ namespace IoTGateway.ViewModel.Config.SystemConfigVMs
                     MqttPort = x.MqttPort,
                     MqttUName = x.MqttUName,
                     MqttUPwd = x.MqttUPwd,
-                    Disperse = x.Disperse,
+                    IoTPlatformType = x.IoTPlatformType,
                 })
                 .OrderBy(x => x.ID);
             return query;

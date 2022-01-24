@@ -16,7 +16,7 @@ namespace Plugin
 {
     public class DrvierService//: IDependency
     {
-        string DriverPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"drivers/net5.0");
+        string DriverPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"drivers/net6.0");
         string[] driverFiles;
         public List<DriverInfo> DriverInfos = new List<DriverInfo>();
         public DrvierService(IConfiguration ConfigRoot)

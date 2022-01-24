@@ -70,23 +70,32 @@ namespace Plugin
         {
             try
             {
-                string TopicBase = "v1/gateway/telemetry";
-                if (!systemConfig.Disperse)
-                    _mqttClient.PublishAsync(TopicBase, JsonConvert.SerializeObject(SendModel));
-                else
+                switch (systemConfig.IoTPlatformType)
                 {
-                    foreach (var payload in SendModel[device.DeviceName])
-                    {
-                        foreach (var kv in payload.Values)
+                    case IoTPlatformType.ThingsBoard:
+                        _mqttClient.PublishAsync("v1/gateway/telemetry", JsonConvert.SerializeObject(SendModel));
+                        break;
+                    case IoTPlatformType.IoTSharp:
+                        foreach (var payload in SendModel[device.DeviceName])
                         {
-                            _mqttClient.PublishAsync($"{TopicBase}/{device.DeviceName}/{kv.Key}", kv.Value?.ToString());
-
-                            //更新到UAService
-                            _uaNodeManager.UpdateNode($"{device.Parent.DeviceName}.{device.DeviceName}.{kv.Key}", kv.Value);
+                            _mqttClient.PublishAsync($"devices/{device.DeviceName}/telemetry", JsonConvert.SerializeObject(payload.Values));
                         }
+                        break;
+                    case IoTPlatformType.AliCloudIoT:
+                    case IoTPlatformType.TencentIoTHub:
+                    case IoTPlatformType.BaiduIoTCore:
+                    case IoTPlatformType.OneNET:
+                    default:                        
+                        break;
+                }
+                foreach (var payload in SendModel[device.DeviceName])
+                {
+                    foreach (var kv in payload.Values)
+                    {
+                        //更新到UAService
+                        _uaNodeManager.UpdateNode($"{device.Parent.DeviceName}.{device.DeviceName}.{kv.Key}", kv.Value);
                     }
                 }
-
 
 
             }

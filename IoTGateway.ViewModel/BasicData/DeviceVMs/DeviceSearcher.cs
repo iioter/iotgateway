@@ -15,6 +15,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
         [Display(Name = "名称")]
         public String DeviceName { get; set; }
         public List<ComboSelectListItem> AllDrivers { get; set; }
+        [Display(Name = "驱动")]
         public Guid? DriverId { get; set; }
         [Display(Name = "自启动")]
         public Boolean? AutoStart { get; set; }

@@ -1,0 +1,111 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "DriverMTConnect/1.0.0": {
+        "dependencies": {
+          "PluginInterface": "1.0.0",
+          "opennetcf-mtconnect-client": "1.0.17160"
+        },
+        "runtime": {
+          "DriverMTConnect.dll": {}
+        }
+      },
+      "Newtonsoft.Json/13.0.1": {
+        "runtime": {
+          "lib/netstandard2.0/Newtonsoft.Json.dll": {
+            "assemblyVersion": "13.0.0.0",
+            "fileVersion": "13.0.1.25517"
+          }
+        }
+      },
+      "opennetcf-extensions-standard/1.0.17160": {
+        "runtime": {
+          "lib/netstandard1.1/OpenNETCF.Extensions.dll": {
+            "assemblyVersion": "1.0.17160.0",
+            "fileVersion": "1.0.17160.0"
+          }
+        }
+      },
+      "opennetcf-mtconnect-client/1.0.17160": {
+        "dependencies": {
+          "opennetcf-extensions-standard": "1.0.17160",
+          "opennetcf-restconnector": "1.0.17160"
+        },
+        "runtime": {
+          "lib/netstandard1.2/OpenNETCF.MTConnect.Client.dll": {
+            "assemblyVersion": "1.0.17160.0",
+            "fileVersion": "1.0.17160.0"
+          },
+          "lib/netstandard1.2/OpenNETCF.MTConnect.Common.dll": {
+            "assemblyVersion": "1.0.17160.0",
+            "fileVersion": "1.0.17160.0"
+          }
+        }
+      },
+      "opennetcf-restconnector/1.0.17160": {
+        "dependencies": {
+          "opennetcf-extensions-standard": "1.0.17160"
+        },
+        "runtime": {
+          "lib/netstandard1.1/OpenNETCF.RestConnector.dll": {
+            "assemblyVersion": "1.0.17160.0",
+            "fileVersion": "1.0.17160.0"
+          }
+        }
+      },
+      "PluginInterface/1.0.0": {
+        "dependencies": {
+          "Newtonsoft.Json": "13.0.1"
+        },
+        "runtime": {
+          "PluginInterface.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "DriverMTConnect/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Newtonsoft.Json/13.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ppPFpBcvxdsfUonNcvITKqLl3bqxWbDCZIzDWHzjpdAHRFfZe0Dw9HmA0+za13IdyrgJwpkDTDA9fHaxOrt20A==",
+      "path": "newtonsoft.json/13.0.1",
+      "hashPath": "newtonsoft.json.13.0.1.nupkg.sha512"
+    },
+    "opennetcf-extensions-standard/1.0.17160": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-E2Hbli8QfD2vwGq5mk91zipJp8bOi5+ZXlvVp4z5JeMJTCe5cY5uEV0LabnkoLUPOlrm+z/hIunigAl2gAxC8A==",
+      "path": "opennetcf-extensions-standard/1.0.17160",
+      "hashPath": "opennetcf-extensions-standard.1.0.17160.nupkg.sha512"
+    },
+    "opennetcf-mtconnect-client/1.0.17160": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-p8d5hsvhHE80PugqQGfGS4iOiXmFAcu36B5g/AJan1Eq2vxK4E6GsovRfoEFohZjaEQLhyNxoPVBMC8mxFArlA==",
+      "path": "opennetcf-mtconnect-client/1.0.17160",
+      "hashPath": "opennetcf-mtconnect-client.1.0.17160.nupkg.sha512"
+    },
+    "opennetcf-restconnector/1.0.17160": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-CvEhOVtrXB2gp95fXOnibRulHvjnpHITBMSlXnSFKWxtl2DwEBvsid1afWt06BxYB8MJ6Qfv5ablgQojz0MGdg==",
+      "path": "opennetcf-restconnector/1.0.17160",
+      "hashPath": "opennetcf-restconnector.1.0.17160.nupkg.sha512"
+    },
+    "PluginInterface/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

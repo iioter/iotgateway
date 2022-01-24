@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DateTime = S7.Net.Types.DateTime;
+using Timer = S7.Net.Types.Timer;
 
 namespace S7.Net
 {

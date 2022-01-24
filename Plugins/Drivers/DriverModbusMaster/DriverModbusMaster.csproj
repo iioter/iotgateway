@@ -1,24 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<TargetFramework>net5.0</TargetFramework>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<OutputPath>../../../IoTGateway/bin/Debug/net5.0/drivers</OutputPath>
-	</PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <OutputPath>../../../IoTGateway/bin/Debug/net6.0/drivers</OutputPath>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
 
-	<ItemGroup>
-		<PackageReference Include="System.IO.Ports" Version="6.0.0" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.IO.Ports" Version="6.0.0" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<ProjectReference Include="..\..\PluginInterface\PluginInterface.csproj" />
-	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\PluginInterface\PluginInterface.csproj" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<Reference Include="System.IO.Ports">
-			<HintPath>System.IO.Ports.dll</HintPath>
-			<Private>true</Private>
-		</Reference>
-	</ItemGroup>
-
+  <ItemGroup>
+    <Reference Include="System.IO.Ports">
+      <HintPath>System.IO.Ports.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+  </ItemGroup>
+  
 </Project>

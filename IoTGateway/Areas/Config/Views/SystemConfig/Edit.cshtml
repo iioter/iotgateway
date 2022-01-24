@@ -2,14 +2,14 @@
 @inject IStringLocalizer<Program> Localizer;
 
 <wt:form vm="@Model">
-    <wt:quote>注意：tb只能使用非离散输出模式，否则平台无法解析</wt:quote>
+    <wt:quote>注意：目前只实现了iotsharp和tb的遥测数据上传</wt:quote>
     <wt:row items-per-row="ItemsPerRowEnum.Two">
         <wt:textbox field="Entity.GatewayName" />
+        <wt:combobox field="Entity.IoTPlatformType" />
         <wt:textbox field="Entity.MqttIp" />
         <wt:textbox field="Entity.MqttPort" />
         <wt:textbox field="Entity.MqttUName" />
         <wt:textbox field="Entity.MqttUPwd" />
-        <wt:switch field="Entity.Disperse" />
     </wt:row>
     <wt:hidden field="Entity.ID" />
     <wt:row align="AlignEnum.Right">

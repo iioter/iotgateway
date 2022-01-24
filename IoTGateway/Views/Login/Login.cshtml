@@ -46,12 +46,12 @@
                     <ul class="loginForm">
                         <li>
                             <i><img src="~/images/icon-login04.png" /></i>
-                            <input type="text" name="ITCode" placeholder="@Model.Localizer["Login.InputUserName"]" class="login-input" autocomplete="off" value="admin">
-                        </li>
+                            <input type="text" name="ITCode" placeholder="admin" class="login-input" autocomplete="off" value="@Model.ITCode">
+                        </li>@*@Model.Localizer["Login.InputUserName"]*@
                         <li>
                             <i style="width: 16px;"><img src="~/images/icon-login01.png" /></i>
-                            <input type="password" name="Password" placeholder="@Model.Localizer["Login.InputPassword"]" class="login-input" value="000000">
-                        </li>
+                            <input type="password" name="Password" placeholder="000000" class="login-input" value="@Model.Password">
+                        </li>@*@Model.Localizer["Login.InputPassword"]*@
                         <li>
                             <i><img src="~/images/icon-login03.png" /></i>
                             <input type="text" name="VerifyCode" placeholder="@Model.Localizer["Login.InputValidation"]" class="login-input">

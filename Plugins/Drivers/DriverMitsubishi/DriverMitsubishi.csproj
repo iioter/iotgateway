@@ -1,9 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-	  <OutputPath>../../../IoTGateway/bin/Debug/net5.0/drivers</OutputPath>
-		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <TargetFramework>net6.0</TargetFramework>
+    <OutputPath>../../../IoTGateway/bin/Debug/net6.0/drivers</OutputPath>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,5 +15,4 @@
   <ItemGroup>
     <ProjectReference Include="..\..\PluginInterface\PluginInterface.csproj" />
   </ItemGroup>
-
 </Project>

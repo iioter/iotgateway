@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace IoTGateway.DataAccess.Migrations
 {
     [DbContext(typeof(DataContext))]
@@ -13,8 +15,7 @@ namespace IoTGateway.DataAccess.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "5.0.9");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.1");
 
             modelBuilder.Entity("IoTGateway.Model.Device", b =>
                 {
@@ -193,11 +194,11 @@ namespace IoTGateway.DataAccess.Migrations
                     b.Property<DateTime?>("CreateTime")
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("Disperse")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("GatewayName")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("IoTPlatformType")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("MqttIp")
                         .HasColumnType("TEXT");
