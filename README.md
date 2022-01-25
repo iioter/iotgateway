@@ -1,10 +1,10 @@
 # iotgateway
 ## github地址:[iotgateway](https://github.com/iioter/iotgateway/) https://github.com/iioter/iotgateway
 ## gitee地址:[iotgateway](https://gitee.com/wang_haidong/iotgateway/) https://gitee.com/iioter/iotgateway
-基于.net5的跨平台物联网网关。通过可视化配置，轻松的连接到你的任何设备和系统(如PLC、扫码枪、CNC、数据库、串口设备、上位机、OPC Server、OPC UA Server、Mqtt Server等)，从而与 Thingsboard、IoTSharp或您自己的物联网平台进行双向数据通讯。提供简单的驱动开发接口；当然也可以进行边缘计算。
+基于.net6的跨平台物联网网关。通过可视化配置，轻松的连接到你的任何设备和系统(如PLC、扫码枪、CNC、数据库、串口设备、上位机、OPC Server、OPC UA Server、Mqtt Server等)，从而与 Thingsboard、IoTSharp或您自己的物联网平台进行双向数据通讯。提供简单的驱动开发接口；当然也可以进行边缘计算。
 
 * 抛砖引玉，共同进步
-* 基于.net5的开源物联网网关
+* 基于.net6的开源物联网网关
 * 可视化的配置方式实现数据采集(使用wtm开发)
 * 物联网网关mqtt+opcua输出，支持thingsboard、iotsharp等
 * 内置Mqtt服务端,支持websocket，进行标准mqtt输出。本地端口1888 admin 000000
@@ -45,9 +45,9 @@
 
 # 运行
 ## windows主机运行：
-1. [下载Releasev0.03](https://github.com/iioter/iotgateway/releases/download/v0.03/iotgateway-winx64-v0.03.zip)发布版本
-2. [下载.net5](https://dotnet.microsoft.com/en-us/download/dotnet/5.0) sdk或runtime
-3. 安装.net5 
+1. [下载Releasev0.2.0](https://github.com/iioter/iotgateway/releases/download/v0.2.0/iotgateway-v0.2.0.zip)发布版本
+2. [下载.net6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) sdk或runtime
+3. 安装.net6 
 4. 解压release包，运行IoTGateway.exe
 5. 访问[iotgateway](http://localhost:518/)后台：http://localhost:518
 
