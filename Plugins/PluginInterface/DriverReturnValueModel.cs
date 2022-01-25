@@ -14,7 +14,7 @@ namespace PluginInterface
         public object CookedValue { get; set; }
         public string Message { get; set; }
         [JsonConverter(typeof(StringEnumConverter))]
-        public VaribaleStatusTypeEnum StatusType { get; set; }
+        public VaribaleStatusTypeEnum StatusType { get; set; } = VaribaleStatusTypeEnum.UnKnow;
         public Guid VarId { get; set; }
     }
 }

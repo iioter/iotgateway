@@ -125,7 +125,12 @@
       "ProjectGuid": "8e2d91dc-dee4-4843-8d09-6fc06651527e",
       "DisplayName": "DriverModbusMaster",
       "ColorIndex": 7
+    },
+    "7752ad8c-04bf-4bd2-9272-cda4f78fa954": {
+      "ProjectGuid": "7752ad8c-04bf-4bd2-9272-cda4f78fa954",
+      "DisplayName": "PluginInterface",
+      "ColorIndex": 8
     }
   },
-  "NextColorIndex": 8
+  "NextColorIndex": 9
 }

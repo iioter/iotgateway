@@ -104,14 +104,19 @@ namespace Plugin
 
                                         //变化了才推送到mqttserver，用于前端展示
                                         if (DeviceValues[item.ID].StatusType != ret.StatusType || DeviceValues[item.ID].Value?.ToString() != ret.Value?.ToString() || DeviceValues[item.ID].CookedValue?.ToString() != ret.CookedValue?.ToString())
+                                        {
+                                            //这是设备变量列表要用的
                                             mqttServer.PublishAsync($"internal/v1/gateway/telemetry/{Device.DeviceName}/{item.Name}", JsonConvert.SerializeObject(ret));
+                                            //这是在线组态要用的
+                                            mqttServer.PublishAsync($"v1/gateway/telemetry/{Device.DeviceName}/{item.Name}", JsonConvert.SerializeObject(ret.CookedValue));
+                                        }
 
                                         DeviceValues[item.ID] = ret;
 
                                     }
                                     payLoad.TS = (long)(DateTime.Now - TsStartDt).TotalMilliseconds;
 
-                                    if (DeviceValues.Any(x => x.Value.StatusType != VaribaleStatusTypeEnum.Good))
+                                    if (DeviceValues.Any(x => x.Value.Value ==null))
                                     {
                                         payLoad.Values = null;
                                         payLoad.DeviceStatus = DeviceStatusTypeEnum.Bad;
