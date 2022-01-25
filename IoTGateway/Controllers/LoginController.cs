@@ -36,7 +36,7 @@ namespace IoTGateway.Controllers
         [HttpPost]
         public async Task<ActionResult> Login(LoginVM vm)
         {
-            if (Wtm.ConfigInfo.IsQuickDebug == false)
+            if (false)//Wtm.ConfigInfo.IsQuickDebug == false
             {
                 var verifyCode = HttpContext.Session.Get<string>("verify_code");
                 if (string.IsNullOrEmpty(verifyCode) || verifyCode.ToLower() != vm.VerifyCode.ToLower())
