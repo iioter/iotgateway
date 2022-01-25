@@ -120,7 +120,12 @@
       "ProjectGuid": "96d436b4-4703-4448-a879-b69ace89ca11",
       "DisplayName": "WalkingTec.Mvvm.Mvc",
       "ColorIndex": 6
+    },
+    "8e2d91dc-dee4-4843-8d09-6fc06651527e": {
+      "ProjectGuid": "8e2d91dc-dee4-4843-8d09-6fc06651527e",
+      "DisplayName": "DriverModbusMaster",
+      "ColorIndex": 7
     }
   },
-  "NextColorIndex": 7
+  "NextColorIndex": 8
 }

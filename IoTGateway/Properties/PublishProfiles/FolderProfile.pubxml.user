@@ -4,7 +4,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 -->
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <_PublishTargetUrl>E:\workbench\iotgateway\IoTGateway\bin\Release\net5.0\publish\</_PublishTargetUrl>
-    <History>True|2021-12-24T11:18:19.0736393Z;True|2021-12-24T16:46:49.1192015+08:00;True|2021-12-24T16:23:28.9214784+08:00;True|2021-12-24T15:20:08.6401847+08:00;True|2021-12-17T19:11:07.1655146+08:00;True|2021-12-12T14:11:08.8380502+08:00;</History>
+    <_PublishTargetUrl>D:\Repos\iotgateway\IoTGateway\bin\Release\net6.0\publish\</_PublishTargetUrl>
+    <History>True|2022-01-24T15:31:28.3620602Z;True|2022-01-24T23:30:03.8991942+08:00;True|2022-01-24T23:23:16.4288882+08:00;True|2021-12-24T19:18:19.0736393+08:00;True|2021-12-24T16:46:49.1192015+08:00;True|2021-12-24T16:23:28.9214784+08:00;True|2021-12-24T15:20:08.6401847+08:00;True|2021-12-17T19:11:07.1655146+08:00;True|2021-12-12T14:11:08.8380502+08:00;</History>
   </PropertyGroup>
 </Project>
