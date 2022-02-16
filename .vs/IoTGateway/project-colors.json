@@ -130,7 +130,12 @@
       "ProjectGuid": "7752ad8c-04bf-4bd2-9272-cda4f78fa954",
       "DisplayName": "PluginInterface",
       "ColorIndex": 8
+    },
+    "89de240e-5393-4dd4-87c9-3ad9d44b6e7e": {
+      "ProjectGuid": "89de240e-5393-4dd4-87c9-3ad9d44b6e7e",
+      "DisplayName": "WalkingTec.Mvvm.Core",
+      "ColorIndex": 9
     }
   },
-  "NextColorIndex": 9
+  "NextColorIndex": 10
 }

@@ -78,11 +78,12 @@ namespace IoTGateway
             services.AddSingleton<DrvierService>();
             services.AddSingleton<UAService>();
             services.AddSingleton<MyMqttClient>();
+            services.AddSingleton<ModbusSlaveService>();
 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IOptionsMonitor<Configs> configs, DeviceService deviceService)
+        public void Configure(IApplicationBuilder app, IOptionsMonitor<Configs> configs, DeviceService deviceService, ModbusSlaveService modbusSlaveService)
         {
             IconFontsHelper.GenerateIconFont();
 
