@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Plugin;
+using PluginInterface;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Auth;
 using WalkingTec.Mvvm.Core.Extensions;
@@ -19,6 +21,11 @@ namespace IoTGateway.Controllers
 {
     public class HomeController : BaseController
     {
+        private readonly DeviceService _deviceService;
+        public HomeController(DeviceService deviceService)
+        {
+            _deviceService = deviceService;
+        }
         [AllRights]
         public IActionResult Index()
         {
@@ -38,6 +45,61 @@ namespace IoTGateway.Controllers
         {
             return PartialView();
         }
+
+        public IActionResult GetDeviceChart()
+        {
+            var data = new List<ChartData>();
+
+
+            data.Add(new ChartData
+            {
+                Value = _deviceService.DeviceThreads.Where(x => !x.Device.AutoStart).Count(),
+                Category = "停止",
+                Series = "Device"
+            });
+
+            data.Add(new ChartData
+            {
+                Value = _deviceService.DeviceThreads.Where(x => x.Device.AutoStart && x.Driver.IsConnected).Count(),
+                Category = "运行",
+                Series = "Device",
+            });
+
+            data.Add(new ChartData
+            {
+                Value = _deviceService.DeviceThreads.Where(x => x.Device.AutoStart && !x.Driver.IsConnected).Count(),
+                Category = "异常",
+                Series = "Device"
+            });
+            var rv = data.ToChartData();
+            return Json(rv);
+        }
+
+        public IActionResult GetDeviceVariableChart()
+        {
+            var data = new List<ChartData>();
+            foreach (var deviceThread in _deviceService.DeviceThreads.OrderBy(x => x.Device.DeviceName))
+            {
+                data.Add(new ChartData
+                {
+                    Category = deviceThread.Device.DeviceName,
+                    Value = deviceThread.DeviceValues.Where(x => x.Value.StatusType != VaribaleStatusTypeEnum.Good).Count(),
+                    Series = "Others"
+                });
+
+                data.Add(new ChartData
+                {
+                    Category = deviceThread.Device.DeviceName,
+                    Value = deviceThread.DeviceValues.Where(x => x.Value.StatusType == VaribaleStatusTypeEnum.Good).Count(),
+                    Series = "Good"
+                });
+
+                
+            }
+            
+            var rv = data.ToChartData();
+            return Json(rv);
+        }        
 
         public IActionResult GetActionChart()
         {

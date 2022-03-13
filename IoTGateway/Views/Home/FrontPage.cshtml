@@ -56,6 +56,22 @@
           </div>
         </div>
       </div>
+       <div class="layui-col-md4">
+        <div class="layui-card">
+          <div class="layui-card-header">设备状态</div>
+          <div class="layui-card-body">
+                  <wt:chart is-horizontal="true" show-legend="true" show-tooltip="true" type="Pie"  height="300" trigger-url="/Home/GetDeviceChart" />
+          </div>
+        </div>
+      </div>
+      <div class="layui-col-md8">
+        <div class="layui-card">
+          <div class="layui-card-header">设备变量状态</div>
+          <div class="layui-card-body">
+            <wt:chart  show-legend="false" show-tooltip="true" type="Bar" height="300" trigger-url="/Home/GetDeviceVariableChart" />
+          </div>
+        </div>
+      </div>
       <div class="layui-col-md6">
         <div class="layui-card">
           <div class="layui-card-header">控制器</div>

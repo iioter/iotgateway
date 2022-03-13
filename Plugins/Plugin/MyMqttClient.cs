@@ -93,7 +93,7 @@ namespace Plugin
                     foreach (var kv in payload.Values)
                     {
                         //更新到UAService
-                        _uaNodeManager.UpdateNode($"{device.Parent.DeviceName}.{device.DeviceName}.{kv.Key}", kv.Value);
+                        _uaNodeManager?.UpdateNode($"{device.Parent.DeviceName}.{device.DeviceName}.{kv.Key}", kv.Value);
                     }
                 }
 
