@@ -5,21 +5,22 @@
 
 * 抛砖引玉，共同进步
 * 基于.net6的开源物联网网关
-* 可视化的配置方式实现数据采集(使用wtm开发)
-* 物联网网关mqtt+opcua输出，支持thingsboard、iotsharp等
+* 浏览器可视化的配置方式实现数据采集(使用wtm开发)
+* 物联网网关mqtt+opcua双通道实时输出，支持thingsboard、iotsharp等第三方平台
 * 内置Mqtt服务端,支持websocket，进行标准mqtt输出。本地端口1888 admin 000000
 * 内置OPCUA服务端,数据实时更新。匿名本地访问:opc.tcp://localhost:62541/Quickstarts/ReferenceServer
-* 内置Modbus驱动全协议支持
-* 内置西门子PLC驱动
-* 内置三菱PLC驱动
-* 内置欧姆龙PLC驱动
 * 内置AB(罗克韦尔)PLC驱动
+* 内置三菱PLC驱动
+* 内置Modbus驱动全协议支持
+* 内置MT机床驱动
+* 内置欧姆龙PLC驱动
 * 内置OPCUA客户端驱动
-* 增加计算表达式
-* 支持驱动二次开发（短期内会提供三菱、fanuc通讯）
-* 数据通过mqtt推送，支持thingsboard
+* 内置西门子PLC驱动
+* 增支持计算表达式，数据边缘预处理
+* 支持驱动二次开发
 * 目前只支持遥测数据上传，后续支持属性的双向通信
 * 简单集成了web组态项目
+* 3D可视化展示Demo
 
 
 # 免责声明
@@ -29,9 +30,9 @@
 # 体验
 1. 在线体验[iotgateway](http://42.193.160.84:518/)后台：http://42.193.160.84:518/
 2. 用户名 admin 密码 000000
-3. 内置Modbustcp模拟设备 ip 172.17.0.1 port 16051 不要修改，否则连不上
+3. 内置Modbustcp模拟设备 ip 172.17.0.1 port 503 不要修改，否则连不上
 4. 其中modbus地址0-1为固定值，2-9为随机值，10-19为0
-5. 外网访问测试modbus设备，请连接:42.193.160.84:16051，进行标准modbus协议读写
+5. 外网访问测试modbus设备，请连接:42.193.160.84:503，进行标准modbus协议读写
 6. 外网访问测试mqtt服务器，42.193.160.84:1888 admin 000000
 7. 外网访问测试opcua服务，opc.tcp://42.193.160.84:62541/Quickstarts/ReferenceServer 匿名访问
 8. 想要通过mqtt接收数据，请连接mqttserver:42.193.160.84,1888 admin 000000；订阅topic: v1/gateway/telemetry
@@ -45,25 +46,25 @@
 
 # 运行
 ## windows主机运行：
-1. [下载Releasev0.2.0](https://github.com/iioter/iotgateway/releases/download/v0.2.0/iotgateway-v0.2.0.zip)发布版本
+1. [下载Releasev0.3.0](https://github.com/iioter/iotgateway/releases/download/v0.3.0/iotgateway-v0.3.0.zip)发布版本
 2. [下载.net6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) sdk或runtime
 3. 安装.net6 
 4. 解压release包，运行IoTGateway.exe
 5. 访问[iotgateway](http://localhost:518/)后台：http://localhost:518
 
 ## linux/amd64,win/amd64 docker运行(官方仓)
-1. docker run -d -p 518:518 -p 1888:1888 -p 62541:62541 --name iotgateway --restart always 15261671110/iotgateway
+1. docker run -d -p 518:518 -p 1888:1888 -p 62541:62541 -p 503:503 --name iotgateway --restart always 15261671110/iotgateway
 ## linux/amd64,win/amd64 docker运行(阿里仓)
 1. docker pull registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway 
 2. docker tag registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway 15261671110/iotgateway
-3. docker run -d -p 518:518 -p 1888:1888 -p 62541:62541 --name iotgateway --restart always 15261671110/iotgateway
+3. docker run -d -p 518:518 -p 1888:1888 -p 62541:62541 -p 503:503 --name iotgateway --restart always 15261671110/iotgateway
  
-## linux/arm docker运行(官方仓)
-1. docker run -d -p 518:518 -p 1888:1888 -p 62541:62541 --name iotgateway --restart always 15261671110/iotgateway:arm
-## linux/arm docker运行(阿里仓)
+## linux/arm64 docker运行(官方仓)
+1. docker run -d -p 518:518 -p 1888:1888 -p 62541:62541 -p 503:503 --name iotgateway --restart always 15261671110/iotgateway:arm
+## linux/arm64 docker运行(阿里仓)
 1. docker pull registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway:arm 
 2. docker tag registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway:arm 15261671110/iotgateway
-3. docker run -d -p 518:518 -p 1888:1888 -p 62541:62541 --name iotgateway --restart always 15261671110/iotgateway
+3. docker run -d -p 518:518 -p 1888:1888 -p 62541:62541 -p 503:503 --name iotgateway --restart always 15261671110/iotgateway
 
 ## 登入系统
 1. 用户名 admin,密码 000000
@@ -91,7 +92,7 @@
 
 
 
-# 善于假于物
+# 善假于物
 1. [WTM(MIT)](https://github.com/dotnetcore/WTM)
 2. [OPCUA(OPCUA)](https://github.com/OPCFoundation/UA-.NETStandard)
 3. [NModbus4(MIT)](https://github.com/NModbus4/NModbus4)
