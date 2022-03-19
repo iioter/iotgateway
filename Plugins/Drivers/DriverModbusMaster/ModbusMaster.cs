@@ -83,7 +83,7 @@ namespace DriverModbusMaster
                     case Master_TYPE.Udp:
                     case Master_TYPE.RtuOnUdp:
                     case Master_TYPE.AsciiOnUdp:
-                        return clientUdp != null && master != null && clientUdp.Client.Connected ;
+                        return clientUdp != null && master != null && clientUdp.Client.Connected;
                     case Master_TYPE.Rtu:
                     case Master_TYPE.Ascii:
                         return port != null && master != null && port.IsOpen;
@@ -261,6 +261,7 @@ namespace DriverModbusMaster
                     }
                     else
                         ret.Value = retBool;
+                    ret.StatusType = VaribaleStatusTypeEnum.Good;
                 }
                 else
                 {
@@ -295,6 +296,7 @@ namespace DriverModbusMaster
                     }
                     else
                         ret.Value = retBool;
+                    ret.StatusType = VaribaleStatusTypeEnum.Good;
                 }
                 else
                 {
@@ -344,7 +346,7 @@ namespace DriverModbusMaster
                         if (FunCode == 3)
                             rawBuffers = master.ReadHoldingRegisters(SlaveAddress, startAddress, count);
                         else if (FunCode == 4)
-                            rawBuffers = master.ReadHoldingRegisters(SlaveAddress, startAddress, count);
+                            rawBuffers = master.ReadInputRegisters(SlaveAddress, startAddress, count);
 
                         var retBuffers = ChangeBuffersOrder(rawBuffers, ioarg.ValueType);
                         if (ioarg.ValueType.ToString().Contains("Uint16"))
