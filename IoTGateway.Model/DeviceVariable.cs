@@ -29,7 +29,7 @@ namespace IoTGateway.Model
         public ProtectTypeEnum ProtectType { get; set; }
 
         public Device Device { get; set; }
-        [Display(Name = "采集点")]
+        [Display(Name = "设备")]
         public Guid? DeviceId { get; set; }
     }
 }

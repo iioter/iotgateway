@@ -135,7 +135,17 @@
       "ProjectGuid": "89de240e-5393-4dd4-87c9-3ad9d44b6e7e",
       "DisplayName": "WalkingTec.Mvvm.Core",
       "ColorIndex": 9
+    },
+    "e63c22d5-5f9b-4671-b115-40721b27f09f": {
+      "ProjectGuid": "e63c22d5-5f9b-4671-b115-40721b27f09f",
+      "DisplayName": "IoTGateway.ViewModel",
+      "ColorIndex": 10
+    },
+    "44619988-9f09-4714-9532-a44faf8275fe": {
+      "ProjectGuid": "44619988-9f09-4714-9532-a44faf8275fe",
+      "DisplayName": "IoTGateway.Model",
+      "ColorIndex": 11
     }
   },
-  "NextColorIndex": 10
+  "NextColorIndex": 12
 }

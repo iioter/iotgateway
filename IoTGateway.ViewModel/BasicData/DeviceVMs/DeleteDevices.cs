@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 using IoTGateway.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace IoTGateway.ViewModel.BasicData.DeviceVMs
 {
@@ -19,7 +20,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
             {
                 try
                 {
-                    var daps = DC.Set<Device>().Where(x => Ids.Contains(x.ID)).ToList();
+                    var daps = DC.Set<Device>().Include(x => x.Children).Where(x => Ids.Contains(x.ID)).ToList();
 
                     foreach (var dap in daps)
                     {
@@ -28,9 +29,9 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                             deleteRet.Message = "采集点不存在，可能已经被删除了";
                             return deleteRet;
                         }
-                        else if (dap.DeviceTypeEnum == DeviceTypeEnum.Group)
+                        else if (dap.DeviceTypeEnum == DeviceTypeEnum.Group && dap.Children.Count() != 0)
                         {
-                            deleteRet.Message = "有风险，暂不支持组删除";
+                            deleteRet.Message = "组内还有设备，暂不支持组删除";
                             return deleteRet;
                         }
                         else

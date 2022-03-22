@@ -3,11 +3,11 @@
 
 <wt:form vm="@Model">
 <wt:row items-per-row="ItemsPerRowEnum.Two">
+<wt:combobox field="Entity.DeviceId" items="AllDevices"/>
 <wt:textbox field="Entity.DeviceConfigName" />
 <wt:textbox field="Entity.Description" />
 <wt:textbox field="Entity.Value" />
 <wt:textbox field="Entity.EnumInfo" />
-<wt:combobox field="Entity.DeviceId" items="AllDevices"/>
 </wt:row>
     <wt:row align="AlignEnum.Right">
         <wt:submitbutton />
