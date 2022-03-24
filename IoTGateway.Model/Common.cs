@@ -17,4 +17,11 @@ namespace IoTGateway.Model
         [Display(Name = "读写")]
         ReadAndWrite = 1
     }
+
+    public enum DataSide
+    {
+        AnySide=0,
+        //ServerSide=1,
+        ClientSide=2,
+    }
 }

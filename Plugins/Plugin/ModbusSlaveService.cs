@@ -1,4 +1,5 @@
-﻿using Modbus.Data;
+﻿using Microsoft.Extensions.Logging;
+using Modbus.Data;
 using Modbus.Device;
 using System;
 using System.Collections.Generic;
@@ -12,13 +13,15 @@ namespace Plugin
 {
     public class ModbusSlaveService : IDisposable
     {
+        private readonly ILogger<ModbusSlaveService> _logger;
         TcpListener slaveTcpListener;
         private Timer m_simulationTimer;
         private object Lock=new object();
         private ModbusSlave slave;
         private Task task { get; set; } = null;
-        public ModbusSlaveService()
+        public ModbusSlaveService(ILogger<ModbusSlaveService> logger)
         {
+            _logger = logger;
             byte slaveId = 1;
             int port = 503;
             IPAddress address = IPAddress.Any;
@@ -30,6 +33,7 @@ namespace Plugin
             slave.DataStore = DataStoreFactory.CreateDefaultDataStore();
             slave.ListenAsync();
             m_simulationTimer = new Timer(DoSimulation, null, 1000, 1000);
+            _logger.LogInformation($"Modbus Server Started");
         }
 
         private void DoSimulation(object state)
@@ -53,11 +57,12 @@ namespace Plugin
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"modbus模拟数据失败了,{ex}");
+                _logger.LogError($"Modbus Server Error", ex);
             }
         }
         public void Dispose()
         {
+            _logger.LogError($"Modbus Server Dispose");
             m_simulationTimer.Dispose();
             slaveTcpListener.Stop();
         }

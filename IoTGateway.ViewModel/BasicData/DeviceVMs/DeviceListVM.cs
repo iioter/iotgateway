@@ -18,6 +18,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
             return new List<GridAction>
             {
                 this.MakeAction("Device","Copy","设备复制","设备复制", GridActionParameterTypesEnum.SingleId,"BasicData",600).SetIconCls("layui-icon layui-icon-template-1").SetPromptMessage("你确定复制设备，包括配置参数和变量？").SetDialogTitle("复制设备确认").SetHideOnToolBar(true).SetShowInRow(true).SetBindVisiableColName("copy"),
+                this.MakeAction("Device","Attribute","请求属性","请求属性", GridActionParameterTypesEnum.SingleId,"BasicData",600).SetIconCls("layui-icon layui-icon-download-circle").SetPromptMessage("你确定请求客户端属性和共享属性吗？").SetDialogTitle("请求属性确认").SetHideOnToolBar(true).SetShowInRow(true).SetBindVisiableColName("attribute"),
                 this.MakeAction("Device","CreateGroup","创建组","创建组", GridActionParameterTypesEnum.NoId,"BasicData",600).SetIconCls("_wtmicon _wtmicon-zuzhiqunzu").SetDialogTitle("创建组").SetShowInRow(false),
                 this.MakeStandardAction("Device", GridActionStandardTypesEnum.Create, "创建设备","BasicData", dialogWidth: 800,name:"创建设备").SetIconCls("layui-icon layui-icon-senior"),
                 this.MakeStandardAction("Device", GridActionStandardTypesEnum.Edit, Localizer["Sys.Edit"], "BasicData", dialogWidth: 800),
@@ -42,6 +43,10 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                 this.MakeGridHeader(x => x.DeviceTypeEnum),
                 this.MakeGridHeader(x => x.DeviceName_view),
                 this.MakeGridHeader(x=>"copy").SetHide().SetFormat((a,b)=>{
+                    if(a.DeviceTypeEnum== DeviceTypeEnum.Device)
+                        return "true";
+                     return "false";
+                }),this.MakeGridHeader(x=>"attribute").SetHide().SetFormat((a,b)=>{
                     if(a.DeviceTypeEnum== DeviceTypeEnum.Device)
                         return "true";
                      return "false";

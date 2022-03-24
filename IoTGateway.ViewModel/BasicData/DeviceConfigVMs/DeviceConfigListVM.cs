@@ -51,6 +51,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceConfigVMs
         {
             return new List<GridColumn<DeviceConfig_View>>{
                 this.MakeGridHeader(x => x.DeviceConfigName).SetWidth(100),
+                this.MakeGridHeader(x => x.DataSide).SetWidth(100),
                 this.MakeGridHeader(x => x.Description).SetWidth(100),
                 this.MakeGridHeader(x => x.Value).SetWidth(100),
                 this.MakeGridHeader(x => x.DeviceName_view).SetWidth(100),
@@ -62,25 +63,28 @@ namespace IoTGateway.ViewModel.BasicData.DeviceConfigVMs
         public override IOrderedQueryable<DeviceConfig_View> GetSearchQuery()
         {
             var query = DC.Set<DeviceConfig>()
-                .CheckContain(Searcher.DeviceConfigName, x=>x.DeviceConfigName)
-                .CheckContain(Searcher.Value, x=>x.Value)
-                .CheckEqual(Searcher.DeviceId, x=>x.DeviceId)
+                .CheckContain(Searcher.DeviceConfigName, x => x.DeviceConfigName)
+                .CheckContain(Searcher.Value, x => x.Value)
+                .CheckEqual(Searcher.DeviceId, x => x.DeviceId)
+                .CheckEqual(Searcher.DataSide, x => x.DataSide)
                 .Select(x => new DeviceConfig_View
                 {
-				    ID = x.ID,
+                    ID = x.ID,
                     DeviceConfigName = x.DeviceConfigName,
+                    DataSide = x.DataSide,
                     Description = x.Description,
                     Value = x.Value,
                     EnumInfo = x.EnumInfo,
                     DeviceName_view = x.Device.DeviceName,
                 })
-                .OrderBy(x => x.DeviceName_view).ThenBy(x=>x.DeviceConfigName);
+                .OrderBy(x => x.DeviceName_view).ThenBy(x => x.DeviceConfigName);
             return query;
         }
 
     }
 
-    public class DeviceConfig_View : DeviceConfig{
+    public class DeviceConfig_View : DeviceConfig
+    {
         [Display(Name = "设备名")]
         public String DeviceName_view { get; set; }
 

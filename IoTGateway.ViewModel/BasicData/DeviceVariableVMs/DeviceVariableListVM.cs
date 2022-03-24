@@ -44,10 +44,10 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
             {
                 foreach (var item in device.Children)
                 {
-                    var deviceThread = deviceService.DeviceThreads.Where(x => x.Device.ID.ToString() == (string)item.Value).FirstOrDefault();
+                    var deviceThread = deviceService.DeviceThreads.Where(x => x._device.ID.ToString() == (string)item.Value).FirstOrDefault();
 
                     item.Text = item.Text;
-                    item.Icon = deviceThread.Device.AutoStart ? (deviceThread.Driver.IsConnected ? "layui-icon-link" : "layui-icon-unlink") : "layui-icon-pause";
+                    item.Icon = deviceThread._device.AutoStart ? (deviceThread._driver.IsConnected ? "layui-icon-link" : "layui-icon-unlink") : "layui-icon-pause";
                     item.Expended = true;
                 }
             }
@@ -86,7 +86,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
             var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
             foreach (var item in EntityList)
             {
-                var DapThread = deviceService.DeviceThreads.Where(x => x.Device.ID == item.DeviceId).FirstOrDefault();
+                var DapThread = deviceService.DeviceThreads.Where(x => x._device.ID == item.DeviceId).FirstOrDefault();
                 if (DapThread?.DeviceValues != null && DapThread.DeviceValues.ContainsKey(item.ID))
                 {
                     item.Value = DapThread.DeviceValues[item.ID].Value?.ToString();

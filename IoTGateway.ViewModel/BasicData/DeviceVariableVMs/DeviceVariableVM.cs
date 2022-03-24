@@ -32,7 +32,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
             {
                 var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
                 AllMethods = deviceService.GetDriverMethods(Entity.DeviceId);
-                var DapThread = deviceService.DeviceThreads.Where(x => x.Device.ID == Entity.DeviceId).FirstOrDefault();
+                var DapThread = deviceService.DeviceThreads.Where(x => x._device.ID == Entity.DeviceId).FirstOrDefault();
             }
         }
 

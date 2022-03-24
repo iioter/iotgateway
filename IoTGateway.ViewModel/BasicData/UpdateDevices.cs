@@ -78,7 +78,7 @@ namespace IoTGateway.ViewModel.BasicData
                     case FromVM.Device:
                         foreach (var deviceId in Ids)
                         {
-                            var device = DC.Set<Device>().AsNoTracking().Include(x => x.Parent).Where(x => x.ID == deviceId).Include(x => x.DeviceVariables).Include(x => x.Driver).SingleOrDefault();
+                            var device = DC.Set<Device>().AsNoTracking().Include(x => x.Parent).Where(x => x.ID == deviceId).Include(x => x.DeviceVariables).Include(x => x.Driver).Include(x=>x.DeviceConfigs).SingleOrDefault();
                             if (!devices.Where(x => x.ID == device.ID).Any())
                                 devices.Add(device);
                         }

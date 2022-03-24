@@ -1,0 +1,14 @@
+﻿@model IoTGateway.ViewModel.BasicData.DeviceVMs.AttributeVM
+@inject IStringLocalizer<Program> Localizer;
+
+
+<wt:form vm="@Model" >
+    <wt:row items-per-row="ItemsPerRowEnum.One">
+        <wt:quote>@Model.设备名称</wt:quote>
+    </wt:row>
+
+    <wt:row align="AlignEnum.Right">
+        <wt:submitbutton text="获取属性" />
+        <wt:closebutton text="取消" />
+    </wt:row>
+</wt:form>

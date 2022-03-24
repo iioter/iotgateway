@@ -16,12 +16,14 @@ using IoTGateway.DataAccess;
 using IoTGateway.Model;
 using DynamicExpresso;
 using MQTTnet.Server;
+using Microsoft.Extensions.Logging;
 
 namespace Plugin
 {
     public class DeviceService : IDisposable
     {
-        public DrvierService _DrvierManager;
+        private readonly ILogger<DeviceService> _logger;
+        public DriverService _DrvierManager;
 
         public List<DeviceThread> DeviceThreads = new List<DeviceThread>();
         private MyMqttClient _MyMqttClient;
@@ -29,9 +31,9 @@ namespace Plugin
         private string connnectSetting = IoTBackgroundService.connnectSetting;
         private DBTypeEnum DBType = IoTBackgroundService.DBType;
         private Interpreter interpreter = new();
-
-        public DeviceService(IConfiguration ConfigRoot, DrvierService drvierManager, MyMqttClient myMqttClient, UAService uAService, IMqttServer mqttServer )
+        public DeviceService(IConfiguration ConfigRoot, DriverService drvierManager, MyMqttClient myMqttClient, UAService uAService, IMqttServer mqttServer, ILogger<DeviceService> logger)
         {
+            _logger = logger;
             _DrvierManager = drvierManager;
             _MyMqttClient = myMqttClient;
             _MqttServer = mqttServer;
@@ -41,6 +43,7 @@ namespace Plugin
                 using (var DC = new DataContext(connnectSetting, DBType))
                 {
                     var Devices = DC.Set<Device>().Where(x => x.DeviceTypeEnum == DeviceTypeEnum.Device).Include(x => x.Parent).Include(x => x.Driver).Include(x => x.DeviceConfigs).Include(x => x.DeviceVariables).AsNoTracking().ToList();
+                    _logger.LogInformation($"Loaded Devices Count:{Devices.Count()}");
                     foreach (var Device in Devices)
                     {
                         CreateDeviceThread(Device);
@@ -50,6 +53,7 @@ namespace Plugin
             catch (Exception ex)
             {
 
+                _logger.LogError($"LoadDevicesError", ex);
             }
         }
 
@@ -57,12 +61,14 @@ namespace Plugin
         {
             try
             {
+                _logger.LogInformation($"UpdateDevice Start:{device.DeviceName}");
                 RemoveDeviceThread(device);
                 CreateDeviceThread(device);
+                _logger.LogInformation($"UpdateDevice End:{device.DeviceName}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"{device.DeviceName},更新失败");
+                _logger.LogError($"UpdateDevice Error:{device.DeviceName}", ex);
             }
 
         }
@@ -75,13 +81,12 @@ namespace Plugin
 
         public void CreateDeviceThread(Device Device)
         {
-            using (var DC = new DataContext(connnectSetting, DBType))
+            try
             {
-                var systemManage = DC.Set<SystemConfig>().FirstOrDefault();
-                if (systemManage == null)
-                    Console.WriteLine("配置信息错误，无法启动");
-                else
+                _logger.LogInformation($"CreateDeviceThread Start:{Device.DeviceName}");
+                using (var DC = new DataContext(connnectSetting, DBType))
                 {
+                    var systemManage = DC.Set<SystemConfig>().FirstOrDefault();
                     var driver = _DrvierManager.DriverInfos.Where(x => x.Type.FullName == Device.Driver.AssembleName).SingleOrDefault();
                     var settings = DC.Set<DeviceConfig>().Where(x => x.DeviceId == Device.ID).AsNoTracking().ToList();
                     Type[] types = new Type[1] { typeof(Guid) };
@@ -137,9 +142,16 @@ namespace Plugin
                         p.SetValue(DeviceObj, value);
                     }
 
-                    var deviceThread = new DeviceThread(Device, DeviceObj, systemManage.GatewayName, _MyMqttClient, interpreter, _MqttServer);
+                    var deviceThread = new DeviceThread(Device, DeviceObj, systemManage.GatewayName, _MyMqttClient, interpreter, _MqttServer, _logger);
                     DeviceThreads.Add(deviceThread);
+
                 }
+
+                _logger.LogInformation($"CreateDeviceThread End:{Device.DeviceName}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation($"CreateDeviceThread Error:{Device.DeviceName}", ex);
 
             }
 
@@ -155,7 +167,7 @@ namespace Plugin
         {
             if (Device != null)
             {
-                var DeviceThread = DeviceThreads.Where(x => x.Device.ID == Device.ID).FirstOrDefault();
+                var DeviceThread = DeviceThreads.Where(x => x._device.ID == Device.ID).FirstOrDefault();
                 if (DeviceThread != null)
                 {
                     DeviceThread.StopThread();
@@ -174,21 +186,32 @@ namespace Plugin
         public List<ComboSelectListItem> GetDriverMethods(Guid? DeviceId)
         {
             List<ComboSelectListItem> driverFilesComboSelect = new List<ComboSelectListItem>();
-            foreach (var method in DeviceThreads.Where(x => x.Device.ID == DeviceId).FirstOrDefault()?.Methods)
+            try
             {
-                var Attribute = method.CustomAttributes.ToList().FirstOrDefault().ConstructorArguments;
-                var item = new ComboSelectListItem
+                _logger.LogInformation($"GetDriverMethods Start:{DeviceId}");
+                foreach (var method in DeviceThreads.Where(x => x._device.ID == DeviceId).FirstOrDefault()?.Methods)
                 {
-                    Text = method.Name,
-                    Value = method.Name,
-                };
-                driverFilesComboSelect.Add(item);
+                    var Attribute = method.CustomAttributes.ToList().FirstOrDefault().ConstructorArguments;
+                    var item = new ComboSelectListItem
+                    {
+                        Text = method.Name,
+                        Value = method.Name,
+                    };
+                    driverFilesComboSelect.Add(item);
+                }
+                _logger.LogInformation($"GetDriverMethods End:{DeviceId}");
             }
+            catch (Exception ex)
+            {
+
+                _logger.LogInformation($"GetDriverMethods Error:{DeviceId}");
+            }
+
             return driverFilesComboSelect;
         }
         public void Dispose()
         {
-            int t = 0;
+            _logger.LogInformation("Dispose");
         }
 
         public Task StartAsync(CancellationToken cancellationToken)

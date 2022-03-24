@@ -46,18 +46,20 @@ namespace IoTGateway
             {
                 options.UseWtmMvcOptions();
             })
-            .AddJsonOptions(options => {
+            .AddJsonOptions(options =>
+            {
                 options.UseWtmJsonOptions();
             })
-            
+
             .ConfigureApiBehaviorOptions(options =>
             {
                 options.UseWtmApiOptions();
             })
             .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
             .AddWtmDataAnnotationsLocalization(typeof(Program));
-            
-            services.AddWtmContext(ConfigRoot, (options)=> {
+
+            services.AddWtmContext(ConfigRoot, (options) =>
+            {
                 options.DataPrivileges = DataPrivilegeSettings();
                 options.CsSelector = CSSelector;
                 options.FileSubDirSelector = SubDirSelector;
@@ -75,7 +77,7 @@ namespace IoTGateway
 
             services.AddHostedService<IoTBackgroundService>();
             services.AddSingleton<DeviceService>();
-            services.AddSingleton<DrvierService>();
+            services.AddSingleton<DriverService>();
             services.AddSingleton<UAService>();
             services.AddSingleton<MyMqttClient>();
             services.AddSingleton<ModbusSlaveService>();
@@ -137,7 +139,7 @@ namespace IoTGateway
 
             app.UseWtmContext();
 
-            
+
         }
 
         /// <summary>

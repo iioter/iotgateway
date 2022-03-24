@@ -14,6 +14,8 @@ namespace IoTGateway.ViewModel.BasicData.DeviceConfigVMs
     {
         [Display(Name = "名称")]
         public String DeviceConfigName { get; set; }
+        [Display(Name = "属性侧")]
+        public DataSide? DataSide { get; set; }
         [Display(Name = "值")]
         public String Value { get; set; }
         public List<ComboSelectListItem> AllDevices { get; set; }

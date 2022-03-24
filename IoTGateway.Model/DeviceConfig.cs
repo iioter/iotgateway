@@ -8,6 +8,8 @@ namespace IoTGateway.Model
     {
         [Display(Name = "名称")]
         public string DeviceConfigName { get; set; }
+        [Display(Name = "属性侧")]
+        public DataSide DataSide { get; set; }
         [Display(Name = "描述")]
         public string Description { get; set; }
         [Display(Name = "值")]

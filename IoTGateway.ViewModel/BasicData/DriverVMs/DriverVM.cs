@@ -23,8 +23,8 @@ namespace IoTGateway.ViewModel.BasicData.DriverVMs
 
         public override void DoAdd()
         {
-            var drvierService = Wtm.ServiceProvider.GetService(typeof(DrvierService)) as DrvierService;
-            Entity.AssembleName = drvierService.GetAssembleNameByFileName(Entity.FileName);
+            var DriverService = Wtm.ServiceProvider.GetService(typeof(DriverService)) as DriverService;
+            Entity.AssembleName = DriverService.GetAssembleNameByFileName(Entity.FileName);
             if (string.IsNullOrEmpty(Entity.AssembleName))
             {
                 MSD.AddModelError("", "程序集获取失败");

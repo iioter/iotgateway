@@ -280,7 +280,29 @@ namespace IoTGateway.Controllers
         }
         #endregion
 
+        #region 获取属性
+        [ActionDescription("获取属性")]
+        public ActionResult Attribute()
+        {
+            var vm = Wtm.CreateVM<AttributeVM>();
+            return PartialView(vm);
+        }
 
+        [HttpPost]
+        [ActionDescription("获取属性")]
+        public ActionResult Attribute(AttributeVM vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return PartialView(vm);
+            }
+            else
+            {
+                vm.Request();
+                return FFResult().CloseDialog().RefreshGrid().Alert($"{vm.请求结果}");
+            }
+        }
+        #endregion
         public IActionResult GetMethods(Guid? ID)
         {
             return JsonMore(_DeviceService.GetDriverMethods(ID));
