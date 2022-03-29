@@ -1,6 +1,6 @@
 # iotgateway
 ## github地址:[iotgateway](https://github.com/iioter/iotgateway/) https://github.com/iioter/iotgateway
-## gitee地址:[iotgateway](https://gitee.com/wang_haidong/iotgateway/) https://gitee.com/iioter/iotgateway
+## gitee地址:[iotgateway](https://gitee.com/iioter/iotgateway/) https://gitee.com/iioter/iotgateway
 基于.net6的跨平台物联网网关。通过可视化配置，轻松的连接到你的任何设备和系统(如PLC、扫码枪、CNC、数据库、串口设备、上位机、OPC Server、OPC UA Server、Mqtt Server等)，从而与 Thingsboard、IoTSharp或您自己的物联网平台进行双向数据通讯。提供简单的驱动开发接口；当然也可以进行边缘计算。
 
 * 抛砖引玉，共同进步
