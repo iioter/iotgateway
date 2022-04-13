@@ -1,4 +1,6 @@
-# iotgateway
+# iotgateway 
+## [iotgateway在线体验](http://42.193.160.84:518/)访问：http://42.193.160.84:518/
+## [iotgateway教程文档](http://iotgateway.net/)访问：http://iotgateway.net/
 ## github地址:[iotgateway](https://github.com/iioter/iotgateway/) https://github.com/iioter/iotgateway
 ## gitee地址:[iotgateway](https://gitee.com/iioter/iotgateway/) https://gitee.com/iioter/iotgateway
 基于.net6的跨平台物联网网关。通过可视化配置，轻松的连接到你的任何设备和系统(如PLC、扫码枪、CNC、数据库、串口设备、上位机、OPC Server、OPC UA Server、Mqtt Server等)，从而与 Thingsboard、IoTSharp或您自己的物联网平台进行双向数据通讯。提供简单的驱动开发接口；当然也可以进行边缘计算。
@@ -9,13 +11,7 @@
 * 物联网网关mqtt+opcua双通道实时输出，支持thingsboard、iotsharp等第三方平台
 * 内置Mqtt服务端,支持websocket，进行标准mqtt输出。本地端口1888 admin 000000
 * 内置OPCUA服务端,数据实时更新。匿名本地访问:opc.tcp://localhost:62541/Quickstarts/ReferenceServer
-* 内置AB(罗克韦尔)PLC驱动
-* 内置三菱PLC驱动
-* 内置Modbus驱动全协议支持
-* 内置MT机床驱动
-* 内置欧姆龙PLC驱动
-* 内置OPCUA客户端驱动
-* 内置西门子PLC驱动
+* 内置三菱PLC、Modbus驱动全协议支持、MT机床、欧姆龙PLC、OPCUA客户端、西门子PLC、AB(罗克韦尔)PLC、
 * 增支持计算表达式，数据边缘预处理
 * 支持驱动二次开发
 * 目前只支持遥测数据上传，后续支持属性的双向通信
@@ -36,17 +32,25 @@
 6. 外网访问测试mqtt服务器，42.193.160.84:1888 admin 000000
 7. 外网访问测试opcua服务，opc.tcp://42.193.160.84:62541/Quickstarts/ReferenceServer 匿名访问
 8. 想要通过mqtt接收数据，请连接mqttserver:42.193.160.84,1888 admin 000000；订阅topic: v1/gateway/telemetry
+## 3D可视化(数字孪生?)
 ![easteregg](https://user-images.githubusercontent.com/29589505/147798707-cf4de713-9bb6-48c1-88a6-ac9f703f89d2.gif)
+## 数据实时更新
 ![iotgateway](https://user-images.githubusercontent.com/29589505/147055534-3954039c-2723-4fc3-8981-c9ce3bb0163e.gif)
+## RPC反向控制
+![rpc](https://user-images.githubusercontent.com/29589505/163212876-c1c380b1-68e5-4681-a28d-33d70ebbd6bc.gif)
+## 设备数据更新OPCUA服务端
 ![795d56161e78c770a2ca4d32f8e6b73](https://user-images.githubusercontent.com/29589505/147349299-f1fc1152-c758-47a4-a0c1-85da1895db9c.png)
+## 接入组太项目
 ![iotgateway](https://user-images.githubusercontent.com/29589505/147056511-14611d19-8498-4a3c-bd67-3749ab75462f.gif)
+## 组太配置
 ![image](https://user-images.githubusercontent.com/29589505/146880219-454ffa90-a153-47a9-9b54-962bf95bfa7f.png)
+## 通过MQTT订阅数据
 ![image](https://user-images.githubusercontent.com/29589505/145837715-c0529db4-f2aa-47f7-aca6-db101642f820.png)
 
 
 # 运行
 ## windows主机运行：
-1. [下载Releasev0.3.0](https://github.com/iioter/iotgateway/releases/download/v0.3.0/iotgateway-v0.3.0.zip)发布版本
+1. [下载Releasev0.4.0](https://github.com/iioter/iotgateway/releases/download/v0.4.0/iotgateway-v0.4.0.zip)发布版本
 2. [下载.net6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) sdk或runtime
 3. 安装.net6 
 4. 解压release包，运行IoTGateway.exe
