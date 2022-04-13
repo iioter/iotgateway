@@ -15,6 +15,7 @@ namespace IoTGateway.DataAccess
         public DbSet<DeviceVariable> DeviceVariables { get; set; }
         public DbSet<Driver> Drivers { get; set; }
         public DbSet<SystemConfig> SystemConfig { get; set; }
+        public DbSet<RpcLog> RpcLogs { get; set; }
 
 
         public DataContext(CS cs)

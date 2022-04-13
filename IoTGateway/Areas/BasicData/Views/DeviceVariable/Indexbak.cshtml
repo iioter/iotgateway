@@ -1,0 +1,505 @@
+﻿@model IoTGateway.ViewModel.BasicData.DeviceVariableVMs.DeviceVariableListVM
+@inject IStringLocalizer<Program> Localizer;
+@using Newtonsoft.Json
+
+<div id="top15c2150bb91f4a58a72a3388288c4784" class="layui-row donotuse_fill" lay-filter="top15c2150bb91f4a58a72a3388288c4784filter" style=" min-height:500px;">
+    <div id="div15c2150bb91f4a58a72a3388288c4784outer" class="layui-col-md2 donotuse_pdiv" style="padding-right:10px;border-right:solid 1px #aaa;">
+        <div id="div15c2150bb91f4a58a72a3388288c4784" class="donotuse_fill" style="overflow:auto;height:10px;">
+        </div>
+    </div>
+    <div id="div_15c2150bb91f4a58a72a3388288c4784" style="box-sizing:border-box" class="layui-col-md10 donotuse_pdiv">
+        <form id="wtForm_331ba190de474ccbbb726c79d4bc130c" class="layui-form" method="post" lay-filter="wtForm_331ba190de474ccbbb726c79d4bc130c" action="/BasicData/DeviceVariable?v=637778856405756216">
+            <div class="layui-collapse" style="margin-bottom:5px;" lay-filter="9d9be1d593da4432ae5f87127a0ce28bx">
+                <div class="layui-colla-item">
+                    <h2 class="layui-colla-title">
+                        搜索条件
+                        <div style="text-align:right;margin-top:-43px;" id="9d9be1d593da4432ae5f87127a0ce28b">
+                            <a href="javascript:void(0)" class="layui-btn layui-btn-sm" id="wtSearchBtn_wtForm_331ba190de474ccbbb726c79d4bc130c" IsSearchButton><i class="layui-icon">&#xe615;</i>搜索</a>
+                            <button type="button" class="layui-btn layui-btn-sm" id="wtResetBtn_8f06ba93fcbe43f79740595d146b0cdb">重置</button>
+                        </div>
+                    </h2>
+                    <div class="layui-colla-content">
+                        <input type="text" style="display: none;">
+
+                        <div class="layui-row ">
+
+                            <div class="layui-col-md4">
+
+                                <div class="layui-form-item layui-form" lay-filter="_WTMMultiCombo_c5e0d8b6-c5af-4d00-8441-ee32086b08c6_Searcher.DeviceIddiv">
+                                    <label for="DeviceVariableListVM_Searcher_DeviceId" class="layui-form-label">设备名:</label>
+                                    <div class="layui-input-block">
+                                        <select name="Searcher.DeviceId" lay-filter="_WTMMultiCombo_c5e0d8b6-c5af-4d00-8441-ee32086b08c6_Searcher.DeviceId" wtm-name="Searcher.DeviceId" wtm-ctype="combo" lay-search="" id="DeviceVariableListVM_Searcher_DeviceId"><option value=''>全部</option><option value='c22b5f8d-8707-4104-be32-7b179c4101b5'>Modbus</option><option value='90aba98a-6ea7-40ef-8a01-c4da27dc1852'>OPClient</option><option value='2e1a7793-a096-43b1-9dde-5079326e58dc'>S71200</option></select><input type="hidden" name="_DONOTUSE_Searcher.DeviceId" value="1" />
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <script>
+                                layui.use(['form'],function(){
+                                  var form = layui.form;
+                                  form.on('select(_WTMMultiCombo_c5e0d8b6-c5af-4d00-8441-ee32086b08c6_Searcher.DeviceId)', function(data){
+                                    ;
+                                    ff.changeComboIcon(data);
+                                  });
+                                })
+                            </script>
+
+
+                            <div class="layui-col-md4">
+
+                                <div class="layui-form-item layui-form" lay-filter="DeviceVariableListVM_Searcher_Namefilterdiv">
+                                    <label for="DeviceVariableListVM_Searcher_Name" class="layui-form-label">变量名:</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="Searcher.Name" wtm-name="Searcher.Name" value="" placeholder="" class="layui-input" id="DeviceVariableListVM_Searcher_Name" lay-filter="DeviceVariableListVM_Searcher_Namefilter">
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <div class="layui-col-md4">
+
+                                <div class="layui-form-item layui-form" lay-filter="DeviceVariableListVM_Searcher_Methodfilterdiv">
+                                    <label for="DeviceVariableListVM_Searcher_Method" class="layui-form-label">方法:</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="Searcher.Method" wtm-name="Searcher.Method" value="" placeholder="" class="layui-input" id="DeviceVariableListVM_Searcher_Method" lay-filter="DeviceVariableListVM_Searcher_Methodfilter">
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <div class="layui-col-md4">
+
+                                <div class="layui-form-item layui-form" lay-filter="DeviceVariableListVM_Searcher_DeviceAddressfilterdiv">
+                                    <label for="DeviceVariableListVM_Searcher_DeviceAddress" class="layui-form-label">地址:</label>
+                                    <div class="layui-input-block">
+                                        <input type="text" name="Searcher.DeviceAddress" wtm-name="Searcher.DeviceAddress" value="" placeholder="" class="layui-input" id="DeviceVariableListVM_Searcher_DeviceAddress" lay-filter="DeviceVariableListVM_Searcher_DeviceAddressfilter">
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <div class="layui-col-md4">
+
+                                <div class="layui-form-item layui-form" lay-filter="_WTMMultiCombo_6940b7af-ca75-4fff-ab55-6b09d567236a_Searcher.DataTypediv">
+                                    <label for="DeviceVariableListVM_Searcher_DataType" class="layui-form-label">数据类型:</label>
+                                    <div class="layui-input-block">
+                                        <select name="Searcher.DataType" lay-filter="_WTMMultiCombo_6940b7af-ca75-4fff-ab55-6b09d567236a_Searcher.DataType" wtm-name="Searcher.DataType" wtm-ctype="combo" lay-search="" id="DeviceVariableListVM_Searcher_DataType"><option value=''>全部</option><option value='Bit'>bit</option><option value='Bool'>bool</option><option value='UByte'>uint8</option><option value='Byte'>int8</option><option value='Uint16'>uint16</option><option value='Int16'>int16</option><option value='Bcd16'>bcd16</option><option value='Uint32'>uint32</option><option value='Int32'>int32</option><option value='Float'>float</option><option value='Bcd32'>bcd32</option><option value='Uint64'>uint64</option><option value='Int64'>int64</option><option value='Double'>double</option><option value='AsciiString'>ascii</option><option value='Utf8String'>utf8</option><option value='DateTime'>datetime</option><option value='TimeStampMs'>timestamp(ms)</option><option value='TimeStampS'>timestamp(s)</option><option value='Custome1'>自定义1</option><option value='Custome2'>自定义2</option><option value='Custome3'>自定义3</option><option value='Custome4'>自定义4</option><option value='Custome5'>自定义5</option></select><input type="hidden" name="_DONOTUSE_Searcher.DataType" value="1" />
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <script>
+                                layui.use(['form'],function(){
+                                  var form = layui.form;
+                                  form.on('select(_WTMMultiCombo_6940b7af-ca75-4fff-ab55-6b09d567236a_Searcher.DataType)', function(data){
+                                    ;
+                                    ff.changeComboIcon(data);
+                                  });
+                                })
+                            </script>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <input type='hidden' name='FromView' value='/Areas/BasicData/Views/DeviceVariable/Index.cshtml' />
+        </form>
+        <script>
+              layui.use(['table','element'], function () {
+                const table = layui.table;
+                layui.element.init();
+                $('#9d9be1d593da4432ae5f87127a0ce28b .layui-btn').on('click',function(e){e.stopPropagation();})
+                $('#wtResetBtn_8f06ba93fcbe43f79740595d146b0cdb').on('click', function (btn) {ff.resetForm(this.form.id);});
+                $('#9d9be1d593da4432ae5f87127a0ce28b').parents('form').append("<input type='hidden' name='IsExpanded' value='false' />");
+            layui.element.on('collapse(9d9be1d593da4432ae5f87127a0ce28bx)', function(data){
+                $('#9d9be1d593da4432ae5f87127a0ce28b').parents('form').find("input[name='IsExpanded']").val(data.show+'');
+                ff.triggerResize();
+            });
+
+
+            $('#wtSearchBtn_wtForm_331ba190de474ccbbb726c79d4bc130c').on('click', function () {
+               var keeppage = null;
+
+                var tempwherewtTable_331ba190de474ccbbb726c79d4bc130c = {};
+                $.extend(tempwherewtTable_331ba190de474ccbbb726c79d4bc130c,wtTable_331ba190de474ccbbb726c79d4bc130cdefaultfilter.where);
+                var pagewtTable_331ba190de474ccbbb726c79d4bc130c = wtTable_331ba190de474ccbbb726c79d4bc130cfilterback.page;
+                if(keeppage ==null){ pagewtTable_331ba190de474ccbbb726c79d4bc130c.curr = 1}
+                table.reload('wtTable_331ba190de474ccbbb726c79d4bc130c',{page: pagewtTable_331ba190de474ccbbb726c79d4bc130c,url:wtTable_331ba190de474ccbbb726c79d4bc130curl,where: $.extend(tempwherewtTable_331ba190de474ccbbb726c79d4bc130c,ff.GetSearchFormData('wtForm_331ba190de474ccbbb726c79d4bc130c','Searcher'))});
+
+
+            });
+            $('#wtSearchBtn_wtForm_331ba190de474ccbbb726c79d4bc130c').bind('myclick', function () {
+               var keeppage = true;
+
+                var tempwherewtTable_331ba190de474ccbbb726c79d4bc130c = {};
+                $.extend(tempwherewtTable_331ba190de474ccbbb726c79d4bc130c,wtTable_331ba190de474ccbbb726c79d4bc130cdefaultfilter.where);
+                var pagewtTable_331ba190de474ccbbb726c79d4bc130c = wtTable_331ba190de474ccbbb726c79d4bc130cfilterback.page;
+                if(keeppage ==null){ pagewtTable_331ba190de474ccbbb726c79d4bc130c.curr = 1}
+                table.reload('wtTable_331ba190de474ccbbb726c79d4bc130c',{page: pagewtTable_331ba190de474ccbbb726c79d4bc130c,url:wtTable_331ba190de474ccbbb726c79d4bc130curl,where: $.extend(tempwherewtTable_331ba190de474ccbbb726c79d4bc130c,ff.GetSearchFormData('wtForm_331ba190de474ccbbb726c79d4bc130c','Searcher'))});
+
+
+            });
+
+            layui.element.on('collapse(9d9be1d593da4432ae5f87127a0ce28b)', function(data){ff.triggerResize()});
+            })
+        </script>
+        <script>
+            ff.RenderForm('wtForm_331ba190de474ccbbb726c79d4bc130c');
+        </script>
+        <table id="wtTable_331ba190de474ccbbb726c79d4bc130c" lay-filter="wtTable_331ba190de474ccbbb726c79d4bc130c" subpro=""></table>
+        <script>
+            var wtTable_331ba190de474ccbbb726c79d4bc130coption = null;
+            /* 监听工具条 */
+            function wtToolBarFunc_wtTable_331ba190de474ccbbb726c79d4bc130c(obj){ //注：tool是工具条事件名，test是table原始容器的属性 lay-filter="对应的值"
+            var data = obj.data, layEvent = obj.event, tr = obj.tr; //获得当前行 tr 的DOM对象
+            var ids; var objs;switch(layEvent){
+            case 'BasicDataDeviceVariableCreate':{
+            var isPost = false;
+            var tempUrl = '/BasicData/DeviceVariable/Create?1=1',whereStr=[];
+            ff.OpenDialog(tempUrl,'ea163ab1bb824e439822c33a80ad65b1','新建',800,null,isPost===true&&ids!==null&&ids!==undefined?{'Ids':ids}:undefined,false);};break;
+
+            case 'BasicDataDeviceVariableEdit':{
+            var isPost = false;
+            var tempUrl = '/BasicData/DeviceVariable/Edit?1=1',whereStr=[];
+            if(data==undefined||data==null||data.ID==undefined||data.ID==null){
+                ids = ff.GetSelections('wtTable_331ba190de474ccbbb726c79d4bc130c');
+                if(ids.length == 0){
+                    layui.layer.msg('请选择一行');
+                    return;
+                }else if(ids.length > 1){
+                    layui.layer.msg('最多只能选择一行');
+                    return;
+                }else{
+                    tempUrl = tempUrl + '&id=' + ids[0];
+                    objs = ff.GetSelectionData('wtTable_331ba190de474ccbbb726c79d4bc130c');
+                    if(objs!=null && objs.length > 0){
+                        tempUrl = ff.concatWhereStr(tempUrl,whereStr,objs[0]);
+                    }
+                }
+            }else{
+                ids = [data.ID];
+                objs = [data];
+                tempUrl = tempUrl + '&id=' + data.ID;
+                tempUrl = ff.concatWhereStr(tempUrl,whereStr,data);
+            }
+
+            ff.OpenDialog(tempUrl,'ce1836e290f64cc8a4c370dfd7ee60b4','修改',800,null,isPost===true&&ids!==null&&ids!==undefined?{'Ids':ids}:undefined,false);};break;
+
+            case 'BasicDataDeviceVariableDelete':{
+            var isPost = false;
+            var tempUrl = '/BasicData/DeviceVariable/Delete?1=1',whereStr=[];
+            if(data==undefined||data==null||data.ID==undefined||data.ID==null){
+                ids = ff.GetSelections('wtTable_331ba190de474ccbbb726c79d4bc130c');
+                if(ids.length == 0){
+                    layui.layer.msg('请选择一行');
+                    return;
+                }else if(ids.length > 1){
+                    layui.layer.msg('最多只能选择一行');
+                    return;
+                }else{
+                    tempUrl = tempUrl + '&id=' + ids[0];
+                    objs = ff.GetSelectionData('wtTable_331ba190de474ccbbb726c79d4bc130c');
+                    if(objs!=null && objs.length > 0){
+                        tempUrl = ff.concatWhereStr(tempUrl,whereStr,objs[0]);
+                    }
+                }
+            }else{
+                ids = [data.ID];
+                objs = [data];
+                tempUrl = tempUrl + '&id=' + data.ID;
+                tempUrl = ff.concatWhereStr(tempUrl,whereStr,data);
+            }
+
+            ff.OpenDialog(tempUrl,'22ca7aeabb8146e4a52387074c963fa9','删除',800,null,isPost===true&&ids!==null&&ids!==undefined?{'Ids':ids}:undefined,false);};break;
+
+            case 'BasicDataDeviceVariableDetails':{
+            var isPost = false;
+            var tempUrl = '/BasicData/DeviceVariable/Details?1=1',whereStr=[];
+            if(data==undefined||data==null||data.ID==undefined||data.ID==null){
+                ids = ff.GetSelections('wtTable_331ba190de474ccbbb726c79d4bc130c');
+                if(ids.length == 0){
+                    layui.layer.msg('请选择一行');
+                    return;
+                }else if(ids.length > 1){
+                    layui.layer.msg('最多只能选择一行');
+                    return;
+                }else{
+                    tempUrl = tempUrl + '&id=' + ids[0];
+                    objs = ff.GetSelectionData('wtTable_331ba190de474ccbbb726c79d4bc130c');
+                    if(objs!=null && objs.length > 0){
+                        tempUrl = ff.concatWhereStr(tempUrl,whereStr,objs[0]);
+                    }
+                }
+            }else{
+                ids = [data.ID];
+                objs = [data];
+                tempUrl = tempUrl + '&id=' + data.ID;
+                tempUrl = ff.concatWhereStr(tempUrl,whereStr,data);
+            }
+
+            ff.OpenDialog(tempUrl,'df0349a404484044b4cbc21f496aa4f9','详细',800,null,isPost===true&&ids!==null&&ids!==undefined?{'Ids':ids}:undefined,false);};break;
+
+            case 'BasicDataDeviceVariableBatchEdit':{
+            var isPost = false;
+            var tempUrl = '/BasicData/DeviceVariable/BatchEdit?1=1',whereStr=[];
+            isPost = true;
+            var ids = ff.GetSelections('wtTable_331ba190de474ccbbb726c79d4bc130c');
+            if(ids.length == 0){
+                layui.layer.msg('请至少选择一行');
+                return;
+            }
+
+            ff.OpenDialog(tempUrl,'7d4264e4c5fa4944a8c50c16cac42d6d','批量修改',800,null,isPost===true&&ids!==null&&ids!==undefined?{'Ids':ids}:undefined,false);};break;
+
+            case 'BasicDataDeviceVariableBatchDelete':{
+            var isPost = false;
+            var tempUrl = '/BasicData/DeviceVariable/BatchDelete?1=1',whereStr=[];
+            isPost = true;
+            var ids = ff.GetSelections('wtTable_331ba190de474ccbbb726c79d4bc130c');
+            if(ids.length == 0){
+                layui.layer.msg('请至少选择一行');
+                return;
+            }
+
+            ff.OpenDialog(tempUrl,'f50d21c7277b4c4a8cca6e27280feb0b','批量删除',800,null,isPost===true&&ids!==null&&ids!==undefined?{'Ids':ids}:undefined,false);};break;
+
+            case 'BasicDataDeviceVariableImport':{
+            var isPost = false;
+            var tempUrl = '/BasicData/DeviceVariable/Import?1=1',whereStr=[];
+            ff.OpenDialog(tempUrl,'38a8149850474979af53560ff83ae223','导入',800,null,isPost===true&&ids!==null&&ids!==undefined?{'Ids':ids}:undefined,false);};break;
+
+            case 'BasicDataDeviceVariableExportExcel':{
+            var isPost = false;
+            var tempUrl = '/BasicData/DeviceVariable/ExportExcel?1=1',whereStr=[];
+            var ids = ff.GetSelections('wtTable_331ba190de474ccbbb726c79d4bc130c');
+            isPost = true;
+
+            ff.DownloadExcelOrPdf(tempUrl,'wtForm_331ba190de474ccbbb726c79d4bc130c',wtTable_331ba190de474ccbbb726c79d4bc130cdefaultfilter.where,ids);};break;
+            default:break;}
+            return;
+            }
+            layui.use(['table'], function(){
+              var table = layui.table;
+              wtTable_331ba190de474ccbbb726c79d4bc130coption = {
+                elem: '#wtTable_331ba190de474ccbbb726c79d4bc130c'
+                ,id: 'wtTable_331ba190de474ccbbb726c79d4bc130c'
+                ,text:{
+                    none:'无数据'
+                }
+                ,request: { 'pageName': 'Page', 'limitName': 'Limit'}
+                 ,toolbar: '#wtToolBar_331ba190de474ccbbb726c79d4bc130c2'
+                ,defaultToolbar: ['filter', 'print']
+
+                ,headers: {layuisearch: 'true'}
+                ,where: {"_DONOT_USE_VMNAME":"IoTGateway.ViewModel.BasicData.DeviceVariableVMs.DeviceVariableListVM, IoTGateway.ViewModel","_DONOT_USE_CS":"default","SearcherMode":0,"SelectorValueField":null,"ViewDivId":"ViewDiv331ba190de474ccbbb726c79d4bc130c","UniqueId":"8f06ba93fcbe43f79740595d146b0cdb"}
+                ,method:'post'
+
+                ,page:{
+                    rpptext:'条/页',
+                    totaltext:'合计：',
+                    recordtext:'条',
+                    gototext:'到第',
+                    pagetext:'页',
+                    oktext:'确定',
+                }
+                ,limit:100
+                ,limits:[10,20,50,80,100,150,200]
+
+
+                ,cols:[[{"type":"checkbox","rowspan":1,"fixed":"left","unresize":true,"totalRowText":"\u5408\u8BA1\uFF1A"},{"field":"Name","title":"\u53D8\u91CF\u540D","width":100,"sort":true,"align":"left","templet":function(d){var sty = '';var bg = '';var did = 'Nameabbefe16d7544b94a13edc04e16f68c0_'+d.LAY_INDEX;if(d.Name__bgcolor != undefined) bg = "<script>$('#"+did+"').closest('td').css('background-color','"+d.Name__bgcolor+"');</s"+"cript>"; if(d.Name__forecolor != undefined) sty = 'color:'+d.Name__forecolor+';'; return '<div style="'+sty+'" id="'+did+'">'+d.Name.replace(/\\"/g,"'")+bg+'</div>';}},{"field":"Method","title":"\u65B9\u6CD5","width":160,"sort":true,"align":"left","templet":function(d){var sty = '';var bg = '';var did = 'Methodabbefe16d7544b94a13edc04e16f68c0_'+d.LAY_INDEX;if(d.Method__bgcolor != undefined) bg = "<script>$('#"+did+"').closest('td').css('background-color','"+d.Method__bgcolor+"');</s"+"cript>"; if(d.Method__forecolor != undefined) sty = 'color:'+d.Method__forecolor+';'; return '<div style="'+sty+'" id="'+did+'">'+d.Method.replace(/\\"/g,"'")+bg+'</div>';}},{"field":"DeviceAddress","title":"\u5730\u5740","width":80,"sort":true,"align":"left","templet":function(d){var sty = '';var bg = '';var did = 'DeviceAddressabbefe16d32797544b94a13edc04e16f68c0_'+d.LAY_INDEX;if(d.DeviceAddress__bgcolor != undefined) bg = "<script>$('#"+did+"').closest('td').css('background-color','"+d.DeviceAddress__bgcolor+"');</s"+"cript>"; if(d.DeviceAddress__forecolor != undefined) sty = 'color:'+d.DeviceAddress__forecolor+';'; return '<div style="'+sty+'" id="'+did+'">'+d.DeviceAddress.replace(/\\"/g,"'")+bg+'</div>';}},{"field":"DataType","title":"\u7C7B\u578B","width":80,"sort":true,"align":"center","templet":function(d){var sty = '';var bg = '';var did = 'DataTypeabbefe16d7544b94a13edc04e16f68c0_'+d.LAY_INDEX;if(d.DataType__bgcolor != undefined) bg = "<script>$('#"+did+"').closest('td').css('background-color','"+d.DataType__bgcolor+"');</s"+"cript>"; if(d.DataType__forecolor != undefined) sty = 'color:'+d.DataType__forecolor+';'; return '<div style="'+sty+'" id="'+did+'">'+d.DataType.replace(/\\"/g,"'")+bg+'</div>';}},{"field":"Value","title":"\u539F\u503C","width":80,"align":"left","templet":function(d){var sty = '';var bg = '';var did = 'Valueabbefe16d7544b94a13edc04e16f68c0_'+d.LAY_INDEX;if(d.Value__bgcolor != undefined) bg = "<script>$('#"+did+"').closest('td').css('background-color','"+d.Value__bgcolor+"');</s"+"cript>"; if(d.Value__forecolor != undefined) sty = 'color:'+d.Value__forecolor+';'; return '<div style="'+sty+'" id="'+did+'">'+d.Value.replace(/\\"/g,"'")+bg+'</div>';}},{"field":"CookedValue","title":"\u503C","width":80,"align":"left","templet":function(d){var sty = '';var bg = '';var did = 'CookedValueabbefe16d7544b94a13edc04e16f68c0_'+d.LAY_INDEX;if(d.CookedValue__bgcolor != undefined) bg = "<script>$('#"+did+"').closest('td').css('background-color','"+d.CookedValue__bgcolor+"');</s"+"cript>"; if(d.CookedValue__forecolor != undefined) sty = 'color:'+d.CookedValue__forecolor+';'; return '<div style="'+sty+'" id="'+did+'">'+d.CookedValue.replace(/\\"/g,"'")+bg+'</div>';}},{"field":"State","title":"\u72B6\u6001","width":80,"align":"left","templet":function(d){var sty = '';var bg = '';var did = 'Stateabbefe16d7544b94a13edc04e16f68c0_'+d.LAY_INDEX;if(d.State__bgcolor != undefined) bg = "<script>$('#"+did+"').closest('td').css('background-color','"+d.State__bgcolor+"');</s"+"cript>"; if(d.State__forecolor != undefined) sty = 'color:'+d.State__forecolor+';'; return '<div style="'+sty+'" id="'+did+'">'+d.State.replace(/\\"/g,"'")+bg+'</div>';}},{"field":"Expressions","title":"\u8868\u8FBE\u5F0F","width":150,"align":"left","templet":function(d){var sty = '';var bg = '';var did = 'Expressionsabbefe16d7544b94a13edc04e16f68c0_'+d.LAY_INDEX;if(d.Expressions__bgcolor != undefined) bg = "<script>$('#"+did+"').closest('td').css('background-color','"+d.Expressions__bgcolor+"');</s"+"cript>"; if(d.Expressions__forecolor != undefined) sty = 'color:'+d.Expressions__forecolor+';'; return '<div style="'+sty+'" id="'+did+'">'+d.Expressions.replace(/\\"/g,"'")+bg+'</div>';}},{"field":"DeviceName_view","title":"\u8BBE\u5907\u540D","width":90,"sort":true,"align":"left","templet":function(d){var sty = '';var bg = '';var did = 'DeviceName_viewabbefe16d7544b94a13edc04e16f68c0_'+d.LAY_INDEX;if(d.DeviceName_view__bgcolor != undefined) bg = "<script>$('#"+did+"').closest('td').css('background-color','"+d.DeviceName_view__bgcolor+"');</s"+"cript>"; if(d.DeviceName_view__forecolor != undefined) sty = 'color:'+d.DeviceName_view__forecolor+';'; return '<div style="'+sty+'" id="'+did+'">'+d.DeviceName_view.replace(/\\"/g,"'")+bg+'</div>';}},{"field":"detail","align":"center","templet":function(d){var sty = '';var bg = '';var did = 'detailabbefe16d7544b94a13edc04e16f68c0_'+d.LAY_INDEX;if(d.detail__bgcolor != undefined) bg = "<script>$('#"+did+"').closest('td').css('background-color','"+d.detail__bgcolor+"');</s"+"cript>"; if(d.detail__forecolor != undefined) sty = 'color:'+d.detail__forecolor+';'; return '<div style="'+sty+'" id="'+did+'">'+d.detail.replace(/\\"/g,"'")+bg+'</div>';},"hide":true},{"toolbar":"#wtToolBar_331ba190de474ccbbb726c79d4bc130c","field":"","title":"\u64CD\u4F5C","width":115,"fixed":"right","align":"center"}]]
+
+
+
+                ,done: function(res,curr,count){
+                  wtTable_331ba190de474ccbbb726c79d4bc130cfilterback = this;
+                  if(res.Code == 401){ layui.layer.confirm(res.Msg,{title:'错误'}, function(index){window.location.reload();layer.close(index);});}
+                  if(res.Code != undefined && res.Code != 200){ layui.layer.alert(res.Msg,{title:'错误'});}
+                 var tab = $('#wtTable_331ba190de474ccbbb726c79d4bc130c + .layui-table-view');tab.find('table').css('border-collapse','separate');
+                  tab.css('overflow','hidden').addClass('donotuse_fill donotuse_pdiv');tab.children('.layui-table-box').addClass('donotuse_fill donotuse_pdiv').css('height','100px');tab.find('.layui-table-main').addClass('donotuse_fill');tab.find('.layui-table-header').css('min-height','38px');ff.triggerResize();
+
+                   tab.find('div [lay-event=\'LAYTABLE_COLS\']').attr('title','筛选列');
+                   tab.find('div [lay-event=\'LAYTABLE_PRINT\']').attr('title','打印');
+                  inimqttclient(res,curr,count)
+                }
+                }
+            wtTable_331ba190de474ccbbb726c79d4bc130cdefaultfilter = {};
+            wtTable_331ba190de474ccbbb726c79d4bc130cfilterback = {};
+            wtTable_331ba190de474ccbbb726c79d4bc130curl = '/BasicData/DeviceVariable/Search';
+            $.extend(true,wtTable_331ba190de474ccbbb726c79d4bc130cdefaultfilter ,wtTable_331ba190de474ccbbb726c79d4bc130coption);
+                wtVar_331ba190de474ccbbb726c79d4bc130c = table.render(wtTable_331ba190de474ccbbb726c79d4bc130coption);
+
+                if (document.body.clientWidth< 500) { wtTable_331ba190de474ccbbb726c79d4bc130coption.page.layout = ['count', 'prev', 'page', 'next']; wtTable_331ba190de474ccbbb726c79d4bc130coption.page.groups= 1;}
+
+            setTimeout(function(){
+                var tempwhere = {};
+                $.extend(tempwhere,wtTable_331ba190de474ccbbb726c79d4bc130cdefaultfilter.where);
+                table.reload('wtTable_331ba190de474ccbbb726c79d4bc130c',{url:'/BasicData/DeviceVariable/Search',where: $.extend(tempwhere,ff.GetSearchFormData('wtForm_331ba190de474ccbbb726c79d4bc130c','Searcher')),});
+            },100);
+
+
+
+              table.on('tool(wtTable_331ba190de474ccbbb726c79d4bc130c)',wtToolBarFunc_wtTable_331ba190de474ccbbb726c79d4bc130c);
+
+                table.on('sort(wtTable_331ba190de474ccbbb726c79d4bc130c)', function(obj){
+                var sortfilter = {};
+                sortfilter['SortInfo.Property'] = obj.field;
+                sortfilter['SortInfo.Direction'] = obj.type.replace(obj.type[0],obj.type[0].toUpperCase());
+                var w = $.extend(wtTable_331ba190de474ccbbb726c79d4bc130coption.where,sortfilter,ff.GetSearchFormData('wtForm_331ba190de474ccbbb726c79d4bc130c','Searcher'));
+
+                table.reload('wtTable_331ba190de474ccbbb726c79d4bc130c', {
+                initSort: obj,
+                where: w
+                });
+              });
+            })
+        </script>
+        <script type="text / html" id="wtToolBar_331ba190de474ccbbb726c79d4bc130c2">
+            <div  id="wtTable_331ba190de474ccbbb726c79d4bc130cbuttons"style="text-align:right;margin-right:-45px"><a href="javascript:void(0)" onclick="wtToolBarFunc_wtTable_331ba190de474ccbbb726c79d4bc130c({event:'BasicDataDeviceVariableCreate'});" class="layui-btn  layui-btn-sm" style=""><i class="layui-icon layui-icon-add-1"></i>新建</a><a href="javascript:void(0)" onclick="wtToolBarFunc_wtTable_331ba190de474ccbbb726c79d4bc130c({event:'BasicDataDeviceVariableBatchEdit'});" class="layui-btn  layui-btn-sm" style=""><i class="layui-icon layui-icon-edit"></i>批量修改</a><a href="javascript:void(0)" onclick="wtToolBarFunc_wtTable_331ba190de474ccbbb726c79d4bc130c({event:'BasicDataDeviceVariableBatchDelete'});" class="layui-btn  layui-btn-sm" style=""><i class="layui-icon layui-icon-delete"></i>批量删除</a><a href="javascript:void(0)" onclick="wtToolBarFunc_wtTable_331ba190de474ccbbb726c79d4bc130c({event:'BasicDataDeviceVariableImport'});" class="layui-btn  layui-btn-sm" style=""><i class="layui-icon layui-icon-templeate-1"></i>导入</a><a href="javascript:void(0)" onclick="wtToolBarFunc_wtTable_331ba190de474ccbbb726c79d4bc130c({event:'BasicDataDeviceVariableExportExcel'});" class="layui-btn  layui-btn-sm" style=""><i class="layui-icon layui-icon-download-circle"></i>导出Excel</a></div>
+        </script>
+        <!-- Grid 行内按钮 -->
+        <script type="text/html" id="wtToolBar_331ba190de474ccbbb726c79d4bc130c"><a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="BasicDataDeviceVariableEdit">修改</a><a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="BasicDataDeviceVariableDelete">删除</a>{{#  if(d.detail == true || d.detail == 'true' || d.detail == 'True' ){ }}<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="BasicDataDeviceVariableDetails">详细</a>{{#  } else{ }}{{# } }}</script>
+
+
+
+    </div>
+    <script>
+        layui.use(['tree'],function(){
+          var last15c2150bb91f4a58a72a3388288c4784 = null;
+          var treecontainer15c2150bb91f4a58a72a3388288c4784 = layui.tree.render({
+            id:'tree15c2150bb91f4a58a72a3388288c4784',elem: '#div15c2150bb91f4a58a72a3388288c4784',onlyIconControl:true, showCheckbox:false,showLine:true
+
+                        ,click: function(data){
+                            var ele = null;
+                            if(data.elem != undefined){
+                                ele = data.elem.find('.layui-tree-main:first');
+                            }
+                            else{
+                                ele = $('#div15c2150bb91f4a58a72a3388288c4784').find("div[data-id='"+data.data.id+"']").find('.layui-tree-main:first');
+                            }
+                            if(last15c2150bb91f4a58a72a3388288c4784 != null){
+                                last15c2150bb91f4a58a72a3388288c4784.css('background-color','');
+                                last15c2150bb91f4a58a72a3388288c4784.find('.layui-tree-txt').css('color','');
+                            }
+                            if(last15c2150bb91f4a58a72a3388288c4784 === ele){
+                                last15c2150bb91f4a58a72a3388288c4784 = null;
+                            }
+                            else{
+                                ele.css('background-color','#5fb878');
+                                ele.find('.layui-tree-txt').css('color','#fff');
+                                last15c2150bb91f4a58a72a3388288c4784 = ele;
+                            }
+
+            $.extend(wtTable_331ba190de474ccbbb726c79d4bc130cdefaultfilter.where,{'DeviceId':data.data.id, 'notsetlevel':data.data.level });
+            layui.table.reload('wtTable_331ba190de474ccbbb726c79d4bc130c',{where: wtTable_331ba190de474ccbbb726c79d4bc130cdefaultfilter.where});
+
+                          }
+            ,data: @Html.Raw(JsonConvert.SerializeObject(Model.DevicesTree))
+          });
+
+
+        })
+    </script>
+</div>
+<link href="/sitecss/animate.min.css" rel="stylesheet" />
+<script src="/mqtt.min.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    function inimqttclient() {
+        var options = {
+            //mqtt客户端的id，这里面应该还可以加上其他参数，具体看官方文档
+            clientId: 'mqttjs_' + (Math.random() * 10000000).toString()
+        }
+        var client = mqtt.connect('ws://' + window.location.host + '/mqtt', options);
+        client.on('connect', function () {
+            client.subscribe('internal/v1/gateway/telemetry/+/+', function (err) {
+                if (!err) {
+                    console.log("订阅成功!")
+                } else {
+                    console.log(err)
+                }
+            })
+        })
+
+        client.on('message', function (topic, message) {
+            var objmsg = $.parseJSON(message.toString());
+
+            //原值
+            $('#id' + objmsg.VarId + '_Value').text(objmsg.Value);
+            $('#id' + objmsg.VarId + '_Value').addClass('animated bounceIn');
+            setTimeout(function(){
+                $('#id' + objmsg.VarId + '_Value').removeClass('bounceIn');
+            }, 1500);
+
+            //加工值
+            $('#id' + objmsg.VarId + '_CookedValue').text(objmsg.CookedValue);
+            $('#id' + objmsg.VarId + '_CookedValue').addClass('animated bounceIn');
+            setTimeout(function(){
+                $('#id' + objmsg.VarId + '_CookedValue').removeClass('bounceIn');
+            }, 1500);
+
+            //状态
+            $('#id' + objmsg.VarId + '_State').text(objmsg.StatusType);
+            $('#id' + objmsg.VarId + '_State').addClass('animated bounceIn');
+            setTimeout(function(){
+                 $('#id' + objmsg.VarId + '_State').removeClass('bounceIn');
+            }, 1500);
+        })
+    }
+</script>
+
+<script>ff.ResizeChart('ViewDiv331ba190de474ccbbb726c79d4bc130c')</script>
+
+
+
+
+<link href="~/sitecss/animate.min.css" rel="stylesheet" />
+<script src="~/mqtt.min.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    function inimqttclient() {
+        var options = {
+            //mqtt客户端的id，这里面应该还可以加上其他参数，具体看官方文档
+            clientId: 'mqttjs_' + (Math.random() * 10000000).toString()
+        }
+        var client = mqtt.connect('ws://' + window.location.host + '/mqtt', options);
+        client.on('connect', function () {
+            client.subscribe('internal/v1/gateway/telemetry/+/+', function (err) {
+                if (!err) {
+                    console.log("订阅成功!")
+                } else {
+                    console.log(err)
+                }
+            })
+        })
+
+        client.on('message', function (topic, message) {
+            var objmsg = $.parseJSON(message.toString());
+
+            //原值
+            $('#id' + objmsg.VarId + '_Value').text(objmsg.Value);
+            $('#id' + objmsg.VarId + '_Value').addClass('animated bounceIn');
+            setTimeout(function(){
+                $('#id' + objmsg.VarId + '_Value').removeClass('bounceIn');
+            }, 1500);
+
+            //加工值
+            $('#id' + objmsg.VarId + '_CookedValue').text(objmsg.CookedValue);
+            $('#id' + objmsg.VarId + '_CookedValue').addClass('animated bounceIn');
+            setTimeout(function(){
+                $('#id' + objmsg.VarId + '_CookedValue').removeClass('bounceIn');
+            }, 1500);
+
+            //状态
+            $('#id' + objmsg.VarId + '_State').text(objmsg.StatusType);
+            $('#id' + objmsg.VarId + '_State').addClass('animated bounceIn');
+            setTimeout(function(){
+                 $('#id' + objmsg.VarId + '_State').removeClass('bounceIn');
+            }, 1500);
+        })
+    }
+</script>

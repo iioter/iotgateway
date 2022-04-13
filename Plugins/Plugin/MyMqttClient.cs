@@ -10,6 +10,8 @@ using MQTTnet.Client.Receiving;
 using MQTTnet.Protocol;
 using Newtonsoft.Json;
 using PluginInterface;
+using PluginInterface.IoTSharp;
+using PluginInterface.ThingsBoard;
 using Quickstarts.ReferenceServer;
 
 namespace Plugin
@@ -24,7 +26,7 @@ namespace Plugin
         public bool IsConnected => (Client?.IsConnected).GetValueOrDefault();
         private IMqttClient Client { get; set; }
         public event EventHandler<RpcRequest> OnExcRpc;
-        public event EventHandler<AttributeResponse> OnReceiveAttributes;
+        public event EventHandler<ISAttributeResponse> OnReceiveAttributes;
         public MyMqttClient(UAService uaService, ILogger<MyMqttClient> logger)
         {
             _logger = logger;
@@ -101,40 +103,34 @@ namespace Plugin
 
         private void OnConnected()
         {
+            //v1/gateway/attributes
+            //Message: {"device": "Device A", "data": {"attribute1": "value1", "attribute2": 42}}
+
+            //v1/gateway/rpc
+            //{"device": "Device A", "data": {"id": $request_id, "method": "toggle_gpio", "params": {"pin":1}}}
+            Client.SubscribeAsync(tbRpcTopic, MqttQualityOfServiceLevel.ExactlyOnce);//tb server side rpc
             Client.SubscribeAsync($"devices/+/rpc/request/+/+", MqttQualityOfServiceLevel.ExactlyOnce);
             Client.SubscribeAsync($"devices/Modbus/attributes/update/", MqttQualityOfServiceLevel.ExactlyOnce);
             Client.SubscribeAsync($"devices/+/attributes/response/+", MqttQualityOfServiceLevel.ExactlyOnce);
             _logger.LogInformation($"MQTT CONNECTED WITH SERVER ");
         }
 
+        private readonly string tbRpcTopic = @"v1/gateway/rpc";
+
         private Task Client_ApplicationMessageReceived(MqttApplicationMessageReceivedEventArgs e)
         {
             _logger.LogDebug($"ApplicationMessageReceived Topic {e.ApplicationMessage.Topic}  QualityOfServiceLevel:{e.ApplicationMessage.QualityOfServiceLevel} Retain:{e.ApplicationMessage.Retain} ");
             try
             {
-                if (e.ApplicationMessage.Topic.StartsWith($"devices/") && e.ApplicationMessage.Topic.Contains("/response/"))
+                if (e.ApplicationMessage.Topic == tbRpcTopic)
+                    ReceiveTbRpc(e);
+                else if (e.ApplicationMessage.Topic.StartsWith($"devices/") && e.ApplicationMessage.Topic.Contains("/response/"))
                 {
                     ReceiveAttributes(e);
                 }
                 else if (e.ApplicationMessage.Topic.StartsWith($"devices/") && e.ApplicationMessage.Topic.Contains("/rpc/request/"))
                 {
-                    var tps = e.ApplicationMessage.Topic.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
-                    var rpcmethodname = tps[4];
-                    var rpcdevicename = tps[1];
-                    var rpcrequestid = tps[5];
-                    _logger.LogInformation($"rpcmethodname={rpcmethodname} ");
-                    _logger.LogInformation($"rpcdevicename={rpcdevicename } ");
-                    _logger.LogInformation($"rpcrequestid={rpcrequestid}   ");
-                    if (!string.IsNullOrEmpty(rpcmethodname) && !string.IsNullOrEmpty(rpcdevicename) && !string.IsNullOrEmpty(rpcrequestid))
-                    {
-                        OnExcRpc?.Invoke(Client, new RpcRequest()
-                        {
-                            Method = rpcmethodname,
-                            DeviceId = rpcdevicename,
-                            RequestId = rpcrequestid,
-                            Params = e.ApplicationMessage.ConvertPayloadToString()
-                        });
-                    }
+                    ReceiveIsRpc(e);
                 }
             }
             catch (Exception ex)
@@ -142,6 +138,75 @@ namespace Plugin
                 _logger.LogError($"ClientId:{e.ClientId} Topic:{e.ApplicationMessage.Topic},Payload:{e.ApplicationMessage.ConvertPayloadToString()}", ex);
             }
             return Task.CompletedTask;
+        }
+
+        private void ReceiveTbRpc(MqttApplicationMessageReceivedEventArgs e)
+        {
+            TBRpcRequest tBRpcRequest;
+            try
+            {
+                tBRpcRequest = JsonConvert.DeserializeObject<TBRpcRequest>(e.ApplicationMessage.ConvertPayloadToString());
+                OnExcRpc?.Invoke(Client, new RpcRequest()
+                {
+                    Method = tBRpcRequest.RequestData.Method,
+                    DeviceName = tBRpcRequest.DeviceName,
+                    RequestId = tBRpcRequest.RequestData.RequestId,
+                    Params = tBRpcRequest.RequestData.Params
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"ReceiveTbRpc:Topic:{e.ApplicationMessage.Topic},Payload:{e.ApplicationMessage.ConvertPayloadToString()}", ex);
+            }
+
+        }
+
+        private void ReceiveIsRpc(MqttApplicationMessageReceivedEventArgs e)
+        {
+            try
+            {
+                var tps = e.ApplicationMessage.Topic.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+                var rpcmethodname = tps[4];
+                var rpcdevicename = tps[1];
+                var rpcrequestid = tps[5];
+                _logger.LogInformation($"rpcmethodname={rpcmethodname} ");
+                _logger.LogInformation($"rpcdevicename={rpcdevicename } ");
+                _logger.LogInformation($"rpcrequestid={rpcrequestid}   ");
+                if (!string.IsNullOrEmpty(rpcmethodname) && !string.IsNullOrEmpty(rpcdevicename) && !string.IsNullOrEmpty(rpcrequestid))
+                {
+                    OnExcRpc?.Invoke(Client, new RpcRequest()
+                    {
+                        Method = rpcmethodname,
+                        DeviceName = rpcdevicename,
+                        RequestId = rpcrequestid,
+                        Params = JsonConvert.DeserializeObject<Dictionary<string, object>>(e.ApplicationMessage.ConvertPayloadToString())
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"ReceiveIsRpc:Topic:{e.ApplicationMessage.Topic},Payload:{e.ApplicationMessage.ConvertPayloadToString()}", ex);
+
+            }
+
+        }
+
+        private Task ResponseTBRpc(TBRpcResponse tBRpcResponse)
+        {
+            return Client.PublishAsync(new MqttApplicationMessageBuilder()
+                .WithTopic(tbRpcTopic)
+                .WithPayload(JsonConvert.SerializeObject(tBRpcResponse))
+                .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
+        }
+
+        private Task ResponseISRpc(ISRpcResponse rpcResult)
+        {
+            ///IoTSharp/Clients/RpcClient.cs#L65     var responseTopic = $"/devices/{deviceid}/rpc/response/{methodName}/{rpcid}";
+            string topic = $"devices/{rpcResult.DeviceId}/rpc/response/{rpcResult.Method}/{rpcResult.ResponseId}";
+            return Client.PublishAsync(new MqttApplicationMessageBuilder()
+                .WithTopic(topic)
+                .WithPayload(JsonConvert.SerializeObject(rpcResult))
+                .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
         }
 
         private void ReceiveAttributes(MqttApplicationMessageReceivedEventArgs e)
@@ -158,7 +223,7 @@ namespace Plugin
             {
                 if (e.ApplicationMessage.Topic.Contains("/attributes/"))
                 {
-                    OnReceiveAttributes?.Invoke(Client, new AttributeResponse()
+                    OnReceiveAttributes?.Invoke(Client, new ISAttributeResponse()
                     {
                         KeyName = rpcmethodname,
                         DeviceName = rpcdevicename,
@@ -171,7 +236,19 @@ namespace Plugin
 
         public Task UploadAttributeAsync(string _devicename, object obj)
         {
-            return Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic($"devices/{_devicename}/attributes").WithPayload(Newtonsoft.Json.JsonConvert.SerializeObject(obj)).Build());
+            //Topic: v1/gateway/attributes
+            //Message: {"Device A":{"attribute1":"value1", "attribute2": 42}, "Device B":{"attribute1":"value1", "attribute2": 42}
+            try
+            {
+                if (Client.IsConnected)
+                    return Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic($"devices/{_devicename}/attributes").WithPayload(Newtonsoft.Json.JsonConvert.SerializeObject(obj)).Build());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Device:{_devicename} UploadAttributeAsync Failed,{ex}");
+            }
+            return Task.CompletedTask;
+
         }
 
         public Task UploadTelemetryDataAsync(string _devicename, object obj)
@@ -179,15 +256,55 @@ namespace Plugin
             return Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic($"devices/{_devicename}/telemetry").WithPayload(Newtonsoft.Json.JsonConvert.SerializeObject(obj)).Build());
         }
 
-        public Task ResponseExecommand(RpcResponse rpcResult)
+        public void ResponseRpc(RpcResponse rpcResponse)
         {
-            ///IoTSharp/Clients/RpcClient.cs#L65     var responseTopic = $"/devices/{deviceid}/rpc/response/{methodName}/{rpcid}";
-            string topic = $"devices/{rpcResult.DeviceId}/rpc/response/{rpcResult.Method.ToString()}/{rpcResult.ResponseId}";
-            return Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic(topic).WithPayload(rpcResult.Data.ToString()).WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
+            try
+            {
+                switch (_systemConfig.IoTPlatformType)
+                {
+                    case IoTPlatformType.ThingsBoard:
+                        var tRpcResponse = new TBRpcResponse
+                        {
+                            DeviceName = rpcResponse.DeviceName,
+                            RequestId = rpcResponse.RequestId,
+                            ResponseData = new Dictionary<string, object> { { "success", rpcResponse.IsSuccess }, { "description", rpcResponse.Description } }
+                        };
+                        ResponseTBRpc(tRpcResponse);
+                        break;
+                    case IoTPlatformType.IoTSharp:
+                        ResponseISRpc(new ISRpcResponse
+                        {
+                            DeviceId = rpcResponse.DeviceName,
+                            Method = "Method",
+                            ResponseId = rpcResponse.RequestId,
+                            Data = JsonConvert.SerializeObject(new Dictionary<string, object> { { "success", rpcResponse.IsSuccess }, { "description", rpcResponse.Description } })
+                        });
+                        break;
+                    case IoTPlatformType.AliCloudIoT:
+                        break;
+                    case IoTPlatformType.TencentIoTHub:
+                        break;
+                    case IoTPlatformType.BaiduIoTCore:
+                        break;
+                    case IoTPlatformType.OneNET:
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"ResponseRpc Error,{rpcResponse}", ex);
+            }
+
         }
 
         public Task RequestAttributes(string _device, bool anySide, params string[] args)
         {
+            //Topic: v1/gateway/attributes/request
+            // Message: { "id": $request_id, "device": "Device A", "client": true, "key": "attribute1"}
+            //Topic: v1/gateway/attributes/response
+            //Message: {"id": $request_id, "device": "Device A", "value": "value1"}
             string id = Guid.NewGuid().ToString();
             string topic = $"devices/{_device}/attributes/request/{id}";
             Dictionary<string, string> keys = new Dictionary<string, string>();
@@ -236,27 +353,18 @@ namespace Plugin
 
         }
 
-    }
-    public class RpcRequest
-    {
-        public string DeviceId { get; set; }
-        public string Method { get; set; }
-        public string RequestId { get; set; }
-        public string Params { get; set; }
-    }
-    public class RpcResponse
-    {
-        public string DeviceId { get; set; }
-        public string Method { get; set; }
-        public string ResponseId { get; set; }
-        public string Data { get; set; }
-    }
-    public class AttributeResponse
-    {
-        public string Id { get; set; }
-        public string DeviceName { get; set; }
-        public string KeyName { get; set; }
+        public void DeviceConnected()
+        {
+            //Topic: v1/gateway/connect
+            //Message: { "device":"Device A"}
+        }
 
-        public string Data { get; set; }
+        public void DeviceDisconnected()
+        {
+            //Topic: v1/gateway/connect
+            //Message: { "device":"Device A"}
+
+        }
+
     }
 }

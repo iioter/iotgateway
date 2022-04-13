@@ -130,5 +130,11 @@ namespace DriverOPCUaClient
             }
             return ret;
         }
+
+        public async Task<RpcResponse> WriteAsync(string RequestId, string Method, DriverAddressIoArgModel Ioarg)
+        {
+            RpcResponse rpcResponse = new() { IsSuccess = false, Description = "设备驱动内未实现写入功能" };
+            return rpcResponse;
+        }
     }
 }

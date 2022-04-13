@@ -1,0 +1,14 @@
+﻿@model IoTGateway.ViewModel.Rpc.RpcLogVMs.RpcLogListVM
+@inject IStringLocalizer<Program> Localizer;
+
+<wt:searchpanel vm="@Model" reset-btn="true">
+    <wt:row items-per-row="ItemsPerRowEnum.Three">
+        <wt:combobox field="Searcher.RpcSide" empty-text="@Localizer["Sys.All"]" />
+        <wt:datetime field="Searcher.StartTime" range="true" />
+        <wt:combobox field="Searcher.DeviceId" items="Searcher.AllDevices" empty-text="@Localizer["Sys.All"]" />
+        <wt:textbox field="Searcher.Method" />
+        <wt:textbox field="Searcher.Params" />
+        <wt:combobox field="Searcher.IsSuccess" empty-text="@Localizer["Sys.All"]" />
+    </wt:row>
+</wt:searchpanel>
+<wt:grid vm="@Model" url="/Rpc/RpcLog/Search" hidden-checkbox="true" hidden-grid-index="true" />

@@ -184,6 +184,43 @@ namespace IoTGateway.DataAccess.Migrations
                     b.ToTable("Drivers");
                 });
 
+            modelBuilder.Entity("IoTGateway.Model.RpcLog", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid?>("DeviceId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsSuccess")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Method")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Params")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("RpcSide")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("DeviceId");
+
+                    b.ToTable("RpcLogs");
+                });
+
             modelBuilder.Entity("IoTGateway.Model.SystemConfig", b =>
                 {
                     b.Property<Guid>("ID")
@@ -743,6 +780,15 @@ namespace IoTGateway.DataAccess.Migrations
                 {
                     b.HasOne("IoTGateway.Model.Device", "Device")
                         .WithMany("DeviceVariables")
+                        .HasForeignKey("DeviceId");
+
+                    b.Navigation("Device");
+                });
+
+            modelBuilder.Entity("IoTGateway.Model.RpcLog", b =>
+                {
+                    b.HasOne("IoTGateway.Model.Device", "Device")
+                        .WithMany()
                         .HasForeignKey("DeviceId");
 
                     b.Navigation("Device");

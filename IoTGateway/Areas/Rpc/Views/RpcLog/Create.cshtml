@@ -1,0 +1,19 @@
+﻿@model IoTGateway.ViewModel.Rpc.RpcLogVMs.RpcLogVM
+@inject IStringLocalizer<Program> Localizer;
+
+<wt:form vm="@Model">
+<wt:row items-per-row="ItemsPerRowEnum.Two">
+<wt:combobox field="Entity.RpcSide" />
+<wt:datetime field="Entity.StartTime" />
+<wt:combobox field="Entity.DeviceId" items="AllDevices"/>
+<wt:textbox field="Entity.Method" />
+<wt:textbox field="Entity.Params" />
+<wt:datetime field="Entity.EndTime" />
+<wt:switch field="Entity.IsSuccess" />
+<wt:textbox field="Entity.Description" />
+</wt:row>
+    <wt:row align="AlignEnum.Right">
+        <wt:submitbutton />
+        <wt:closebutton />
+    </wt:row>
+</wt:form>

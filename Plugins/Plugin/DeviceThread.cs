@@ -13,6 +13,7 @@ using DynamicExpresso;
 using MQTTnet.Server;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
+using PluginInterface.IoTSharp;
 
 namespace Plugin
 {
@@ -21,6 +22,7 @@ namespace Plugin
         private readonly ILogger _logger;
         public readonly Device _device;
         public readonly IDriver _driver;
+        private readonly MyMqttClient _myMqttClient;
         public Dictionary<Guid, DriverReturnValueModel> DeviceValues { get; set; } = new();
         internal List<MethodInfo> Methods { get; set; }
         private Task task { get; set; } = null;
@@ -30,6 +32,8 @@ namespace Plugin
 
         public DeviceThread(Device device, IDriver driver, string ProjectId, MyMqttClient myMqttClient, Interpreter interpreter, IMqttServer mqttServer, ILogger logger)
         {
+            _myMqttClient = myMqttClient;
+            _myMqttClient.OnExcRpc += MyMqttClient_OnExcRpc;
             _device = device;
             _driver = driver;
             Interpreter = interpreter;
@@ -49,6 +53,8 @@ namespace Plugin
                         }
                     }
                 }
+
+                //上传客户端属性
                 myMqttClient.UploadAttributeAsync(device.DeviceName, device.DeviceConfigs.Where(x => x.DataSide == DataSide.ClientSide).ToDictionary(x => x.DeviceConfigName, x => x.Value));
 
                 task = Task.Run(() =>
@@ -149,11 +155,95 @@ namespace Plugin
 
         }
 
+        private void MyMqttClient_OnExcRpc(object? sender, RpcRequest e)
+        {
+            if (e.DeviceName == _device.DeviceName)
+            {
+                RpcLog rpcLog = new RpcLog()
+                {
+                    DeviceId = _device.ID,
+                    StartTime = DateTime.Now,
+                    Method = e.Method,
+                    RpcSide = RpcSide.ServerSide,
+                    Params = JsonConvert.SerializeObject(e.Params)
+                };
+
+                _logger.LogInformation($"{_device.DeviceName}收到RPC,{e}");
+                RpcResponse rpcResponse = new() { DeviceName = e.DeviceName, RequestId = e.RequestId, IsSuccess = false };
+                //执行写入变量RPC
+                if (e.Method.ToLower() == "write")
+                {
+                    //没连接就连接
+                    if (!_driver.IsConnected)
+                        _driver.Connect();
+
+                    //连接成功就尝试一个一个的写入，注意:目前写入地址和读取地址是相同的，对于PLC来说没问题，其他的要自己改........
+                    if (_driver.IsConnected)
+                    {
+                        foreach (var para in e.Params)
+                        {
+                            //先查配置项，要用到配置的地址、数据类型、方法(方法最主要是用于区分写入数据的辅助判断，比如modbus不同的功能码)
+                            var deviceVariable = _device.DeviceVariables.Where(x => x.Name == para.Key).FirstOrDefault();
+                            if (deviceVariable != null)
+                            {
+                                DriverAddressIoArgModel ioArgModel = new()
+                                {
+                                    Address = deviceVariable.DeviceAddress,
+                                    Value = para.Value,
+                                    ValueType = deviceVariable.DataType
+                                };
+                                var writeResponse = _driver.WriteAsync(e.RequestId, deviceVariable.Method, ioArgModel).Result;
+                                rpcResponse.IsSuccess = writeResponse.IsSuccess;
+                                if (!writeResponse.IsSuccess)
+                                {
+                                    rpcResponse.Description = writeResponse.Description;
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                rpcResponse.IsSuccess = false;
+                                rpcResponse.Description = $"未能找到变量:{para.Key}";
+                                break;
+                            }
+                        }
+
+                    }
+                    else//连接失败
+                    {
+                        rpcResponse.IsSuccess = false;
+                        rpcResponse.Description = $"{e.DeviceName} 连接失败";
+                    }
+                }
+                //其他RPC TODO
+                else
+                {
+                    rpcResponse.IsSuccess = false;
+                    rpcResponse.Description = $"方法:{e.Method}暂未实现";
+                }
+
+                //反馈RPC
+                _myMqttClient.ResponseRpc(rpcResponse);
+                //纪录入库
+                rpcLog.IsSuccess = rpcResponse.IsSuccess;
+                rpcLog.Description = rpcResponse.Description;
+                rpcLog.EndTime=DateTime.Now;
+
+
+                using (var DC = new DataContext(IoTBackgroundService.connnectSetting, IoTBackgroundService.DBType))
+                {
+                    DC.Set<RpcLog>().Add(rpcLog); 
+                    DC.SaveChanges();
+                }
+            }
+        }
+
         public void StopThread()
         {
             _logger.LogInformation($"线程停止:{_device.DeviceName}");
             if (task != null)
             {
+                _myMqttClient.OnExcRpc -= MyMqttClient_OnExcRpc;
                 _driver.Close();
                 tokenSource.Cancel();
             }
