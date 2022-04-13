@@ -40,9 +40,9 @@
 ![rpc](https://user-images.githubusercontent.com/29589505/163212876-c1c380b1-68e5-4681-a28d-33d70ebbd6bc.gif)
 ## 设备数据更新OPCUA服务端
 ![795d56161e78c770a2ca4d32f8e6b73](https://user-images.githubusercontent.com/29589505/147349299-f1fc1152-c758-47a4-a0c1-85da1895db9c.png)
-## 接入组太项目
+## 接入组态项目
 ![iotgateway](https://user-images.githubusercontent.com/29589505/147056511-14611d19-8498-4a3c-bd67-3749ab75462f.gif)
-## 组太配置
+## 组态配置
 ![image](https://user-images.githubusercontent.com/29589505/146880219-454ffa90-a153-47a9-9b54-962bf95bfa7f.png)
 ## 通过MQTT订阅数据
 ![image](https://user-images.githubusercontent.com/29589505/145837715-c0529db4-f2aa-47f7-aca6-db101642f820.png)
