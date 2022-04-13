@@ -68,6 +68,10 @@
                         <li>
                             <span class="login-error">@Model.MSD.GetFirstError()</span>
                             <button type="submit" class="login-button" style="cursor:pointer">@Model.Localizer["Login.Login"]</button>
+                            <div  class="login-button" style="cursor:pointer">
+                                <a href="http://iotgateway.net/" target="_blank">跳转教程文档，持续更新，收藏不迷路</a>
+                            </div>
+                            
                             @*<wt:linkbutton window-title="@Model.Localizer["Login.Register"]" class="login-button" style="cursor:pointer" target="ButtonTargetEnum.Layer" window-width="500" window-height="500" url="/Login/Reg" text="@Model.Localizer["Login.Register"]" />*@
                         </li>
                     </ul>

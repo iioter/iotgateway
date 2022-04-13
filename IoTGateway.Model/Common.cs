@@ -20,8 +20,10 @@ namespace IoTGateway.Model
 
     public enum DataSide
     {
+        [Display(Name ="共享属性")]
         AnySide=0,
         //ServerSide=1,
-        ClientSide=2,
+        [Display(Name = "客户端属性")]
+        ClientSide =2,
     }
 }

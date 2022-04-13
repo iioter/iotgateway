@@ -145,7 +145,12 @@
       "ProjectGuid": "44619988-9f09-4714-9532-a44faf8275fe",
       "DisplayName": "IoTGateway.Model",
       "ColorIndex": 11
+    },
+    "27ff2d65-0bba-4c69-9dd7-311a4f21541e": {
+      "ProjectGuid": "27ff2d65-0bba-4c69-9dd7-311a4f21541e",
+      "DisplayName": "IoTGateway.DataAccess",
+      "ColorIndex": 12
     }
   },
-  "NextColorIndex": 12
+  "NextColorIndex": 13
 }

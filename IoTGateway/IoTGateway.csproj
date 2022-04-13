@@ -27,6 +27,8 @@
     <ProjectReference Include="..\WalkingTec.Mvvm\WalkingTec.Mvvm.Mvc\WalkingTec.Mvvm.Mvc.csproj" />
     <ProjectReference Include="..\WalkingTec.Mvvm\WalkingTec.Mvvm.TagHelpers.LayUI\WalkingTec.Mvvm.TagHelpers.LayUI.csproj" />
  </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 </Project>
 
 

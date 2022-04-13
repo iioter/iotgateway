@@ -19,10 +19,10 @@ namespace IoTGateway.ViewModel.Rpc.RpcLogVMs
             {
                 //this.MakeStandardAction("RpcLog", GridActionStandardTypesEnum.Create, Localizer["Sys.Create"],"Rpc", dialogWidth: 800),
                 //this.MakeStandardAction("RpcLog", GridActionStandardTypesEnum.Edit, Localizer["Sys.Edit"], "Rpc", dialogWidth: 800),
-                //this.MakeStandardAction("RpcLog", GridActionStandardTypesEnum.Delete, Localizer["Sys.Delete"], "Rpc", dialogWidth: 800),
-                //this.MakeStandardAction("RpcLog", GridActionStandardTypesEnum.Details, Localizer["Sys.Details"], "Rpc", dialogWidth: 800),
+                this.MakeStandardAction("RpcLog", GridActionStandardTypesEnum.Delete, Localizer["Sys.Delete"], "Rpc", dialogWidth: 800),
+                this.MakeStandardAction("RpcLog", GridActionStandardTypesEnum.Details, Localizer["Sys.Details"], "Rpc", dialogWidth: 800),
                 //this.MakeStandardAction("RpcLog", GridActionStandardTypesEnum.BatchEdit, Localizer["Sys.BatchEdit"], "Rpc", dialogWidth: 800),
-                //this.MakeStandardAction("RpcLog", GridActionStandardTypesEnum.BatchDelete, Localizer["Sys.BatchDelete"], "Rpc", dialogWidth: 800),
+                this.MakeStandardAction("RpcLog", GridActionStandardTypesEnum.BatchDelete, Localizer["Sys.BatchDelete"], "Rpc", dialogWidth: 800),
                 //this.MakeStandardAction("RpcLog", GridActionStandardTypesEnum.Import, Localizer["Sys.Import"], "Rpc", dialogWidth: 800),
                 this.MakeStandardAction("RpcLog", GridActionStandardTypesEnum.ExportExcel, Localizer["Sys.Export"], "Rpc"),
             };
@@ -33,12 +33,12 @@ namespace IoTGateway.ViewModel.Rpc.RpcLogVMs
         {
             return new List<GridColumn<RpcLog_View>>{
                 this.MakeGridHeader(x => x.RpcSide),
-                this.MakeGridHeader(x => x.StartTime),
+                this.MakeGridHeader(x => x.StartTime).SetWidth(150),
+                this.MakeGridHeader(x => x.Duration),
                 this.MakeGridHeader(x => x.DeviceName_view),
                 this.MakeGridHeader(x => x.Method),
                 this.MakeGridHeader(x => x.Params),
-                this.MakeGridHeader(x => x.EndTime),
-                this.MakeGridHeader(x => x.IsSuccess),
+                this.MakeGridHeader(x => x.IsSuccess).SetHeader("是否成功"),
                 this.MakeGridHeader(x => x.Description),
                 this.MakeGridHeaderAction(width: 200)
             };
@@ -68,13 +68,34 @@ namespace IoTGateway.ViewModel.Rpc.RpcLogVMs
                 .OrderByDescending(x => x.StartTime);
             return query;
         }
+        public override void AfterDoSearcher()
+        {
+            foreach (var entity in EntityList)
+            {
+                try
+                {
+                    TimeSpan ts1 = new TimeSpan(((DateTime)entity.StartTime).Ticks);
+                    TimeSpan ts2 = new TimeSpan(((DateTime)entity.EndTime).Ticks);
+                    TimeSpan ts = ts1.Subtract(ts2).Duration();
+                    entity.Duration = Math.Round(ts.TotalMilliseconds, 2);
+                }
+                catch (Exception)
+                {
+
+                }
+            }
+            base.AfterDoSearcher();
+        }
 
     }
+
 
     public class RpcLog_View : RpcLog
     {
         [Display(Name = "设备名")]
         public String DeviceName_view { get; set; }
+        [Display(Name = "持续时间(ms)")]
+        public double Duration { get; set; }
 
     }
 }
