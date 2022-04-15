@@ -1,19 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PluginInterface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using PluginInterface;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using IoTGateway.DataAccess;
 using IoTGateway.Model;
-using WalkingTec.Mvvm.Core;
 using DynamicExpresso;
 using MQTTnet.Server;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
-using PluginInterface.IoTSharp;
 
 namespace Plugin
 {
@@ -29,7 +21,8 @@ namespace Plugin
         private DateTime TsStartDt = new DateTime(1970, 1, 1);
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
         private Interpreter Interpreter = null;
-
+        private object _lock = new object();
+        private bool lastConnected = false;
         public DeviceThread(Device device, IDriver driver, string ProjectId, MyMqttClient myMqttClient, Interpreter interpreter, IMqttServer mqttServer, ILogger logger)
         {
             _myMqttClient = myMqttClient;
@@ -58,8 +51,9 @@ namespace Plugin
                 myMqttClient.UploadAttributeAsync(device.DeviceName, device.DeviceConfigs.Where(x => x.DataSide == DataSide.ClientSide).ToDictionary(x => x.DeviceConfigName, x => x.Value));
 
                 task = Task.Run(() =>
-                 {
-                     while (true)
+                {
+                    Thread.Sleep(5000);
+                    while (true)
                      {
                          if (tokenSource.IsCancellationRequested)
                          {
@@ -67,92 +61,103 @@ namespace Plugin
                              return;
                          }
 
-                         try
+                         lock (_lock)
                          {
-                             Dictionary<string, List<PayLoad>> sendModel = new() { { _device.DeviceName, new() } };
-
-                             var payLoad = new PayLoad() { Values = new() };
-
-                             if (driver.IsConnected)
+                             try
                              {
-                                 if (_device.DeviceVariables != null)
+                                 Dictionary<string, List<PayLoad>> sendModel = new() { { _device.DeviceName, new() } };
+
+                                 var payLoad = new PayLoad() { Values = new() };
+
+                                 if (driver.IsConnected)
                                  {
-                                     foreach (var item in _device.DeviceVariables)
+                                     if (_device.DeviceVariables != null)
                                      {
-                                         var ret = new DriverReturnValueModel();
-                                         var ioarg = new DriverAddressIoArgModel
+                                         foreach (var item in _device.DeviceVariables)
                                          {
-                                             ID = item.ID,
-                                             Address = item.DeviceAddress,
-                                             ValueType = item.DataType
-                                         };
-                                         var method = Methods.Where(x => x.Name == item.Method).FirstOrDefault();
-                                         if (method == null)
-                                             ret.StatusType = VaribaleStatusTypeEnum.MethodError;
-                                         else
-                                             ret = (DriverReturnValueModel)method.Invoke(_driver, new object[1] { ioarg });
+                                             var ret = new DriverReturnValueModel();
+                                             var ioarg = new DriverAddressIoArgModel
+                                             {
+                                                 ID = item.ID,
+                                                 Address = item.DeviceAddress,
+                                                 ValueType = item.DataType
+                                             };
+                                             var method = Methods.Where(x => x.Name == item.Method).FirstOrDefault();
+                                             if (method == null)
+                                                 ret.StatusType = VaribaleStatusTypeEnum.MethodError;
+                                             else
+                                                 ret = (DriverReturnValueModel)method.Invoke(_driver, new object[1] { ioarg });
 
-                                         if (ret.StatusType == VaribaleStatusTypeEnum.Good && !string.IsNullOrWhiteSpace(item.Expressions?.Trim()))
+                                             if (ret.StatusType == VaribaleStatusTypeEnum.Good && !string.IsNullOrWhiteSpace(item.Expressions?.Trim()))
+                                             {
+                                                 try
+                                                 {
+                                                     ret.CookedValue = interpreter.Eval(DealMysqlStr(item.Expressions).Replace("raw", ret.Value?.ToString()));
+                                                 }
+                                                 catch (Exception)
+                                                 {
+                                                     ret.StatusType = VaribaleStatusTypeEnum.ExpressionError;
+                                                 }
+                                             }
+                                             else
+                                                 ret.CookedValue = ret.Value;
+
+                                             payLoad.Values[item.Name] = ret.CookedValue;
+
+                                             ret.VarId = item.ID;
+
+                                             //变化了才推送到mqttserver，用于前端展示
+                                             if (DeviceValues[item.ID].StatusType != ret.StatusType || DeviceValues[item.ID].Value?.ToString() != ret.Value?.ToString() || DeviceValues[item.ID].CookedValue?.ToString() != ret.CookedValue?.ToString())
+                                             {
+                                                 //这是设备变量列表要用的
+                                                 mqttServer.PublishAsync($"internal/v1/gateway/telemetry/{_device.DeviceName}/{item.Name}", JsonConvert.SerializeObject(ret));
+                                                 //这是在线组态要用的
+                                                 mqttServer.PublishAsync($"v1/gateway/telemetry/{_device.DeviceName}/{item.Name}", JsonConvert.SerializeObject(ret.CookedValue));
+                                             }
+
+                                             DeviceValues[item.ID] = ret;
+
+                                         }
+                                         payLoad.TS = (long)(DateTime.UtcNow - TsStartDt).TotalMilliseconds;
+
+                                         if (DeviceValues.Any(x => x.Value.Value == null))
                                          {
-                                             try
-                                             {
-                                                 ret.CookedValue = interpreter.Eval(DealMysqlStr(item.Expressions).Replace("raw", ret.Value?.ToString()));
-                                             }
-                                             catch (Exception)
-                                             {
-                                                 ret.StatusType = VaribaleStatusTypeEnum.ExpressionError;
-                                             }
+                                             payLoad.Values = null;
+                                             payLoad.DeviceStatus = DeviceStatusTypeEnum.Bad;
                                          }
                                          else
-                                             ret.CookedValue = ret.Value;
-
-                                         payLoad.Values[item.Name] = ret.CookedValue;
-
-                                         ret.VarId = item.ID;
-
-                                         //变化了才推送到mqttserver，用于前端展示
-                                         if (DeviceValues[item.ID].StatusType != ret.StatusType || DeviceValues[item.ID].Value?.ToString() != ret.Value?.ToString() || DeviceValues[item.ID].CookedValue?.ToString() != ret.CookedValue?.ToString())
                                          {
-                                             //这是设备变量列表要用的
-                                             mqttServer.PublishAsync($"internal/v1/gateway/telemetry/{_device.DeviceName}/{item.Name}", JsonConvert.SerializeObject(ret));
-                                             //这是在线组态要用的
-                                             mqttServer.PublishAsync($"v1/gateway/telemetry/{_device.DeviceName}/{item.Name}", JsonConvert.SerializeObject(ret.CookedValue));
+                                             payLoad.DeviceStatus = DeviceStatusTypeEnum.Good;
+                                             sendModel[_device.DeviceName] = new List<PayLoad> { payLoad };
+                                             myMqttClient.PublishTelemetry(_device, sendModel);
                                          }
-
-                                         DeviceValues[item.ID] = ret;
-
                                      }
-                                     payLoad.TS = (long)(DateTime.Now - TsStartDt).TotalMilliseconds;
 
-                                     if (DeviceValues.Any(x => x.Value.Value == null))
+                                 }
+                                 else
+                                 {
+                                     if (driver.Connect())
+                                         _myMqttClient.DeviceConnected(_device.DeviceName);
+                                     else if (lastConnected)
                                      {
-                                         payLoad.Values = null;
-                                         payLoad.DeviceStatus = DeviceStatusTypeEnum.Bad;
-                                     }
-                                     else
-                                     {
-                                         payLoad.DeviceStatus = DeviceStatusTypeEnum.Good;
-                                         sendModel[_device.DeviceName] = new List<PayLoad> { payLoad };
-                                         myMqttClient.PublishTelemetry(_device, sendModel);
+                                         lastConnected = false;
+                                          _myMqttClient.DeviceDisconnected(_device.DeviceName);
                                      }
                                  }
-
                              }
-                             else
+                             catch (Exception ex)
                              {
-                                 driver.Connect();
+                                 _logger.LogError($"线程循环异常,{_device.DeviceName}", ex);
                              }
                          }
-                         catch (Exception ex)
-                         {
-                             _logger.LogError($"线程循环异常,{_device.DeviceName}", ex);
-                         }
+
 
                          Thread.Sleep((int)_driver.MinPeriod);
                      }
                  });
             }
-
+            else
+                _myMqttClient.DeviceDisconnected(_device.DeviceName);
         }
 
         private void MyMqttClient_OnExcRpc(object? sender, RpcRequest e)
@@ -173,47 +178,55 @@ namespace Plugin
                 //执行写入变量RPC
                 if (e.Method.ToLower() == "write")
                 {
-                    //没连接就连接
-                    if (!_driver.IsConnected)
-                        _driver.Connect();
-
-                    //连接成功就尝试一个一个的写入，注意:目前写入地址和读取地址是相同的，对于PLC来说没问题，其他的要自己改........
-                    if (_driver.IsConnected)
+                    lock (_lock)
                     {
-                        foreach (var para in e.Params)
+                        bool RpcConnected = false;
+                        //没连接就连接
+                        if (!_driver.IsConnected)
+                            if (_driver.Connect())
+                                RpcConnected = true;
+
+                        //连接成功就尝试一个一个的写入，注意:目前写入地址和读取地址是相同的，对于PLC来说没问题，其他的要自己改........
+                        if (_driver.IsConnected)
                         {
-                            //先查配置项，要用到配置的地址、数据类型、方法(方法最主要是用于区分写入数据的辅助判断，比如modbus不同的功能码)
-                            var deviceVariable = _device.DeviceVariables.Where(x => x.Name == para.Key).FirstOrDefault();
-                            if (deviceVariable != null)
+                            foreach (var para in e.Params)
                             {
-                                DriverAddressIoArgModel ioArgModel = new()
+                                //先查配置项，要用到配置的地址、数据类型、方法(方法最主要是用于区分写入数据的辅助判断，比如modbus不同的功能码)
+                                var deviceVariable = _device.DeviceVariables.Where(x => x.Name == para.Key).FirstOrDefault();
+                                if (deviceVariable != null)
                                 {
-                                    Address = deviceVariable.DeviceAddress,
-                                    Value = para.Value,
-                                    ValueType = deviceVariable.DataType
-                                };
-                                var writeResponse = _driver.WriteAsync(e.RequestId, deviceVariable.Method, ioArgModel).Result;
-                                rpcResponse.IsSuccess = writeResponse.IsSuccess;
-                                if (!writeResponse.IsSuccess)
+                                    DriverAddressIoArgModel ioArgModel = new()
+                                    {
+                                        Address = deviceVariable.DeviceAddress,
+                                        Value = para.Value,
+                                        ValueType = deviceVariable.DataType
+                                    };
+                                    var writeResponse = _driver.WriteAsync(e.RequestId, deviceVariable.Method, ioArgModel).Result;
+                                    rpcResponse.IsSuccess = writeResponse.IsSuccess;
+                                    if (!writeResponse.IsSuccess)
+                                    {
+                                        rpcResponse.Description = writeResponse.Description;
+                                        break;
+                                    }
+                                }
+                                else
                                 {
-                                    rpcResponse.Description = writeResponse.Description;
+                                    rpcResponse.IsSuccess = false;
+                                    rpcResponse.Description = $"未能找到变量:{para.Key}";
                                     break;
                                 }
                             }
-                            else
-                            {
-                                rpcResponse.IsSuccess = false;
-                                rpcResponse.Description = $"未能找到变量:{para.Key}";
-                                break;
-                            }
-                        }
+                            if (RpcConnected)
+                                _driver.Close();
 
+                        }
+                        else//连接失败
+                        {
+                            rpcResponse.IsSuccess = false;
+                            rpcResponse.Description = $"{e.DeviceName} 连接失败";
+                        }
                     }
-                    else//连接失败
-                    {
-                        rpcResponse.IsSuccess = false;
-                        rpcResponse.Description = $"{e.DeviceName} 连接失败";
-                    }
+
                 }
                 //其他RPC TODO
                 else
@@ -227,12 +240,12 @@ namespace Plugin
                 //纪录入库
                 rpcLog.IsSuccess = rpcResponse.IsSuccess;
                 rpcLog.Description = rpcResponse.Description;
-                rpcLog.EndTime=DateTime.Now;
+                rpcLog.EndTime = DateTime.Now;
 
 
                 using (var DC = new DataContext(IoTBackgroundService.connnectSetting, IoTBackgroundService.DBType))
                 {
-                    DC.Set<RpcLog>().Add(rpcLog); 
+                    DC.Set<RpcLog>().Add(rpcLog);
                     DC.SaveChanges();
                 }
             }
@@ -241,6 +254,7 @@ namespace Plugin
         public void StopThread()
         {
             _logger.LogInformation($"线程停止:{_device.DeviceName}");
+            _myMqttClient.DeviceDisconnected(_device.DeviceName);
             if (task != null)
             {
                 _myMqttClient.OnExcRpc -= MyMqttClient_OnExcRpc;

@@ -21,7 +21,6 @@ namespace DriverModbusMaster
         private SerialPort port = null;
         private Modbus.Device.ModbusMaster master = null;
         private SerialPortAdapter adapter = null;
-        private object locker=new object();
         #region 配置参数
 
         [ConfigParameter("设备Id")]
@@ -199,135 +198,119 @@ namespace DriverModbusMaster
         [Method("功能码:03", description: "ReadHoldingRegisters读保持寄存器")]
         public DriverReturnValueModel ReadHoldingRegisters(DriverAddressIoArgModel ioarg)
         {
-            lock (locker)
+            DriverReturnValueModel ret = new();
+            try
             {
-                DriverReturnValueModel ret = new();
-                try
+                if (IsConnected)
+                    ret = ReadRegistersBuffers(3, ioarg);
+                else
                 {
-                    if (IsConnected)
-                        ret = ReadRegistersBuffers(3, ioarg);
-                    else
-                    {
-                        ret.StatusType = VaribaleStatusTypeEnum.Bad;
-                        ret.Message = "TCP连接异常";
-                    }
+                    ret.StatusType = VaribaleStatusTypeEnum.Bad;
+                    ret.Message = "TCP连接异常";
                 }
-                catch (Exception ex)
-                {
-                    ret.StatusType = VaribaleStatusTypeEnum.UnKnow;
-                    ret.Message = ex.Message;
-
-                }
-                return ret;
             }
-            
+            catch (Exception ex)
+            {
+                ret.StatusType = VaribaleStatusTypeEnum.UnKnow;
+                ret.Message = ex.Message;
+
+            }
+            return ret;
         }
 
 
         [Method("功能码:04", description: "ReadHoldingRegisters读输入寄存器")]
         public DriverReturnValueModel ReadInputRegisters(DriverAddressIoArgModel ioarg)
         {
-            lock (locker)
+            DriverReturnValueModel ret = new();
+            try
             {
-                DriverReturnValueModel ret = new();
-                try
+                if (IsConnected)
+                    ret = ReadRegistersBuffers(4, ioarg);
+                else
                 {
-                    if (IsConnected)
-                        ret = ReadRegistersBuffers(4, ioarg);
-                    else
-                    {
-                        ret.StatusType = VaribaleStatusTypeEnum.Bad;
-                        ret.Message = "TCP连接异常";
-                    }
+                    ret.StatusType = VaribaleStatusTypeEnum.Bad;
+                    ret.Message = "TCP连接异常";
                 }
-                catch (Exception ex)
-                {
-                    ret.StatusType = VaribaleStatusTypeEnum.UnKnow;
-                    ret.Message = ex.Message;
-
-                }
-                return ret;
             }
-                
+            catch (Exception ex)
+            {
+                ret.StatusType = VaribaleStatusTypeEnum.UnKnow;
+                ret.Message = ex.Message;
+
+            }
+            return ret;
         }
 
 
         [Method("功能码:01", description: "ReadCoil读线圈")]
         public DriverReturnValueModel ReadCoil(DriverAddressIoArgModel ioarg)
         {
-            lock (locker)
+            DriverReturnValueModel ret = new();
+            try
             {
-                DriverReturnValueModel ret = new();
-                try
+                if (IsConnected)
                 {
-                    if (IsConnected)
+                    var retBool = master.ReadCoils(SlaveAddress, ushort.Parse(ioarg.Address), 1)[0];
+                    if (ioarg.ValueType == DataTypeEnum.Bit)
                     {
-                        var retBool = master.ReadCoils(SlaveAddress, ushort.Parse(ioarg.Address), 1)[0];
-                        if (ioarg.ValueType == DataTypeEnum.Bit)
-                        {
-                            if (retBool)
-                                ret.Value = 1;
-                            else
-                                ret.Value = 0;
-                        }
+                        if (retBool)
+                            ret.Value = 1;
                         else
-                            ret.Value = retBool;
-                        ret.StatusType = VaribaleStatusTypeEnum.Good;
+                            ret.Value = 0;
                     }
                     else
-                    {
-                        ret.StatusType = VaribaleStatusTypeEnum.Bad;
-                        ret.Message = "TCP连接异常";
-                    }
+                        ret.Value = retBool;
+                    ret.StatusType = VaribaleStatusTypeEnum.Good;
                 }
-                catch (Exception ex)
+                else
                 {
-                    ret.StatusType = VaribaleStatusTypeEnum.UnKnow;
-                    ret.Message = ex.Message;
-
+                    ret.StatusType = VaribaleStatusTypeEnum.Bad;
+                    ret.Message = "TCP连接异常";
                 }
-                return ret;
             }
-                
+            catch (Exception ex)
+            {
+                ret.StatusType = VaribaleStatusTypeEnum.UnKnow;
+                ret.Message = ex.Message;
+
+            }
+            return ret;
         }
 
         [Method("功能码:02", description: "ReadInput读输入")]
         public DriverReturnValueModel ReadInput(DriverAddressIoArgModel ioarg)
         {
-            lock (locker)
+            DriverReturnValueModel ret = new();
+            try
             {
-                DriverReturnValueModel ret = new();
-                try
+                if (IsConnected)
                 {
-                    if (IsConnected)
+                    var retBool = master.ReadInputs(SlaveAddress, ushort.Parse(ioarg.Address), 1)[0];
+                    if (ioarg.ValueType == DataTypeEnum.Bit)
                     {
-                        var retBool = master.ReadInputs(SlaveAddress, ushort.Parse(ioarg.Address), 1)[0];
-                        if (ioarg.ValueType == DataTypeEnum.Bit)
-                        {
-                            if (retBool)
-                                ret.Value = 1;
-                            else
-                                ret.Value = 0;
-                        }
+                        if (retBool)
+                            ret.Value = 1;
                         else
-                            ret.Value = retBool;
-                        ret.StatusType = VaribaleStatusTypeEnum.Good;
+                            ret.Value = 0;
                     }
                     else
-                    {
-                        ret.StatusType = VaribaleStatusTypeEnum.Bad;
-                        ret.Message = "TCP连接异常";
-                    }
+                        ret.Value = retBool;
+                    ret.StatusType = VaribaleStatusTypeEnum.Good;
                 }
-                catch (Exception ex)
+                else
                 {
-                    ret.StatusType = VaribaleStatusTypeEnum.UnKnow;
-                    ret.Message = ex.Message;
-
+                    ret.StatusType = VaribaleStatusTypeEnum.Bad;
+                    ret.Message = "TCP连接异常";
                 }
-                return ret;
             }
-                
+            catch (Exception ex)
+            {
+                ret.StatusType = VaribaleStatusTypeEnum.UnKnow;
+                ret.Message = ex.Message;
+
+            }
+            return ret;
         }
 
 
@@ -463,42 +446,38 @@ namespace DriverModbusMaster
 
         public async Task<RpcResponse> WriteAsync(string RequestId, string Method, DriverAddressIoArgModel Ioarg)
         {
-            lock (locker)
+            RpcResponse rpcResponse = new() { IsSuccess = false };
+            try
             {
-                RpcResponse rpcResponse = new() { IsSuccess = false };
-                try
+                ushort address = ushort.Parse(Ioarg.Address);
+                if (!IsConnected)
+                    rpcResponse.Description = "设备连接已断开";
+                else
                 {
-                    ushort address = ushort.Parse(Ioarg.Address);
-                    if (!IsConnected)
-                        rpcResponse.Description = "设备连接已断开";
-                    else
+                    //功能码01
+                    if (Method == nameof(ReadCoil))
                     {
-                        //功能码01
-                        if (Method == nameof(ReadCoil))
-                        {
-                            bool value = Ioarg.Value.ToString() == "1" || Ioarg.Value.ToString().ToLower() == "true";
-                            master.WriteSingleCoilAsync(SlaveAddress, address, value);
-                            rpcResponse.IsSuccess = true;
-                            return rpcResponse;
-                        }
-                        //功能码03
-                        else if (Method == nameof(ReadHoldingRegisters))
-                        {
-                            master.WriteSingleRegisterAsync(SlaveAddress, address, ushort.Parse(Ioarg.Value.ToString()));
-                            rpcResponse.IsSuccess = true;
-                            return rpcResponse;
-                        }
-                        else
-                            rpcResponse.Description = $"不支持写入:{Method}";
+                        bool value = Ioarg.Value.ToString() == "1" || Ioarg.Value.ToString().ToLower() == "true";
+                        master.WriteSingleCoilAsync(SlaveAddress, address, value);
+                        rpcResponse.IsSuccess = true;
+                        return rpcResponse;
                     }
+                    //功能码03
+                    else if (Method == nameof(ReadHoldingRegisters))
+                    {
+                        master.WriteSingleRegisterAsync(SlaveAddress, address, ushort.Parse(Ioarg.Value.ToString()));
+                        rpcResponse.IsSuccess = true;
+                        return rpcResponse;
+                    }
+                    else
+                        rpcResponse.Description = $"不支持写入:{Method}";
                 }
-                catch (Exception ex)
-                {
-                    rpcResponse.Description = $"写入失败:{Method},{Ioarg}";
-                }
-                return rpcResponse;
             }
-                
+            catch (Exception ex)
+            {
+                rpcResponse.Description = $"写入失败:{Method},{Ioarg}";
+            }
+            return rpcResponse;
         }
     }
     public enum PLC_TYPE

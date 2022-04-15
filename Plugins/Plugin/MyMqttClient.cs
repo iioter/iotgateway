@@ -101,21 +101,39 @@ namespace Plugin
             }
         }
 
+        private readonly string tbRpcTopic = "v1/gateway/rpc";
         private void OnConnected()
         {
-            //v1/gateway/attributes
-            //Message: {"device": "Device A", "data": {"attribute1": "value1", "attribute2": 42}}
-
-            //v1/gateway/rpc
-            //{"device": "Device A", "data": {"id": $request_id, "method": "toggle_gpio", "params": {"pin":1}}}
-            Client.SubscribeAsync(tbRpcTopic, MqttQualityOfServiceLevel.ExactlyOnce);//tb server side rpc
-            Client.SubscribeAsync($"devices/+/rpc/request/+/+", MqttQualityOfServiceLevel.ExactlyOnce);
-            Client.SubscribeAsync($"devices/Modbus/attributes/update/", MqttQualityOfServiceLevel.ExactlyOnce);
-            Client.SubscribeAsync($"devices/+/attributes/response/+", MqttQualityOfServiceLevel.ExactlyOnce);
+            switch (_systemConfig.IoTPlatformType)
+            {
+                case IoTPlatformType.ThingsBoard:
+                    //{"device": "Device A", "data": {"id": $request_id, "method": "toggle_gpio", "params": {"pin":1}}}
+                    Client.SubscribeAsync(tbRpcTopic, MqttQualityOfServiceLevel.ExactlyOnce);
+                    //Message: {"id": $request_id, "device": "Device A", "value": "value1"}
+                    Client.SubscribeAsync("v1/gateway/attributes/response", MqttQualityOfServiceLevel.ExactlyOnce);
+                    //Message: {"device": "Device A", "data": {"attribute1": "value1", "attribute2": 42}}
+                    Client.SubscribeAsync("v1/gateway/attributes", MqttQualityOfServiceLevel.ExactlyOnce);
+                    break;
+                case IoTPlatformType.IoTSharp:
+                    Client.SubscribeAsync("devices/+/rpc/response/+/+", MqttQualityOfServiceLevel.ExactlyOnce);
+                    Client.SubscribeAsync("devices/+/attributes/update", MqttQualityOfServiceLevel.ExactlyOnce);
+                    //Message: {"device": "Device A", "data": {"attribute1": "value1", "attribute2": 42}}
+                    Client.SubscribeAsync("devices/+/attributes/response/+", MqttQualityOfServiceLevel.ExactlyOnce);
+                    break;
+                case IoTPlatformType.AliCloudIoT:
+                    break;
+                case IoTPlatformType.TencentIoTHub:
+                    break;
+                case IoTPlatformType.BaiduIoTCore:
+                    break;
+                case IoTPlatformType.OneNET:
+                    break;
+                default:
+                    break;
+            }
             _logger.LogInformation($"MQTT CONNECTED WITH SERVER ");
         }
 
-        private readonly string tbRpcTopic = @"v1/gateway/rpc";
 
         private Task Client_ApplicationMessageReceived(MqttApplicationMessageReceivedEventArgs e)
         {
@@ -299,18 +317,47 @@ namespace Plugin
 
         }
 
-        public Task RequestAttributes(string _device, bool anySide, params string[] args)
+        public Task RequestAttributes(string _devicename, bool anySide, params string[] args)
         {
-            //Topic: v1/gateway/attributes/request
-            // Message: { "id": $request_id, "device": "Device A", "client": true, "key": "attribute1"}
-            //Topic: v1/gateway/attributes/response
-            //Message: {"id": $request_id, "device": "Device A", "value": "value1"}
-            string id = Guid.NewGuid().ToString();
-            string topic = $"devices/{_device}/attributes/request/{id}";
-            Dictionary<string, string> keys = new Dictionary<string, string>();
-            keys.Add(anySide ? "anySide" : "server", string.Join(",", args));
-            Client.SubscribeAsync($"devices/{_device}/attributes/response/{id}", MqttQualityOfServiceLevel.ExactlyOnce);
-            return Client.PublishAsync(topic, Newtonsoft.Json.JsonConvert.SerializeObject(keys), MqttQualityOfServiceLevel.ExactlyOnce);
+            try
+            {
+                string id = Guid.NewGuid().ToString();
+                switch (_systemConfig.IoTPlatformType)
+                {
+                    case IoTPlatformType.ThingsBoard:
+                        //{"id": $request_id, "device": "Device A", "client": true, "key": "attribute1"}
+                        Dictionary<string, object> tbRequestData = new Dictionary<string, object>
+                        {
+                            { "id",id},
+                            { "device",_devicename},
+                            { "client",true},
+                            { "key",args[0]}
+                        };
+                        return Client.PublishAsync("v1/gateway/attributes/request", JsonConvert.SerializeObject(tbRequestData), MqttQualityOfServiceLevel.ExactlyOnce);
+                    case IoTPlatformType.IoTSharp:
+                        string topic = $"devices/{_devicename}/attributes/request/{id}";
+                        Dictionary<string, string> keys = new Dictionary<string, string>();
+                        keys.Add(anySide ? "anySide" : "server", string.Join(",", args));
+                        Client.SubscribeAsync($"devices/{_devicename}/attributes/response/{id}", MqttQualityOfServiceLevel.ExactlyOnce);
+                        return Client.PublishAsync(topic, JsonConvert.SerializeObject(keys), MqttQualityOfServiceLevel.ExactlyOnce);
+                    case IoTPlatformType.AliCloudIoT:
+                        break;
+                    case IoTPlatformType.TencentIoTHub:
+                        break;
+                    case IoTPlatformType.BaiduIoTCore:
+                        break;
+                    case IoTPlatformType.OneNET:
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError($"RequestAttributes:{_devicename}", ex);
+            }
+            return Task.CompletedTask;
         }
 
         public void PublishTelemetry(Device device, Dictionary<string, List<PayLoad>> SendModel)
@@ -353,16 +400,60 @@ namespace Plugin
 
         }
 
-        public void DeviceConnected()
+        public async Task DeviceConnected(string DeviceName)
         {
-            //Topic: v1/gateway/connect
-            //Message: { "device":"Device A"}
+            try
+            {
+                switch (_systemConfig.IoTPlatformType)
+                {
+                    case IoTPlatformType.ThingsBoard:
+                    case IoTPlatformType.IoTSharp:
+                        await Client.PublishAsync("v1/gateway/connect", JsonConvert.SerializeObject(new Dictionary<string, string> { { "device", DeviceName } }));
+                        break;
+                    case IoTPlatformType.AliCloudIoT:
+                        break;
+                    case IoTPlatformType.TencentIoTHub:
+                        break;
+                    case IoTPlatformType.BaiduIoTCore:
+                        break;
+                    case IoTPlatformType.OneNET:
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"DeviceConnected:{DeviceName}", ex);
+            }
         }
 
-        public void DeviceDisconnected()
+        public async  Task DeviceDisconnected(string DeviceName)
         {
-            //Topic: v1/gateway/connect
-            //Message: { "device":"Device A"}
+            try
+            {
+                switch (_systemConfig.IoTPlatformType)
+                {
+                    case IoTPlatformType.ThingsBoard:
+                    case IoTPlatformType.IoTSharp:
+                        await Client.PublishAsync("v1/gateway/disconnect", JsonConvert.SerializeObject(new Dictionary<string, string> { { "device", DeviceName } }));
+                        break;
+                    case IoTPlatformType.AliCloudIoT:
+                        break;
+                    case IoTPlatformType.TencentIoTHub:
+                        break;
+                    case IoTPlatformType.BaiduIoTCore:
+                        break;
+                    case IoTPlatformType.OneNET:
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"DeviceDisconnected:{DeviceName}", ex);
+            }
 
         }
 

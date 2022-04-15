@@ -37,7 +37,6 @@ namespace Plugin
             _DrvierManager = drvierManager;
             _MyMqttClient = myMqttClient;
             _MqttServer = mqttServer;
-
             try
             {
                 using (var DC = new DataContext(connnectSetting, DBType))
