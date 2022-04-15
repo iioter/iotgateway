@@ -1,6 +1,6 @@
 # iotgateway 
 ## [iotgateway在线体验](http://42.193.160.84:518/)访问：http://42.193.160.84:518/
-## [iotgateway教程文档](http://iotgateway.net/)访问：http://iotgateway.net/
+## [iotgateway教程文档](http://42.193.160.84/)访问：http://iotgateway.net/
 ## github地址:[iotgateway](https://github.com/iioter/iotgateway/) https://github.com/iioter/iotgateway
 ## gitee地址:[iotgateway](https://gitee.com/iioter/iotgateway/) https://gitee.com/iioter/iotgateway
 基于.net6的跨平台物联网网关。通过可视化配置，轻松的连接到你的任何设备和系统(如PLC、扫码枪、CNC、数据库、串口设备、上位机、OPC Server、OPC UA Server、Mqtt Server等)，从而与 Thingsboard、IoTSharp或您自己的物联网平台进行双向数据通讯。提供简单的驱动开发接口；当然也可以进行边缘计算。
@@ -37,7 +37,7 @@
 ## 数据实时更新
 ![iotgateway](https://user-images.githubusercontent.com/29589505/147055534-3954039c-2723-4fc3-8981-c9ce3bb0163e.gif)
 ## RPC反向控制
-![rpc](https://user-images.githubusercontent.com/29589505/163212876-c1c380b1-68e5-4681-a28d-33d70ebbd6bc.gif)
+![4 rpc](https://user-images.githubusercontent.com/29589505/163549468-33ef7017-391c-4c80-833e-fab08f4bb569.gif)
 ## 设备数据更新OPCUA服务端
 ![795d56161e78c770a2ca4d32f8e6b73](https://user-images.githubusercontent.com/29589505/147349299-f1fc1152-c758-47a4-a0c1-85da1895db9c.png)
 ## 接入组态项目
