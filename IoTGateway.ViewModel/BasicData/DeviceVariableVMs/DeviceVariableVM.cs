@@ -34,6 +34,10 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                 AllMethods = deviceService.GetDriverMethods(Entity.DeviceId);
                 var DapThread = deviceService.DeviceThreads.Where(x => x._device.ID == Entity.DeviceId).FirstOrDefault();
             }
+            else if (IoTBackgroundService.ConfigSelectDeviceId != null)
+            {
+                Entity.DeviceId = IoTBackgroundService.ConfigSelectDeviceId;
+            }
         }
 
         public override void DoAdd()

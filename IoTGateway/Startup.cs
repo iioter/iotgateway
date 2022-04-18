@@ -99,6 +99,7 @@ namespace IoTGateway
                 {
                     { ".html", "text/html" },
                     { ".glb", "model/gltf-binary" },
+                    { ".json", " application/json" },
                     { ".js", "application/javascript" },
                     { ".css", "text/css" },
                     { ".wasm", "application/wasm" },

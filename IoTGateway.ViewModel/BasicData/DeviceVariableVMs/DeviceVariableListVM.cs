@@ -100,6 +100,9 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
         }
         public override IOrderedQueryable<DeviceVariable_View> GetSearchQuery()
         {
+            if (Searcher.DeviceId != null)
+                IoTBackgroundService.VariableSelectDeviceId = Searcher.DeviceId;
+
             var query = DC.Set<DeviceVariable>()
                 .CheckContain(Searcher.Name, x => x.Name)
                 .CheckContain(Searcher.Method, x => x.Method)

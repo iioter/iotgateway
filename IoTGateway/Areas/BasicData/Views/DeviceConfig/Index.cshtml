@@ -4,7 +4,6 @@
 <wt:treecontainer items="AllDevices" id-field="Searcher.DeviceId" height="500">
     <wt:searchpanel vm="@Model" reset-btn="true">
         <wt:row items-per-row="ItemsPerRowEnum.Three">
-            <wt:combobox field="Searcher.DeviceId" items="Searcher.AllDevices" empty-text="@Localizer["Sys.All"]" />
             <wt:textbox field="Searcher.DeviceConfigName" />
             <wt:textbox field="Searcher.Value" />
         </wt:row>

@@ -3,6 +3,8 @@
   <PropertyGroup>
     <ActiveDebugProfile>IoTGateway</ActiveDebugProfile>
     <NameOfLastUsedPublishProfile>D:\Repos\iotgateway\IoTGateway\Properties\PublishProfiles\FolderProfile.pubxml</NameOfLastUsedPublishProfile>
+    <View_SelectedScaffolderID>RazorViewEmptyScaffolder</View_SelectedScaffolderID>
+    <View_SelectedScaffolderCategoryPath>root/Common/MVC/View</View_SelectedScaffolderCategoryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>

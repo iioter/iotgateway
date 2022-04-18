@@ -14,6 +14,7 @@ namespace Plugin
     {
         public static DBTypeEnum DBType;
         public static string connnectSetting;
+        public static Guid? VariableSelectDeviceId, ConfigSelectDeviceId;
         public IoTBackgroundService(IConfiguration ConfigRoot)
         {
             var connnectSettings = new List<ConnnectSettingsModel>();

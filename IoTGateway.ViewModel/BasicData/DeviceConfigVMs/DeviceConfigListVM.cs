@@ -7,7 +7,7 @@ using WalkingTec.Mvvm.Core.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using IoTGateway.Model;
-
+using Plugin;
 
 namespace IoTGateway.ViewModel.BasicData.DeviceConfigVMs
 {
@@ -62,6 +62,8 @@ namespace IoTGateway.ViewModel.BasicData.DeviceConfigVMs
 
         public override IOrderedQueryable<DeviceConfig_View> GetSearchQuery()
         {
+            if (Searcher.DeviceId != null)
+                IoTBackgroundService.ConfigSelectDeviceId = Searcher.DeviceId;
             var query = DC.Set<DeviceConfig>()
                 .CheckContain(Searcher.DeviceConfigName, x => x.DeviceConfigName)
                 .CheckContain(Searcher.Value, x => x.Value)
