@@ -3,12 +3,12 @@
 ## [iotgateway教程文档](http://42.193.160.84/)访问：http://iotgateway.net/
 ## github地址:[iotgateway](https://github.com/iioter/iotgateway/) https://github.com/iioter/iotgateway
 ## gitee地址:[iotgateway](https://gitee.com/iioter/iotgateway/) https://gitee.com/iioter/iotgateway
-基于.net6的跨平台物联网网关。通过可视化配置，轻松的连接到你的任何设备和系统(如PLC、扫码枪、CNC、数据库、串口设备、上位机、OPC Server、OPC UA Server、Mqtt Server等)，从而与 Thingsboard、IoTSharp或您自己的物联网平台进行双向数据通讯。提供简单的驱动开发接口；当然也可以进行边缘计算。
+基于.net6的跨平台物联网网关。通过可视化配置，轻松的连接到你的任何设备和系统(如PLC、扫码枪、CNC、数据库、串口设备、上位机、OPC Server、OPC UA Server、Mqtt Server等)，从而与 Thingsboard、IoTSharp、ThingsCloud或您自己的物联网平台进行双向数据通讯。提供简单的驱动开发接口；当然也可以进行边缘计算。
 
 * 抛砖引玉，共同进步
 * 基于.net6的开源物联网网关
 * 浏览器可视化的配置方式实现数据采集(使用wtm开发)
-* 物联网网关mqtt+opcua双通道实时输出，支持thingsboard、iotsharp等第三方平台
+* 物联网网关mqtt+opcua双通道实时输出，支持thingsboard、iotsharp、thingscloud等第三方平台
 * 内置Mqtt服务端,支持websocket，进行标准mqtt输出。本地端口1888 admin 000000
 * 内置OPCUA服务端,数据实时更新。匿名本地访问:opc.tcp://localhost:62541/Quickstarts/ReferenceServer
 * 内置三菱PLC、Modbus驱动全协议支持、MT机床、欧姆龙PLC、OPCUA客户端、西门子PLC、AB(罗克韦尔)PLC、
