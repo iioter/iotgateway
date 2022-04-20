@@ -258,8 +258,8 @@ namespace Plugin
             if (task != null)
             {
                 _myMqttClient.OnExcRpc -= MyMqttClient_OnExcRpc;
-                _driver.Close();
                 tokenSource.Cancel();
+                _driver.Close();
             }
         }
 

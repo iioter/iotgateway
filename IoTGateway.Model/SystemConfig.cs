@@ -31,7 +31,8 @@ namespace IoTGateway.Model
         [Display(Name = "百度物联网通信")]
         BaiduIoTCore =4,
         [Display(Name = "中移OneNet")]
-        OneNET =5
-
+        OneNET = 5,
+        [Display(Name = "ThingsCloud")]
+        ThingsCloud = 6
     }
 }

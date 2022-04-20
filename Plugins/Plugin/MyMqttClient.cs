@@ -120,6 +120,13 @@ namespace Plugin
                     //Message: {"device": "Device A", "data": {"attribute1": "value1", "attribute2": 42}}
                     Client.SubscribeAsync("devices/+/attributes/response/+", MqttQualityOfServiceLevel.ExactlyOnce);
                     break;
+                case IoTPlatformType.ThingsCloud:
+                    Client.SubscribeAsync("gateway/attributes/response", MqttQualityOfServiceLevel.ExactlyOnce);
+                    Client.SubscribeAsync("gateway/attributes/get/response", MqttQualityOfServiceLevel.ExactlyOnce);
+                    Client.SubscribeAsync("gateway/attributes/push", MqttQualityOfServiceLevel.ExactlyOnce);
+                    Client.SubscribeAsync("gateway/event/response", MqttQualityOfServiceLevel.ExactlyOnce);
+                    Client.SubscribeAsync("gateway/command/send", MqttQualityOfServiceLevel.ExactlyOnce);
+                    break;
                 case IoTPlatformType.AliCloudIoT:
                     break;
                 case IoTPlatformType.TencentIoTHub:
@@ -149,6 +156,9 @@ namespace Plugin
                 else if (e.ApplicationMessage.Topic.StartsWith($"devices/") && e.ApplicationMessage.Topic.Contains("/rpc/request/"))
                 {
                     ReceiveIsRpc(e);
+                }else if(e.ApplicationMessage.Topic== "gateway/command/send")
+                {
+                    ReceiveTcRpc(e);
                 }
             }
             catch (Exception ex)
@@ -158,6 +168,10 @@ namespace Plugin
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        /// thingsboard rpc
+        /// </summary>
+        /// <param name="e"></param>
         private void ReceiveTbRpc(MqttApplicationMessageReceivedEventArgs e)
         {
             TBRpcRequest tBRpcRequest;
@@ -179,6 +193,30 @@ namespace Plugin
 
         }
 
+        /// <summary>
+        /// thingscloud rpc
+        /// </summary>
+        /// <param name="e"></param>
+        private void ReceiveTcRpc(MqttApplicationMessageReceivedEventArgs e)
+        {
+            TCRpcRequest tCRpcRequest;
+            try
+            {
+                tCRpcRequest = JsonConvert.DeserializeObject<TCRpcRequest>(e.ApplicationMessage.ConvertPayloadToString());
+                OnExcRpc?.Invoke(Client, new RpcRequest()
+                {
+                    Method = tCRpcRequest.RequestData.Method,
+                    DeviceName = tCRpcRequest.DeviceName,
+                    RequestId = tCRpcRequest.RequestData.RequestId,
+                    Params = tCRpcRequest.RequestData.Params
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"ReceiveTbRpc:Topic:{e.ApplicationMessage.Topic},Payload:{e.ApplicationMessage.ConvertPayloadToString()}", ex);
+            }
+
+        }
         private void ReceiveIsRpc(MqttApplicationMessageReceivedEventArgs e)
         {
             try
@@ -214,6 +252,15 @@ namespace Plugin
             return Client.PublishAsync(new MqttApplicationMessageBuilder()
                 .WithTopic(tbRpcTopic)
                 .WithPayload(JsonConvert.SerializeObject(tBRpcResponse))
+                .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
+        }
+
+        private Task ResponseTCRpc(TCRpcRequest tCRpcResponse)
+        {
+            string topic = $"command/reply/{tCRpcResponse.RequestData.RequestId}";
+            return Client.PublishAsync(new MqttApplicationMessageBuilder()
+                .WithTopic(topic)
+                .WithPayload(JsonConvert.SerializeObject(tCRpcResponse))
                 .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
         }
 
@@ -269,11 +316,16 @@ namespace Plugin
 
         }
 
-        public Task UploadTelemetryDataAsync(string _devicename, object obj)
+        public Task UploadISTelemetryDataAsync(string _devicename, object obj)
         {
             return Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic($"devices/{_devicename}/telemetry").WithPayload(Newtonsoft.Json.JsonConvert.SerializeObject(obj)).Build());
         }
 
+        public Task UploadTCTelemetryDataAsync(string _devicename, object obj)
+        {
+            var toSend = new Dictionary<string, object> { { _devicename, obj } };
+            return Client.PublishAsync("gateway/attributes", JsonConvert.SerializeObject(toSend));
+        }
         public void ResponseRpc(RpcResponse rpcResponse)
         {
             try
@@ -297,6 +349,9 @@ namespace Plugin
                             ResponseId = rpcResponse.RequestId,
                             Data = JsonConvert.SerializeObject(new Dictionary<string, object> { { "success", rpcResponse.IsSuccess }, { "description", rpcResponse.Description } })
                         });
+                        break;
+                    case IoTPlatformType.ThingsCloud:
+                        //官网API不需要回复的                        
                         break;
                     case IoTPlatformType.AliCloudIoT:
                         break;
@@ -372,7 +427,13 @@ namespace Plugin
                     case IoTPlatformType.IoTSharp:
                         foreach (var payload in SendModel[device.DeviceName])
                         {
-                            UploadTelemetryDataAsync(device.DeviceName, payload.Values);
+                            UploadISTelemetryDataAsync(device.DeviceName, payload.Values);
+                        }
+                        break;
+                    case IoTPlatformType.ThingsCloud:
+                        foreach (var payload in SendModel[device.DeviceName])
+                        {
+                            UploadTCTelemetryDataAsync(device.DeviceName, payload.Values);
                         }
                         break;
                     case IoTPlatformType.AliCloudIoT:
@@ -418,6 +479,9 @@ namespace Plugin
                         break;
                     case IoTPlatformType.OneNET:
                         break;
+                    case IoTPlatformType.ThingsCloud:
+                        await Client.PublishAsync("gateway/connect", JsonConvert.SerializeObject(new Dictionary<string, string> { { "device", DeviceName } }));
+                        break;
                     default:
                         break;
                 }
@@ -445,6 +509,9 @@ namespace Plugin
                     case IoTPlatformType.BaiduIoTCore:
                         break;
                     case IoTPlatformType.OneNET:
+                        break;
+                    case IoTPlatformType.ThingsCloud:
+                        await Client.PublishAsync("gateway/disconnect", JsonConvert.SerializeObject(new Dictionary<string, string> { { "device", DeviceName } }));
                         break;
                     default:
                         break;
