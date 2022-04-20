@@ -48,12 +48,14 @@
 
 # 运行
 ## windows主机运行：
-1. [下载Releasev0.4.0](https://github.com/iioter/iotgateway/releases/download/v0.4.0/iotgateway-v0.4.0.zip)发布版本
-2. [下载.net6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) sdk或runtime
-3. 安装.net6 
-4. 解压release包，运行IoTGateway.exe
-5. 访问[iotgateway](http://localhost:518/)后台：http://localhost:518
-
+1. [下载Releasev0.5.0](https://github.com/iioter/iotgateway/releases/download/v0.5.0/iotgateway-0.5.0-windows-x64.zip)发布版本
+2. 解压release包，运行IoTGateway.exe
+## linux-x64主机运行：
+1. [下载Releasev0.5.0](https://github.com/iioter/iotgateway/releases/download/v0.5.0/iotgateway-0.5.0-linux-x64.zip)发布版本
+2. 解压release包，运行IoTGateway
+## linux-arm主机运行：
+1. [下载Releasev0.5.0](https://github.com/iioter/iotgateway/releases/download/v0.5.0/iotgateway-0.5.0-linux-arm.rar)发布版本
+2. 解压release包，运行IoTGateway
 ## linux/amd64,win/amd64 docker运行(官方仓)
 1. docker run -d -p 518:518 -p 1888:1888 -p 62541:62541 -p 503:503 --name iotgateway --restart always 15261671110/iotgateway
 ## linux/amd64,win/amd64 docker运行(阿里仓)
@@ -69,8 +71,9 @@
 3. docker run -d -p 518:518 -p 1888:1888 -p 62541:62541 -p 503:503 --name iotgateway --restart always 15261671110/iotgateway
 
 ## 登入系统
-1. 用户名 admin,密码 000000
-2. 打开发布文件路径下的ReadMe文件夹中的手摸手，按照顺序添加设备进行采集
+1. 访问[iotgateway](http://localhost:518/)后台：http://localhost:518
+2. 用户名 admin,密码 000000
+3. 打开发布文件路径下的ReadMe文件夹中的手摸手，按照顺序添加设备进行采集
 # 采集配置
 ![1 登录](https://user-images.githubusercontent.com/29589505/145705166-d5818557-4ba1-4e7b-b8d8-8f5f4b28868f.png)
 ![2 首页](https://user-images.githubusercontent.com/29589505/145705168-94b3ff0c-2f5c-4a31-8e83-c2ed799320ce.png)
