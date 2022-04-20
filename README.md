@@ -1,8 +1,6 @@
 # iotgateway 
 ## [iotgateway在线体验](http://42.193.160.84:518/)访问：http://42.193.160.84:518/
 ## [iotgateway教程文档](http://42.193.160.84/)访问：http://iotgateway.net/
-## github地址:[iotgateway](https://github.com/iioter/iotgateway/) https://github.com/iioter/iotgateway
-## gitee地址:[iotgateway](https://gitee.com/iioter/iotgateway/) https://gitee.com/iioter/iotgateway
 基于.net6的跨平台物联网网关。通过可视化配置，轻松的连接到你的任何设备和系统(如PLC、扫码枪、CNC、数据库、串口设备、上位机、OPC Server、OPC UA Server、Mqtt Server等)，从而与 Thingsboard、IoTSharp、ThingsCloud或您自己的物联网平台进行双向数据通讯。提供简单的驱动开发接口；当然也可以进行边缘计算。
 
 * 抛砖引玉，共同进步
@@ -92,18 +90,3 @@
 ![6 gateway 修改设备为自启动](https://user-images.githubusercontent.com/29589505/145705269-c816789c-cd67-4c01-973f-ae4f10eb41d9.png)
 ![7 thingsboard 查看到设备和数据](https://user-images.githubusercontent.com/29589505/145705270-31d8884f-7f6f-4ff5-a6bb-1d57a97012f4.png)
 ![8 gateway 查看到数据](https://user-images.githubusercontent.com/29589505/145705271-cb80b80e-006e-4312-8843-6d0ae9457cb1.png)
-
-
-
-
-# 善假于物
-1. [WTM(MIT)](https://github.com/dotnetcore/WTM)
-2. [OPCUA(OPCUA)](https://github.com/OPCFoundation/UA-.NETStandard)
-3. [NModbus4(MIT)](https://github.com/NModbus4/NModbus4)
-4. [S7NetPlus(MIT)](https://github.com/S7NetPlus/s7netplus)
-5. [MQTTnet(MIT)](https://github.com/chkr1011/MQTTnet)
-6. [DynamicExpresso(MIT)](https://github.com/dynamicexpresso/DynamicExpresso)
-7. [EFCore(MIT)](https://github.com/dotnet/efcore)
-8. [LayUI(MIT)](https://github.com/sentsin/layui)
-9. [SQLite](https://github.com/sqlite/sqlite)
-10. [mtconnect ](https://github.com/ctacke/mtconnect)
