@@ -96,3 +96,7 @@
 ![6 gateway 修改设备为自启动](https://user-images.githubusercontent.com/29589505/145705269-c816789c-cd67-4c01-973f-ae4f10eb41d9.png)
 ![7 thingsboard 查看到设备和数据](https://user-images.githubusercontent.com/29589505/145705270-31d8884f-7f6f-4ff5-a6bb-1d57a97012f4.png)
 ![8 gateway 查看到数据](https://user-images.githubusercontent.com/29589505/145705271-cb80b80e-006e-4312-8843-6d0ae9457cb1.png)
+
+![connectdevice](https://user-images.githubusercontent.com/29589505/166888783-37f10d50-05cb-416a-95d1-528f556ef4a6.png)
+
+![disconnectdevice](https://user-images.githubusercontent.com/29589505/166888879-34f5c014-f590-4224-9848-2020f5deb95f.png)
