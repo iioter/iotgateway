@@ -1,6 +1,9 @@
 # iotgateway 
 ## [iotgateway在线体验](http://42.193.160.84:518/)访问：http://42.193.160.84:518/
-## [iotgateway教程文档](http://42.193.160.84/)访问：http://iotgateway.net/
+## [iotgateway教程文档](http://42.193.160.84/)访问：http://42.193.160.84/
+## 公众号
+![qrcode_for_gh_6ca4c5dd92d0_258](https://user-images.githubusercontent.com/29589505/166852050-a1799cfd-169f-4659-a1dd-fe0883e242a6.jpg)
+
 基于.net6的跨平台物联网网关。通过可视化配置，轻松的连接到你的任何设备和系统(如PLC、扫码枪、CNC、数据库、串口设备、上位机、OPC Server、OPC UA Server、Mqtt Server等)，从而与 Thingsboard、IoTSharp、ThingsCloud或您自己的物联网平台进行双向数据通讯。提供简单的驱动开发接口；当然也可以进行边缘计算。
 
 * 抛砖引玉，共同进步
