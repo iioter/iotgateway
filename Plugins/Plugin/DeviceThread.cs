@@ -46,13 +46,12 @@ namespace Plugin
                         }
                     }
                 }
-
-                //上传客户端属性
-                myMqttClient.UploadAttributeAsync(device.DeviceName, device.DeviceConfigs.Where(x => x.DataSide == DataSide.ClientSide).ToDictionary(x => x.DeviceConfigName, x => x.Value));
-
+                
                 task = Task.Run(() =>
                 {
-                    Thread.Sleep(5000);
+                    Thread.Sleep(5000);//上传客户端属性
+                    myMqttClient.UploadAttributeAsync(device.DeviceName, device.DeviceConfigs.Where(x => x.DataSide == DataSide.ClientSide).ToDictionary(x => x.DeviceConfigName, x => x.Value));
+
                     while (true)
                      {
                          if (tokenSource.IsCancellationRequested)
@@ -137,7 +136,10 @@ namespace Plugin
                                  else
                                  {
                                      if (driver.Connect())
+                                     {
+                                         lastConnected = true;
                                          _myMqttClient.DeviceConnected(_device.DeviceName);
+                                     }
                                      else if (lastConnected)
                                      {
                                          lastConnected = false;
