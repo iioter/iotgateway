@@ -46,123 +46,123 @@ namespace Plugin
                         }
                     }
                 }
-                
+
                 task = Task.Run(() =>
                 {
                     Thread.Sleep(5000);//上传客户端属性
                     myMqttClient.UploadAttributeAsync(device.DeviceName, device.DeviceConfigs.Where(x => x.DataSide == DataSide.ClientSide).ToDictionary(x => x.DeviceConfigName, x => x.Value));
 
                     while (true)
-                     {
-                         if (tokenSource.IsCancellationRequested)
-                         {
-                             _logger.LogInformation($"停止线程:{_device.DeviceName}");
-                             return;
-                         }
+                    {
+                        if (tokenSource.IsCancellationRequested)
+                        {
+                            _logger.LogInformation($"停止线程:{_device.DeviceName}");
+                            return;
+                        }
 
-                         lock (_lock)
-                         {
-                             try
-                             {
-                                 Dictionary<string, List<PayLoad>> sendModel = new() { { _device.DeviceName, new() } };
+                        lock (_lock)
+                        {
+                            try
+                            {
+                                Dictionary<string, List<PayLoad>> sendModel = new() { { _device.DeviceName, new() } };
 
-                                 var payLoad = new PayLoad() { Values = new() };
+                                var payLoad = new PayLoad() { Values = new() };
 
-                                 if (driver.IsConnected)
-                                 {
-                                     if (_device.DeviceVariables != null)
-                                     {
-                                         foreach (var item in _device.DeviceVariables)
-                                         {
-                                             var ret = new DriverReturnValueModel();
-                                             var ioarg = new DriverAddressIoArgModel
-                                             {
-                                                 ID = item.ID,
-                                                 Address = item.DeviceAddress,
-                                                 ValueType = item.DataType
-                                             };
-                                             var method = Methods.Where(x => x.Name == item.Method).FirstOrDefault();
-                                             if (method == null)
-                                                 ret.StatusType = VaribaleStatusTypeEnum.MethodError;
-                                             else
-                                                 ret = (DriverReturnValueModel)method.Invoke(_driver, new object[1] { ioarg });
+                                if (driver.IsConnected)
+                                {
+                                    if (_device.DeviceVariables != null)
+                                    {
+                                        foreach (var item in _device.DeviceVariables)
+                                        {
+                                            var ret = new DriverReturnValueModel();
+                                            var ioarg = new DriverAddressIoArgModel
+                                            {
+                                                ID = item.ID,
+                                                Address = item.DeviceAddress,
+                                                ValueType = item.DataType
+                                            };
+                                            var method = Methods.Where(x => x.Name == item.Method).FirstOrDefault();
+                                            if (method == null)
+                                                ret.StatusType = VaribaleStatusTypeEnum.MethodError;
+                                            else
+                                                ret = (DriverReturnValueModel)method.Invoke(_driver, new object[1] { ioarg });
 
-                                             if (ret.StatusType == VaribaleStatusTypeEnum.Good && !string.IsNullOrWhiteSpace(item.Expressions?.Trim()))
-                                             {
-                                                 try
-                                                 {
-                                                     ret.CookedValue = interpreter.Eval(DealMysqlStr(item.Expressions).Replace("raw", ret.Value?.ToString()));
-                                                 }
-                                                 catch (Exception)
-                                                 {
-                                                     ret.StatusType = VaribaleStatusTypeEnum.ExpressionError;
-                                                 }
-                                             }
-                                             else
-                                                 ret.CookedValue = ret.Value;
+                                            if (ret.StatusType == VaribaleStatusTypeEnum.Good && !string.IsNullOrWhiteSpace(item.Expressions?.Trim()))
+                                            {
+                                                try
+                                                {
+                                                    ret.CookedValue = interpreter.Eval(DealMysqlStr(item.Expressions).Replace("raw", ret.Value?.ToString()));
+                                                }
+                                                catch (Exception)
+                                                {
+                                                    ret.StatusType = VaribaleStatusTypeEnum.ExpressionError;
+                                                }
+                                            }
+                                            else
+                                                ret.CookedValue = ret.Value;
 
-                                             payLoad.Values[item.Name] = ret.CookedValue;
+                                            payLoad.Values[item.Name] = ret.CookedValue;
 
-                                             ret.VarId = item.ID;
+                                            ret.VarId = item.ID;
 
-                                             //变化了才推送到mqttserver，用于前端展示
-                                             if (DeviceValues[item.ID].StatusType != ret.StatusType || DeviceValues[item.ID].Value?.ToString() != ret.Value?.ToString() || DeviceValues[item.ID].CookedValue?.ToString() != ret.CookedValue?.ToString())
-                                             {
-                                                 //这是设备变量列表要用的
-                                                 mqttServer.PublishAsync($"internal/v1/gateway/telemetry/{_device.DeviceName}/{item.Name}", JsonConvert.SerializeObject(ret));
-                                                 //这是在线组态要用的
-                                                 mqttServer.PublishAsync($"v1/gateway/telemetry/{_device.DeviceName}/{item.Name}", JsonConvert.SerializeObject(ret.CookedValue));
-                                             }
+                                            //变化了才推送到mqttserver，用于前端展示
+                                            if (DeviceValues[item.ID].StatusType != ret.StatusType || DeviceValues[item.ID].Value?.ToString() != ret.Value?.ToString() || DeviceValues[item.ID].CookedValue?.ToString() != ret.CookedValue?.ToString())
+                                            {
+                                                //这是设备变量列表要用的
+                                                mqttServer.PublishAsync($"internal/v1/gateway/telemetry/{_device.DeviceName}/{item.Name}", JsonConvert.SerializeObject(ret));
+                                                //这是在线组态要用的
+                                                mqttServer.PublishAsync($"v1/gateway/telemetry/{_device.DeviceName}/{item.Name}", JsonConvert.SerializeObject(ret.CookedValue));
+                                            }
 
-                                             DeviceValues[item.ID] = ret;
+                                            DeviceValues[item.ID] = ret;
 
-                                         }
-                                         payLoad.TS = (long)(DateTime.UtcNow - TsStartDt).TotalMilliseconds;
+                                        }
+                                        payLoad.TS = (long)(DateTime.UtcNow - TsStartDt).TotalMilliseconds;
 
-                                         if (DeviceValues.Any(x => x.Value.Value == null))
-                                         {
-                                             payLoad.Values = null;
-                                             payLoad.DeviceStatus = DeviceStatusTypeEnum.Bad;
-                                         }
-                                         else
-                                         {
-                                             payLoad.DeviceStatus = DeviceStatusTypeEnum.Good;
-                                             sendModel[_device.DeviceName] = new List<PayLoad> { payLoad };
-                                             myMqttClient.PublishTelemetry(_device, sendModel);
-                                         }
-                                     }
+                                        if (DeviceValues.Any(x => x.Value.Value == null))
+                                        {
+                                            payLoad.Values = null;
+                                            payLoad.DeviceStatus = DeviceStatusTypeEnum.Bad;
+                                        }
+                                        else
+                                        {
+                                            payLoad.DeviceStatus = DeviceStatusTypeEnum.Good;
+                                            sendModel[_device.DeviceName] = new List<PayLoad> { payLoad };
+                                            myMqttClient.PublishTelemetry(_device, sendModel);
+                                        }
+                                    }
 
-                                 }
-                                 else
-                                 {
-                                     if (driver.Connect())
-                                     {
-                                         lastConnected = true;
-                                         _myMqttClient.DeviceConnected(_device.DeviceName);
-                                     }
-                                     else if (lastConnected)
-                                     {
-                                         lastConnected = false;
-                                          _myMqttClient.DeviceDisconnected(_device.DeviceName);
-                                     }
-                                 }
-                             }
-                             catch (Exception ex)
-                             {
-                                 _logger.LogError($"线程循环异常,{_device.DeviceName}", ex);
-                             }
-                         }
+                                }
+                                else
+                                {
+                                    if (driver.Connect())
+                                    {
+                                        lastConnected = true;
+                                        _myMqttClient.DeviceConnected(_device.DeviceName);
+                                    }
+                                    else if (lastConnected)
+                                    {
+                                        lastConnected = false;
+                                        _myMqttClient.DeviceDisconnected(_device.DeviceName);
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                _logger.LogError($"线程循环异常,{_device.DeviceName}", ex);
+                            }
+                        }
 
 
-                         Thread.Sleep((int)_driver.MinPeriod);
-                     }
-                 });
+                        Thread.Sleep((int)_driver.MinPeriod);
+                    }
+                });
             }
             else
                 _myMqttClient.DeviceDisconnected(_device.DeviceName);
         }
 
-        private void MyMqttClient_OnExcRpc(object? sender, RpcRequest e)
+        public void MyMqttClient_OnExcRpc(object? sender, RpcRequest e)
         {
             if (e.DeviceName == _device.DeviceName)
             {

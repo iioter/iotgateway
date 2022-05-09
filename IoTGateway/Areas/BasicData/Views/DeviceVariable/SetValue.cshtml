@@ -1,0 +1,17 @@
+﻿@model IoTGateway.ViewModel.BasicData.DeviceVariableVMs.SetValueVM
+@inject IStringLocalizer<Program> Localizer;
+
+
+<wt:form vm="@Model">
+    <wt:row items-per-row="ItemsPerRowEnum.One">
+        <wt:quote>@Model.设备名/@Model.变量名</wt:quote>
+        <wt:quote>当前原始值:@Model.当前原始值======>当前计算值:@Model.当前计算值</wt:quote>
+        <wt:quote>类型:@Model.类型======状态:@Model.状态</wt:quote>
+        <wt:textbox field=设定原始值 />
+    </wt:row>
+
+    <wt:row align="AlignEnum.Right">
+        <wt:submitbutton text="下发" />
+        <wt:closebutton text="取消" />
+    </wt:row>
+</wt:form>

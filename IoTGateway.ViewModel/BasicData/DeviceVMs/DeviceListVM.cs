@@ -46,7 +46,8 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                     if(a.DeviceTypeEnum== DeviceTypeEnum.Device)
                         return "true";
                      return "false";
-                }),this.MakeGridHeader(x=>"attribute").SetHide().SetFormat((a,b)=>{
+                }),
+                this.MakeGridHeader(x=>"attribute").SetHide().SetFormat((a,b)=>{
                     if(a.DeviceTypeEnum== DeviceTypeEnum.Device)
                         return "true";
                      return "false";

@@ -214,6 +214,28 @@ namespace IoTGateway.Controllers
         {
             return vm.GetExportData();
         }
+        #region 下发写入
+        [ActionDescription("下发写入")]
+        public ActionResult SetValue()
+        {
+            var vm = Wtm.CreateVM<SetValueVM>();
+            return PartialView(vm);
+        }
 
+        [HttpPost]
+        [ActionDescription("下发写入")]
+        public ActionResult SetValue(SetValueVM vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return PartialView(vm);
+            }
+            else
+            {
+                vm.Set();
+                return FFResult().CloseDialog().RefreshGrid().Alert($"{vm.设置结果}");
+            }
+        }
+        #endregion
     }
 }

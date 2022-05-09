@@ -28,20 +28,23 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                 .OrderBy(x => x.Parent.Index).ThenBy(x => x.Parent.DeviceName)
                 .OrderBy(x => x.Index).ThenBy(x => x.DeviceName)
                 .GetSelectListItems(Wtm, y => y.DeviceName);
+            var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
             if (Entity.DeviceId != null)
             {
-                var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
                 AllMethods = deviceService.GetDriverMethods(Entity.DeviceId);
-                var DapThread = deviceService.DeviceThreads.Where(x => x._device.ID == Entity.DeviceId).FirstOrDefault();
             }
-            else if (IoTBackgroundService.ConfigSelectDeviceId != null)
+            else if (IoTBackgroundService.VariableSelectDeviceId != null)
             {
-                Entity.DeviceId = IoTBackgroundService.ConfigSelectDeviceId;
+                Entity.DeviceId = IoTBackgroundService.VariableSelectDeviceId;
+                AllMethods = deviceService.GetDriverMethods(Entity.DeviceId);
             }
+
+            if (AllMethods.Count() > 0)
+                AllMethods[0].Selected = true;
         }
 
         public override void DoAdd()
-        {           
+        {
             base.DoAdd();
             UpdateVaribale();
         }
@@ -55,9 +58,9 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
         public override void DoDelete()
         {
             //先获取id
-            var id= UpdateDevices.FC2Guids(FC);
-            var deviceId = DC.Set<DeviceVariable>().Where(x => id.Contains(x.ID)).Select(x=>x.DeviceId).FirstOrDefault();
-            FC["Entity.DeviceId"] =(StringValues)deviceId.ToString(); 
+            var id = UpdateDevices.FC2Guids(FC);
+            var deviceId = DC.Set<DeviceVariable>().Where(x => id.Contains(x.ID)).Select(x => x.DeviceId).FirstOrDefault();
+            FC["Entity.DeviceId"] = (StringValues)deviceId.ToString();
             base.DoDelete();
             UpdateVaribale();
         }

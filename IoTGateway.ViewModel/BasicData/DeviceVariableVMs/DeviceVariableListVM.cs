@@ -21,6 +21,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
         {
             return new List<GridAction>
             {
+                this.MakeAction("DeviceVariable","SetValue","写入值","写入值", GridActionParameterTypesEnum.SingleId,"BasicData",600).SetIconCls("_wtmicon _wtmicon-xiayibu").SetHideOnToolBar(false).SetShowInRow(false).SetBindVisiableColName("setValue"),
                 this.MakeStandardAction("DeviceVariable", GridActionStandardTypesEnum.Create, Localizer["Sys.Create"],"BasicData", dialogWidth: 800),
                 this.MakeStandardAction("DeviceVariable", GridActionStandardTypesEnum.Edit, Localizer["Sys.Edit"], "BasicData", dialogWidth: 800),
                 this.MakeStandardAction("DeviceVariable", GridActionStandardTypesEnum.Delete, Localizer["Sys.Delete"], "BasicData", dialogWidth: 800),
@@ -79,6 +80,11 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                 this.MakeGridHeader(x=> "detail").SetHide().SetFormat((a,b)=>{
                     return "false";
                 }),
+                this.MakeGridHeader(x=>"setValue").SetHide().SetFormat((a,b)=>{
+                    if(a.Device.AutoStart== true)
+                        return "true";
+                     return "false";
+                }),
                 this.MakeGridHeaderAction(width: 115)
             };
         }
@@ -103,7 +109,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
             if (Searcher.DeviceId != null)
                 IoTBackgroundService.VariableSelectDeviceId = Searcher.DeviceId;
 
-            var query = DC.Set<DeviceVariable>()
+            var query = DC.Set<DeviceVariable>().Include(x => x.Device)
                 .CheckContain(Searcher.Name, x => x.Name)
                 .CheckContain(Searcher.Method, x => x.Method)
                 .CheckContain(Searcher.DeviceAddress, x => x.DeviceAddress)
@@ -121,6 +127,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                     Expressions = x.Expressions,
                     ProtectType = x.ProtectType,
                     DeviceName_view = x.Device.DeviceName,
+                    Device = x.Device
                 })
                 .OrderBy(x => x.DeviceName_view).ThenBy(x => x.DeviceAddress);
             return query;

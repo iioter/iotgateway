@@ -20,7 +20,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
             {
                 try
                 {
-                    var device = DC.Set<Device>().Where(x => x.ID == Guid.Parse(FC["id"].ToString())).Include(x => x.Parent).Include(x=>x.DeviceConfigs).Include(x => x.Driver).FirstOrDefault();
+                    var device = DC.Set<Device>().Where(x => x.ID == Guid.Parse(FC["id"].ToString())).Include(x => x.Parent).Include(x => x.DeviceVariables).Include(x => x.DeviceConfigs).Include(x => x.Driver).FirstOrDefault();
 
                     if (device == null)
                         请求结果 = "复制失败，找不到设备";

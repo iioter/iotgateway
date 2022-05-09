@@ -178,13 +178,16 @@ namespace Plugin
             try
             {
                 tBRpcRequest = JsonConvert.DeserializeObject<TBRpcRequest>(e.ApplicationMessage.ConvertPayloadToString());
-                OnExcRpc?.Invoke(Client, new RpcRequest()
+                if(!string.IsNullOrWhiteSpace(tBRpcRequest.RequestData.Method))
                 {
-                    Method = tBRpcRequest.RequestData.Method,
-                    DeviceName = tBRpcRequest.DeviceName,
-                    RequestId = tBRpcRequest.RequestData.RequestId,
-                    Params = tBRpcRequest.RequestData.Params
-                });
+                    OnExcRpc?.Invoke(Client, new RpcRequest()
+                    {
+                        Method = tBRpcRequest.RequestData.Method,
+                        DeviceName = tBRpcRequest.DeviceName,
+                        RequestId = tBRpcRequest.RequestData.RequestId,
+                        Params = tBRpcRequest.RequestData.Params
+                    });
+                }
             }
             catch (Exception ex)
             {
