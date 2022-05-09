@@ -46,7 +46,7 @@ namespace IoTGateway.ViewModel.BasicData
             if (FC.ContainsKey("Entity.DeviceId"))
             {
                 StringValues id = (StringValues)FC["Entity.DeviceId"];
-                var device = DC.Set<Device>().AsNoTracking().Include(x => x.Parent).Where(x => x.ID == Guid.Parse(id)).Include(x => x.DeviceVariables).Include(x => x.Driver).SingleOrDefault();
+                var device = DC.Set<Device>().AsNoTracking().Include(x => x.Parent).Where(x => x.ID == Guid.Parse(id)).Include(x => x.DeviceVariables).Include(x => x.Driver).Include(x => x.DeviceConfigs).SingleOrDefault();
                 if (!devices.Where(x => x.ID == device.ID).Any())
                     devices.Add(device);
             }
@@ -58,7 +58,7 @@ namespace IoTGateway.ViewModel.BasicData
                         var deviceVariable = DC.Set<DeviceVariable>().Where(x => x.ID == varId).SingleOrDefault();
                         if (deviceVariable != null)
                         {
-                            var device = DC.Set<Device>().AsNoTracking().Include(x => x.Parent).Where(x => x.ID == deviceVariable.DeviceId).Include(x=>x.DeviceVariables).Include(x => x.Driver).SingleOrDefault();
+                            var device = DC.Set<Device>().AsNoTracking().Include(x => x.Parent).Where(x => x.ID == deviceVariable.DeviceId).Include(x=>x.DeviceVariables).Include(x => x.Driver).Include(x => x.DeviceConfigs).SingleOrDefault();
                             if (!devices.Where(x => x.ID == device.ID).Any())
                                 devices.Add(device);
                         }
@@ -69,7 +69,7 @@ namespace IoTGateway.ViewModel.BasicData
                             var deviceConfig = DC.Set<DeviceConfig>().AsNoTracking().Where(x => x.ID == deviceConfigId).SingleOrDefault();
                             if (deviceConfig != null)
                             {
-                                var device = DC.Set<Device>().AsNoTracking().Where(x => x.ID == deviceConfig.DeviceId).Include(x => x.Parent).Include(x => x.DeviceVariables).Include(x => x.Driver).SingleOrDefault();
+                                var device = DC.Set<Device>().AsNoTracking().Where(x => x.ID == deviceConfig.DeviceId).Include(x => x.Parent).Include(x => x.DeviceVariables).Include(x => x.Driver).Include(x => x.DeviceConfigs).SingleOrDefault();
                                 if (!devices.Where(x => x.ID == device.ID).Any())
                                     devices.Add(device);
                             }
