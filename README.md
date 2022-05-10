@@ -29,14 +29,14 @@
 ## 项目中OPCUA相关功能仅用作学习及测试，如使用OPCUA协议请联系OPC基金会进行授权，产生一切纠纷与本项目无关
 
 # 体验
-1. 在线体验[iotgateway](http://42.193.160.84:518/)后台：http://42.193.160.84:518/
+1. 在线体验[iotgateway](http://iotgateway.net:518/)后台：http://iotgateway.net:518/
 2. 用户名 admin 密码 000000
 3. 内置Modbustcp模拟设备 ip 172.17.0.1 port 503 不要修改，否则连不上
 4. 其中modbus地址0-1为固定值，2-9为随机值，10-19为0
-5. 外网访问测试modbus设备，请连接:42.193.160.84:503，进行标准modbus协议读写
-6. 外网访问测试mqtt服务器，42.193.160.84:1888 admin 000000
-7. 外网访问测试opcua服务，opc.tcp://42.193.160.84:62541/Quickstarts/ReferenceServer 匿名访问
-8. 想要通过mqtt接收数据，请连接mqttserver:42.193.160.84,1888 admin 000000；订阅topic: v1/gateway/telemetry
+5. 外网访问测试modbus设备，请连接:iotgateway.net:503，进行标准modbus协议读写
+6. 外网访问测试mqtt服务器，iotgateway.net:1888 admin 000000
+7. 外网访问测试opcua服务，opc.tcp://iotgateway.net:62541/Quickstarts/ReferenceServer 匿名访问
+8. 想要通过mqtt接收数据，请连接mqttserver:iotgateway.net,1888 admin 000000；订阅topic: v1/gateway/telemetry
 ## 3D可视化(数字孪生?)
 ![easteregg](https://user-images.githubusercontent.com/29589505/147798707-cf4de713-9bb6-48c1-88a6-ac9f703f89d2.gif)
 ## 数据实时更新
