@@ -1,6 +1,6 @@
 # iotgateway 
-## [iotgateway在线体验](http://42.193.160.84:518/)访问：http://42.193.160.84:518/
-## [iotgateway教程文档](http://42.193.160.84/)访问：http://42.193.160.84/
+## [iotgateway在线体验](http://iotgateway.net:518/)访问：http://iotgateway.net:518/
+## [iotgateway教程文档](http://iotgateway.net/)访问：http://iotgateway.net/
 ## 交流
 | 公众号:工业物联网网关 |    [QQ群:712105424](https://qm.qq.com/cgi-bin/qm/qr?k=e3Y8biyVdhDxx3LPbjvNY3TSNOEAmjp7&jump_from=webapi)  |
 | ------ | ---- |
