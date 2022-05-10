@@ -55,13 +55,13 @@
 
 # 运行
 ## windows主机运行：
-1. [下载Releasev0.5.0](https://github.com/iioter/iotgateway/releases/download/v0.5.0/iotgateway-0.5.0-windows-x64.zip)发布版本
+1. [下载Releasev0.6.0](https://github.com/iioter/iotgateway/releases/download/v0.6.0/iotgateway-0.6.0-windows-x64.zip)发布版本
 2. 解压release包，运行IoTGateway.exe
 ## linux-x64主机运行：
-1. [下载Releasev0.5.0](https://github.com/iioter/iotgateway/releases/download/v0.5.0/iotgateway-0.5.0-linux-x64.zip)发布版本
+1. [下载Releasev0.6.0](https://github.com/iioter/iotgateway/releases/download/v0.6.0/iotgateway-0.6.0-linux-x64.zip)发布版本
 2. 解压release包，运行IoTGateway
 ## linux-arm主机运行：
-1. [下载Releasev0.5.0](https://github.com/iioter/iotgateway/releases/download/v0.5.0/iotgateway-0.5.0-linux-arm.rar)发布版本
+1. [下载Releasev0.6.0](https://github.com/iioter/iotgateway/releases/download/v0.6.0/iotgateway-0.6.0-linux-arm.rar)发布版本
 2. 解压release包，运行IoTGateway
 ## linux/amd64,win/amd64 docker运行(官方仓)
 1. docker run -d -p 518:518 -p 1888:1888 -p 62541:62541 -p 503:503 --name iotgateway --restart always 15261671110/iotgateway
