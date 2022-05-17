@@ -38,6 +38,8 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                                 ID = Guid.NewGuid(),
                                 DeviceName = $"{device.DeviceName}-Copy{i}",
                                 AutoStart = false,
+                                CgUpload = device.CgUpload,
+                                EnforcePeriod = device.EnforcePeriod,
                                 ParentId = device.ParentId,
                                 CreateBy = this.Wtm.LoginUserInfo.Name,
                                 CreateTime = DateTime.Now,

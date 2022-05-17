@@ -37,11 +37,13 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
             return new List<GridColumn<Device_View>>{
                 this.MakeGridHeader(x => x.DeviceName),
                 this.MakeGridHeader(x => x.Index),
-                this.MakeGridHeader(x => x.Description),
+                //this.MakeGridHeader(x => x.Description),
                 this.MakeGridHeader(x => x.DriverName_view),
                 this.MakeGridHeader(x => x.AutoStart),
+                this.MakeGridHeader(x => x.CgUpload),
+                this.MakeGridHeader(x => x.EnforcePeriod),
                 this.MakeGridHeader(x => x.DeviceTypeEnum),
-                this.MakeGridHeader(x => x.DeviceName_view),
+                //this.MakeGridHeader(x => x.DeviceName_view),
                 this.MakeGridHeader(x=>"copy").SetHide().SetFormat((a,b)=>{
                     if(a.DeviceTypeEnum== DeviceTypeEnum.Device)
                         return "true";
@@ -52,7 +54,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                         return "true";
                      return "false";
                 }),
-                this.MakeGridHeaderAction(width: 280)
+                this.MakeGridHeaderAction(width: 300)
             };
         }
 
@@ -96,6 +98,8 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                         Index = y.Index,
                         DeviceName = "&nbsp;&nbsp;&nbsp;&nbsp;" + y.DeviceName,
                         AutoStart = y.AutoStart,
+                        CgUpload = y.CgUpload,
+                        EnforcePeriod = y.EnforcePeriod,
                         Description = y.Description,
                         DeviceTypeEnum = y.DeviceTypeEnum,
                         DriverName_view = y.Driver?.DriverName,

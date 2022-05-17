@@ -329,6 +329,7 @@ namespace Plugin
             var toSend = new Dictionary<string, object> { { _devicename, obj } };
             return Client.PublishAsync("gateway/attributes", JsonConvert.SerializeObject(toSend));
         }
+
         public void ResponseRpc(RpcResponse rpcResponse)
         {
             try
@@ -418,34 +419,83 @@ namespace Plugin
             return Task.CompletedTask;
         }
 
+        private Dictionary<string, List<PayLoad>> LastTelemetrys = new(0);
+
+        /// <summary>
+        /// 判断是否推送遥测数据
+        /// </summary>
+        /// <param name="device">设备</param>
+        /// <param name="SendModel">遥测</param>
+        /// <returns></returns>
+        private bool CanPubTelemetry(Device device, Dictionary<string, List<PayLoad>> SendModel)
+        {
+            bool canPub = false;
+            try
+            {
+                //第一次上传
+                if (!LastTelemetrys.ContainsKey(device.DeviceName))
+                    canPub = true;
+                else
+                {
+                    //变化上传
+                    if (device.CgUpload)
+                    {
+                        //是否超过归档周期
+                        if (SendModel[device.DeviceName][0].TS - LastTelemetrys[device.DeviceName][0].TS > device.EnforcePeriod)
+                            canPub = true;
+                        //是否变化
+                        else
+                        {
+                            if (JsonConvert.SerializeObject(SendModel[device.DeviceName]) != JsonConvert.SerializeObject(LastTelemetrys[device.DeviceName]))
+                                canPub = true;
+
+                        }
+                    }
+                    //非变化上传
+                    else
+                        canPub = true;
+                }
+            }
+            catch (Exception e)
+            {
+                canPub = true;
+                Console.WriteLine(e);
+            }
+            LastTelemetrys[device.DeviceName] = SendModel[device.DeviceName];
+            return canPub;
+        }
         public void PublishTelemetry(Device device, Dictionary<string, List<PayLoad>> SendModel)
         {
             try
             {
-                switch (_systemConfig.IoTPlatformType)
+                if (CanPubTelemetry(device, SendModel))
                 {
-                    case IoTPlatformType.ThingsBoard:
-                        Client.PublishAsync("v1/gateway/telemetry", JsonConvert.SerializeObject(SendModel));
-                        break;
-                    case IoTPlatformType.IoTSharp:
-                        foreach (var payload in SendModel[device.DeviceName])
-                        {
-                            UploadISTelemetryDataAsync(device.DeviceName, payload.Values);
-                        }
-                        break;
-                    case IoTPlatformType.ThingsCloud:
-                        foreach (var payload in SendModel[device.DeviceName])
-                        {
-                            UploadTCTelemetryDataAsync(device.DeviceName, payload.Values);
-                        }
-                        break;
-                    case IoTPlatformType.AliCloudIoT:
-                    case IoTPlatformType.TencentIoTHub:
-                    case IoTPlatformType.BaiduIoTCore:
-                    case IoTPlatformType.OneNET:
-                    default:
-                        break;
+                    switch (_systemConfig.IoTPlatformType)
+                    {
+                        case IoTPlatformType.ThingsBoard:
+                            Client.PublishAsync("v1/gateway/telemetry", JsonConvert.SerializeObject(SendModel));
+                            break;
+                        case IoTPlatformType.IoTSharp:
+                            foreach (var payload in SendModel[device.DeviceName])
+                            {
+                                UploadISTelemetryDataAsync(device.DeviceName, payload.Values);
+                            }
+                            break;
+                        case IoTPlatformType.ThingsCloud:
+                            foreach (var payload in SendModel[device.DeviceName])
+                            {
+                                UploadTCTelemetryDataAsync(device.DeviceName, payload.Values);
+                            }
+                            break;
+                        case IoTPlatformType.AliCloudIoT:
+                        case IoTPlatformType.TencentIoTHub:
+                        case IoTPlatformType.BaiduIoTCore:
+                        case IoTPlatformType.OneNET:
+                        default:
+                            break;
+                    }
                 }
+                
                 foreach (var payload in SendModel[device.DeviceName])
                 {
                     foreach (var kv in payload.Values)

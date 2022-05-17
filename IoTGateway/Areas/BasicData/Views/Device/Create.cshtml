@@ -2,15 +2,17 @@
 @inject IStringLocalizer<Program> Localizer;
 
 <wt:form vm="@Model">
-<wt:row items-per-row="ItemsPerRowEnum.Two">
-<wt:combobox field="Entity.ParentId" items="AllParents" required=true/>
-<wt:textbox field="Entity.DeviceName" required=true/>
-<wt:textbox field="Entity.Index" />
-<wt:textbox field="Entity.Description" />
-<wt:combobox field="Entity.DriverId" items="AllDrivers" required=true/>
-<wt:switch field="Entity.AutoStart" />
-<wt:display field="Entity.DeviceTypeEnum"/>
-</wt:row>
+    <wt:row items-per-row="ItemsPerRowEnum.Two">
+        <wt:combobox field="Entity.ParentId" items="AllParents" required=true />
+        <wt:textbox field="Entity.DeviceName" required=true />
+        <wt:textbox field="Entity.Index" />
+        <wt:textbox field="Entity.Description" />
+        <wt:combobox field="Entity.DriverId" items="AllDrivers" required=true />
+        <wt:switch field="Entity.AutoStart" />
+        <wt:switch field="Entity.CgUpload" />
+        <wt:textbox field="Entity.EnforcePeriod" />
+        <wt:display field="Entity.DeviceTypeEnum" />
+    </wt:row>
     <wt:row align="AlignEnum.Right">
         <wt:submitbutton />
         <wt:closebutton />

@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
 
 namespace IoTGateway.Model
@@ -23,8 +20,14 @@ namespace IoTGateway.Model
         [Display(Name = "驱动")]
         public Guid? DriverId { get; set; }
 
-        [Display(Name = "自启动")]
+        [Display(Name = "启动")]
         public bool AutoStart { get; set; }
+
+        [Display(Name = "变化上传")]
+        public bool CgUpload { get; set; }
+
+        [Display(Name = "归档周期ms")]
+        public uint EnforcePeriod { get; set; }
 
         [Display(Name = "类型")]
         public DeviceTypeEnum DeviceTypeEnum { get; set; }
