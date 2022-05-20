@@ -65,7 +65,7 @@
 - ## 项目中OPCUA相关功能仅用作学习及测试
 - ## 如使用OPCUA协议请联系OPC基金会进行授权，产生一切纠纷与本项目无关
 
-## 打赏请留言
+## 打赏请留微信或QQ
 |  微信 | 支付宝 |
 | ----- | ---- |
 | ![wx-pay](./images/wx-pay.jpg) | ![ali-pay](./images/ali-pay.png) |
