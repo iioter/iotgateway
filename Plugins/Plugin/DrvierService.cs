@@ -116,10 +116,10 @@ namespace Plugin
         }
         public void LoadAllDrivers()
         {
-            try
+            _logger.LogInformation("LoadAllDrivers Start");
+            foreach (var file in driverFiles)
             {
-                _logger.LogInformation("LoadAllDrivers Start");
-                foreach (var file in driverFiles)
+                try
                 {
                     var dll = Assembly.LoadFrom(file);
                     foreach (var type in dll.GetTypes().Where(x => typeof(IDriver).IsAssignableFrom(x) && x.IsClass))
@@ -130,14 +130,16 @@ namespace Plugin
                             Type = type
                         };
                         DriverInfos.Add(driverInfo);
+                        _logger.LogInformation($"LoadAllDrivers {driverInfo.FileName} OK");
                     }
                 }
-                _logger.LogInformation($"LoadAllDrivers End,Count{DriverInfos.Count}");
+                catch (Exception ex)
+                {
+                    _logger.LogDebug($"LoadAllDrivers Error {ex}");
+                }
+
             }
-            catch (Exception ex)
-            {
-                _logger.LogError("LoadAllDrivers Error，一般是驱动项目引用的nuget或dll没有复制到驱动文件夹", ex);
-            }
+            _logger.LogInformation($"LoadAllDrivers End,Count{DriverInfos.Count}");
 
         }
 
