@@ -41,6 +41,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DriverSiemensS7", "Plugins\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DriverOmronFins", "Plugins\Drivers\DriverOmronFins\DriverOmronFins.csproj", "{FE2BFDBD-E021-45EA-B327-C56F6114D7A1}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DriverFanuc", "Plugins\Drivers\DriverFanuc\DriverFanuc.csproj", "{EA652A3B-5F4A-47FE-A5DA-98A0EFC4F842}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,10 @@ Global
 		{FE2BFDBD-E021-45EA-B327-C56F6114D7A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE2BFDBD-E021-45EA-B327-C56F6114D7A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE2BFDBD-E021-45EA-B327-C56F6114D7A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA652A3B-5F4A-47FE-A5DA-98A0EFC4F842}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA652A3B-5F4A-47FE-A5DA-98A0EFC4F842}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA652A3B-5F4A-47FE-A5DA-98A0EFC4F842}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA652A3B-5F4A-47FE-A5DA-98A0EFC4F842}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -129,6 +135,7 @@ Global
 		{AAC81E6C-C62E-4F52-85B5-1EA8D54AE9F6} = {D05CFF72-D58C-418A-8F52-B06848DAC4F1}
 		{28FEF3AF-4CAA-4B5C-B16F-E74BAD70BCE2} = {D05CFF72-D58C-418A-8F52-B06848DAC4F1}
 		{FE2BFDBD-E021-45EA-B327-C56F6114D7A1} = {D05CFF72-D58C-418A-8F52-B06848DAC4F1}
+		{EA652A3B-5F4A-47FE-A5DA-98A0EFC4F842} = {D05CFF72-D58C-418A-8F52-B06848DAC4F1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1F219808-E6E8-4C1D-B846-41F2F7CF20FA}
