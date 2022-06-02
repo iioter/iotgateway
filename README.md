@@ -33,7 +33,7 @@
 - 支持变化上传和定时归档
   ![change-uploa](./images/change-upload.png)
   
-- 支持三菱PLC、Modbus驱动全协议支持、欧姆龙PLC、OPCUA客户端、西门子PLC、ABPLC、MT机床
+- 支持三菱PLC、Modbus驱动全协议支持、欧姆龙PLC、OPCUA客户端、西门子PLC、ABPLC、MT机床、Fanuc CNC
 - 驱动支持二次开发
 
 ## 北向
