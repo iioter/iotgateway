@@ -26,6 +26,10 @@
 - [源码运行:http://iotgateway.net/docs/iotgateway/run/build-run](http://iotgateway.net/docs/iotgateway/run/build-run)
 
 ## 南向
+- 支持三菱PLC、Modbus驱动全协议支持、欧姆龙PLC、OPCUA客户端、西门子PLC、ABPLC、MT机床、Fanuc CNC
+- 驱动支持二次开发
+- [驱动简介][http://iotgateway.net/docs/iotgateway/driver/drvier]
+- [驱动二次开发实战之TcpClient][http://iotgateway.net/docs/iotgateway/driver/tcpclient]
 - 支持设备数据写入
   ![set-variabl](./images/set-variable.png)  
 - 支持计算表达式  
@@ -33,8 +37,6 @@
 - 支持变化上传和定时归档
   ![change-uploa](./images/change-upload.png)
   
-- 支持三菱PLC、Modbus驱动全协议支持、欧姆龙PLC、OPCUA客户端、西门子PLC、ABPLC、MT机床、Fanuc CNC
-- 驱动支持二次开发
 
 ## 北向
 - thingsboard、iotsharp、thingscloud等第三方平台
