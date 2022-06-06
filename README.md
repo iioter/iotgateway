@@ -1,7 +1,7 @@
 # IoTGateway
 
 ## [教程文档:http://iotgateway.net](http://iotgateway.net/)
-## [在线体验:http://iotgateway.net:518](http://iotgateway.net:518/)
+## [在线体验:http://online.iotgateway.net](http://online.iotgateway.net/)
 
 
 > 基于.NET6的跨平台物联网网关
