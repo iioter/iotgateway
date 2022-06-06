@@ -33,6 +33,8 @@ namespace IoTGateway.Model
         [Display(Name = "中移OneNet")]
         OneNET = 5,
         [Display(Name = "ThingsCloud")]
-        ThingsCloud = 6
+        ThingsCloud = 6,
+        [Display(Name = "IotDB")]
+        IotDB = 99
     }
 }

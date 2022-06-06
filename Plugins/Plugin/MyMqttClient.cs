@@ -10,6 +10,7 @@ using MQTTnet.Client.Receiving;
 using MQTTnet.Protocol;
 using Newtonsoft.Json;
 using PluginInterface;
+using PluginInterface.IotDB;
 using PluginInterface.IoTSharp;
 using PluginInterface.ThingsBoard;
 using Quickstarts.ReferenceServer;
@@ -156,7 +157,8 @@ namespace Plugin
                 else if (e.ApplicationMessage.Topic.StartsWith($"devices/") && e.ApplicationMessage.Topic.Contains("/rpc/request/"))
                 {
                     ReceiveIsRpc(e);
-                }else if(e.ApplicationMessage.Topic== "gateway/command/send")
+                }
+                else if (e.ApplicationMessage.Topic == "gateway/command/send")
                 {
                     ReceiveTcRpc(e);
                 }
@@ -178,7 +180,7 @@ namespace Plugin
             try
             {
                 tBRpcRequest = JsonConvert.DeserializeObject<TBRpcRequest>(e.ApplicationMessage.ConvertPayloadToString());
-                if(!string.IsNullOrWhiteSpace(tBRpcRequest.RequestData.Method))
+                if (!string.IsNullOrWhiteSpace(tBRpcRequest.RequestData.Method))
                 {
                     OnExcRpc?.Invoke(Client, new RpcRequest()
                     {
@@ -487,6 +489,25 @@ namespace Plugin
                                 UploadTCTelemetryDataAsync(device.DeviceName, payload.Values);
                             }
                             break;
+                        case IoTPlatformType.IotDB:
+                            {
+                                foreach (var payload in SendModel[device.DeviceName])
+                                {
+                                    if (payload.DeviceStatus != DeviceStatusTypeEnum.Good)
+                                        continue;
+
+                                    IotTsData tsData = new IotTsData()
+                                    {
+                                        device = device.DeviceName,
+                                        timestamp = payload.TS,
+                                        measurements = payload.Values.Keys.ToList(),
+                                        values = payload.Values.Values.ToList()
+                                    };
+                                    Client.PublishAsync(device.DeviceName, JsonConvert.SerializeObject(tsData));
+                                }
+
+                                break;
+                            }
                         case IoTPlatformType.AliCloudIoT:
                         case IoTPlatformType.TencentIoTHub:
                         case IoTPlatformType.BaiduIoTCore:
@@ -495,7 +516,7 @@ namespace Plugin
                             break;
                     }
                 }
-                
+
                 foreach (var payload in SendModel[device.DeviceName])
                 {
                     foreach (var kv in payload.Values)
@@ -545,7 +566,7 @@ namespace Plugin
             }
         }
 
-        public async  Task DeviceDisconnected(string DeviceName)
+        public async Task DeviceDisconnected(string DeviceName)
         {
             try
             {
