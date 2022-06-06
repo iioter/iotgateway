@@ -18,3 +18,4 @@ bin-release/
 # information for Eclipse / Flash Builder.
 /LK/appsettings.json
 /LK/appsettings.json
+/.vs
