@@ -10,7 +10,7 @@
 > 
 > 南向连接到你的任何设备和系统(如PLC、扫码枪、CNC、数据库、串口设备、上位机、OPC Server、OPC UA Server、Mqtt Server等)
 > 
-> 北向连接Thingsboard、IoTSharp、ThingsCloud或您自己的物联网平台进行双向数据通讯
+> 北向连接Thingsboard、IoTSharp、ThingsCloud、IoTDB或您自己的物联网平台进行双向数据通讯
 > 
 > 当然也可以进行边缘计算
 >
@@ -39,7 +39,7 @@
   
 
 ## 北向
-- thingsboard、iotsharp、thingscloud等第三方平台
+- thingsboard、iotsharp、thingscloud、IoTDB第三方平台
 - 遥测、属性上传
 - RPC反向控制
   ![rpc](./images/rpc.gif)
