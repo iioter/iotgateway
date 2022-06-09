@@ -7,7 +7,7 @@ using System.Text;
 namespace DriverAllenBradley
 {
     [DriverSupported("AllenBradley")]
-    [DriverInfoAttribute("AllenBradley", "V1.0.0", "Copyright WHD-IoTClient© 2022-01-15")]
+    [DriverInfoAttribute("AllenBradley", "V1.0.0", "Copyright IoTGateway-IoTClient© 2022-01-15")]
     public class AllenBradley : IDriver
     {
         private AllenBradleyClient plc = null;
