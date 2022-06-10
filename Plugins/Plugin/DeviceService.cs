@@ -87,6 +87,9 @@ namespace Plugin
                 {
                     var systemManage = DC.Set<SystemConfig>().FirstOrDefault();
                     var driver = _DrvierManager.DriverInfos.Where(x => x.Type.FullName == Device.Driver.AssembleName).SingleOrDefault();
+                    if (driver == null)
+                        return;
+                    
                     var settings = DC.Set<DeviceConfig>().Where(x => x.DeviceId == Device.ID).AsNoTracking().ToList();
                     Type[] types = new Type[1] { typeof(Guid) };
                     object[] param = new object[1] { Device.ID };

@@ -31,7 +31,8 @@ namespace IoTGateway.ViewModel.BasicData.DeviceConfigVMs
                 .GetSelectListItems(Wtm, y => y.DeviceName);
             if (Entity.DeviceId != null)
             {
-                if (Entity.EnumInfo != null)
+                //if (Entity.EnumInfo != null)
+                if (!string.IsNullOrEmpty( Entity.EnumInfo))
                 {
                     AllTypes = new List<ComboSelectListItem>();
                     var EnumInfos = JsonSerializer.Deserialize<Dictionary<string, int>>(Entity.EnumInfo);
