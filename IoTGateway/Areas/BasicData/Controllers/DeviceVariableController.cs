@@ -50,6 +50,9 @@ namespace IoTGateway.Controllers
         [ActionDescription("Sys.Create")]
         public ActionResult Create(DeviceVariableVM vm)
         {
+
+            if (vm.FC.ContainsKey("Entity.Expressions"))
+                vm.Entity.Expressions = vm.FC["Entity.Expressions"].ToString();
             if (!ModelState.IsValid)
             {
                 return PartialView(vm);
@@ -83,6 +86,8 @@ namespace IoTGateway.Controllers
         [ValidateFormItemOnly]
         public ActionResult Edit(DeviceVariableVM vm)
         {
+            if (vm.FC.ContainsKey("Entity.Expressions"))
+                vm.Entity.Expressions = vm.FC["Entity.Expressions"].ToString();
             if (!ModelState.IsValid)
             {
                 return PartialView(vm);
