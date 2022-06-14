@@ -448,7 +448,7 @@ namespace Plugin
                         //是否变化
                         else
                         {
-                            if (JsonConvert.SerializeObject(SendModel[device.DeviceName]) != JsonConvert.SerializeObject(LastTelemetrys[device.DeviceName]))
+                            if (JsonConvert.SerializeObject(SendModel[device.DeviceName][0].Values) != JsonConvert.SerializeObject(LastTelemetrys[device.DeviceName][0].Values))
                                 canPub = true;
 
                         }
@@ -463,7 +463,8 @@ namespace Plugin
                 canPub = true;
                 Console.WriteLine(e);
             }
-            LastTelemetrys[device.DeviceName] = SendModel[device.DeviceName];
+            if(canPub)
+                LastTelemetrys[device.DeviceName] = SendModel[device.DeviceName];
             return canPub;
         }
         public void PublishTelemetry(Device device, Dictionary<string, List<PayLoad>> SendModel)
