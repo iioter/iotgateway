@@ -13,7 +13,7 @@ namespace DriverModbusMaster
     [DriverSupported("ModbusUDP")]
     [DriverSupported("ModbusRtu")]
     [DriverSupported("ModbusAscii")]
-    [DriverInfoAttribute("ModbusMaster", "V1.0.0", "Copyright WHD© 2021-12-19")]
+    [DriverInfoAttribute("ModbusMaster", "V1.0.0", "Copyright IoTGateway© 2021-12-19")]
     public class ModbusMaster : IDriver
     {
         private TcpClient clientTcp = null;

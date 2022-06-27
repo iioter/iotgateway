@@ -47,6 +47,8 @@ namespace PluginInterface
         TimeStampMs,
         [Display(Name = "timestamp(s)")]
         TimeStampS,
+        [Display(Name = "任意类型")]
+        Any,
         [Display(Name = "自定义1")]
         Custome1,
         [Display(Name = "自定义2")]

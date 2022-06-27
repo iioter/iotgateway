@@ -6,7 +6,7 @@ using System.Text;
 namespace DriverSimTcpClient
 {
     [DriverSupported("SimTcpServerDevice")]
-    [DriverInfoAttribute("SimTcpClient", "V1.0.0", "Copyright iotgateway© 2022-06-04")]
+    [DriverInfoAttribute("SimTcpClient", "V1.0.0", "Copyright IoTGateway© 2022-06-04")]
     public class SimTcpClient : IDriver
     {
         /// <summary>
