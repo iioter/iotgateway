@@ -12,7 +12,7 @@ using OpcUaHelper;
 namespace DriverOPCUaClient
 {
     [DriverSupported("OPC UA")]
-    [DriverInfoAttribute("OPCUaClient", "V1.0.0", "Copyright WHD© 2021-12-19")]
+    [DriverInfoAttribute("OPCUaClient", "V1.0.0", "Copyright IoTGateway© 2021-12-19")]
     public class OPCUaClient : IDriver
     {
         OpcUaClientHelper opcUaClient = null;

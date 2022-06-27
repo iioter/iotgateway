@@ -11,7 +11,7 @@ namespace DriverSiemensS7
     [DriverSupported("300")]
     [DriverSupported("200")]
     [DriverSupported("200Smart")]
-    [DriverInfoAttribute("SiemensS7", "V1.0.0", "Copyright WHD© 2021-12-19")]
+    [DriverInfoAttribute("SiemensS7", "V1.0.0", "Copyright IoTGateway© 2021-12-19")]
     public class SiemensS7 : IDriver
     {
         private Plc plc = null;

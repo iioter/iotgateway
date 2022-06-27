@@ -344,8 +344,9 @@ namespace WalkingTec.Mvvm.Core
         /// <param name="updateAllFields">为true时，框架会更新当前Entity的全部值，为false时，框架会检查Request.Form里的key，只更新表单提交的字段</param>
         public virtual void DoEdit(bool updateAllFields = false)
         {
+           
             DoEditPrepare(updateAllFields);
-
+           
             try
             {
                 DC.SaveChanges();
@@ -629,10 +630,11 @@ namespace WalkingTec.Mvvm.Core
                         string name = f.Replace("entity.", "");
                         try
                         {
-                            DC.UpdateProperty(Entity, pros.Where(x => x.Name.ToLower() == name).Select(x => x.Name).FirstOrDefault());
+                            DC.UpdateProperty(Entity, pros.Where(x => name!="id" && x.Name.ToLower() == name).Select(x => x.Name).FirstOrDefault());//id字段不可修改
                         }
-                        catch (Exception)
+                        catch (Exception ex)
                         {
+                            MSD.AddModelError("", CoreProgram._localizer?["Sys.EditPrepare"]);
                         }
                     }
                 }

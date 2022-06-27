@@ -1,41 +1,44 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>
-    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
-    <SatelliteResourceLanguages>zh-Hans,en</SatelliteResourceLanguages>
-  
-    <CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>
-  
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-</PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>
+		<AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+		<SatelliteResourceLanguages>zh-Hans,en</SatelliteResourceLanguages>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<PlatformTarget>x86</PlatformTarget>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="ClientApp\**" />
-    <Content Remove="ClientApp\**" />
-    <EmbeddedResource Remove="ClientApp\**" />
-    <None Remove="ClientApp\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="ClientApp\**" />
+		<Content Remove="ClientApp\**" />
+		<EmbeddedResource Remove="ClientApp\**" />
+		<None Remove="ClientApp\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
-    <PackageReference Include="MQTTnet" Version="3.1.1" />
-    <PackageReference Include="MQTTnet.AspNetCore" Version="3.1.1" />
-    <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="3.1.1" />
-    <PackageReference Include="MQTTnet.Extensions.Rpc" Version="3.1.1" />
-    <PackageReference Include="System.IO.Ports" Version="6.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
+		<PackageReference Include="MQTTnet" Version="3.1.1" />
+		<PackageReference Include="MQTTnet.AspNetCore" Version="3.1.1" />
+		<PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="3.1.1" />
+		<PackageReference Include="MQTTnet.Extensions.Rpc" Version="3.1.1" />
+		<PackageReference Include="System.IO.Ports" Version="6.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-   <ProjectReference Include="..\IoTGateway.Model\IoTGateway.Model.csproj" />
-    <ProjectReference Include="..\IoTGateway.DataAccess\IoTGateway.DataAccess.csproj" />
-    <ProjectReference Include="..\IoTGateway.ViewModel\IoTGateway.ViewModel.csproj" />
-    <ProjectReference Include="..\WalkingTec.Mvvm\WalkingTec.Mvvm.Mvc\WalkingTec.Mvvm.Mvc.csproj" />
-    <ProjectReference Include="..\WalkingTec.Mvvm\WalkingTec.Mvvm.TagHelpers.LayUI\WalkingTec.Mvvm.TagHelpers.LayUI.csproj" />
- </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\IoTGateway.Model\IoTGateway.Model.csproj" />
+		<ProjectReference Include="..\IoTGateway.DataAccess\IoTGateway.DataAccess.csproj" />
+		<ProjectReference Include="..\IoTGateway.ViewModel\IoTGateway.ViewModel.csproj" />
+		<ProjectReference Include="..\WalkingTec.Mvvm\WalkingTec.Mvvm.Mvc\WalkingTec.Mvvm.Mvc.csproj" />
+		<ProjectReference Include="..\WalkingTec.Mvvm\WalkingTec.Mvvm.TagHelpers.LayUI\WalkingTec.Mvvm.TagHelpers.LayUI.csproj" />
+	</ItemGroup>
 
-  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+	<ProjectExtensions>
+		<VisualStudio>
+			<UserProperties appsettings_1json__JsonSchema="" />
+		</VisualStudio>
+	</ProjectExtensions>
 </Project>
 
 

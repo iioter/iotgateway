@@ -7,7 +7,7 @@ using System.Text;
 namespace DriverOmronFins
 {
     [DriverSupported("OmronFins")]
-    [DriverInfoAttribute("OmronFins", "V1.0.0", "Copyright WHD-IoTClient© 2022-01-15")]
+    [DriverInfoAttribute("OmronFins", "V1.0.0", "Copyright IoTGateway-IoTClient© 2022-01-15")]
     public class OmronFins : IDriver
     {
         private OmronFinsClient plc = null;

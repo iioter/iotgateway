@@ -116,7 +116,7 @@ namespace Plugin
                     Client.SubscribeAsync("v1/gateway/attributes", MqttQualityOfServiceLevel.ExactlyOnce);
                     break;
                 case IoTPlatformType.IoTSharp:
-                    Client.SubscribeAsync("devices/+/rpc/response/+/+", MqttQualityOfServiceLevel.ExactlyOnce);
+                    Client.SubscribeAsync("devices/+/rpc/request/+/+", MqttQualityOfServiceLevel.ExactlyOnce);
                     Client.SubscribeAsync("devices/+/attributes/update", MqttQualityOfServiceLevel.ExactlyOnce);
                     //Message: {"device": "Device A", "data": {"attribute1": "value1", "attribute2": 42}}
                     Client.SubscribeAsync("devices/+/attributes/response/+", MqttQualityOfServiceLevel.ExactlyOnce);
@@ -448,7 +448,7 @@ namespace Plugin
                         //是否变化
                         else
                         {
-                            if (JsonConvert.SerializeObject(SendModel[device.DeviceName]) != JsonConvert.SerializeObject(LastTelemetrys[device.DeviceName]))
+                            if (JsonConvert.SerializeObject(SendModel[device.DeviceName][0].Values) != JsonConvert.SerializeObject(LastTelemetrys[device.DeviceName][0].Values))
                                 canPub = true;
 
                         }
@@ -463,7 +463,8 @@ namespace Plugin
                 canPub = true;
                 Console.WriteLine(e);
             }
-            LastTelemetrys[device.DeviceName] = SendModel[device.DeviceName];
+            if(canPub)
+                LastTelemetrys[device.DeviceName] = SendModel[device.DeviceName];
             return canPub;
         }
         public void PublishTelemetry(Device device, Dictionary<string, List<PayLoad>> SendModel)
@@ -496,19 +497,44 @@ namespace Plugin
                             break;
                         case IoTPlatformType.IotDB:
                             {
-                                foreach (var payload in SendModel[device.DeviceName])
+                                if(Client.IsConnected)
                                 {
-                                    if (payload.DeviceStatus != DeviceStatusTypeEnum.Good)
-                                        continue;
-
-                                    IotTsData tsData = new IotTsData()
+                                    foreach (var payload in SendModel[device.DeviceName])
                                     {
-                                        device = device.DeviceName,
-                                        timestamp = payload.TS,
-                                        measurements = payload.Values.Keys.ToList(),
-                                        values = payload.Values.Values.ToList()
-                                    };
-                                    Client.PublishAsync(device.DeviceName, JsonConvert.SerializeObject(tsData));
+                                        if (payload.DeviceStatus != DeviceStatusTypeEnum.Good)
+                                            continue;
+
+                                        var keylist= payload.Values.Keys.ToList();
+                                        var vallist = payload.Values.Values.ToList();
+                                        IotTsData tsData = null;
+                                        if (keylist.Count==1&& vallist[0].GetType()== typeof(ushort[]))
+                                        {
+                                            var tempData = vallist[0] as ushort[];
+                                            tsData = new IotTsData()
+                                            {
+                                                device = device.DeviceName,
+                                                timestamp = payload.TS, measurements = new List<string>(), values=new List<dynamic>()
+                                            };
+                                            for (int i = 0; i < tempData.Length; i++)
+                                            {
+                                                tsData.measurements.Add(String.Format("{0}_{1}", keylist[0], i));
+                                                tsData.values.Add(tempData[i]);
+                                            }
+                                        }
+                                        else
+                                        {
+
+                                            tsData = new IotTsData()
+                                            {
+                                                device = device.DeviceName,
+                                                timestamp = payload.TS,
+                                                measurements = keylist,
+                                                values = vallist
+                                            };
+                                        }
+                                        if(tsData != null)
+                                            Client.PublishAsync(device.DeviceName, JsonConvert.SerializeObject(tsData));
+                                    }
                                 }
 
                                 break;

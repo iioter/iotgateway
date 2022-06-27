@@ -97,9 +97,9 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                 var DapThread = deviceService.DeviceThreads.Where(x => x._device.ID == item.DeviceId).FirstOrDefault();
                 if (DapThread?.DeviceValues != null && DapThread.DeviceValues.ContainsKey(item.ID))
                 {
-                    item.Value = JsonConvert.SerializeObject(DapThread.DeviceValues[item.ID].Value);
-                    item.CookedValue = JsonConvert.SerializeObject(DapThread.DeviceValues[item.ID].CookedValue);
-                    item.State = DapThread.DeviceValues[item.ID].StatusType.ToString();
+                    item.Value = DapThread?.DeviceValues[item.ID]?.Value?.ToString();
+                    item.CookedValue = DapThread?.DeviceValues[item.ID]?.CookedValue?.ToString();
+                    item.State = DapThread?.DeviceValues[item.ID]?.StatusType.ToString();
                 }
             }
 

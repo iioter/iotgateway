@@ -13,7 +13,7 @@ namespace DriverModbusMaster
     [DriverSupported("ModbusUDP")]
     [DriverSupported("ModbusRtu")]
     [DriverSupported("ModbusAscii")]
-    [DriverInfoAttribute("ModbusMaster", "V1.0.0", "Copyright WHD© 2021-12-19")]
+    [DriverInfoAttribute("ModbusMaster", "V1.0.0", "Copyright IoTGateway© 2021-12-19")]
     public class ModbusMaster : IDriver
     {
         private TcpClient clientTcp = null;
@@ -331,45 +331,68 @@ namespace DriverModbusMaster
         {
             DriverReturnValueModel ret = new() { StatusType = VaribaleStatusTypeEnum.Good };
             if (!IsConnected)
-                ret.StatusType = VaribaleStatusTypeEnum.Bad;
-            else
             {
-                ushort startAddress;
-                if (!ushort.TryParse(ioarg.Address.Trim(), out startAddress))
-                    ret.StatusType = VaribaleStatusTypeEnum.AddressError;
-                else
+
+                ret.StatusType = VaribaleStatusTypeEnum.Bad;
+                return ret;
+            }
+            var userSetAddrArray = ioarg.Address.Trim().Split(',');
+            ushort startAddress = 0;
+            if (!ushort.TryParse(ioarg.Address.Trim(), out startAddress))
+            {
+                if (userSetAddrArray.Length >1 && !ushort.TryParse(userSetAddrArray[0].Trim(), out startAddress))
                 {
-                    var count = GetModbusReadCount(3, ioarg.ValueType);
-                    try
-                    {
-                        var rawBuffers = new ushort[] { };
-                        if (FunCode == 3)
-                            rawBuffers = master.ReadHoldingRegisters(SlaveAddress, startAddress, count);
-                        else if (FunCode == 4)
-                            rawBuffers = master.ReadInputRegisters(SlaveAddress, startAddress, count);
+                    ret.StatusType = VaribaleStatusTypeEnum.AddressError;
+                    return ret;
+                }
+            }
 
-                        var retBuffers = ChangeBuffersOrder(rawBuffers, ioarg.ValueType);
-                        if (ioarg.ValueType.ToString().Contains("Uint16"))
-                            ret.Value = retBuffers[0];
-                        else if (ioarg.ValueType.ToString().Contains("Int16"))
-                            ret.Value = (short)retBuffers[0];
-                        else if (ioarg.ValueType.ToString().Contains("Uint32"))
-                            ret.Value = (UInt32)(retBuffers[0] << 16) + retBuffers[1];
-                        else if (ioarg.ValueType.ToString().Contains("Int32"))
-                            ret.Value = (Int32)(retBuffers[0] << 16) + retBuffers[1];
-                        else if (ioarg.ValueType.ToString().Contains("Float"))
-                        {
-                            var bytes = new byte[] { (byte)(retBuffers[1] & 0xff), (byte)((retBuffers[1] >> 8) & 0xff), (byte)(retBuffers[0] & 0xff), (byte)((retBuffers[0] >> 8) & 0xff) };
-                            ret.Value = BitConverter.ToSingle(bytes, 0);
-                        }
-
-                    }
-                    catch (Exception ex)
+            var count = GetModbusReadCount(3, ioarg.ValueType);
+            if (ioarg.ValueType == DataTypeEnum.Any)
+            {
+                count = 125;
+                if (userSetAddrArray.Length>1)
+                {
+                    if(!ushort.TryParse(userSetAddrArray[1], out count))
                     {
-                        ret.StatusType = VaribaleStatusTypeEnum.Bad;
-                        ret.Message = ex.Message;
+                        //转换失败！
+                        count = 125;
                     }
                 }
+            }
+
+            try
+            {
+                var rawBuffers = new ushort[] { };
+                if (FunCode == 3)
+                    rawBuffers = master.ReadHoldingRegisters(SlaveAddress, startAddress, count);
+                else if (FunCode == 4)
+                    rawBuffers = master.ReadInputRegisters(SlaveAddress, startAddress, count);
+
+                var retBuffers = ChangeBuffersOrder(rawBuffers, ioarg.ValueType);
+                if (ioarg.ValueType.ToString().Contains("Uint16"))
+                    ret.Value = retBuffers[0];
+                else if (ioarg.ValueType.ToString().Contains("Int16"))
+                    ret.Value = (short)retBuffers[0];
+                else if (ioarg.ValueType.ToString().Contains("Uint32"))
+                    ret.Value = (UInt32)(retBuffers[0] << 16) + retBuffers[1];
+                else if (ioarg.ValueType.ToString().Contains("Int32"))
+                    ret.Value = (Int32)(retBuffers[0] << 16) + retBuffers[1];
+                else if (ioarg.ValueType.ToString().Contains("Float"))
+                {
+                    var bytes = new byte[] { (byte)(retBuffers[1] & 0xff), (byte)((retBuffers[1] >> 8) & 0xff), (byte)(retBuffers[0] & 0xff), (byte)((retBuffers[0] >> 8) & 0xff) };
+                    ret.Value = BitConverter.ToSingle(bytes, 0);
+                }
+                else if (ioarg.ValueType.ToString().Contains("Any"))
+                {
+                    ret.Value = retBuffers;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ret.StatusType = VaribaleStatusTypeEnum.Bad;
+                ret.Message = ex.Message;
             }
 
             return ret;
@@ -388,6 +411,9 @@ namespace DriverModbusMaster
         //预留了大小端转换的 
         private ushort[] ChangeBuffersOrder(ushort[] buffers, DataTypeEnum dataType)
         {
+            if (dataType == DataTypeEnum.Any)
+                return buffers;
+
             var newBuffers = new ushort[buffers.Length];
             if (dataType.ToString().Contains("32") || dataType.ToString().Contains("Float"))
             {

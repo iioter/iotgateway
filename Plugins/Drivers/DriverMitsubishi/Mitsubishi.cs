@@ -8,7 +8,7 @@ namespace DriverMitsubishi
 {
     [DriverSupported("A_1E")]
     [DriverSupported("Qna_3E")]
-    [DriverInfoAttribute("Mitsubishi", "V1.0.0", "Copyright WHD-IoTClient© 2022-01-15")]
+    [DriverInfoAttribute("Mitsubishi", "V1.0.0", "Copyright IoTGateway-IoTClient© 2022-01-15")]
     public class Mitsubishi : IDriver
     {
         private MitsubishiClient plc = null;
