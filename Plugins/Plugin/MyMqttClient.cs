@@ -116,7 +116,7 @@ namespace Plugin
                     Client.SubscribeAsync("v1/gateway/attributes", MqttQualityOfServiceLevel.ExactlyOnce);
                     break;
                 case IoTPlatformType.IoTSharp:
-                    Client.SubscribeAsync("devices/+/rpc/response/+/+", MqttQualityOfServiceLevel.ExactlyOnce);
+                    Client.SubscribeAsync("devices/+/rpc/request/+/+", MqttQualityOfServiceLevel.ExactlyOnce);
                     Client.SubscribeAsync("devices/+/attributes/update", MqttQualityOfServiceLevel.ExactlyOnce);
                     //Message: {"device": "Device A", "data": {"attribute1": "value1", "attribute2": 42}}
                     Client.SubscribeAsync("devices/+/attributes/response/+", MqttQualityOfServiceLevel.ExactlyOnce);
