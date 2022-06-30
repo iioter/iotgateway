@@ -23,7 +23,7 @@ COPY ["Plugins/Drivers/DriverSimTcpClient/DriverSimTcpClient.csproj", "Plugins/D
 
 # ²âÊÔµÄÄÚÈİ
 RUN pwd
-RUN ls -l
+RUN ls /src/Plugins/ -l
 RUN dotnet restore "Plugins/Drivers/DriverModbusMaster/DriverModbusMaster.csproj"
 
 WORKDIR "/src/Plugins/Drivers/DriverModbusMaster"
