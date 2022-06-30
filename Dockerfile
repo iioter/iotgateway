@@ -10,8 +10,24 @@ EXPOSE 503
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 
+
+
+COPY ["IoTGateway/IoTGateway.csproj", "IoTGateway/"]
+COPY ["IoTGateway.ViewModel/IoTGateway.ViewModel.csproj", "IoTGateway.ViewModel/"]
+COPY ["Plugins/Plugin/Plugin.csproj", "Plugins/Plugin/"]
+COPY ["IoTGateway.Model/IoTGateway.Model.csproj", "IoTGateway.Model/"]
+COPY ["WalkingTec.Mvvm/WalkingTec.Mvvm.Core/WalkingTec.Mvvm.Core.csproj", "WalkingTec.Mvvm/WalkingTec.Mvvm.Core/"]
+COPY ["Plugins/PluginInterface/PluginInterface.csproj", "Plugins/PluginInterface/"]
+COPY ["IoTGateway.DataAccess/IoTGateway.DataAccess.csproj", "IoTGateway.DataAccess/"]
+COPY ["WalkingTec.Mvvm/WalkingTec.Mvvm.TagHelpers.LayUI/WalkingTec.Mvvm.TagHelpers.LayUI.csproj", "WalkingTec.Mvvm/WalkingTec.Mvvm.TagHelpers.LayUI/"]
+COPY ["WalkingTec.Mvvm/WalkingTec.Mvvm.Mvc/WalkingTec.Mvvm.Mvc.csproj", "WalkingTec.Mvvm/WalkingTec.Mvvm.Mvc/"]
+
+
+
+
 # 测试的内容
-RUN ls -l
+# ADD hello /usr/local # 将hello文件添加到容器的/usr/local下（支持解压）感觉比copy好有
+
 
 COPY ["Plugins/Drivers/DriverAllenBradley/DriverAllenBradley.csproj", "Plugins/Drivers/DriverAllenBradley/"]
 COPY ["Plugins/Drivers/DriverFanuc/DriverFanuc.csproj", "Plugins/Drivers/DriverFanuc/"]
@@ -25,25 +41,14 @@ COPY ["Plugins/Drivers/DriverSiemensS7/DriverSiemensS7.csproj", "Plugins/Drivers
 COPY ["Plugins/Drivers/DriverSimTcpClient/DriverSimTcpClient.csproj", "Plugins/Drivers/DriverSimTcpClient/"]
 
 
-RUN ls /src/Plugins/Drivers -l
+RUN ls -A
 RUN dotnet restore "/src/Plugins/Drivers/DriverModbusMaster/DriverModbusMaster.csproj"
 
-WORKDIR "/src/Plugins/Drivers/DriverModbusMaster"
-RUN dotnet build "DriverModbusMaster.csproj" -c Release -o /app/build/drivers/net6.0
+RUN dotnet build "/src/Plugins/Drivers/DriverModbusMaster/DriverModbusMaster.csproj" -c Release -o /app/build/drivers/net6.0
 #结束测试
 
 
 
-COPY ["IoTGateway/IoTGateway.csproj", "IoTGateway/"]
-COPY ["IoTGateway.ViewModel/IoTGateway.ViewModel.csproj", "IoTGateway.ViewModel/"]
-COPY ["Plugins/Plugin/Plugin.csproj", "Plugins/Plugin/"]
-COPY ["IoTGateway.Model/IoTGateway.Model.csproj", "IoTGateway.Model/"]
-COPY ["WalkingTec.Mvvm/WalkingTec.Mvvm.Core/WalkingTec.Mvvm.Core.csproj", "WalkingTec.Mvvm/WalkingTec.Mvvm.Core/"]
-COPY ["Plugins/PluginInterface/PluginInterface.csproj", "Plugins/PluginInterface/"]
-COPY ["IoTGateway.DataAccess/IoTGateway.DataAccess.csproj", "IoTGateway.DataAccess/"]
-COPY ["WalkingTec.Mvvm/WalkingTec.Mvvm.TagHelpers.LayUI/WalkingTec.Mvvm.TagHelpers.LayUI.csproj", "WalkingTec.Mvvm/WalkingTec.Mvvm.TagHelpers.LayUI/"]
-COPY ["WalkingTec.Mvvm/WalkingTec.Mvvm.Mvc/WalkingTec.Mvvm.Mvc.csproj", "WalkingTec.Mvvm/WalkingTec.Mvvm.Mvc/"]
-  
 RUN dotnet restore "IoTGateway/IoTGateway.csproj"
 COPY . .
 WORKDIR "/src/IoTGateway"
