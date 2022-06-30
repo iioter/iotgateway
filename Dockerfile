@@ -22,6 +22,14 @@ COPY ["Plugins/Drivers/DriverSiemensS7/DriverSiemensS7.csproj", "Plugins/Drivers
 COPY ["Plugins/Drivers/DriverSimTcpClient/DriverSimTcpClient.csproj", "Plugins/Drivers/DriverSimTcpClient/"]
 
 
+# ≤‚ ‘µƒƒ⁄»›
+RUN dotnet restore "Plugins/Drivers/DriverModbusMaster/DriverModbusMaster.csproj"
+
+WORKDIR "/src/Plugins/Drivers/DriverModbusMaster"
+RUN dotnet build "DriverModbusMaster.csproj" -c Release -o /app/build/drivers/net6.0
+#Ω· ¯≤‚ ‘
+
+
 
 COPY ["IoTGateway/IoTGateway.csproj", "IoTGateway/"]
 COPY ["IoTGateway.ViewModel/IoTGateway.ViewModel.csproj", "IoTGateway.ViewModel/"]
