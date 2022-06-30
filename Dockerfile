@@ -10,6 +10,9 @@ EXPOSE 503
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 
+# 测试的内容
+RUN ls -l
+
 COPY ["Plugins/Drivers/DriverAllenBradley/DriverAllenBradley.csproj", "Plugins/Drivers/DriverAllenBradley/"]
 COPY ["Plugins/Drivers/DriverFanuc/DriverFanuc.csproj", "Plugins/Drivers/DriverFanuc/"]
 COPY ["Plugins/Drivers/DriverFanucHsl/DriverFanucHsl.csproj", "Plugins/Drivers/DriverFanucHsl/"]
@@ -21,7 +24,6 @@ COPY ["Plugins/Drivers/DriverOPCUaClient/DriverOPCUaClient.csproj", "Plugins/Dri
 COPY ["Plugins/Drivers/DriverSiemensS7/DriverSiemensS7.csproj", "Plugins/Drivers/DriverSiemensS7/"]
 COPY ["Plugins/Drivers/DriverSimTcpClient/DriverSimTcpClient.csproj", "Plugins/Drivers/DriverSimTcpClient/"]
 
-# 测试的内容
 
 RUN ls /src/Plugins/Drivers -l
 RUN dotnet restore "/src/Plugins/Drivers/DriverModbusMaster/DriverModbusMaster.csproj"
