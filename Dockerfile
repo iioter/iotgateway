@@ -56,13 +56,14 @@ RUN dotnet build "IoTGateway.csproj" -c Release -o /app/build
 FROM build AS publish
 RUN dotnet publish "IoTGateway.csproj" -c Release -o /app/publish
 
-
+ADD /app/build/drivers /app/
+ 
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
-RUN ls -A
+RUN ls -l
 ENV TZ=Asia/Shanghai
 ENTRYPOINT ["dotnet", "IoTGateway.dll"]
 #ENTRYPOINT ["ls","-l"]    
