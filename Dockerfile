@@ -22,8 +22,9 @@ COPY ["Plugins/Drivers/DriverSiemensS7/DriverSiemensS7.csproj", "Plugins/Drivers
 COPY ["Plugins/Drivers/DriverSimTcpClient/DriverSimTcpClient.csproj", "Plugins/Drivers/DriverSimTcpClient/"]
 
 # ≤‚ ‘µƒƒ⁄»›
+RUN pwd
 RUN ls -l
-RUN dotnet restore "DriverModbusMaster.csproj"
+RUN dotnet restore "Plugins/Drivers/DriverModbusMaster/DriverModbusMaster.csproj"
 
 WORKDIR "/src/Plugins/Drivers/DriverModbusMaster"
 RUN dotnet build "DriverModbusMaster.csproj" -c Release -o /app/build/drivers/net6.0
