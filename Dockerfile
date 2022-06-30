@@ -47,4 +47,4 @@ COPY --from=publish /app/publish .
 
 ENV TZ=Asia/Shanghai
 # ENTRYPOINT ["dotnet", "IoTGateway.dll"]
-ENTRYPOINT ["ls","-a"]    
+ENTRYPOINT ["ls","-l"]    
