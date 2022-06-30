@@ -23,7 +23,7 @@ COPY ["Plugins/Drivers/DriverSimTcpClient/DriverSimTcpClient.csproj", "Plugins/D
 
 
 # ²âÊÔµÄÄÚÈİ
-RUN dotnet restore "Plugins/Drivers/DriverModbusMaster/DriverModbusMaster.csproj"
+RUN dotnet restore "DriverModbusMaster.csproj"
 
 WORKDIR "/src/Plugins/Drivers/DriverModbusMaster"
 RUN dotnet build "DriverModbusMaster.csproj" -c Release -o /app/build/drivers/net6.0
