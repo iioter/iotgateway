@@ -46,5 +46,5 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 
 ENV TZ=Asia/Shanghai
-# ENTRYPOINT ["dotnet", "IoTGateway.dll"]
-ENTRYPOINT ["ls","-l"]    
+ENTRYPOINT ["dotnet", "IoTGateway.dll"]
+#ENTRYPOINT ["ls","-l"]    
