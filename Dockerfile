@@ -10,6 +10,19 @@ EXPOSE 503
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 
+COPY ["Plugins/Drivers/DriverAllenBradley/DriverAllenBradley.csproj", "Plugins/Drivers/DriverAllenBradley/"]
+COPY ["Plugins/Drivers/DriverFanuc/DriverFanuc.csproj", "Plugins/Drivers/DriverFanuc/"]
+COPY ["Plugins/Drivers/DriverFanucHsl/DriverFanucHsl.csproj", "Plugins/Drivers/DriverFanucHsl/"]
+COPY ["Plugins/Drivers/DriverMitsubishi/DriverMitsubishi.csproj", "Plugins/Drivers/DriverMitsubishi/"]
+COPY ["Plugins/Drivers/DriverModbusMaster/DriverModbusMaster.csproj", "Plugins/Drivers/DriverModbusMaster/"]
+COPY ["Plugins/Drivers/DriverMTConnect/DriverMTConnect.csproj", "Plugins/Drivers/DriverMTConnect/"]
+COPY ["Plugins/Drivers/DriverOmronFins/DriverOmronFins.csproj", "Plugins/Drivers/DriverOmronFins/"]
+COPY ["Plugins/Drivers/DriverOPCUaClient/DriverOPCUaClient.csproj", "Plugins/Drivers/DriverOPCUaClient/"]
+COPY ["Plugins/Drivers/DriverSiemensS7/DriverSiemensS7.csproj", "Plugins/Drivers/DriverSiemensS7/"]
+COPY ["Plugins/Drivers/DriverSimTcpClient/DriverSimTcpClient.csproj", "Plugins/Drivers/DriverSimTcpClient/"]
+
+
+
 COPY ["IoTGateway/IoTGateway.csproj", "IoTGateway/"]
 COPY ["IoTGateway.ViewModel/IoTGateway.ViewModel.csproj", "IoTGateway.ViewModel/"]
 COPY ["Plugins/Plugin/Plugin.csproj", "Plugins/Plugin/"]
