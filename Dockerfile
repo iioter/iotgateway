@@ -43,7 +43,7 @@ COPY ["Plugins/Drivers/DriverSimTcpClient/DriverSimTcpClient.csproj", "Plugins/D
 
 RUN ls -A
 RUN dotnet restore "/src/Plugins/Drivers/DriverModbusMaster/DriverModbusMaster.csproj"
-RUN dotnet build "/src/Plugins/Drivers/DriverModbusMaster/DriverModbusMaster.csproj" -c Release -o /app/build/drivers/net6.0
+RUN dotnet build "/src/Plugins/Drivers/DriverModbusMaster/DriverModbusMaster.csproj" -c Release -o /app/drivers/net6.0
 #Ω· ¯≤‚ ‘
 
 
@@ -56,14 +56,13 @@ RUN dotnet build "IoTGateway.csproj" -c Release -o /app/build
 FROM build AS publish
 RUN dotnet publish "IoTGateway.csproj" -c Release -o /app/publish
 
-COPY /app/build/drivers /app/
  
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
-RUN ls -l
+RUN ls /app/drivers/net6.0 -l
 ENV TZ=Asia/Shanghai
 ENTRYPOINT ["dotnet", "IoTGateway.dll"]
 #ENTRYPOINT ["ls","-l"]    
