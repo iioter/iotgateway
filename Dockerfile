@@ -19,7 +19,7 @@ COPY ["Plugins/PluginInterface/PluginInterface.csproj", "Plugins/PluginInterface
 COPY ["IoTGateway.DataAccess/IoTGateway.DataAccess.csproj", "IoTGateway.DataAccess/"]
 COPY ["WalkingTec.Mvvm/WalkingTec.Mvvm.TagHelpers.LayUI/WalkingTec.Mvvm.TagHelpers.LayUI.csproj", "WalkingTec.Mvvm/WalkingTec.Mvvm.TagHelpers.LayUI/"]
 COPY ["WalkingTec.Mvvm/WalkingTec.Mvvm.Mvc/WalkingTec.Mvvm.Mvc.csproj", "WalkingTec.Mvvm/WalkingTec.Mvvm.Mvc/"]
-
+  
 RUN dotnet restore "IoTGateway/IoTGateway.csproj"
 COPY . .
 WORKDIR "/src/IoTGateway"
