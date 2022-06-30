@@ -481,6 +481,11 @@ namespace Plugin
                         case IoTPlatformType.IoTSharp:
                             foreach (var payload in SendModel[device.DeviceName])
                             {
+                                //if (payload.Values.ContainsKey("ts"))
+                                //    payload.Values["ts"] = payload.TS;
+                                //else
+                                //    payload.Values.Add("ts",payload.TS);
+
                                 UploadISTelemetryDataAsync(device.DeviceName, payload.Values);
                             }
                             break;
