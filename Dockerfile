@@ -41,9 +41,6 @@ COPY ["Plugins/Drivers/DriverSiemensS7/DriverSiemensS7.csproj", "Plugins/Drivers
 COPY ["Plugins/Drivers/DriverSimTcpClient/DriverSimTcpClient.csproj", "Plugins/Drivers/DriverSimTcpClient/"]
 
 
-RUN ls -A
-RUN dotnet restore "/src/Plugins/Drivers/DriverModbusMaster/DriverModbusMaster.csproj"
-RUN dotnet build "/src/Plugins/Drivers/DriverModbusMaster/DriverModbusMaster.csproj" -c Release -o /app/drivers/net6.0
 #Ω· ¯≤‚ ‘
 
 
@@ -62,7 +59,13 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
+# test
+RUN dotnet restore "/src/Plugins/Drivers/DriverModbusMaster/DriverModbusMaster.csproj"
+RUN dotnet build "/src/Plugins/Drivers/DriverModbusMaster/DriverModbusMaster.csproj" -c Release -o /app/drivers/net6.0
+
 RUN ls /app/drivers/net6.0 -l
+#end test
+
 ENV TZ=Asia/Shanghai
 ENTRYPOINT ["dotnet", "IoTGateway.dll"]
 #ENTRYPOINT ["ls","-l"]    
