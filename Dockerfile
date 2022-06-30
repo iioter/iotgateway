@@ -56,7 +56,7 @@ RUN dotnet build "IoTGateway.csproj" -c Release -o /app/build
 FROM build AS publish
 RUN dotnet publish "IoTGateway.csproj" -c Release -o /app/publish
 
-ADD /app/build/drivers /app/
+COPY /app/build/drivers /app/
  
 
 FROM base AS final
