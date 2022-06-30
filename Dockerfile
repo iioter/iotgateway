@@ -54,17 +54,21 @@ FROM build AS publish
 RUN dotnet publish "IoTGateway.csproj" -c Release -o /app/publish
 
  
+# test
+RUN dotnet restore "/src/Plugins/Drivers/DriverModbusMaster/DriverModbusMaster.csproj"
+COPY . .
+WORKDIR "/src/Plugins/Drivers/DriverModbusMaster/"
+RUN dotnet build "DriverModbusMaster.csproj" -c Release -o /app/build/drivers/net6.0
+
+FROM build AS publish
+RUN dotnet publish "DriverModbusMaster.csproj" -c Release -o /app/publish/drivers/net6.0
+
+#end test
+
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-
-# test
-RUN dotnet restore "/src/Plugins/Drivers/DriverModbusMaster/DriverModbusMaster.csproj"
-RUN dotnet build "/src/Plugins/Drivers/DriverModbusMaster/DriverModbusMaster.csproj" -c Release -o /app/drivers/net6.0
-
-RUN ls /app/drivers/net6.0 -l
-#end test
 
 ENV TZ=Asia/Shanghai
 ENTRYPOINT ["dotnet", "IoTGateway.dll"]
