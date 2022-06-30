@@ -16,16 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\IoTGateway.DataAccess\IoTGateway.DataAccess.csproj" />
     <ProjectReference Include="..\..\IoTGateway.Model\IoTGateway.Model.csproj" />
-    <ProjectReference Include="..\Drivers\DriverAllenBradley\DriverAllenBradley.csproj" />
-    <ProjectReference Include="..\Drivers\DriverFanucHsl\DriverFanucHsl.csproj" />
-    <ProjectReference Include="..\Drivers\DriverFanuc\DriverFanuc.csproj" />
-    <ProjectReference Include="..\Drivers\DriverMitsubishi\DriverMitsubishi.csproj" />
     <ProjectReference Include="..\Drivers\DriverModbusMaster\DriverModbusMaster.csproj" />
-    <ProjectReference Include="..\Drivers\DriverMTConnect\DriverMTConnect.csproj" />
-    <ProjectReference Include="..\Drivers\DriverOmronFins\DriverOmronFins.csproj" />
-    <ProjectReference Include="..\Drivers\DriverOPCUaClient\DriverOPCUaClient.csproj" />
-    <ProjectReference Include="..\Drivers\DriverSiemensS7\DriverSiemensS7.csproj" />
-    <ProjectReference Include="..\Drivers\DriverSimTcpClient\DriverSimTcpClient.csproj" />
   </ItemGroup>
 
 </Project>

@@ -7,7 +7,6 @@
 		<SatelliteResourceLanguages>zh-Hans,en</SatelliteResourceLanguages>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-		<PlatformTarget>x86</PlatformTarget>
 	</PropertyGroup>
 
 	<ItemGroup>
