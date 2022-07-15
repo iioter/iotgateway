@@ -274,7 +274,7 @@ namespace Plugin
         //mysql会把一些符号转义，没找到原因，先临时处理下
         private string DealMysqlStr(string Expression)
         {
-            return Expression.Replace("&lt;", ">").Replace("&gt;", "<").Replace("&amp;", "&");
+            return Expression.Replace("&lt;", "<").Replace("&gt;", ">").Replace("&amp;", "&").Replace("&quot;", "\"");
         }
     }
 

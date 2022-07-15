@@ -8,11 +8,19 @@
     ".NETCoreApp,Version=v6.0": {
       "DriverOPCUaClient/1.0.0": {
         "dependencies": {
-          "OPCFoundation.NetStandard.Opc.Ua.Client": "1.4.367.75",
+          "OPCFoundation.NetStandard.Opc.Ua.Client": "1.4.369.30",
           "PluginInterface": "1.0.0"
         },
         "runtime": {
           "DriverOPCUaClient.dll": {}
+        }
+      },
+      "Microsoft.Extensions.Logging.Abstractions/6.0.1": {
+        "runtime": {
+          "lib/net6.0/Microsoft.Extensions.Logging.Abstractions.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.322.12309"
+          }
         }
       },
       "Newtonsoft.Json/13.0.1": {
@@ -23,49 +31,50 @@
           }
         }
       },
-      "OPCFoundation.NetStandard.Opc.Ua.Client/1.4.367.75": {
+      "OPCFoundation.NetStandard.Opc.Ua.Client/1.4.369.30": {
         "dependencies": {
-          "OPCFoundation.NetStandard.Opc.Ua.Configuration": "1.4.367.75",
-          "OPCFoundation.NetStandard.Opc.Ua.Core": "1.4.367.75"
+          "OPCFoundation.NetStandard.Opc.Ua.Configuration": "1.4.369.30",
+          "OPCFoundation.NetStandard.Opc.Ua.Core": "1.4.369.30"
         },
         "runtime": {
           "lib/net6.0/Opc.Ua.Client.dll": {
-            "assemblyVersion": "1.4.367.0",
-            "fileVersion": "1.4.367.75"
+            "assemblyVersion": "1.4.369.0",
+            "fileVersion": "1.4.369.30"
           }
         }
       },
-      "OPCFoundation.NetStandard.Opc.Ua.Configuration/1.4.367.75": {
+      "OPCFoundation.NetStandard.Opc.Ua.Configuration/1.4.369.30": {
         "dependencies": {
-          "OPCFoundation.NetStandard.Opc.Ua.Core": "1.4.367.75"
+          "OPCFoundation.NetStandard.Opc.Ua.Core": "1.4.369.30"
         },
         "runtime": {
           "lib/net6.0/Opc.Ua.Configuration.dll": {
-            "assemblyVersion": "1.4.367.0",
-            "fileVersion": "1.4.367.75"
+            "assemblyVersion": "1.4.369.0",
+            "fileVersion": "1.4.369.30"
           }
         }
       },
-      "OPCFoundation.NetStandard.Opc.Ua.Core/1.4.367.75": {
+      "OPCFoundation.NetStandard.Opc.Ua.Core/1.4.369.30": {
         "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
           "Newtonsoft.Json": "13.0.1",
-          "OPCFoundation.NetStandard.Opc.Ua.Security.Certificates": "1.4.367.75"
+          "OPCFoundation.NetStandard.Opc.Ua.Security.Certificates": "1.4.369.30"
         },
         "runtime": {
           "lib/net6.0/Opc.Ua.Core.dll": {
-            "assemblyVersion": "1.4.367.0",
-            "fileVersion": "1.4.367.75"
+            "assemblyVersion": "1.4.369.0",
+            "fileVersion": "1.4.369.30"
           }
         }
       },
-      "OPCFoundation.NetStandard.Opc.Ua.Security.Certificates/1.4.367.75": {
+      "OPCFoundation.NetStandard.Opc.Ua.Security.Certificates/1.4.369.30": {
         "dependencies": {
           "System.Formats.Asn1": "6.0.0"
         },
         "runtime": {
           "lib/net6.0/Opc.Ua.Security.Certificates.dll": {
-            "assemblyVersion": "1.4.367.0",
-            "fileVersion": "1.4.367.75"
+            "assemblyVersion": "1.4.369.0",
+            "fileVersion": "1.4.369.30"
           }
         }
       },
@@ -86,6 +95,13 @@
       "serviceable": false,
       "sha512": ""
     },
+    "Microsoft.Extensions.Logging.Abstractions/6.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-dzB2Cgg+JmrouhjkcQGzSFjjvpwlq353i8oBQO2GWNjCXSzhbtBRUf28HSauWe7eib3wYOdb3tItdjRwAdwCSg==",
+      "path": "microsoft.extensions.logging.abstractions/6.0.1",
+      "hashPath": "microsoft.extensions.logging.abstractions.6.0.1.nupkg.sha512"
+    },
     "Newtonsoft.Json/13.0.1": {
       "type": "package",
       "serviceable": true,
@@ -93,33 +109,33 @@
       "path": "newtonsoft.json/13.0.1",
       "hashPath": "newtonsoft.json.13.0.1.nupkg.sha512"
     },
-    "OPCFoundation.NetStandard.Opc.Ua.Client/1.4.367.75": {
+    "OPCFoundation.NetStandard.Opc.Ua.Client/1.4.369.30": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-Y1BF7xoDS0LPz5ksbfsKJbMvbeE4sXazgHwadfSTtrCixOzxwzZrBVo0k+LmI5z13uzIq0mMOA6mTNcdgnAxzA==",
-      "path": "opcfoundation.netstandard.opc.ua.client/1.4.367.75",
-      "hashPath": "opcfoundation.netstandard.opc.ua.client.1.4.367.75.nupkg.sha512"
+      "sha512": "sha512-xJHIazzYwIjixJEm/3QSqobySQilJ6VDIAnkNsmSAn5N43AtB0mV5anLT+tg3BDPznYL5hIINIm/4Gt9kSWarQ==",
+      "path": "opcfoundation.netstandard.opc.ua.client/1.4.369.30",
+      "hashPath": "opcfoundation.netstandard.opc.ua.client.1.4.369.30.nupkg.sha512"
     },
-    "OPCFoundation.NetStandard.Opc.Ua.Configuration/1.4.367.75": {
+    "OPCFoundation.NetStandard.Opc.Ua.Configuration/1.4.369.30": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-4VtYqVSpmm4Pxfy5w40GJxuVLSBeTeyZwUf8dPp//g3Op4D0NCl5M7NYS5LW7a8FFJZHeRBfLsnaKmNkRFRhTA==",
-      "path": "opcfoundation.netstandard.opc.ua.configuration/1.4.367.75",
-      "hashPath": "opcfoundation.netstandard.opc.ua.configuration.1.4.367.75.nupkg.sha512"
+      "sha512": "sha512-QXLG2eM4caw6Q9a50Pj3RjXFZa8lWQWu560+KtZ2NlHc4Bq4dRHkThK5JnP9yKcB6jsCSWKzIuh9fwoy+VO8Cw==",
+      "path": "opcfoundation.netstandard.opc.ua.configuration/1.4.369.30",
+      "hashPath": "opcfoundation.netstandard.opc.ua.configuration.1.4.369.30.nupkg.sha512"
     },
-    "OPCFoundation.NetStandard.Opc.Ua.Core/1.4.367.75": {
+    "OPCFoundation.NetStandard.Opc.Ua.Core/1.4.369.30": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-6yyKF1Kp/doU1P9iVDZ5rIaw2DQJeG5ce8uEGRqX2HnvD+TBMgKXcs0t2WxRJ47ISwcGzrqjONt/XFDxPv1vQQ==",
-      "path": "opcfoundation.netstandard.opc.ua.core/1.4.367.75",
-      "hashPath": "opcfoundation.netstandard.opc.ua.core.1.4.367.75.nupkg.sha512"
+      "sha512": "sha512-SGFmPdZVFw42wLzi60Kdl4o3S6BFkNi02qgg1fr/3gDiYA5ZWdDAN0odZWtFoDK6eDQHSPjQv/r+nMBigoTuFw==",
+      "path": "opcfoundation.netstandard.opc.ua.core/1.4.369.30",
+      "hashPath": "opcfoundation.netstandard.opc.ua.core.1.4.369.30.nupkg.sha512"
     },
-    "OPCFoundation.NetStandard.Opc.Ua.Security.Certificates/1.4.367.75": {
+    "OPCFoundation.NetStandard.Opc.Ua.Security.Certificates/1.4.369.30": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-Az6TN1I0WfZnbUZG3OHJ8PEKxAk+jEm7Tm198xhLahP+wuGOYXReZeqK1pJGZB/oXybExUFYfryRGjZxBgVqOA==",
-      "path": "opcfoundation.netstandard.opc.ua.security.certificates/1.4.367.75",
-      "hashPath": "opcfoundation.netstandard.opc.ua.security.certificates.1.4.367.75.nupkg.sha512"
+      "sha512": "sha512-SkyfvLeunJK008ysVg3Q3al77Q3rMJoqAti7MTjDnE/7viXy/IxSKGA24Foc+vIE4LmPqpdyKpgUE5j4nH+egQ==",
+      "path": "opcfoundation.netstandard.opc.ua.security.certificates/1.4.369.30",
+      "hashPath": "opcfoundation.netstandard.opc.ua.security.certificates.1.4.369.30.nupkg.sha512"
     },
     "System.Formats.Asn1/6.0.0": {
       "type": "package",

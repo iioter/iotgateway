@@ -8,21 +8,21 @@
     ".NETCoreApp,Version=v6.0": {
       "DriverMitsubishi/1.0.0": {
         "dependencies": {
-          "IoTClient": "1.0.22",
+          "IoTClient": "1.0.28",
           "PluginInterface": "1.0.0"
         },
         "runtime": {
           "DriverMitsubishi.dll": {}
         }
       },
-      "IoTClient/1.0.22": {
+      "IoTClient/1.0.28": {
         "dependencies": {
           "System.IO.Ports": "4.6.0"
         },
         "runtime": {
           "lib/netstandard2.0/IoTClient.dll": {
-            "assemblyVersion": "1.0.22.0",
-            "fileVersion": "1.0.22.0"
+            "assemblyVersion": "1.0.28.0",
+            "fileVersion": "1.0.28.0"
           }
         }
       },
@@ -140,12 +140,12 @@
       "serviceable": false,
       "sha512": ""
     },
-    "IoTClient/1.0.22": {
+    "IoTClient/1.0.28": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-UqkeoTFWpDiskvtuPiwdk7XLkvb2no1iJSE0sJusjccapbs6J5GPCf/0eGqu4ftlrHxG8E4fd7lgTA1R5Ztbgw==",
-      "path": "iotclient/1.0.22",
-      "hashPath": "iotclient.1.0.22.nupkg.sha512"
+      "sha512": "sha512-C9H2L6dkYE2zk3XPNhYIQgPzu+vfaDUHWao3xt4kR0/PxHO7LP94i2hnJqh+tmB/+k2wULKkdy+g1RbJEIxOvQ==",
+      "path": "iotclient/1.0.28",
+      "hashPath": "iotclient.1.0.28.nupkg.sha512"
     },
     "Microsoft.NETCore.Platforms/3.0.0": {
       "type": "package",
