@@ -13,7 +13,7 @@ namespace PluginInterface.IotDB
     {
         public string device { get; set; }
         public List<string> measurements { get; set; }
-        public List<object> values { get; set; }
+        public List<dynamic> values { get; set; }
         public long timestamp { get; set; }
     }
 }
