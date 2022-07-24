@@ -22,7 +22,6 @@ namespace Plugin
         private IMqttServer _MqttServer;
         private string connnectSetting = IoTBackgroundService.connnectSetting;
         private DBTypeEnum DBType = IoTBackgroundService.DBType;
-        private Interpreter interpreter = new();
         public DeviceService(IConfiguration ConfigRoot, DriverService drvierManager, MyMqttClient myMqttClient, UAService uAService, IMqttServer mqttServer, ILogger<DeviceService> logger)
         {
             _logger = logger;
@@ -137,7 +136,7 @@ namespace Plugin
                             p.SetValue(DeviceObj, value);
                         }
 
-                        var deviceThread = new DeviceThread(Device, DeviceObj, systemManage.GatewayName, _MyMqttClient, interpreter, _MqttServer, _logger);
+                        var deviceThread = new DeviceThread(Device, DeviceObj, systemManage.GatewayName, _MyMqttClient, _MqttServer, _logger);
                         DeviceThreads.Add(deviceThread);
                     }
 
