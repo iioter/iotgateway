@@ -524,7 +524,7 @@ namespace DriverModbusMaster
             }
             catch (Exception ex)
             {
-                rpcResponse.Description = $"写入失败:{Method},{Ioarg}";
+                rpcResponse.Description = $"写入失败,[Method]:{Method},[Ioarg]:{Ioarg},[ex]:{ex}";
             }
             return rpcResponse;
         }

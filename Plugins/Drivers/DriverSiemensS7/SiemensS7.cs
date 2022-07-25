@@ -148,7 +148,10 @@ namespace DriverSiemensS7
                     int startAdr = int.Parse(ioarg.Address.Trim().Split(',')[1]);
                     int count = int.Parse(ioarg.Address.Trim().Split(',')[2]);
                     var buffers = plc.ReadBytes(DataType.DataBlock, db, startAdr, count);
-                    ret.Value = Encoding.ASCII.GetString(buffers);
+                    var str = Encoding.ASCII.GetString(buffers);
+                    if (str.Contains('\0'))
+                        str = str.Split('\0')[0];
+                    ret.Value = str;
                 }
                 catch (Exception ex)
                 {
@@ -226,7 +229,81 @@ namespace DriverSiemensS7
 
         public async Task<RpcResponse> WriteAsync(string RequestId, string Method, DriverAddressIoArgModel Ioarg)
         {
-            RpcResponse rpcResponse = new() { IsSuccess = false, Description = "设备驱动内未实现写入功能" };
+            RpcResponse rpcResponse = new() { IsSuccess = false };
+            try
+            {
+                if (!IsConnected)
+                    rpcResponse.Description = "设备连接已断开";
+                else
+                {
+                    object toWrite = null;
+                    switch (Ioarg.ValueType)
+                    {
+                        case DataTypeEnum.Bit:
+                        case DataTypeEnum.Bool:
+                            toWrite = Ioarg.Value.ToString().ToLower() == "true" || Ioarg.Value.ToString().ToLower() == "1";
+                            break;
+                        case DataTypeEnum.UByte:
+                            toWrite = byte.Parse(Ioarg.Value.ToString());
+                            break;
+                        case DataTypeEnum.Byte:
+                            toWrite = sbyte.Parse(Ioarg.Value.ToString());
+                            break;
+                        case DataTypeEnum.Uint16:
+                            toWrite = ushort.Parse(Ioarg.Value.ToString());
+                            break;
+                        case DataTypeEnum.Int16:
+                            toWrite = short.Parse(Ioarg.Value.ToString());
+                            break;
+                        case DataTypeEnum.Uint32:
+                            toWrite = uint.Parse(Ioarg.Value.ToString());
+                            break;
+                        case DataTypeEnum.Int32:
+                            toWrite = int.Parse(Ioarg.Value.ToString());
+                            break;
+                        case DataTypeEnum.Float:
+                            toWrite = float.Parse(Ioarg.Value.ToString());
+                            break;
+                        case DataTypeEnum.AsciiString:
+                            toWrite = Encoding.ASCII.GetBytes(Ioarg.Value.ToString());
+                            break;
+                        default:
+                            rpcResponse.Description = $"类型{DataTypeEnum.Float}不支持写入";
+                            break;
+                    }
+                    if (toWrite == null)
+                        return rpcResponse;
+
+                    //通用方法
+                    if (Method == nameof(Read))
+                    {
+                        plc.Write(Ioarg.Address, toWrite);
+
+                        rpcResponse.IsSuccess = true;
+                        return rpcResponse;
+                    }
+                    //字符串
+                    else if (Method == nameof(ReadString))
+                    {
+                        int db = int.Parse(Ioarg.Address.Trim().Split(',')[0]);
+                        int startAdr = int.Parse(Ioarg.Address.Trim().Split(',')[1]);
+                        int count = int.Parse(Ioarg.Address.Trim().Split(',')[2]);
+                        //防止写入到其他地址 进行截断
+                        if (((byte[])toWrite).Length > count)
+                            toWrite = ((byte[])toWrite).Take(count);
+                        plc.Write(DataType.DataBlock, db, startAdr, toWrite);
+
+                        rpcResponse.IsSuccess = true;
+                        return rpcResponse;
+                    }
+                    else
+                        rpcResponse.Description = $"不支持写入:{Method}";
+                }
+            }
+            catch (Exception ex)
+            {
+                rpcResponse.Description = $"写入失败,[Method]:{Method},[Ioarg]:{Ioarg},[ex]:{ex}";
+            }
             return rpcResponse;
         }
     }
