@@ -16,13 +16,13 @@ docker cp IoTGateway/Quickstarts.ReferenceServer.Config.xml iotgateway:app/
 
 docker restart iotgateway
 
-docker commit iotgateway registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway:$tag
-docker push registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway:$tag
+docker commit iotgateway registry.cn-hangzhou.aliyuncs.com/iotgateway/iotgateway:$tag
+docker push registry.cn-hangzhou.aliyuncs.com/iotgateway/iotgateway:$tag
 
-docker tag registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway:$tag registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway:latest
-docker push registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway:latest
+docker tag registry.cn-hangzhou.aliyuncs.com/iotgateway/iotgateway:$tag registry.cn-hangzhou.aliyuncs.com/iotgateway/iotgateway:latest
+docker push registry.cn-hangzhou.aliyuncs.com/iotgateway/iotgateway:latest
 
-docker tag registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway:latest  15261671110/iotgateway:$tag
+docker tag registry.cn-hangzhou.aliyuncs.com/iotgateway/iotgateway:latest  15261671110/iotgateway:$tag
 docker push 15261671110/iotgateway:$tag
 
 docker tag 15261671110/iotgateway:$tag 15261671110/iotgateway:latest
