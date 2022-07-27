@@ -3,7 +3,9 @@
 ## [教程文档:http://iotgateway.net](http://iotgateway.net/)
 ## [在线体验:http://online.iotgateway.net](http://online.iotgateway.net/)
 
-## [配套硬件产品:http://iotgateway.net/docs/hardware/selection/](http://iotgateway.net/docs/hardware/selection/)
+## [配套硬件产品:http://iotgateway.net/docs/hardware/selection](http://iotgateway.net/docs/hardware/selection/)
+
+## [淘宝店地址:https://iotgateway.taobao.com](https://iotgateway.taobao.com/)
 
 
 > 基于.NET6的跨平台物联网网关
@@ -44,15 +46,16 @@
 
 - 下列型号均有"**蓝牙BLE 5.0**、**Wi-Fi**"
 - 搭载**Linux**操作系统```debian.11```
-- 时间关系，目前只整理了 [A080](http://iotgateway.net/docs/hardware/A080/introduction) 型号的资料，其他用法差不多，后续会更新
+- 时间关系，目前只整理了 [A080](http://iotgateway.net/docs/hardware/A080/introduction) 、[B100](http://iotgateway.net/docs/hardware/B100/introduction)型号的资料，其他用法差不多，后续会更新
 - 9月后会推出**24v**版本
+- 淘宝店是:[https://iotgateway.taobao.com/](https://iotgateway.taobao.com/)
 
-| 型号 | 触摸屏 | USB |  网口 |通讯口| SD扩展 | 4G  |  电源|RTC|
-| ------ | ---- |---- |---- |---- |------ | ---- |---- |---- |
-| D070 | 无 | 4 | 千兆×1 | 无 |无|无| 5V|无|
-| [A080](/docs/hardware/A080/introduction) | 无 | 2 | 千兆×1 | 232×1;485×4;can×1 |有|可选|12V|有|
-| B100 | 无 | 2 | 百兆×1;千兆×1 | 232×1;485×1 |有|可选|12V|有|
-| C210 | 10寸电容 | 2 | 千兆×1 | 232×4;485×2 |有|可选| 6~36V|有|
+| 型号                                                         | 触摸屏   | USB  | 网口          | 通讯口            | SD扩展 | 4G   | 电源  | RTC  | 典型价格                                                     | 其他接口                                          |
+| ------------------------------------------------------------ | -------- | ---- | ------------- | ----------------- | ------ | ---- | ----- | ---- | ------------------------------------------------------------ | ------------------------------------------------- |
+| D070                                                         | 无       | 4    | 千兆×1        | 无                | 无     | 无   | 5V    | 无   | 900                                                          |                                                   |
+| [A080](http://iotgateway.net/docs/hardware/A080/introduction) | 无       | 2    | 千兆×1        | 232×1;485×4;can×1 | 有     | 可选 | 12V   | 有   | [1200](https://item.taobao.com/item.htm?spm=a1z10.1-c.w4004-13769403149.4.67fb40c29fW8sO&id=679535257919) | 蜂鸣器x1                                          |
+| [B100](http://iotgateway.net/docs/hardware/B100/introduction) | 无       | 2    | 百兆×1;千兆×1 | 232×1;485×1       | **无** | 可选 | 12V   | 有   | [1350](https://item.taobao.com/item.htm?spm=a1z10.1-c.w4004-13769403149.2.487440c2LpWLE0&id=679174732349) | ADCx3;DIx2;DIOx1;单刀双置继电器x1;按键x1;蜂鸣器x1 |
+| C210                                                         | 10寸电容 | 2    | 千兆×1        | 232×4;485×2       | 有     | 可选 | 6~36V | 有   | 3050                                                         |                                                   |
 
 ## 运行
 
@@ -61,7 +64,7 @@
 - [源码运行:http://iotgateway.net/docs/iotgateway/run/build-run](http://iotgateway.net/docs/iotgateway/run/build-run)
 
 ## 南向
-- 支持三菱PLC、Modbus驱动全协议支持、欧姆龙PLC、OPCUA客户端、西门子PLC、ABPLC、MT机床、Fanuc CNC
+- 支持**三菱PLC**、**Modbus**驱动全协议支持、**欧姆龙PLC**、**OPCUA**客户端、**西门子PLC**、**ABPLC**、**MT机床**、**Fanuc CNC**
 - 驱动支持二次开发
 - [驱动简介](http://iotgateway.net/docs/iotgateway/driver/drvier)
 - [驱动二次开发实战之TcpClient](http://iotgateway.net/docs/iotgateway/driver/tcpclient)
