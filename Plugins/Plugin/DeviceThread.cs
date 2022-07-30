@@ -15,21 +15,21 @@ namespace Plugin
         public readonly Device _device;
         public readonly IDriver _driver;
         private readonly MyMqttClient _myMqttClient;
+        private Interpreter _interpreter ;
         public Dictionary<Guid, DriverReturnValueModel> DeviceValues { get; set; } = new();
         internal List<MethodInfo> Methods { get; set; }
         private Task task { get; set; } = null;
         private DateTime TsStartDt = new DateTime(1970, 1, 1);
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
-        private Interpreter Interpreter = null;
         private object _lock = new object();
         private bool lastConnected = false;
-        public DeviceThread(Device device, IDriver driver, string ProjectId, MyMqttClient myMqttClient, Interpreter interpreter, IMqttServer mqttServer, ILogger logger)
+        public DeviceThread(Device device, IDriver driver, string ProjectId, MyMqttClient myMqttClient, IMqttServer mqttServer, ILogger logger)
         {
             _myMqttClient = myMqttClient;
             _myMqttClient.OnExcRpc += MyMqttClient_OnExcRpc;
             _device = device;
             _driver = driver;
-            Interpreter = interpreter;
+            _interpreter = new Interpreter();
             _logger = logger;
             Methods = _driver.GetType().GetMethods().Where(x => x.GetCustomAttribute(typeof(MethodAttribute)) != null).ToList();
             if (_device.AutoStart)
@@ -91,7 +91,7 @@ namespace Plugin
                                             {
                                                 try
                                                 {
-                                                    ret.CookedValue = interpreter.Eval(DealMysqlStr(item.Expressions).Replace("raw", ret.Value?.ToString()));
+                                                    ret.CookedValue = _interpreter.Eval(DealMysqlStr(item.Expressions).Replace("raw", ret.Value?.ToString()));
                                                 }
                                                 catch (Exception)
                                                 {
@@ -268,6 +268,9 @@ namespace Plugin
         public void Dispose()
         {
             _driver.Dispose();
+            _interpreter = null;
+            DeviceValues = null;
+            Methods = null;
             _logger.LogInformation($"线程释放,{_device.DeviceName}");
         }
 
