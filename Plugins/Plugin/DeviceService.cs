@@ -73,7 +73,9 @@ namespace Plugin
         {
             try
             {
-                _logger.LogInformation($"CreateDeviceThread Start:{Device.DeviceName}");
+                _logger.LogInformation($"CreateDeviceThread Start:{Device.DeviceName},Driver:{Device.Driver}");
+                if (Device.Driver == null)
+                    return;
                 using (var DC = new DataContext(connnectSetting, DBType))
                 {
                     var systemManage = DC.Set<SystemConfig>().FirstOrDefault();

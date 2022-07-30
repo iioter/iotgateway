@@ -508,6 +508,8 @@ namespace WalkingTec.Mvvm.Core
         public void UpdateProperty<T>(T entity, string fieldName)
             where T : TopBasePoco
         {
+            if (string.IsNullOrEmpty(fieldName))
+                return;
             var set = this.Set<T>();
             if (set.Local.AsQueryable().CheckID(entity.GetID()).FirstOrDefault() == null)
             {

@@ -26,7 +26,11 @@ namespace Plugin
             _logger = logger;
             try
             {
-                _logger.LogInformation("LoadDriverFiles Start");
+                var env_DriverPath = Environment.GetEnvironmentVariable("IOT_DriverPath");
+                if (!string.IsNullOrEmpty(env_DriverPath) && Directory.Exists(env_DriverPath))
+                    DriverPath = env_DriverPath;
+
+                _logger.LogInformation($"LoadDriverFiles Start,Path:{DriverPath}");
                 driverFiles = Directory.GetFiles(DriverPath).Where(x => Path.GetExtension(x) == ".dll").ToArray();
                 _logger.LogInformation($"LoadDriverFiles End，Count{driverFiles.Count()}");
             }
