@@ -6,6 +6,8 @@ using Opc.Ua;
 using Opc.Ua.Client;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using IoTGateway.Model;
+using Microsoft.Extensions.Logging;
 using Opc.Ua.Configuration;
 using OpcUaHelper;
 
@@ -16,6 +18,9 @@ namespace DriverOPCUaClient
     public class OPCUaClient : IDriver
     {
         OpcUaClientHelper opcUaClient = null;
+
+        public ILogger _logger { get; set; }
+        private readonly Device _device;
         #region 配置参数
 
         [ConfigParameter("设备Id")]
@@ -32,10 +37,12 @@ namespace DriverOPCUaClient
 
         #endregion
 
-        public OPCUaClient(Guid deviceId)
+        public OPCUaClient(Device device, ILogger logger)
         {
-            DeviceId = deviceId;
+            _device = device;
+            _logger = logger;
 
+            _logger.LogInformation($"Device:[{_device.DeviceName}],Create()");
         }
 
 

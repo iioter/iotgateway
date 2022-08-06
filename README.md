@@ -20,7 +20,7 @@
 >
 ## 交流
 
-| 公众号:工业物联网网关 |    [QQ群:712105424](https://qm.qq.com/cgi-bin/qm/qr?k=e3Y8biyVdhDxx3LPbjvNY3TSNOEAmjp7&jump_from=webapi)  |
+| 公众号:工业物联网网关 |    微信群  |
 | ------ | ---- |
 | ![wx](./images/wx.jpg) | ![qq](./images/qq.png) |
 

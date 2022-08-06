@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\IoTGateway.Model\IoTGateway.Model.csproj" />
     <ProjectReference Include="..\..\PluginInterface\PluginInterface.csproj" />
   </ItemGroup>
 

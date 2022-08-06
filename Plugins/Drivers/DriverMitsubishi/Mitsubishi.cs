@@ -3,6 +3,8 @@ using IoTClient.Enums;
 using PluginInterface;
 using System;
 using System.Text;
+using IoTGateway.Model;
+using Microsoft.Extensions.Logging;
 
 namespace DriverMitsubishi
 {
@@ -12,6 +14,9 @@ namespace DriverMitsubishi
     public class Mitsubishi : IDriver
     {
         private MitsubishiClient plc = null;
+
+        public ILogger _logger { get; set; }
+        private readonly Device _device;
         #region 配置参数
 
         [ConfigParameter("设备Id")]
@@ -34,9 +39,12 @@ namespace DriverMitsubishi
 
         #endregion
 
-        public Mitsubishi(Guid deviceId)
+        public Mitsubishi(Device device, ILogger logger)
         {
-            DeviceId = deviceId;
+            _device = device;
+            _logger = logger;
+
+            _logger.LogInformation($"Device:[{_device.DeviceName}],Create()");
         }
 
 

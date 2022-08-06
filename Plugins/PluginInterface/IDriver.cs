@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Extensions.Logging;
 
 namespace PluginInterface
 {
@@ -8,6 +9,10 @@ namespace PluginInterface
         public bool IsConnected { get; }
         public int Timeout { get; }
         public uint MinPeriod { get; }
+
+
+        public ILogger _logger { get; set; }
+
         public bool Connect();
         public bool Close();
         //标准数据读取

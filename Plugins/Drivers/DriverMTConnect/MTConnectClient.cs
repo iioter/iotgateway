@@ -1,6 +1,9 @@
 ﻿using PluginInterface;
 using System;
+using Microsoft.Extensions.Logging;
 using OpenNETCF.MTConnect;
+using Device = IoTGateway.Model.Device;
+
 namespace DriverMTConnect
 {
     internal class MTConnectClient : IDriver
@@ -26,9 +29,15 @@ namespace DriverMTConnect
 
         EntityClient m_client = null;
 
-        public MTConnectClient(Guid deviceId)
+        public ILogger _logger { get; set; }
+        private readonly Device _device;
+
+        public MTConnectClient(Device device, ILogger logger)
         {
-            DeviceId = deviceId;
+            _device = device;
+            _logger = logger;
+
+            _logger.LogInformation($"Device:[{_device.DeviceName}],Create()");
         }
 
         public bool Close()

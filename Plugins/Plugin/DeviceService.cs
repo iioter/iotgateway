@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using PluginInterface;
 using System.Net;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using WalkingTec.Mvvm.Core;
 using IoTGateway.DataAccess;
 using IoTGateway.Model;
@@ -83,8 +84,9 @@ namespace Plugin
                     else
                     {
                         var settings = DC.Set<DeviceConfig>().Where(x => x.DeviceId == Device.ID).AsNoTracking().ToList();
-                        Type[] types = new Type[1] { typeof(Guid) };
-                        object[] param = new object[1] { Device.ID };
+
+                        Type[] types = new Type[2] { typeof(Device) ,typeof(ILogger) };
+                        object[] param = new object[2] { Device , _logger };
 
                         ConstructorInfo constructor = driver.Type.GetConstructor(types);
                         var DeviceObj = constructor.Invoke(param) as IDriver;

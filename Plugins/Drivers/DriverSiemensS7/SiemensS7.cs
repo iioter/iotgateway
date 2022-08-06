@@ -2,6 +2,8 @@
 using S7.Net;
 using System;
 using System.Text;
+using IoTGateway.Model;
+using Microsoft.Extensions.Logging;
 
 namespace DriverSiemensS7
 {
@@ -15,6 +17,9 @@ namespace DriverSiemensS7
     public class SiemensS7 : IDriver
     {
         private Plc plc = null;
+
+        public ILogger _logger { get; set; }
+        private readonly Device _device;
         #region 配置参数
 
         [ConfigParameter("设备Id")]
@@ -43,9 +48,12 @@ namespace DriverSiemensS7
 
         #endregion
 
-        public SiemensS7(Guid deviceId)
+        public SiemensS7(Device device, ILogger logger)
         {
-            DeviceId = deviceId;
+            _device = device;
+            _logger = logger;
+
+            _logger.LogInformation($"Device:[{_device.DeviceName}],Create()");
         }
 
 

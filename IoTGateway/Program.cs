@@ -8,6 +8,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MQTTnet.AspNetCore.Extensions;
 using WalkingTec.Mvvm.Core;
+using NLog;
+using NLog.Web;
 
 namespace IoTGateway
 {
@@ -48,7 +50,8 @@ namespace IoTGateway
                          option.ListenAnyIP(1888, l => l.UseMqtt());
                          option.ListenAnyIP(518);
                      });
-                 });
+                 })
+                  .UseNLog();
         }
     }
 }

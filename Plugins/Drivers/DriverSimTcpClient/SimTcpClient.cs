@@ -2,6 +2,8 @@
 using SimpleTCP;
 using System;
 using System.Text;
+using IoTGateway.Model;
+using Microsoft.Extensions.Logging;
 
 namespace DriverSimTcpClient
 {
@@ -17,6 +19,9 @@ namespace DriverSimTcpClient
         /// 缓存最新的服务器返回的原始数据
         /// </summary>
         private byte[] latestRcvData;
+
+        public ILogger _logger { get; set; }
+        private readonly Device _device;
         #region 配置参数
 
         [ConfigParameter("设备Id")]
@@ -42,9 +47,12 @@ namespace DriverSimTcpClient
 
         #endregion
 
-        public SimTcpClient(Guid deviceId)
+        public SimTcpClient(Device device, ILogger logger)
         {
-            DeviceId = deviceId;
+            _device = device;
+            _logger = logger;
+
+            _logger.LogInformation($"Device:[{_device.DeviceName}],Create()");
         }
 
 
