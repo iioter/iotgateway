@@ -20,9 +20,9 @@
 >
 ## 交流
 
-| 公众号:工业物联网网关 |    微信群  |
-| ------ | ---- |
-| ![wx](./images/wx.jpg) | ![qq](./images/qq.png) |
+| 公众号:工业物联网网关 |    [QQ群:895199932](https://jq.qq.com/?_wv=1027&k=mus0CV0W)  | 微信群 |
+| ------ | ---- | ---- |
+| ![wx](./images/wx.jpg) | ![qq](./images/qq.png) | ![qq](./images/wxgroup.png) |
 
 ## 重磅推出硬件网关
 
