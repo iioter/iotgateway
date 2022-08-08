@@ -10,6 +10,9 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         [JsonPropertyName("title")]
         public string Title { get; set; }
 
+        [JsonPropertyName("icon")]
+        public string Icon { get; set; }
+
         [JsonPropertyName("id")]
         public string Id { get; set; }
 

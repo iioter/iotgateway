@@ -176,6 +176,7 @@ layui.use(['tree'],function(){{
                 {
                     Id = s.Value.ToString(),
                     Title = s.Text,
+                    Icon = s.Icon,
                     Url = s.Url,
                     Expand = s.Expended,
                     Level = level,
