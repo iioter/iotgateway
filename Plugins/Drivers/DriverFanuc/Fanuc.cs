@@ -1,5 +1,4 @@
-﻿using IoTGateway.Model;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using PluginInterface;
 
 namespace DriverFaunc
@@ -23,7 +22,7 @@ namespace DriverFaunc
         private int _result = -1;
 
         public ILogger _logger { get; set; }
-        private readonly Device _device;
+        private readonly string _device;
 
         public bool IsConnected
         {
@@ -44,12 +43,12 @@ namespace DriverFaunc
             }
         }
 
-        public Fanuc(Device device, ILogger logger)
+        public Fanuc(string device, ILogger logger)
         {
             _device = device;
             _logger = logger;
 
-            _logger.LogInformation($"Device:[{_device.DeviceName}],Create()");
+            _logger.LogInformation($"Device:[{device}],Create()");
         }
 
         public bool Close()

@@ -3,7 +3,6 @@ using IoTClient.Enums;
 using PluginInterface;
 using System;
 using System.Text;
-using IoTGateway.Model;
 using Microsoft.Extensions.Logging;
 
 namespace DriverOmronFins
@@ -15,7 +14,7 @@ namespace DriverOmronFins
         private OmronFinsClient plc = null;
 
         public ILogger _logger { get; set; }
-        private readonly Device _device;
+        private readonly string _device;
         #region 配置参数
 
         [ConfigParameter("设备Id")]
@@ -35,12 +34,12 @@ namespace DriverOmronFins
 
         #endregion
 
-        public OmronFins(Device device, ILogger logger)
+        public OmronFins(string device, ILogger logger)
         {
             _device = device;
             _logger = logger;
 
-            _logger.LogInformation($"Device:[{_device.DeviceName}],Create()");
+            _logger.LogInformation($"Device:[{_device}],Create()");
         }
 
 

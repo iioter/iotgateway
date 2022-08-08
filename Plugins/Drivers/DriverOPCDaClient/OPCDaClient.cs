@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Automation.OPCClient;
-using IoTGateway.Model;
 using Microsoft.Extensions.Logging;
 
 namespace DriverOPCDaClient
@@ -15,7 +14,7 @@ namespace DriverOPCDaClient
         OPCClientWrapper opcDaClient = null;
 
         public ILogger _logger { get; set; }
-        private readonly Device _device;
+        private readonly string _device;
 
         #region 配置参数
 
@@ -33,12 +32,12 @@ namespace DriverOPCDaClient
 
         #endregion
 
-        public OPCDaClient(Device device, ILogger logger)
+        public OPCDaClient(string device, ILogger logger)
         {
             _device = device;
             _logger = logger;
 
-            _logger.LogInformation($"Device:[{_device.DeviceName}],Create()");
+            _logger.LogInformation($"Device:[{_device}],Create()");
         }
 
 

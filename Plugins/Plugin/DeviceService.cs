@@ -85,8 +85,8 @@ namespace Plugin
                     {
                         var settings = DC.Set<DeviceConfig>().Where(x => x.DeviceId == Device.ID).AsNoTracking().ToList();
 
-                        Type[] types = new Type[2] { typeof(Device) ,typeof(ILogger) };
-                        object[] param = new object[2] { Device , _logger };
+                        Type[] types = new Type[2] { typeof(string) ,typeof(ILogger) };
+                        object[] param = new object[2] { Device.DeviceName , _logger };
 
                         ConstructorInfo constructor = driver.Type.GetConstructor(types);
                         var DeviceObj = constructor.Invoke(param) as IDriver;

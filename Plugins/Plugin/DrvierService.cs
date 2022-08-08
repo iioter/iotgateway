@@ -77,11 +77,12 @@ namespace Plugin
         {
             using (var DC = new DataContext(IoTBackgroundService.connnectSetting, IoTBackgroundService.DBType))
             {
+                var device = DC.Set<Device>().Where(x => x.ID == dapID).AsNoTracking().SingleOrDefault();
                 var driver = DC.Set<Driver>().Where(x => x.ID == DriverId).AsNoTracking().SingleOrDefault();
                 var type = DriverInfos.Where(x => x.Type.FullName == driver.AssembleName).SingleOrDefault();
 
-                Type[] types = new Type[1] { typeof(Guid) };
-                object[] param = new object[1] { Guid.Parse("88888888-8888-8888-8888-888888888888") };
+                Type[] types = new Type[2] { typeof(string), typeof(ILogger) };
+                object[] param = new object[2] { device.DeviceName, _logger };
 
                 ConstructorInfo constructor = type.Type.GetConstructor(types);
                 var iObj = constructor.Invoke(param) as IDriver;

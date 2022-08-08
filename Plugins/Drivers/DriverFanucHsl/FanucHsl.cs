@@ -4,7 +4,6 @@ using System;
 using System.Text;
 using HslCommunication.CNC.Fanuc;
 using HslCommunication;
-using IoTGateway.Model;
 using Microsoft.Extensions.Logging;
 
 namespace DriverFanucHsl
@@ -16,7 +15,7 @@ namespace DriverFanucHsl
         private FanucSeries0i fanuc;
 
         public ILogger _logger { get; set; }
-        private readonly Device _device;
+        private readonly string _device;
         #region 配置参数
 
         [ConfigParameter("设备Id")]
@@ -36,7 +35,7 @@ namespace DriverFanucHsl
 
         #endregion
 
-        public FanucHsl(Device device, ILogger logger)
+        public FanucHsl(string device, ILogger logger)
         {
             // 授权示例 Authorization example
             if (!Authorization.SetAuthorizationCode("输入你的授权号"))
@@ -48,7 +47,7 @@ namespace DriverFanucHsl
             _logger = logger;
 
 
-            _logger.LogInformation($"Device:[{_device.DeviceName}],Create()");
+            _logger.LogInformation($"Device:[{_device}],Create()");
         }
 
         public bool IsConnected

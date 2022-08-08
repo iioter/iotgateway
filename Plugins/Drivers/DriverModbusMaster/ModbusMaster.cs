@@ -1,5 +1,4 @@
-﻿using IoTGateway.Model;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Modbus.Device;
 using Modbus.Serial;
 using PluginInterface;
@@ -23,7 +22,7 @@ namespace DriverModbusMaster
         private SerialPortAdapter? _adapter;
 
         public ILogger _logger { get; set; }
-        private readonly Device _device;
+        private readonly string _device;
         #region 配置参数
 
         [ConfigParameter("设备Id")]
@@ -67,12 +66,12 @@ namespace DriverModbusMaster
 
         #endregion
 
-        public ModbusMaster(Device device, ILogger logger)
+        public ModbusMaster(string device, ILogger logger)
         {
             _device = device;
             _logger = logger;
 
-            _logger.LogInformation($"Device:[{_device.DeviceName}],Create()");
+            _logger.LogInformation($"Device:[{_device}],Create()");
         }
 
         public bool IsConnected
@@ -102,7 +101,7 @@ namespace DriverModbusMaster
         {
             try
             {
-                _logger.LogInformation($"Device:[{_device.DeviceName}],Connect()");
+                _logger.LogInformation($"Device:[{_device}],Connect()");
                 switch (Master_TYPE)
                 {
                     case Master_TYPE.Tcp:
@@ -163,7 +162,7 @@ namespace DriverModbusMaster
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Device:[{_device.DeviceName}],Connect(),Error", ex);
+                _logger.LogError($"Device:[{_device}],Connect(),Error", ex);
                 return false;
             }
             return IsConnected;
@@ -173,7 +172,7 @@ namespace DriverModbusMaster
         {
             try
             {
-                _logger.LogInformation($"Device:[{_device.DeviceName}],Close()");
+                _logger.LogInformation($"Device:[{_device}],Close()");
                 _tcpClient?.Close();
                 _udpClient?.Close();
                 _serialPort?.Close();
@@ -181,7 +180,7 @@ namespace DriverModbusMaster
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Device:[{_device.DeviceName}],Close(),Error", ex);
+                _logger.LogError($"Device:[{_device}],Close(),Error", ex);
                 return false;
             }
         }
@@ -194,11 +193,11 @@ namespace DriverModbusMaster
                 _udpClient?.Dispose();
                 _serialPort?.Dispose();
                 _master?.Dispose();
-                _logger.LogInformation($"Device:[{_device.DeviceName}],Dispose()");
+                _logger.LogInformation($"Device:[{_device}],Dispose()");
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Device:[{_device.DeviceName}],Dispose(),Error", ex);
+                _logger.LogError($"Device:[{_device}],Dispose(),Error", ex);
             }
         }
 
@@ -220,7 +219,7 @@ namespace DriverModbusMaster
             {
                 ret.StatusType = VaribaleStatusTypeEnum.UnKnow;
                 ret.Message = ex.Message;
-                _logger.LogInformation($"Device:[{_device.DeviceName}],ReadHoldingRegisters(),Error", ex);
+                _logger.LogInformation($"Device:[{_device}],ReadHoldingRegisters(),Error", ex);
 
             }
             return ret;
@@ -245,7 +244,7 @@ namespace DriverModbusMaster
             {
                 ret.StatusType = VaribaleStatusTypeEnum.UnKnow;
                 ret.Message = ex.Message;
-                _logger.LogInformation($"Device:[{_device.DeviceName}],ReadInputRegisters(),Error", ex);
+                _logger.LogInformation($"Device:[{_device}],ReadInputRegisters(),Error", ex);
 
             }
             return ret;
@@ -282,7 +281,7 @@ namespace DriverModbusMaster
             {
                 ret.StatusType = VaribaleStatusTypeEnum.UnKnow;
                 ret.Message = ex.Message;
-                _logger.LogInformation($"Device:[{_device.DeviceName}],ReadCoil(),Error", ex);
+                _logger.LogInformation($"Device:[{_device}],ReadCoil(),Error", ex);
 
             }
             return ret;
@@ -318,7 +317,7 @@ namespace DriverModbusMaster
             {
                 ret.StatusType = VaribaleStatusTypeEnum.UnKnow;
                 ret.Message = ex.Message;
-                _logger.LogInformation($"Device:[{_device.DeviceName}],ReadInput(),Error", ex);
+                _logger.LogInformation($"Device:[{_device}],ReadInput(),Error", ex);
 
             }
             return ret;
@@ -387,7 +386,7 @@ namespace DriverModbusMaster
                 {
                     ret.StatusType = VaribaleStatusTypeEnum.Bad;
                     ret.Message = ex.Message;
-                    _logger.LogInformation($"Device:[{_device.DeviceName}],ReadRegistersBuffers(),Error", ex);
+                    _logger.LogInformation($"Device:[{_device}],ReadRegistersBuffers(),Error", ex);
                 }
 
             }
@@ -497,7 +496,7 @@ namespace DriverModbusMaster
                 ret.Message = ex.Message;
                 StartAddress = 0;
                 ReadCount = 0;
-                _logger.LogInformation($"Device:[{_device.DeviceName}],AnalyzeAddress(),Error", ex);
+                _logger.LogInformation($"Device:[{_device}],AnalyzeAddress(),Error", ex);
                 return ret;
             }
         }
@@ -555,7 +554,7 @@ namespace DriverModbusMaster
             catch (Exception ex)
             {
                 rpcResponse.Description = $"写入失败,[Method]:{method},[Ioarg]:{ioarg},[ex]:{ex}";
-                _logger.LogInformation($"Device:[{_device.DeviceName}],WriteAsync(),Error", ex);
+                _logger.LogInformation($"Device:[{_device}],WriteAsync(),Error", ex);
             }
             return rpcResponse;
         }
