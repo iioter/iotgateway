@@ -81,6 +81,7 @@
       "System.Formats.Asn1/6.0.0": {},
       "PluginInterface/1.0.0": {
         "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
           "Newtonsoft.Json": "13.0.1"
         },
         "runtime": {

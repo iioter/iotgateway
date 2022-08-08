@@ -26,6 +26,14 @@
           }
         }
       },
+      "Microsoft.Extensions.Logging.Abstractions/6.0.0": {
+        "runtime": {
+          "lib/net6.0/Microsoft.Extensions.Logging.Abstractions.dll": {
+            "assemblyVersion": "6.0.0.0",
+            "fileVersion": "6.0.21.52210"
+          }
+        }
+      },
       "Microsoft.NETCore.Platforms/3.0.0": {},
       "Microsoft.Win32.Registry/4.6.0": {
         "dependencies": {
@@ -126,6 +134,7 @@
       "System.Security.Principal.Windows/4.6.0": {},
       "PluginInterface/1.0.0": {
         "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "6.0.0",
           "Newtonsoft.Json": "13.0.1"
         },
         "runtime": {
@@ -146,6 +155,13 @@
       "sha512": "sha512-C9H2L6dkYE2zk3XPNhYIQgPzu+vfaDUHWao3xt4kR0/PxHO7LP94i2hnJqh+tmB/+k2wULKkdy+g1RbJEIxOvQ==",
       "path": "iotclient/1.0.28",
       "hashPath": "iotclient.1.0.28.nupkg.sha512"
+    },
+    "Microsoft.Extensions.Logging.Abstractions/6.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-/HggWBbTwy8TgebGSX5DBZ24ndhzi93sHUBDvP1IxbZD7FDokYzdAr6+vbWGjw2XAfR2EJ1sfKUotpjHnFWPxA==",
+      "path": "microsoft.extensions.logging.abstractions/6.0.0",
+      "hashPath": "microsoft.extensions.logging.abstractions.6.0.0.nupkg.sha512"
     },
     "Microsoft.NETCore.Platforms/3.0.0": {
       "type": "package",
