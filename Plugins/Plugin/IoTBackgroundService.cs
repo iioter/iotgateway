@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using IoTGateway.DataAccess;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using WalkingTec.Mvvm.Core;
 
@@ -33,6 +35,17 @@ namespace Plugin
                     DbType = DBTypeEnum.Memory;
                     break;
             }
+
+            if (DbType == DBTypeEnum.SQLite)
+            {
+                using var dc = new DataContext(connnectSetting, DbType);
+                if (dc.Database.GetPendingMigrations().Any())
+                {
+                    dc.Database.Migrate();
+                }
+            }
+
+
         }
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
