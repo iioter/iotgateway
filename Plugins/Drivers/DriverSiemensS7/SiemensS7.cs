@@ -1,6 +1,5 @@
 ﻿using PluginInterface;
 using S7.Net;
-using System;
 using System.Text;
 using Microsoft.Extensions.Logging;
 
@@ -12,38 +11,31 @@ namespace DriverSiemensS7
     [DriverSupported("300")]
     [DriverSupported("200")]
     [DriverSupported("200Smart")]
-    [DriverInfoAttribute("SiemensS7", "V1.0.0", "Copyright IoTGateway© 2021-12-19")]
+    [DriverInfo("SiemensS7", "V1.0.0", "Copyright IoTGateway© 2021-12-19")]
     public class SiemensS7 : IDriver
     {
-        private Plc plc = null;
+        private Plc? plc;
 
         public ILogger _logger { get; set; }
         private readonly string _device;
+
         #region 配置参数
 
-        [ConfigParameter("设备Id")]
-        public Guid DeviceId { get; set; }
+        [ConfigParameter("设备Id")] public string DeviceId { get; set; }
 
-        [ConfigParameter("PLC类型")]
-        public CpuType CpuType { get; set; } = CpuType.S71200;
+        [ConfigParameter("PLC类型")] public CpuType CpuType { get; set; } = CpuType.S71200;
 
-        [ConfigParameter("IP地址")]
-        public string IpAddress { get; set; } = "127.0.0.1";
+        [ConfigParameter("IP地址")] public string IpAddress { get; set; } = "127.0.0.1";
 
-        [ConfigParameter("端口号")]
-        public int Port { get; set; } = 102;
+        [ConfigParameter("端口号")] public int Port { get; set; } = 102;
 
-        [ConfigParameter("Rack")]
-        public short Rack { get; set; } = 0;
+        [ConfigParameter("Rack")] public short Rack { get; set; } = 0;
 
-        [ConfigParameter("Slot")]
-        public short Slot { get; set; } = 0;
+        [ConfigParameter("Slot")] public short Slot { get; set; } = 0;
 
-        [ConfigParameter("超时时间ms")]
-        public int Timeout { get; set; } = 3000;
+        [ConfigParameter("超时时间ms")] public int Timeout { get; set; } = 3000;
 
-        [ConfigParameter("最小通讯周期ms")]
-        public uint MinPeriod { get; set; } = 3000;
+        [ConfigParameter("最小通讯周期ms")] public uint MinPeriod { get; set; } = 3000;
 
         #endregion
 
@@ -55,13 +47,9 @@ namespace DriverSiemensS7
             _logger.LogInformation($"Device:[{_device}],Create()");
         }
 
-
         public bool IsConnected
         {
-            get
-            {
-                return plc != null && plc.IsConnected;
-            }
+            get { return plc != null && plc.IsConnected; }
         }
 
         public bool Connect()
@@ -77,6 +65,7 @@ namespace DriverSiemensS7
             {
                 return false;
             }
+
             return IsConnected;
         }
 
@@ -89,7 +78,6 @@ namespace DriverSiemensS7
             }
             catch (Exception)
             {
-
                 return false;
             }
         }
@@ -102,7 +90,6 @@ namespace DriverSiemensS7
             }
             catch (Exception)
             {
-
             }
         }
 
@@ -129,7 +116,6 @@ namespace DriverSiemensS7
                 }
                 catch (Exception ex)
                 {
-
                     ret.StatusType = VaribaleStatusTypeEnum.Bad;
                     ret.Message = $"读取失败,{ex.Message}";
                 }
@@ -139,6 +125,7 @@ namespace DriverSiemensS7
                 ret.StatusType = VaribaleStatusTypeEnum.Bad;
                 ret.Message = "连接失败";
             }
+
             return ret;
         }
 
@@ -162,7 +149,6 @@ namespace DriverSiemensS7
                 }
                 catch (Exception ex)
                 {
-
                     ret.StatusType = VaribaleStatusTypeEnum.Bad;
                     ret.Message = $"读取失败,{ex.Message}";
                 }
@@ -172,6 +158,7 @@ namespace DriverSiemensS7
                 ret.StatusType = VaribaleStatusTypeEnum.Bad;
                 ret.Message = "连接失败";
             }
+
             return ret;
         }
 
@@ -181,36 +168,35 @@ namespace DriverSiemensS7
             var newBuffers = new ushort[buffers.Length];
             if (dataType.ToString().Contains("32") || dataType.ToString().Contains("Float"))
             {
-                var A = buffers[0] & 0xff00;//A
-                var B = buffers[0] & 0x00ff;//B
-                var C = buffers[1] & 0xff00;//C
-                var D = buffers[1] & 0x00ff;//D
+                var a = buffers[0] & 0xff00; //A
+                var b = buffers[0] & 0x00ff; //B
+                var c = buffers[1] & 0xff00; //C
+                var d = buffers[1] & 0x00ff; //D
                 if (dataType.ToString().Contains("_1"))
                 {
-                    newBuffers[0] = (ushort)(A + B);//AB
-                    newBuffers[1] = (ushort)(C + D);//CD
+                    newBuffers[0] = (ushort)(a + b); //AB
+                    newBuffers[1] = (ushort)(c + d); //CD
                 }
                 else if (dataType.ToString().Contains("_2"))
                 {
-                    newBuffers[0] = (ushort)((A >> 8) + (B << 8));//BA
-                    newBuffers[1] = (ushort)((C >> 8) + (D << 8));//DC
+                    newBuffers[0] = (ushort)((a >> 8) + (b << 8)); //BA
+                    newBuffers[1] = (ushort)((c >> 8) + (d << 8)); //DC
                 }
                 else if (dataType.ToString().Contains("_3"))
                 {
-                    newBuffers[0] = (ushort)((C >> 8) + (D << 8));//DC
-                    newBuffers[1] = (ushort)((A >> 8) + (B << 8));//BA
+                    newBuffers[0] = (ushort)((c >> 8) + (d << 8)); //DC
+                    newBuffers[1] = (ushort)((a >> 8) + (b << 8)); //BA
                 }
                 else
                 {
-                    newBuffers[0] = (ushort)(C + D);//CD
-                    newBuffers[1] = (ushort)(A + B);//AB
+                    newBuffers[0] = (ushort)(c + d); //CD
+                    newBuffers[1] = (ushort)(a + b); //AB
                 }
             }
             else if (dataType.ToString().Contains("64") || dataType.ToString().Contains("Double"))
             {
                 if (dataType.ToString().Contains("_1"))
                 {
-
                 }
                 else
                 {
@@ -231,10 +217,11 @@ namespace DriverSiemensS7
                 else
                     newBuffers[0] = buffers[0];
             }
+
             return newBuffers;
         }
 
-        public async Task<RpcResponse> WriteAsync(string RequestId, string Method, DriverAddressIoArgModel Ioarg)
+        public async Task<RpcResponse> WriteAsync(string requestId, string method, DriverAddressIoArgModel ioarg)
         {
             RpcResponse rpcResponse = new() { IsSuccess = false };
             try
@@ -243,74 +230,77 @@ namespace DriverSiemensS7
                     rpcResponse.Description = "设备连接已断开";
                 else
                 {
-                    object toWrite = null;
-                    switch (Ioarg.ValueType)
+                    object? toWrite = null;
+                    switch (ioarg.ValueType)
                     {
                         case DataTypeEnum.Bit:
                         case DataTypeEnum.Bool:
-                            toWrite = Ioarg.Value.ToString().ToLower() == "true" || Ioarg.Value.ToString().ToLower() == "1";
+                            toWrite = ioarg.Value.ToString()?.ToLower() == "true" ||
+                                      ioarg.Value.ToString()?.ToLower() == "1";
                             break;
                         case DataTypeEnum.UByte:
-                            toWrite = byte.Parse(Ioarg.Value.ToString());
+                            toWrite = byte.Parse(ioarg.Value.ToString());
                             break;
                         case DataTypeEnum.Byte:
-                            toWrite = sbyte.Parse(Ioarg.Value.ToString());
+                            toWrite = sbyte.Parse(ioarg.Value.ToString());
                             break;
                         case DataTypeEnum.Uint16:
-                            toWrite = ushort.Parse(Ioarg.Value.ToString());
+                            toWrite = ushort.Parse(ioarg.Value.ToString());
                             break;
                         case DataTypeEnum.Int16:
-                            toWrite = short.Parse(Ioarg.Value.ToString());
+                            toWrite = short.Parse(ioarg.Value.ToString());
                             break;
                         case DataTypeEnum.Uint32:
-                            toWrite = uint.Parse(Ioarg.Value.ToString());
+                            toWrite = uint.Parse(ioarg.Value.ToString());
                             break;
                         case DataTypeEnum.Int32:
-                            toWrite = int.Parse(Ioarg.Value.ToString());
+                            toWrite = int.Parse(ioarg.Value.ToString());
                             break;
                         case DataTypeEnum.Float:
-                            toWrite = float.Parse(Ioarg.Value.ToString());
+                            toWrite = float.Parse(ioarg.Value.ToString());
                             break;
                         case DataTypeEnum.AsciiString:
-                            toWrite = Encoding.ASCII.GetBytes(Ioarg.Value.ToString());
+                            toWrite = Encoding.ASCII.GetBytes(ioarg.Value.ToString());
                             break;
                         default:
                             rpcResponse.Description = $"类型{DataTypeEnum.Float}不支持写入";
                             break;
                     }
+
                     if (toWrite == null)
                         return rpcResponse;
 
                     //通用方法
-                    if (Method == nameof(Read))
+                    if (method == nameof(Read))
                     {
-                        plc.Write(Ioarg.Address, toWrite);
+                        plc?.Write(ioarg.Address, toWrite);
 
                         rpcResponse.IsSuccess = true;
                         return rpcResponse;
                     }
                     //字符串
-                    else if (Method == nameof(ReadString))
+                    else if (method == nameof(ReadString))
                     {
-                        int db = int.Parse(Ioarg.Address.Trim().Split(',')[0]);
-                        int startAdr = int.Parse(Ioarg.Address.Trim().Split(',')[1]);
-                        int count = int.Parse(Ioarg.Address.Trim().Split(',')[2]);
+                        int db = int.Parse(ioarg.Address.Trim().Split(',')[0]);
+                        int startAdr = int.Parse(ioarg.Address.Trim().Split(',')[1]);
+                        int count = int.Parse(ioarg.Address.Trim().Split(',')[2]);
                         //防止写入到其他地址 进行截断
                         if (((byte[])toWrite).Length > count)
                             toWrite = ((byte[])toWrite).Take(count);
-                        plc.Write(DataType.DataBlock, db, startAdr, toWrite);
+                        plc?.Write(DataType.DataBlock, db, startAdr, toWrite);
 
                         rpcResponse.IsSuccess = true;
                         return rpcResponse;
                     }
                     else
-                        rpcResponse.Description = $"不支持写入:{Method}";
+                        rpcResponse.Description = $"不支持写入:{method}";
                 }
             }
             catch (Exception ex)
             {
-                rpcResponse.Description = $"写入失败,[Method]:{Method},[Ioarg]:{Ioarg},[ex]:{ex}";
+                rpcResponse.Description = $"写入失败,[method]:{method},[ioarg]:{ioarg},[ex]:{ex}";
             }
+
             return rpcResponse;
         }
     }
