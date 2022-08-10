@@ -4,25 +4,32 @@ using PluginInterface;
 namespace DriverFaunc
 {
     [DriverSupported("Fanuc-0i")]
-    [DriverInfoAttribute("Fanuc-0i", "V1.0.0", "Copyright IoTGateway© 2022-05-25")]
+    [DriverInfo("Fanuc-0i", "V1.0.0", "Copyright IoTGateway© 2022-05-25")]
     public class Fanuc : IDriver
     {
-        [ConfigParameter("设备Id")]
-        public Guid DeviceId { get; set; } = Guid.NewGuid();
-        [ConfigParameter("超时时间ms")]
-        public int Timeout { get; set; } = 3000;
-        [ConfigParameter("最小通讯周期ms")]
-        public uint MinPeriod { get; set; } = 3000;
-        [ConfigParameter("设备Ip")]
-        public string DeviceIp { get; set; } = "127.0.0.1";
-        [ConfigParameter("设备Port")]
-        public int DevicePort { get; set; } = 8193;
-
         private ushort _hndl;
         private int _result = -1;
 
         public ILogger _logger { get; set; }
         private readonly string _device;
+
+        #region 配置参数
+
+        [ConfigParameter("设备Id")] public string DeviceId { get; set; }
+        [ConfigParameter("超时时间ms")] public int Timeout { get; set; } = 3000;
+        [ConfigParameter("最小通讯周期ms")] public uint MinPeriod { get; set; } = 3000;
+        [ConfigParameter("设备Ip")] public string DeviceIp { get; set; } = "127.0.0.1";
+        [ConfigParameter("设备Port")] public int DevicePort { get; set; } = 8193;
+
+        #endregion
+
+        public Fanuc(string device, ILogger logger)
+        {
+            _device = device;
+            _logger = logger;
+
+            _logger.LogInformation($"Device:[{device}],Create()");
+        }
 
         public bool IsConnected
         {
@@ -41,14 +48,6 @@ namespace DriverFaunc
                     return false;
                 }
             }
-        }
-
-        public Fanuc(string device, ILogger logger)
-        {
-            _device = device;
-            _logger = logger;
-
-            _logger.LogInformation($"Device:[{device}],Create()");
         }
 
         public bool Close()
@@ -71,7 +70,8 @@ namespace DriverFaunc
             try
             {
                 _result = -1;
-                _result = FanucFocas.cnc_allclibhndl3(DeviceIp, Convert.ToUInt16(DevicePort), Convert.ToInt32(Timeout), out _hndl);
+                _result = FanucFocas.cnc_allclibhndl3(DeviceIp, Convert.ToUInt16(DevicePort), Convert.ToInt32(Timeout),
+                    out _hndl);
 
                 if (_result == FanucFocas.EW_OK)
                     return true;
@@ -85,26 +85,11 @@ namespace DriverFaunc
 
         public void Dispose()
         {
-
         }
-
-        #region 无用方法
-        public DriverReturnValueModel Read(DriverAddressIoArgModel Ioarg)
-        {
-            var ret = new DriverReturnValueModel { StatusType = VaribaleStatusTypeEnum.Good };
-            return ret;
-        }
-
-        public Task<RpcResponse> WriteAsync(string RequestId, string Method, DriverAddressIoArgModel Ioarg)
-        {
-            RpcResponse rpcResponse = new() { IsSuccess = false, Description = "设备驱动内未实现写入功能" };
-            return Task.FromResult(rpcResponse);
-        }
-        #endregion
 
         //设备类型
         [Method("Fanuc", description: "读Fanuc设备类型")]
-        public DriverReturnValueModel ReadDeviceType(DriverAddressIoArgModel Ioarg)
+        public DriverReturnValueModel ReadDeviceType(DriverAddressIoArgModel ioarg)
         {
             var ret = new DriverReturnValueModel { StatusType = VaribaleStatusTypeEnum.Good };
 
@@ -132,11 +117,12 @@ namespace DriverFaunc
                 ret.StatusType = VaribaleStatusTypeEnum.Bad;
                 ret.Message = "连接失败";
             }
+
             return ret;
         }
 
         [Method("Fanuc", description: "读Fanuc设备运行状态")]
-        public DriverReturnValueModel ReadDeviceRunStatus(DriverAddressIoArgModel Ioarg)
+        public DriverReturnValueModel ReadDeviceRunStatus(DriverAddressIoArgModel ioarg)
         {
             var ret = new DriverReturnValueModel { StatusType = VaribaleStatusTypeEnum.Good };
 
@@ -201,8 +187,6 @@ namespace DriverFaunc
                                     default:
                                         break;
                                 }
-
-
                             }
                             else if ((num == "16") || (num == "18" && type == "W"))
                             {
@@ -244,7 +228,8 @@ namespace DriverFaunc
                                         strRet = "STaRT";
                                         break;
                                     case 4:
-                                        strRet = "MSTR(during retraction and re-positioning of tool retraction and recovery, and operation of JOG MDI)";
+                                        strRet =
+                                            "MSTR(during retraction and re-positioning of tool retraction and recovery, and operation of JOG MDI)";
                                         break;
                                     default:
                                         break;
@@ -267,11 +252,13 @@ namespace DriverFaunc
                 ret.StatusType = VaribaleStatusTypeEnum.Bad;
                 ret.Message = "连接失败";
             }
+
             return ret;
         }
+
         //详细运行状态
         [Method("Fanuc", description: "读Fanuc设备详细运行状态")]
-        public DriverReturnValueModel ReadDeviceDetailRunStatus(DriverAddressIoArgModel Ioarg)
+        public DriverReturnValueModel ReadDeviceDetailRunStatus(DriverAddressIoArgModel ioarg)
         {
             var ret = new DriverReturnValueModel { StatusType = VaribaleStatusTypeEnum.Good };
 
@@ -336,8 +323,6 @@ namespace DriverFaunc
                                     default:
                                         break;
                                 }
-
-
                             }
                             else if ((num == "16") || (num == "18" && type == "W"))
                             {
@@ -359,6 +344,7 @@ namespace DriverFaunc
                                         strRet = "B-STOP";
                                         break;
                                     default:
+                                        strRet = runRet.ToString();
                                         break;
                                 }
                             }
@@ -379,9 +365,11 @@ namespace DriverFaunc
                                         strRet = "STaRT";
                                         break;
                                     case 4:
-                                        strRet = "MSTR(during retraction and re-positioning of tool retraction and recovery, and operation of JOG MDI)";
+                                        strRet =
+                                            "MSTR(during retraction and re-positioning of tool retraction and recovery, and operation of JOG MDI)";
                                         break;
                                     default:
+                                        strRet = runRet.ToString();
                                         break;
                                 }
                             }
@@ -402,12 +390,14 @@ namespace DriverFaunc
                 ret.StatusType = VaribaleStatusTypeEnum.Bad;
                 ret.Message = "连接失败";
             }
+
             return ret;
         }
+
         //操作模式      cnc_statinfo    manual              
         //存在问题，未找到manual
         [Method("Fanuc", description: "读Fanuc设备操作模式")]
-        public DriverReturnValueModel ReadDeviceModel(DriverAddressIoArgModel Ioarg)
+        public DriverReturnValueModel ReadDeviceModel(DriverAddressIoArgModel ioarg)
         {
             var ret = new DriverReturnValueModel { StatusType = VaribaleStatusTypeEnum.Good };
 
@@ -437,11 +427,13 @@ namespace DriverFaunc
                 ret.StatusType = VaribaleStatusTypeEnum.Bad;
                 ret.Message = "连接失败";
             }
+
             return ret;
         }
+
         //主轴转速      cnc_acts
         [Method("Fanuc", description: "读Fanuc设备实际主轴转速")]
-        public DriverReturnValueModel ReadDeviceActSpindleSpeed(DriverAddressIoArgModel Ioarg)
+        public DriverReturnValueModel ReadDeviceActSpindleSpeed(DriverAddressIoArgModel ioarg)
         {
             var ret = new DriverReturnValueModel { StatusType = VaribaleStatusTypeEnum.Good };
 
@@ -468,11 +460,13 @@ namespace DriverFaunc
                 ret.StatusType = VaribaleStatusTypeEnum.Bad;
                 ret.Message = "连接失败";
             }
+
             return ret;
         }
+
         //供给速度      cnc_actf
         [Method("Fanuc", description: "读Fanuc设备实际进给速度")]
-        public DriverReturnValueModel ReadDeviceActFeedRate(DriverAddressIoArgModel Ioarg)
+        public DriverReturnValueModel ReadDeviceActFeedRate(DriverAddressIoArgModel ioarg)
         {
             var ret = new DriverReturnValueModel { StatusType = VaribaleStatusTypeEnum.Good };
 
@@ -499,11 +493,13 @@ namespace DriverFaunc
                 ret.StatusType = VaribaleStatusTypeEnum.Bad;
                 ret.Message = "连接失败";
             }
+
             return ret;
         }
+
         //主轴倍率      cnc_rdopnlsgnl
         [Method("Fanuc", description: "读Fanuc设备主轴倍率")]
-        public DriverReturnValueModel ReadDeviceSpindleOvr(DriverAddressIoArgModel Ioarg)
+        public DriverReturnValueModel ReadDeviceSpindleOvr(DriverAddressIoArgModel ioarg)
         {
             var ret = new DriverReturnValueModel { StatusType = VaribaleStatusTypeEnum.Good };
             if (IsConnected)
@@ -528,11 +524,13 @@ namespace DriverFaunc
                 ret.StatusType = VaribaleStatusTypeEnum.Bad;
                 ret.Message = "连接失败";
             }
+
             return ret;
         }
+
         //进给倍率      cnc_rdopnlsgnl
         [Method("Fanuc", description: "读Fanuc设备进给倍率")]
-        public DriverReturnValueModel ReadDeviceFeedOvr(DriverAddressIoArgModel Ioarg)
+        public DriverReturnValueModel ReadDeviceFeedOvr(DriverAddressIoArgModel ioarg)
         {
             var ret = new DriverReturnValueModel { StatusType = VaribaleStatusTypeEnum.Good };
             if (IsConnected)
@@ -557,11 +555,13 @@ namespace DriverFaunc
                 ret.StatusType = VaribaleStatusTypeEnum.Bad;
                 ret.Message = "连接失败";
             }
+
             return ret;
         }
+
         //设备异常代码：报警号        cnc_rdalmmsg2
         [Method("Fanuc", description: "读Fanuc设备报警号")]
-        public DriverReturnValueModel ReadDeviceAlarmNum(DriverAddressIoArgModel Ioarg)
+        public DriverReturnValueModel ReadDeviceAlarmNum(DriverAddressIoArgModel ioarg)
         {
             var ret = new DriverReturnValueModel { StatusType = VaribaleStatusTypeEnum.Good };
             if (IsConnected)
@@ -587,11 +587,13 @@ namespace DriverFaunc
                 ret.StatusType = VaribaleStatusTypeEnum.Bad;
                 ret.Message = "连接失败";
             }
+
             return ret;
         }
+
         //设备异常信息：报警文本
         [Method("Fanuc", description: "读Fanuc设备报警文本")]
-        public DriverReturnValueModel ReadDeviceAlarmText(DriverAddressIoArgModel Ioarg)
+        public DriverReturnValueModel ReadDeviceAlarmText(DriverAddressIoArgModel ioarg)
         {
             var ret = new DriverReturnValueModel { StatusType = VaribaleStatusTypeEnum.Good };
             if (IsConnected)
@@ -617,11 +619,13 @@ namespace DriverFaunc
                 ret.StatusType = VaribaleStatusTypeEnum.Bad;
                 ret.Message = "连接失败";
             }
+
             return ret;
         }
+
         //异常类型
         [Method("Fanuc", description: "读Fanuc设备报警类型")]
-        public DriverReturnValueModel ReadDeviceAlarmType(DriverAddressIoArgModel Ioarg)
+        public DriverReturnValueModel ReadDeviceAlarmType(DriverAddressIoArgModel ioarg)
         {
             var ret = new DriverReturnValueModel { StatusType = VaribaleStatusTypeEnum.Good };
             if (IsConnected)
@@ -702,6 +706,7 @@ namespace DriverFaunc
                                 break;
 
                             default:
+                                alarmStrType = a.msg1.type.ToString();
                                 break;
                         }
 
@@ -719,11 +724,13 @@ namespace DriverFaunc
                 ret.StatusType = VaribaleStatusTypeEnum.Bad;
                 ret.Message = "连接失败";
             }
+
             return ret;
         }
+
         //执行程序名     cnc_rdprgnum
         [Method("Fanuc", description: "读Fanuc设备执行程序号")]
-        public DriverReturnValueModel ReadDeviceExeProgamNumber(DriverAddressIoArgModel Ioarg)
+        public DriverReturnValueModel ReadDeviceExeProgamNumber(DriverAddressIoArgModel ioarg)
         {
             var ret = new DriverReturnValueModel { StatusType = VaribaleStatusTypeEnum.Good };
             if (IsConnected)
@@ -748,11 +755,13 @@ namespace DriverFaunc
                 ret.StatusType = VaribaleStatusTypeEnum.Bad;
                 ret.Message = "连接失败";
             }
+
             return ret;
         }
+
         //工件计数
         [Method("Fanuc", description: "读Fanuc设备计数器值")]
-        public DriverReturnValueModel ReadDeviceCountVaule(DriverAddressIoArgModel Ioarg)
+        public DriverReturnValueModel ReadDeviceCountVaule(DriverAddressIoArgModel ioarg)
         {
             var ret = new DriverReturnValueModel { StatusType = VaribaleStatusTypeEnum.Good };
             if (IsConnected)
@@ -777,11 +786,13 @@ namespace DriverFaunc
                 ret.StatusType = VaribaleStatusTypeEnum.Bad;
                 ret.Message = "连接失败";
             }
+
             return ret;
         }
+
         //刀具号
         [Method("Fanuc", description: "读Fanuc设备刀具号")]
-        public DriverReturnValueModel ReadDeviceToolNumber(DriverAddressIoArgModel Ioarg)
+        public DriverReturnValueModel ReadDeviceToolNumber(DriverAddressIoArgModel ioarg)
         {
             var ret = new DriverReturnValueModel { StatusType = VaribaleStatusTypeEnum.Good };
             if (IsConnected)
@@ -806,11 +817,13 @@ namespace DriverFaunc
                 ret.StatusType = VaribaleStatusTypeEnum.Bad;
                 ret.Message = "连接失败";
             }
+
             return ret;
         }
+
         //上电总时间     cnc_rdtimer
         [Method("Fanuc", description: "读Fanuc设备上电时间")]
-        public DriverReturnValueModel ReadDevicePowerTime(DriverAddressIoArgModel Ioarg)
+        public DriverReturnValueModel ReadDevicePowerTime(DriverAddressIoArgModel ioarg)
         {
             var ret = new DriverReturnValueModel { StatusType = VaribaleStatusTypeEnum.Good };
             if (IsConnected)
@@ -835,11 +848,13 @@ namespace DriverFaunc
                 ret.StatusType = VaribaleStatusTypeEnum.Bad;
                 ret.Message = "连接失败";
             }
+
             return ret;
         }
+
         //运行总时间
         [Method("Fanuc", description: "读Fanuc设备运行时间")]
-        public DriverReturnValueModel ReadDeviceOperateTime(DriverAddressIoArgModel Ioarg)
+        public DriverReturnValueModel ReadDeviceOperateTime(DriverAddressIoArgModel ioarg)
         {
             var ret = new DriverReturnValueModel { StatusType = VaribaleStatusTypeEnum.Good };
             if (IsConnected)
@@ -864,11 +879,13 @@ namespace DriverFaunc
                 ret.StatusType = VaribaleStatusTypeEnum.Bad;
                 ret.Message = "连接失败";
             }
+
             return ret;
         }
+
         //切削总时间
         [Method("Fanuc", description: "读Fanuc设备切削时间")]
-        public DriverReturnValueModel ReadDeviceCutTime(DriverAddressIoArgModel Ioarg)
+        public DriverReturnValueModel ReadDeviceCutTime(DriverAddressIoArgModel ioarg)
         {
             var ret = new DriverReturnValueModel { StatusType = VaribaleStatusTypeEnum.Good };
             if (IsConnected)
@@ -893,11 +910,13 @@ namespace DriverFaunc
                 ret.StatusType = VaribaleStatusTypeEnum.Bad;
                 ret.Message = "连接失败";
             }
+
             return ret;
         }
+
         //循环时间
         [Method("Fanuc", description: "读Fanuc设备循环时间")]
-        public DriverReturnValueModel ReadDeviceCycleTime(DriverAddressIoArgModel Ioarg)
+        public DriverReturnValueModel ReadDeviceCycleTime(DriverAddressIoArgModel ioarg)
         {
             var ret = new DriverReturnValueModel { StatusType = VaribaleStatusTypeEnum.Good };
             if (IsConnected)
@@ -922,11 +941,13 @@ namespace DriverFaunc
                 ret.StatusType = VaribaleStatusTypeEnum.Bad;
                 ret.Message = "连接失败";
             }
+
             return ret;
         }
+
         //主轴负载      cnc_rdspmeter
         [Method("Fanuc", description: "读Fanuc设备主轴负载")]
-        public DriverReturnValueModel ReadDeviceSpindle(DriverAddressIoArgModel Ioarg)
+        public DriverReturnValueModel ReadDeviceSpindle(DriverAddressIoArgModel ioarg)
         {
             var ret = new DriverReturnValueModel { StatusType = VaribaleStatusTypeEnum.Good };
             if (IsConnected)
@@ -952,8 +973,24 @@ namespace DriverFaunc
                 ret.StatusType = VaribaleStatusTypeEnum.Bad;
                 ret.Message = "连接失败";
             }
+
             return ret;
         }
 
+        #region 无用方法
+
+        public DriverReturnValueModel Read(DriverAddressIoArgModel ioarg)
+        {
+            var ret = new DriverReturnValueModel { StatusType = VaribaleStatusTypeEnum.Good };
+            return ret;
+        }
+
+        public Task<RpcResponse> WriteAsync(string requestId, string method, DriverAddressIoArgModel ioarg)
+        {
+            RpcResponse rpcResponse = new() { IsSuccess = false, Description = "设备驱动内未实现写入功能" };
+            return Task.FromResult(rpcResponse);
+        }
+
+        #endregion
     }
 }
