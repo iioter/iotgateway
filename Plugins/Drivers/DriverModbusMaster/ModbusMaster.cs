@@ -12,7 +12,7 @@ namespace DriverModbusMaster
     [DriverSupported("ModbusUDP")]
     [DriverSupported("ModbusRtu")]
     [DriverSupported("ModbusAscii")]
-    [DriverInfoAttribute("ModbusMaster", "V1.1.0", "Copyright IoTGateway© 2022-8-6")]
+    [DriverInfo("ModbusMaster", "V1.1.0", "Copyright IoTGateway© 2022-8-6")]
     public class ModbusMaster : IDriver
     {
         private TcpClient? _tcpClient;
@@ -23,46 +23,34 @@ namespace DriverModbusMaster
 
         public ILogger _logger { get; set; }
         private readonly string _device;
+
         #region 配置参数
 
-        [ConfigParameter("设备Id")]
-        public Guid DeviceId { get; set; }
+        [ConfigParameter("设备Id")] public string DeviceId { get; set; }
 
-        [ConfigParameter("PLC类型")]
-        public PLC_TYPE PlcType { get; set; } = PLC_TYPE.S71200;
+        [ConfigParameter("PLC类型")] public PlcType PlcType { get; set; } = PlcType.S71200;
 
-        [ConfigParameter("主站类型")]
-        public Master_TYPE Master_TYPE { get; set; } = Master_TYPE.Tcp;
+        [ConfigParameter("主站类型")] public MasterType MasterType { get; set; } = MasterType.Tcp;
 
-        [ConfigParameter("IP地址")]
-        public string IpAddress { get; set; } = "127.0.0.1";
+        [ConfigParameter("IP地址")] public string IpAddress { get; set; } = "127.0.0.1";
 
-        [ConfigParameter("端口号")]
-        public int Port { get; set; } = 502;
+        [ConfigParameter("端口号")] public int Port { get; set; } = 502;
 
-        [ConfigParameter("串口名")]
-        public string PortName { get; set; } = "COM1";
+        [ConfigParameter("串口名")] public string PortName { get; set; } = "COM1";
 
-        [ConfigParameter("波特率")]
-        public int BaudRate { get; set; } = 9600;
+        [ConfigParameter("波特率")] public int BaudRate { get; set; } = 9600;
 
-        [ConfigParameter("数据位")]
-        public int DataBits { get; set; } = 8;
+        [ConfigParameter("数据位")] public int DataBits { get; set; } = 8;
 
-        [ConfigParameter("校验位")]
-        public Parity Parity { get; set; } = Parity.None;
+        [ConfigParameter("校验位")] public Parity Parity { get; set; } = Parity.None;
 
-        [ConfigParameter("停止位")]
-        public StopBits StopBits { get; set; } = StopBits.One;
+        [ConfigParameter("停止位")] public StopBits StopBits { get; set; } = StopBits.One;
 
-        [ConfigParameter("从站号")]
-        public byte SlaveAddress { get; set; } = 1;
+        [ConfigParameter("从站号")] public byte SlaveAddress { get; set; } = 1;
 
-        [ConfigParameter("超时时间ms")]
-        public int Timeout { get; set; } = 3000;
+        [ConfigParameter("超时时间ms")] public int Timeout { get; set; } = 3000;
 
-        [ConfigParameter("最小通讯周期ms")]
-        public uint MinPeriod { get; set; } = 3000;
+        [ConfigParameter("最小通讯周期ms")] public uint MinPeriod { get; set; } = 3000;
 
         #endregion
 
@@ -78,18 +66,18 @@ namespace DriverModbusMaster
         {
             get
             {
-                switch (Master_TYPE)
+                switch (MasterType)
                 {
-                    case Master_TYPE.Tcp:
-                    case Master_TYPE.RtuOnTcp:
-                    case Master_TYPE.AsciiOnTcp:
+                    case MasterType.Tcp:
+                    case MasterType.RtuOnTcp:
+                    case MasterType.AsciiOnTcp:
                         return _tcpClient != null && _master != null && _tcpClient.Connected;
-                    case Master_TYPE.Udp:
-                    case Master_TYPE.RtuOnUdp:
-                    case Master_TYPE.AsciiOnUdp:
+                    case MasterType.Udp:
+                    case MasterType.RtuOnUdp:
+                    case MasterType.AsciiOnUdp:
                         return _udpClient != null && _master != null && _udpClient.Client.Connected;
-                    case Master_TYPE.Rtu:
-                    case Master_TYPE.Ascii:
+                    case MasterType.Rtu:
+                    case MasterType.Ascii:
                         return _serialPort != null && _master != null && _serialPort.IsOpen;
                     default:
                         return false;
@@ -102,21 +90,21 @@ namespace DriverModbusMaster
             try
             {
                 _logger.LogInformation($"Device:[{_device}],Connect()");
-                switch (Master_TYPE)
+                switch (MasterType)
                 {
-                    case Master_TYPE.Tcp:
+                    case MasterType.Tcp:
                         _tcpClient = new TcpClient(IpAddress, Port);
                         _tcpClient.ReceiveTimeout = Timeout;
                         _tcpClient.SendTimeout = Timeout;
                         _master = ModbusIpMaster.CreateIp(_tcpClient);
                         break;
-                    case Master_TYPE.Udp:
+                    case MasterType.Udp:
                         _udpClient = new UdpClient(IpAddress, Port);
                         _udpClient.Client.ReceiveTimeout = Timeout;
                         _udpClient.Client.SendTimeout = Timeout;
                         _master = ModbusIpMaster.CreateIp(_udpClient);
                         break;
-                    case Master_TYPE.Rtu:
+                    case MasterType.Rtu:
                         _serialPort = new SerialPort(PortName, BaudRate, Parity, DataBits, StopBits);
                         _serialPort.ReadTimeout = Timeout;
                         _serialPort.WriteTimeout = Timeout;
@@ -124,19 +112,19 @@ namespace DriverModbusMaster
                         _adapter = new SerialPortAdapter(_serialPort);
                         _master = ModbusSerialMaster.CreateRtu(_adapter);
                         break;
-                    case Master_TYPE.RtuOnTcp:
+                    case MasterType.RtuOnTcp:
                         _tcpClient = new TcpClient(IpAddress, Port);
                         _tcpClient.ReceiveTimeout = Timeout;
                         _tcpClient.SendTimeout = Timeout;
                         _master = ModbusSerialMaster.CreateRtu(_tcpClient);
                         break;
-                    case Master_TYPE.RtuOnUdp:
+                    case MasterType.RtuOnUdp:
                         _udpClient = new UdpClient(IpAddress, Port);
                         _udpClient.Client.ReceiveTimeout = Timeout;
                         _udpClient.Client.SendTimeout = Timeout;
                         _master = ModbusSerialMaster.CreateRtu(_udpClient);
                         break;
-                    case Master_TYPE.Ascii:
+                    case MasterType.Ascii:
                         _serialPort = new SerialPort(PortName, BaudRate, Parity, DataBits, StopBits);
                         _serialPort.ReadTimeout = Timeout;
                         _serialPort.WriteTimeout = Timeout;
@@ -144,19 +132,20 @@ namespace DriverModbusMaster
                         _adapter = new SerialPortAdapter(_serialPort);
                         _master = ModbusSerialMaster.CreateAscii(_adapter);
                         break;
-                    case Master_TYPE.AsciiOnTcp:
+                    case MasterType.AsciiOnTcp:
                         _tcpClient = new TcpClient(IpAddress, Port);
                         _tcpClient.ReceiveTimeout = Timeout;
                         _tcpClient.SendTimeout = Timeout;
                         _master = ModbusSerialMaster.CreateAscii(_tcpClient);
                         break;
-                    case Master_TYPE.AsciiOnUdp:
+                    case MasterType.AsciiOnUdp:
                         _udpClient = new UdpClient(IpAddress, Port);
                         _udpClient.Client.ReceiveTimeout = Timeout;
                         _udpClient.Client.SendTimeout = Timeout;
                         _master = ModbusSerialMaster.CreateAscii(_udpClient);
                         break;
                 }
+
                 _master.Transport.ReadTimeout = Timeout;
                 _master.Transport.WriteTimeout = Timeout;
             }
@@ -165,6 +154,7 @@ namespace DriverModbusMaster
                 _logger.LogError($"Device:[{_device}],Connect(),Error", ex);
                 return false;
             }
+
             return IsConnected;
         }
 
@@ -220,8 +210,8 @@ namespace DriverModbusMaster
                 ret.StatusType = VaribaleStatusTypeEnum.UnKnow;
                 ret.Message = ex.Message;
                 _logger.LogInformation($"Device:[{_device}],ReadHoldingRegisters(),Error", ex);
-
             }
+
             return ret;
         }
 
@@ -245,8 +235,8 @@ namespace DriverModbusMaster
                 ret.StatusType = VaribaleStatusTypeEnum.UnKnow;
                 ret.Message = ex.Message;
                 _logger.LogInformation($"Device:[{_device}],ReadInputRegisters(),Error", ex);
-
             }
+
             return ret;
         }
 
@@ -269,6 +259,7 @@ namespace DriverModbusMaster
                     }
                     else
                         ret.Value = retBool;
+
                     ret.StatusType = VaribaleStatusTypeEnum.Good;
                 }
                 else
@@ -282,8 +273,8 @@ namespace DriverModbusMaster
                 ret.StatusType = VaribaleStatusTypeEnum.UnKnow;
                 ret.Message = ex.Message;
                 _logger.LogInformation($"Device:[{_device}],ReadCoil(),Error", ex);
-
             }
+
             return ret;
         }
 
@@ -305,6 +296,7 @@ namespace DriverModbusMaster
                     }
                     else
                         ret.Value = retBool;
+
                     ret.StatusType = VaribaleStatusTypeEnum.Good;
                 }
                 else
@@ -318,8 +310,8 @@ namespace DriverModbusMaster
                 ret.StatusType = VaribaleStatusTypeEnum.UnKnow;
                 ret.Message = ex.Message;
                 _logger.LogInformation($"Device:[{_device}],ReadInput(),Error", ex);
-
             }
+
             return ret;
         }
 
@@ -337,7 +329,7 @@ namespace DriverModbusMaster
         }
 
         //读功能码03、或04
-        private DriverReturnValueModel ReadRegistersBuffers(byte FunCode, DriverAddressIoArgModel ioarg)
+        private DriverReturnValueModel ReadRegistersBuffers(byte funCode, DriverAddressIoArgModel ioarg)
         {
             DriverReturnValueModel ret = new() { StatusType = VaribaleStatusTypeEnum.Good };
             if (!IsConnected)
@@ -351,9 +343,9 @@ namespace DriverModbusMaster
                 try
                 {
                     var rawBuffers = new ushort[] { };
-                    if (FunCode == 3)
+                    if (funCode == 3)
                         rawBuffers = _master.ReadHoldingRegisters(SlaveAddress, startAddress, count);
-                    else if (FunCode == 4)
+                    else if (funCode == 4)
                         rawBuffers = _master.ReadInputRegisters(SlaveAddress, startAddress, count);
 
                     var retBuffers = ChangeBuffersOrder(rawBuffers, ioarg.ValueType);
@@ -370,7 +362,11 @@ namespace DriverModbusMaster
                         ret.Value = (retBuffers[0] << 16) + retBuffers[1];
                     else if (ioarg.ValueType.ToString().Contains("Float"))
                     {
-                        var bytes = new byte[] { (byte)(retBuffers[1] & 0xff), (byte)((retBuffers[1] >> 8) & 0xff), (byte)(retBuffers[0] & 0xff), (byte)((retBuffers[0] >> 8) & 0xff) };
+                        var bytes = new[]
+                        {
+                            (byte)(retBuffers[1] & 0xff), (byte)((retBuffers[1] >> 8) & 0xff),
+                            (byte)(retBuffers[0] & 0xff), (byte)((retBuffers[0] >> 8) & 0xff)
+                        };
                         ret.Value = BitConverter.ToSingle(bytes, 0);
                     }
                     else if (ioarg.ValueType.ToString().Contains("AsciiString"))
@@ -380,7 +376,6 @@ namespace DriverModbusMaster
                             str = str.Split('\0')[0];
                         ret.Value = str;
                     }
-
                 }
                 catch (Exception ex)
                 {
@@ -388,8 +383,8 @@ namespace DriverModbusMaster
                     ret.Message = ex.Message;
                     _logger.LogInformation($"Device:[{_device}],ReadRegistersBuffers(),Error", ex);
                 }
-
             }
+
             return ret;
         }
 
@@ -408,36 +403,35 @@ namespace DriverModbusMaster
             var newBuffers = new ushort[buffers.Length];
             if (dataType.ToString().Contains("32") || dataType.ToString().Contains("Float"))
             {
-                var A = buffers[0] & 0xff00;//A
-                var B = buffers[0] & 0x00ff;//B
-                var C = buffers[1] & 0xff00;//C
-                var D = buffers[1] & 0x00ff;//D
+                var a = buffers[0] & 0xff00; //A
+                var b = buffers[0] & 0x00ff; //B
+                var c = buffers[1] & 0xff00; //C
+                var d = buffers[1] & 0x00ff; //D
                 if (dataType.ToString().Contains("_1"))
                 {
-                    newBuffers[0] = (ushort)(A + B);//AB
-                    newBuffers[1] = (ushort)(C + D);//CD
+                    newBuffers[0] = (ushort)(a + b); //AB
+                    newBuffers[1] = (ushort)(c + d); //CD
                 }
                 else if (dataType.ToString().Contains("_2"))
                 {
-                    newBuffers[0] = (ushort)((A >> 8) + (B << 8));//BA
-                    newBuffers[1] = (ushort)((C >> 8) + (D << 8));//DC
+                    newBuffers[0] = (ushort)((a >> 8) + (b << 8)); //BA
+                    newBuffers[1] = (ushort)((c >> 8) + (d << 8)); //DC
                 }
                 else if (dataType.ToString().Contains("_3"))
                 {
-                    newBuffers[0] = (ushort)((C >> 8) + (D << 8));//DC
-                    newBuffers[1] = (ushort)((A >> 8) + (B << 8));//BA
+                    newBuffers[0] = (ushort)((c >> 8) + (d << 8)); //DC
+                    newBuffers[1] = (ushort)((a >> 8) + (b << 8)); //BA
                 }
                 else
                 {
-                    newBuffers[0] = (ushort)(C + D);//CD
-                    newBuffers[1] = (ushort)(A + B);//AB
+                    newBuffers[0] = (ushort)(c + d); //CD
+                    newBuffers[1] = (ushort)(a + b); //AB
                 }
             }
             else if (dataType.ToString().Contains("64") || dataType.ToString().Contains("Double"))
             {
                 if (dataType.ToString().Contains("_1"))
                 {
-
                 }
                 else
                 {
@@ -458,6 +452,7 @@ namespace DriverModbusMaster
                 else
                     newBuffers[0] = buffers[0];
             }
+
             return newBuffers;
         }
 
@@ -469,33 +464,35 @@ namespace DriverModbusMaster
                 vs.Add((byte)(retBuffer & 0xFF));
                 vs.Add((byte)((retBuffer & 0xFF00) >> 8));
             }
+
             return vs;
         }
 
-        private DriverReturnValueModel AnalyzeAddress(DriverAddressIoArgModel ioarg, out ushort StartAddress, out ushort ReadCount)
+        private DriverReturnValueModel AnalyzeAddress(DriverAddressIoArgModel ioarg, out ushort startAddress,
+            out ushort readCount)
         {
             DriverReturnValueModel ret = new() { StatusType = VaribaleStatusTypeEnum.Good };
             try
             {
                 if (ioarg.ValueType == DataTypeEnum.AsciiString)
                 {
-                    StartAddress = ushort.Parse(ioarg.Address.Split(',')[0]);
-                    ReadCount = ushort.Parse(ioarg.Address.Split(',')[1]);
+                    startAddress = ushort.Parse(ioarg.Address.Split(',')[0]);
+                    readCount = ushort.Parse(ioarg.Address.Split(',')[1]);
                 }
                 else
                 {
-                    StartAddress = ushort.Parse(ioarg.Address);
-                    ReadCount = GetModbusReadCount(3, ioarg.ValueType);
+                    startAddress = ushort.Parse(ioarg.Address);
+                    readCount = GetModbusReadCount(3, ioarg.ValueType);
                 }
-                return ret;
 
+                return ret;
             }
             catch (Exception ex)
             {
                 ret.StatusType = VaribaleStatusTypeEnum.AddressError;
                 ret.Message = ex.Message;
-                StartAddress = 0;
-                ReadCount = 0;
+                startAddress = 0;
+                readCount = 0;
                 _logger.LogInformation($"Device:[{_device}],AnalyzeAddress(),Error", ex);
                 return ret;
             }
@@ -510,9 +507,8 @@ namespace DriverModbusMaster
                     rpcResponse.Description = "设备连接已断开";
                 else
                 {
-                    DriverReturnValueModel ret = new() { StatusType = VaribaleStatusTypeEnum.Good };
                     ushort address, count;
-                    ret = AnalyzeAddress(ioarg, out address, out count);
+                    AnalyzeAddress(ioarg, out address, out count);
 
                     //功能码01
                     if (method == nameof(ReadCoil))
@@ -522,6 +518,7 @@ namespace DriverModbusMaster
                         rpcResponse.IsSuccess = true;
                         return rpcResponse;
                     }
+
                     //功能码03
                     if (method == nameof(ReadHoldingRegisters))
                     {
@@ -542,42 +539,25 @@ namespace DriverModbusMaster
 
                                 break;
                             default:
-                                await _master.WriteSingleRegisterAsync(SlaveAddress, address, ushort.Parse(ioarg.Value.ToString()));
+                                await _master.WriteSingleRegisterAsync(SlaveAddress, address,
+                                    ushort.Parse(ioarg.Value.ToString()));
                                 break;
                         }
+
                         rpcResponse.IsSuccess = true;
                         return rpcResponse;
                     }
+
                     rpcResponse.Description = $"不支持写入:{method}";
                 }
             }
             catch (Exception ex)
             {
-                rpcResponse.Description = $"写入失败,[Method]:{method},[Ioarg]:{ioarg},[ex]:{ex}";
+                rpcResponse.Description = $"写入失败,[method]:{method},[ioarg]:{ioarg},[ex]:{ex}";
                 _logger.LogInformation($"Device:[{_device}],WriteAsync(),Error", ex);
             }
+
             return rpcResponse;
         }
-    }
-
-    public enum PLC_TYPE
-    {
-        S7200 = 0,
-        S7300 = 1,
-        S7400 = 2,
-        S71200 = 3,
-        S71500 = 4,
-    }
-
-    public enum Master_TYPE
-    {
-        Tcp = 0,
-        Udp = 1,
-        Rtu = 2,
-        RtuOnTcp = 3,
-        RtuOnUdp = 4,
-        Ascii = 5,
-        AsciiOnTcp = 6,
-        AsciiOnUdp = 7,
     }
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace DriverModbusMaster
 {
@@ -15,11 +11,14 @@ namespace DriverModbusMaster
         /// <param name="start"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static void SetString(ushort[] src, int start, string value)
+        public static void SetString(ushort[] src, int start, string? value)
         {
-            byte[] bytesTemp = Encoding.UTF8.GetBytes(value);
-            ushort[] dest = Bytes2Ushorts(bytesTemp);
-            dest.CopyTo(src, start);
+            if (value != null)
+            {
+                byte[] bytesTemp = Encoding.UTF8.GetBytes(value);
+                ushort[] dest = Bytes2Ushorts(bytesTemp);
+                dest.CopyTo(src, start);
+            }
         }
 
         /// <summary>
@@ -36,8 +35,9 @@ namespace DriverModbusMaster
             {
                 temp[i] = src[i + start];
             }
+
             byte[] bytesTemp = Ushorts2Bytes(temp);
-            string res = Encoding.UTF8.GetString(bytesTemp).Trim(new char[] { '\0' });
+            string res = Encoding.UTF8.GetString(bytesTemp).Trim(new[] { '\0' });
             return res;
         }
 
@@ -69,6 +69,7 @@ namespace DriverModbusMaster
             {
                 temp[i] = src[i + start];
             }
+
             byte[] bytesTemp = Ushorts2Bytes(temp);
             float res = BitConverter.ToSingle(bytesTemp, 0);
             return res;
@@ -112,6 +113,7 @@ namespace DriverModbusMaster
             {
                 temp[i] = src[i + start];
             }
+
             byte[] bytes = Ushorts2Bytes(temp);
 
             bool[] res = Bytes2Bools(bytes);
@@ -127,14 +129,15 @@ namespace DriverModbusMaster
             {
                 for (int j = 0; j < 8; j++)
                 {
-                    array[i * 8 + j] = (b[i] & 1) == 1;//判定byte的最后一位是否为1，若为1，则是true；否则是false
-                    b[i] = (byte)(b[i] >> 1);//将byte右移一位
+                    array[i * 8 + j] = (b[i] & 1) == 1; //判定byte的最后一位是否为1，若为1，则是true；否则是false
+                    b[i] = (byte)(b[i] >> 1); //将byte右移一位
                 }
             }
+
             return array;
         }
 
-        private static byte Bools2Byte(bool[] array)
+        private static byte Bools2Byte(bool[]? array)
         {
             if (array != null && array.Length > 0)
             {
@@ -143,12 +146,14 @@ namespace DriverModbusMaster
                 {
                     if (array[i])
                     {
-                        byte nn = (byte)(1 << i);//左移一位，相当于×2
+                        byte nn = (byte)(1 << i); //左移一位，相当于×2
                         b += nn;
                     }
                 }
+
                 return b;
             }
+
             return 0;
         }
 
@@ -186,7 +191,6 @@ namespace DriverModbusMaster
 
         private static byte[] Ushorts2Bytes(ushort[] src, bool reverse = false)
         {
-
             int count = src.Length;
             byte[] dest = new byte[count << 1];
             if (reverse)
@@ -205,6 +209,7 @@ namespace DriverModbusMaster
                     dest[i * 2 + 1] = (byte)(src[i] >> 8);
                 }
             }
+
             return dest;
         }
     }
