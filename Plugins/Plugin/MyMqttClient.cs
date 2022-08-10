@@ -1,4 +1,5 @@
-﻿using IoTGateway.DataAccess;
+﻿using System.Text;
+using IoTGateway.DataAccess;
 using IoTGateway.Model;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
@@ -363,10 +364,7 @@ namespace Plugin
                         {
                             ServiceId = "serviceId",
                             EventTime = DateTime.Now.ToString("yyyyMMddTHHmmssZ"),
-                            Data = new Dictionary<string, object>()
-                            {
-                                { "data", obj }
-                            }
+                            Data = obj
                         }
                     }
                 }
@@ -538,14 +536,16 @@ namespace Plugin
                             case IoTPlatformType.IoTSharp:
                                 foreach (var payload in sendModel[device.DeviceName])
                                 {
-                                    await UploadIsTelemetryDataAsync(device.DeviceName, payload.Values);
+                                    if (payload.Values != null)
+                                        await UploadIsTelemetryDataAsync(device.DeviceName, payload.Values);
                                 }
 
                                 break;
                             case IoTPlatformType.ThingsCloud:
                                 foreach (var payload in sendModel[device.DeviceName])
                                 {
-                                    await UploadTcTelemetryDataAsync(device.DeviceName, payload.Values);
+                                    if (payload.Values != null)
+                                        await UploadTcTelemetryDataAsync(device.DeviceName, payload.Values);
                                 }
 
                                 break;
@@ -560,8 +560,8 @@ namespace Plugin
                                         {
                                             device = device.DeviceName,
                                             timestamp = payload.TS,
-                                            measurements = payload.Values.Keys.ToList(),
-                                            values = payload.Values.Values.ToList()
+                                            measurements = payload.Values?.Keys.ToList(),
+                                            values = payload.Values?.Values.ToList()
                                         };
                                         await Client.PublishAsync(device.DeviceName, JsonConvert.SerializeObject(tsData));
                                     }
@@ -571,7 +571,8 @@ namespace Plugin
                             case IoTPlatformType.HuaWei:
                                 foreach (var payload in sendModel[device.DeviceName])
                                 {
-                                    await UploadHwTelemetryDataAsync(device, payload.Values);
+                                    if (payload.Values != null)
+                                        await UploadHwTelemetryDataAsync(device, payload.Values);
                                 }
 
                                 break;
@@ -587,12 +588,13 @@ namespace Plugin
 
                 foreach (var payload in sendModel[device.DeviceName])
                 {
-                    foreach (var kv in payload.Values)
-                    {
-                        //更新到UAService
-                        _uaNodeManager?.UpdateNode($"{device.Parent.DeviceName}.{device.DeviceName}.{kv.Key}",
-                            kv.Value);
-                    }
+                    if (payload.Values != null)
+                        foreach (var kv in payload.Values)
+                        {
+                            //更新到UAService
+                            _uaNodeManager?.UpdateNode($"{device.Parent.DeviceName}.{device.DeviceName}.{kv.Key}",
+                                kv.Value);
+                        }
                 }
             }
             catch (Exception ex)
@@ -630,7 +632,7 @@ namespace Plugin
                         case IoTPlatformType.HuaWei:
                             var deviceOnLine = new HwDeviceOnOffLine()
                             {
-                                MId = new Random().NextInt64(), //命令ID
+                                MId = new Random().Next(0, 1024), //命令ID
                                 DeviceStatuses = new List<DeviceStatus>()
                                 {
                                     new DeviceStatus()
@@ -643,7 +645,8 @@ namespace Plugin
                                 }
                             };
                             await Client.PublishAsync($"/v1/devices/{_systemConfig.GatewayName}/topo/update",
-                                JsonConvert.SerializeObject(deviceOnLine));
+                                JsonConvert.SerializeObject(deviceOnLine), MqttQualityOfServiceLevel.AtLeastOnce,
+                                retain: false);
                             break;
                     }
             }
@@ -682,7 +685,7 @@ namespace Plugin
                         case IoTPlatformType.HuaWei:
                             var deviceOnLine = new HwDeviceOnOffLine()
                             {
-                                MId = new Random().NextInt64(), //命令ID
+                                MId = new Random().Next(0, 1024), //命令ID
                                 DeviceStatuses = new List<DeviceStatus>()
                                 {
                                     new DeviceStatus()
@@ -695,7 +698,8 @@ namespace Plugin
                                 }
                             };
                             await Client.PublishAsync($"/v1/devices/{_systemConfig.GatewayName}/topo/update",
-                                JsonConvert.SerializeObject(deviceOnLine));
+                                JsonConvert.SerializeObject(deviceOnLine), MqttQualityOfServiceLevel.AtLeastOnce,
+                                retain: false);
                             break;
                     }
             }
@@ -718,7 +722,7 @@ namespace Plugin
 
                             var addDeviceDto = new HwAddDeviceDto
                             {
-                                MId = new Random().NextInt64() //命令ID
+                                MId = new Random().Next(0, 1024), //命令ID
                             };
                             addDeviceDto.DeviceInfos.Add(
                                 new DeviceInfo
@@ -753,22 +757,27 @@ namespace Plugin
                         case IoTPlatformType.HuaWei:
                             var topic = $"/v1/devices/{_systemConfig.GatewayName}/topo/delete";
 
-                            var deleteDeviceDto = new HwDeleteDeviceDto
+                            await using (var dc = new DataContext(IoTBackgroundService.connnectSetting, IoTBackgroundService.DbType))
                             {
-                                Id = new Random().NextInt64(), //命令ID
-                                DeviceId = device.DeviceConfigs.FirstOrDefault(x => x.DeviceConfigName == "DeviceId")
-                                    ?.Value,
-                                RequestTime = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds,
-                                Request = new()
-                                {
-                                    ManufacturerId = "Test_n",
-                                    ManufacturerName = "Test_n",
-                                    ProductType = "A_n"
-                                }
-                            };
+                                var deviceId = dc.Set<DeviceConfig>().FirstOrDefault(x =>
+                                    x.DeviceId == device.ID && x.DeviceConfigName == "DeviceId")?.Value;
 
-                            await Client.PublishAsync(topic,
-                                JsonConvert.SerializeObject(deleteDeviceDto));
+                                var deleteDeviceDto = new HwDeleteDeviceDto
+                                {
+                                    Id = new Random().Next(0, 1024), //命令ID
+                                    DeviceId = deviceId,
+                                    RequestTime = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds,
+                                    Request = new()
+                                    {
+                                        ManufacturerId = "Test_n",
+                                        ManufacturerName = "Test_n",
+                                        ProductType = "A_n"
+                                    }
+                                };
+
+                                await Client.PublishAsync(topic,
+                                    JsonConvert.SerializeObject(deleteDeviceDto));
+                            }
                             break;
                     }
             }

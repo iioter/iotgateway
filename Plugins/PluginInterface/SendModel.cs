@@ -14,7 +14,7 @@ namespace PluginInterface
         [JsonProperty(PropertyName = "devicestatus")]
         public DeviceStatusTypeEnum DeviceStatus { get; set; } = DeviceStatusTypeEnum.Good;
         [JsonProperty(PropertyName = "values")]
-        public Dictionary<string, object> Values { get; set; } = new();
+        public Dictionary<string, object>? Values { get; set; } = new();
     }
     public enum DeviceStatusTypeEnum
     {

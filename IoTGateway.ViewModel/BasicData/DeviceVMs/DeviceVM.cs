@@ -62,15 +62,14 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
             List<Guid> Ids = new List<Guid>() { Guid.Parse(FC["id"].ToString()) };
 
             var pluginManager = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
+            var myMqttClient = Wtm.ServiceProvider.GetService(typeof(MyMqttClient)) as MyMqttClient;
+            myMqttClient.DeviceDeleted(Entity);
             var ret = DeleteDevices.doDelete(pluginManager, DC, Ids);
             if (!ret.IsSuccess)
             {
                 MSD.AddModelError("", ret.Message);
                 return;
             }
-
-            var myMqttClient = Wtm.ServiceProvider.GetService(typeof(MyMqttClient)) as MyMqttClient;
-            myMqttClient.DeviceDeleted(Entity);
 
         }
         public override DuplicatedInfo<Device> SetDuplicatedCheck()

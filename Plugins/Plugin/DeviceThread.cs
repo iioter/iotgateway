@@ -98,7 +98,7 @@ namespace Plugin
                                                 try
                                                 {
                                                     ret.CookedValue = _interpreter.Eval(DealMysqlStr(item.Expressions)
-                                                        .Replace("raw", ret.Value.ToString()));
+                                                        .Replace("raw", ret.Value?.ToString()));
                                                 }
                                                 catch (Exception)
                                                 {
@@ -114,9 +114,9 @@ namespace Plugin
 
                                             //变化了才推送到mqttserver，用于前端展示
                                             if (DeviceValues[item.ID].StatusType != ret.StatusType ||
-                                                DeviceValues[item.ID].Value?.ToString() != ret.Value.ToString() ||
-                                                DeviceValues[item.ID].CookedValue.ToString() !=
-                                                ret.CookedValue.ToString())
+                                                DeviceValues[item.ID].Value?.ToString() != ret.Value?.ToString() ||
+                                                DeviceValues[item.ID].CookedValue?.ToString() !=
+                                                ret.CookedValue?.ToString())
                                             {
                                                 //这是设备变量列表要用的
                                                 mqttServer.PublishAsync(
