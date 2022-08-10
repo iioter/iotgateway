@@ -5,7 +5,7 @@ namespace PluginInterface
 {
     public interface IDriver : IDisposable
     {
-        public Guid DeviceId { get; }
+        public string DeviceId { get; }
         public bool IsConnected { get; }
         public int Timeout { get; }
         public uint MinPeriod { get; }

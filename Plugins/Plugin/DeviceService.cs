@@ -3,11 +3,9 @@ using Microsoft.Extensions.Configuration;
 using PluginInterface;
 using System.Net;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using WalkingTec.Mvvm.Core;
 using IoTGateway.DataAccess;
 using IoTGateway.Model;
-using DynamicExpresso;
 using MQTTnet.Server;
 using Microsoft.Extensions.Logging;
 
@@ -16,34 +14,40 @@ namespace Plugin
     public class DeviceService : IDisposable
     {
         private readonly ILogger<DeviceService> _logger;
-        public DriverService _DrvierManager;
+        public DriverService DrvierManager;
 
         public List<DeviceThread> DeviceThreads = new List<DeviceThread>();
-        private MyMqttClient _MyMqttClient;
-        private IMqttServer _MqttServer;
-        private string connnectSetting = IoTBackgroundService.connnectSetting;
-        private DBTypeEnum DBType = IoTBackgroundService.DBType;
-        public DeviceService(IConfiguration ConfigRoot, DriverService drvierManager, MyMqttClient myMqttClient, UAService uAService, IMqttServer mqttServer, ILogger<DeviceService> logger)
+        private readonly MyMqttClient _myMqttClient;
+        private readonly UAService _uAService;
+        private readonly IMqttServer _mqttServer;
+        private readonly string _connnectSetting = IoTBackgroundService.connnectSetting;
+        private readonly DBTypeEnum _dbType = IoTBackgroundService.DbType;
+
+        public DeviceService(IConfiguration configRoot, DriverService drvierManager, MyMqttClient myMqttClient,
+            UAService uAService, IMqttServer mqttServer, ILogger<DeviceService> logger)
         {
+            if (mqttServer == null) throw new ArgumentNullException(nameof(mqttServer));
             _logger = logger;
-            _DrvierManager = drvierManager;
-            _MyMqttClient = myMqttClient;
-            _MqttServer = mqttServer;
+            DrvierManager = drvierManager;
+            _myMqttClient = myMqttClient;
+            _uAService = uAService;
+            _mqttServer = mqttServer ?? throw new ArgumentNullException(nameof(mqttServer));
             try
             {
-                using (var DC = new DataContext(connnectSetting, DBType))
+                using (var dc = new DataContext(_connnectSetting, _dbType))
                 {
-                    var Devices = DC.Set<Device>().Where(x => x.DeviceTypeEnum == DeviceTypeEnum.Device).Include(x => x.Parent).Include(x => x.Driver).Include(x => x.DeviceConfigs).Include(x => x.DeviceVariables).AsNoTracking().ToList();
-                    _logger.LogInformation($"Loaded Devices Count:{Devices.Count()}");
-                    foreach (var Device in Devices)
+                    var devices = dc.Set<Device>().Where(x => x.DeviceTypeEnum == DeviceTypeEnum.Device)
+                        .Include(x => x.Parent).Include(x => x.Driver).Include(x => x.DeviceConfigs)
+                        .Include(x => x.DeviceVariables).AsNoTracking().ToList();
+                    _logger.LogInformation($"Loaded Devices Count:{devices.Count()}");
+                    foreach (var device in devices)
                     {
-                        CreateDeviceThread(Device);
+                        CreateDeviceThread(device);
                     }
                 }
             }
             catch (Exception ex)
             {
-
                 _logger.LogError($"LoadDevicesError", ex);
             }
         }
@@ -61,7 +65,6 @@ namespace Plugin
             {
                 _logger.LogError($"UpdateDevice Error:{device.DeviceName}", ex);
             }
-
         }
 
         public void UpdateDevices(List<Device> devices)
@@ -70,31 +73,33 @@ namespace Plugin
                 UpdateDevice(device);
         }
 
-        public void CreateDeviceThread(Device Device)
+        public void CreateDeviceThread(Device device)
         {
             try
             {
-                _logger.LogInformation($"CreateDeviceThread Start:{Device.DeviceName}");
-                using (var DC = new DataContext(connnectSetting, DBType))
+                _logger.LogInformation($"CreateDeviceThread Start:{device.DeviceName}");
+                using (var dc = new DataContext(_connnectSetting, _dbType))
                 {
-                    var systemManage = DC.Set<SystemConfig>().FirstOrDefault();
-                    var driver = _DrvierManager.DriverInfos.Where(x => x.Type.FullName == Device.Driver.AssembleName).SingleOrDefault();
+                    var systemManage = dc.Set<SystemConfig>().FirstOrDefault();
+                    var driver = DrvierManager.DriverInfos
+                        .SingleOrDefault(x => x.Type.FullName == device.Driver.AssembleName);
                     if (driver == null)
-                        _logger.LogError($"找不到设备:[{Device.DeviceName}]的驱动:[{Device.Driver.AssembleName}]");
+                        _logger.LogError($"找不到设备:[{device.DeviceName}]的驱动:[{device.Driver.AssembleName}]");
                     else
                     {
-                        var settings = DC.Set<DeviceConfig>().Where(x => x.DeviceId == Device.ID).AsNoTracking().ToList();
+                        var settings = dc.Set<DeviceConfig>().Where(x => x.DeviceId == device.ID).AsNoTracking()
+                            .ToList();
 
-                        Type[] types = new Type[2] { typeof(string) ,typeof(ILogger) };
-                        object[] param = new object[2] { Device.DeviceName , _logger };
+                        Type[] types = new Type[] { typeof(string), typeof(ILogger) };
+                        object[] param = new object[] { device.DeviceName, _logger };
 
-                        ConstructorInfo constructor = driver.Type.GetConstructor(types);
-                        var DeviceObj = constructor.Invoke(param) as IDriver;
+                        ConstructorInfo? constructor = driver.Type.GetConstructor(types);
+                        var deviceObj = constructor?.Invoke(param) as IDriver;
 
                         foreach (var p in driver.Type.GetProperties())
                         {
                             var config = p.GetCustomAttribute(typeof(ConfigParameterAttribute));
-                            var setting = settings.Where(x => x.DeviceConfigName == p.Name).FirstOrDefault();
+                            var setting = settings.FirstOrDefault(x => x.DeviceConfigName == p.Name);
                             if (config == null || setting == null)
                                 continue;
 
@@ -135,24 +140,25 @@ namespace Plugin
                             else if (p.PropertyType.BaseType == typeof(Enum))
                                 value = Enum.Parse(p.PropertyType, setting.Value);
 
-                            p.SetValue(DeviceObj, value);
+                            p.SetValue(deviceObj, value);
                         }
 
-                        var deviceThread = new DeviceThread(Device, DeviceObj, systemManage.GatewayName, _MyMqttClient, _MqttServer, _logger);
-                        DeviceThreads.Add(deviceThread);
+                        if (deviceObj != null && systemManage != null)
+                        {
+                            var deviceThread = new DeviceThread(device, deviceObj, systemManage.GatewayName,
+                                _myMqttClient,
+                                _mqttServer, _logger);
+                            DeviceThreads.Add(deviceThread);
+                        }
                     }
-
-
                 }
 
-                _logger.LogInformation($"CreateDeviceThread End:{Device.DeviceName}");
+                _logger.LogInformation($"CreateDeviceThread End:{device.DeviceName}");
             }
             catch (Exception ex)
             {
-                _logger.LogInformation($"CreateDeviceThread Error:{Device.DeviceName}", ex);
-
+                _logger.LogInformation($"CreateDeviceThread Error:{device.DeviceName}", ex);
             }
-
         }
 
         public void CreateDeviceThreads(List<Device> devices)
@@ -163,15 +169,12 @@ namespace Plugin
 
         public void RemoveDeviceThread(Device devices)
         {
-            if (devices != null)
+            var deviceThread = DeviceThreads.FirstOrDefault(x => x.Device.ID == devices.ID);
+            if (deviceThread != null)
             {
-                var DeviceThread = DeviceThreads.Where(x => x._device.ID == devices.ID).FirstOrDefault();
-                if (DeviceThread != null)
-                {
-                    DeviceThread.StopThread();
-                    DeviceThread.Dispose();
-                    DeviceThreads.Remove(DeviceThread);
-                }
+                deviceThread.StopThread();
+                deviceThread.Dispose();
+                DeviceThreads.Remove(deviceThread);
             }
         }
 
@@ -187,26 +190,29 @@ namespace Plugin
             try
             {
                 _logger.LogInformation($"GetDriverMethods Start:{deviceId}");
-                foreach (var method in DeviceThreads.Where(x => x._device.ID == deviceId).FirstOrDefault()?.Methods)
-                {
-                    var Attribute = method.CustomAttributes.ToList().FirstOrDefault().ConstructorArguments;
-                    var item = new ComboSelectListItem
+                var methodInfos = DeviceThreads.FirstOrDefault(x => x.Device.ID == deviceId)?.Methods;
+                if (methodInfos != null)
+                    foreach (var method in methodInfos)
                     {
-                        Text = method.Name,
-                        Value = method.Name,
-                    };
-                    driverFilesComboSelect.Add(item);
-                }
+                        var attribute = method.CustomAttributes.ToList().FirstOrDefault()?.ConstructorArguments;
+                        var item = new ComboSelectListItem
+                        {
+                            Text = method.Name,
+                            Value = method.Name,
+                        };
+                        driverFilesComboSelect.Add(item);
+                    }
+
                 _logger.LogInformation($"GetDriverMethods End:{deviceId}");
             }
             catch (Exception ex)
             {
-
-                _logger.LogInformation($"GetDriverMethods Error:{deviceId}");
+                _logger.LogError($"GetDriverMethods Error:{deviceId}", ex);
             }
 
             return driverFilesComboSelect;
         }
+
         public void Dispose()
         {
             _logger.LogInformation("Dispose");

@@ -53,21 +53,21 @@ namespace IoTGateway.Controllers
 
             data.Add(new ChartData
             {
-                Value = _deviceService.DeviceThreads.Where(x => !x._device.AutoStart).Count(),
+                Value = _deviceService.DeviceThreads.Where(x => !x.Device.AutoStart).Count(),
                 Category = "停止",
                 Series = "Device"
             });
 
             data.Add(new ChartData
             {
-                Value = _deviceService.DeviceThreads.Where(x => x._device.AutoStart && x._driver.IsConnected).Count(),
+                Value = _deviceService.DeviceThreads.Where(x => x.Device.AutoStart && x.Driver.IsConnected).Count(),
                 Category = "运行",
                 Series = "Device",
             });
 
             data.Add(new ChartData
             {
-                Value = _deviceService.DeviceThreads.Where(x => x._device.AutoStart && !x._driver.IsConnected).Count(),
+                Value = _deviceService.DeviceThreads.Where(x => x.Device.AutoStart && !x.Driver.IsConnected).Count(),
                 Category = "异常",
                 Series = "Device"
             });
@@ -78,18 +78,18 @@ namespace IoTGateway.Controllers
         public IActionResult GetDeviceVariableChart()
         {
             var data = new List<ChartData>();
-            foreach (var deviceThread in _deviceService.DeviceThreads.OrderBy(x => x._device.DeviceName))
+            foreach (var deviceThread in _deviceService.DeviceThreads.OrderBy(x => x.Device.DeviceName))
             {
                 data.Add(new ChartData
                 {
-                    Category = deviceThread._device.DeviceName,
+                    Category = deviceThread.Device.DeviceName,
                     Value = deviceThread.DeviceValues.Where(x => x.Value.StatusType != VaribaleStatusTypeEnum.Good).Count(),
                     Series = "Others"
                 });
 
                 data.Add(new ChartData
                 {
-                    Category = deviceThread._device.DeviceName,
+                    Category = deviceThread.Device.DeviceName,
                     Value = deviceThread.DeviceValues.Where(x => x.Value.StatusType == VaribaleStatusTypeEnum.Good).Count(),
                     Series = "Good"
                 });

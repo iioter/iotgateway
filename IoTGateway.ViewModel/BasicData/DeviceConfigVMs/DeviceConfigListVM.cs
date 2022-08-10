@@ -40,9 +40,9 @@ namespace IoTGateway.ViewModel.BasicData.DeviceConfigVMs
             {
                 foreach (var item in device.Children)
                 {
-                    var deviceThread = deviceService.DeviceThreads.Where(x => x._device.ID.ToString() == (string)item.Value).FirstOrDefault();
+                    var deviceThread = deviceService.DeviceThreads.Where(x => x.Device.ID.ToString() == (string)item.Value).FirstOrDefault();
                     if (deviceThread != null)
-                        item.Icon = deviceThread._device.AutoStart ? (deviceThread._driver.IsConnected ? "layui-icon layui-icon-link" : "layui-icon layui-icon-unlink") : "layui-icon layui-icon-pause";
+                        item.Icon = deviceThread.Device.AutoStart ? (deviceThread.Driver.IsConnected ? "layui-icon layui-icon-link" : "layui-icon layui-icon-unlink") : "layui-icon layui-icon-pause";
 
                     item.Text = " "+item.Text;
                     item.Expended = true;

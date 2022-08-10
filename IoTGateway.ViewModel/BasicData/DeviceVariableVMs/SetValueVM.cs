@@ -31,7 +31,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                 类型 = variable.DataType.GetEnumDisplayName();
 
                 var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
-                var dapThread = deviceService.DeviceThreads.Where(x => x._device.ID == variable.DeviceId).FirstOrDefault();
+                var dapThread = deviceService.DeviceThreads.Where(x => x.Device.ID == variable.DeviceId).FirstOrDefault();
 
                 if (dapThread?.DeviceValues != null && dapThread.DeviceValues.ContainsKey(variable.ID))
                 {
@@ -71,7 +71,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
             类型 = variable.DataType.GetEnumDisplayName();
 
             var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
-            var dapThread = deviceService.DeviceThreads.Where(x => x._device.ID == variable.DeviceId).FirstOrDefault();
+            var dapThread = deviceService.DeviceThreads.Where(x => x.Device.ID == variable.DeviceId).FirstOrDefault();
 
             if (dapThread?.DeviceValues != null && dapThread.DeviceValues.ContainsKey(variable.ID))
             {

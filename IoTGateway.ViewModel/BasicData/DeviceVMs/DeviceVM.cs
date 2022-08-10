@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 using IoTGateway.Model;
@@ -37,9 +35,12 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                 if (this.Entity.DeviceTypeEnum == DeviceTypeEnum.Device)
                 {
                     var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
-                    deviceService._DrvierManager.AddConfigs(this.Entity.ID, this.Entity.DriverId);
-                    var dap = DC.Set<Device>().Where(x => x.ID == Entity.ID).Include(x=>x.Parent).Include(x => x.Driver).SingleOrDefault();
-                    deviceService.CreateDeviceThread(dap);
+                    deviceService.DrvierManager.AddConfigs(this.Entity.ID, this.Entity.DriverId);
+                    var device = DC.Set<Device>().Where(x => x.ID == Entity.ID).Include(x=>x.Parent).Include(x => x.Driver).SingleOrDefault();
+                    deviceService.CreateDeviceThread(device);
+
+                    var myMqttClient = Wtm.ServiceProvider.GetService(typeof(MyMqttClient)) as MyMqttClient;
+                    myMqttClient.DeviceAdded(device);
                 }
             }
             catch (Exception ex)
@@ -63,7 +64,14 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
             var pluginManager = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
             var ret = DeleteDevices.doDelete(pluginManager, DC, Ids);
             if (!ret.IsSuccess)
+            {
                 MSD.AddModelError("", ret.Message);
+                return;
+            }
+
+            var myMqttClient = Wtm.ServiceProvider.GetService(typeof(MyMqttClient)) as MyMqttClient;
+            myMqttClient.DeviceDeleted(Entity);
+
         }
         public override DuplicatedInfo<Device> SetDuplicatedCheck()
         {

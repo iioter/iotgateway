@@ -33,6 +33,7 @@ namespace IoTGateway.ViewModel.Config.SystemConfigVMs
         {
             return new List<GridColumn<SystemConfig_View>>{
                 this.MakeGridHeader(x => x.GatewayName),
+                this.MakeGridHeader(x => x.ClientId),
                 this.MakeGridHeader(x => x.IoTPlatformType),
                 this.MakeGridHeader(x => x.MqttIp),
                 this.MakeGridHeader(x => x.MqttPort),
@@ -49,6 +50,7 @@ namespace IoTGateway.ViewModel.Config.SystemConfigVMs
                 {
 				    ID = x.ID,
                     GatewayName = x.GatewayName,
+                    ClientId = x.ClientId,
                     MqttIp = x.MqttIp,
                     MqttPort = x.MqttPort,
                     MqttUName = x.MqttUName,
