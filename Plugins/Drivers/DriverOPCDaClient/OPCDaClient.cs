@@ -1,30 +1,25 @@
 ﻿using PluginInterface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Automation.OPCClient;
 using Microsoft.Extensions.Logging;
 
 namespace DriverOPCDaClient
 {
+    [DriverSupported("OPCDaClient")]
+    [DriverInfo("OPCDaClient", "V1.0.0", "Copyright IoTGateway© 2022-08-10")]
     internal class OPCDaClient : IDriver
     {
-        OPCClientWrapper opcDaClient = null;
+        private OPCClientWrapper? opcDaClient;
 
         public ILogger _logger { get; set; }
         private readonly string _device;
 
         #region 配置参数
 
-        [ConfigParameter("设备Id")] public Guid DeviceId { get; set; }
+        [ConfigParameter("设备Id")] public string DeviceId { get; set; }
 
-        [ConfigParameter("IP")]
-        public string IP{ get; set; } = "127.0.0.1";
+        [ConfigParameter("IP")] public string Ip { get; set; } = "127.0.0.1";
 
-        [ConfigParameter("OpcServerName")]
-        public string OpcServerName { get; set; } = "ICONICS.SimulatorOPCDA.2";
+        [ConfigParameter("OpcServerName")] public string OpcServerName { get; set; } = "ICONICS.SimulatorOPCDA.2";
 
         [ConfigParameter("超时时间ms")] public int Timeout { get; set; } = 3000;
 
@@ -51,7 +46,7 @@ namespace DriverOPCDaClient
             try
             {
                 opcDaClient = new OPCClientWrapper();
-                opcDaClient.Init(IP, OpcServerName);
+                opcDaClient.Init(Ip, OpcServerName);
             }
             catch (Exception)
             {
@@ -70,7 +65,6 @@ namespace DriverOPCDaClient
             }
             catch (Exception)
             {
-
                 return false;
             }
         }
@@ -83,7 +77,6 @@ namespace DriverOPCDaClient
             }
             catch (Exception)
             {
-
             }
         }
 
@@ -97,7 +90,7 @@ namespace DriverOPCDaClient
             {
                 try
                 {
-                    var dataValue = opcDaClient.ReadNodeLabel(ioarg.Address);
+                    var dataValue = opcDaClient?.ReadNodeLabel(ioarg.Address);
                     switch (ioarg.ValueType)
                     {
                         case DataTypeEnum.Bit:
@@ -107,32 +100,36 @@ namespace DriverOPCDaClient
                             ret.Value = dataValue == "On";
                             break;
                         case DataTypeEnum.Byte:
-                            ret.Value = byte.Parse(dataValue);
+                            if (dataValue != null) ret.Value = byte.Parse(dataValue);
                             break;
                         case DataTypeEnum.UByte:
-                            ret.Value = sbyte.Parse(dataValue);
+                            if (dataValue != null) ret.Value = sbyte.Parse(dataValue);
                             break;
                         case DataTypeEnum.Int16:
-                            ret.Value = short.Parse(dataValue);
+                            if (dataValue != null) ret.Value = short.Parse(dataValue);
                             break;
                         case DataTypeEnum.Uint16:
-                            ret.Value = ushort.Parse(dataValue);
+                            if (dataValue != null) ret.Value = ushort.Parse(dataValue);
                             break;
                         case DataTypeEnum.Int32:
-                            ret.Value = int.Parse(dataValue);
+                            if (dataValue != null) ret.Value = int.Parse(dataValue);
                             break;
                         case DataTypeEnum.Uint32:
-                            ret.Value = uint.Parse(dataValue);
+                            if (dataValue != null) ret.Value = uint.Parse(dataValue);
                             break;
                         case DataTypeEnum.Float:
-                            ret.Value = float.Parse(dataValue);
+                            if (dataValue != null) ret.Value = float.Parse(dataValue);
                             break;
                         case DataTypeEnum.Double:
-                            ret.Value = double.Parse(dataValue);
+                            if (dataValue != null) ret.Value = double.Parse(dataValue);
                             break;
                         case DataTypeEnum.AsciiString:
                         case DataTypeEnum.Utf8String:
                             ret.Value = dataValue;
+                            break;
+                        default:
+                            ret.StatusType = VaribaleStatusTypeEnum.Bad;
+                            ret.Message = $"读取失败,不支持的类型:{ioarg.ValueType}";
                             break;
                     }
                 }
@@ -167,7 +164,7 @@ namespace DriverOPCDaClient
             return ret;
         }
 
-        public async Task<RpcResponse> WriteAsync(string RequestId, string Method, DriverAddressIoArgModel Ioarg)
+        public async Task<RpcResponse> WriteAsync(string requestId, string method, DriverAddressIoArgModel ioarg)
         {
             RpcResponse rpcResponse = new() { IsSuccess = false, Description = "设备驱动内未实现写入功能" };
             return rpcResponse;
