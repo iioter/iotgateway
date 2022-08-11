@@ -22,7 +22,7 @@ namespace Plugin
     public class MyMqttClient
     {
         private readonly ILogger<MyMqttClient> _logger;
-        private readonly ReferenceNodeManager? _uaNodeManager;
+        //private readonly ReferenceNodeManager? _uaNodeManager;
 
         private SystemConfig? _systemConfig;
         private IMqttClientOptions _clientOptions;
@@ -34,7 +34,7 @@ namespace Plugin
         public MyMqttClient(UAService uaService, ILogger<MyMqttClient> logger)
         {
             _logger = logger;
-            _uaNodeManager = uaService.server.m_server.nodeManagers[0] as ReferenceNodeManager;
+            //_uaNodeManager = uaService.server.m_server.nodeManagers[0] as ReferenceNodeManager;
             ConnectAsync();
         }
 
@@ -586,16 +586,16 @@ namespace Plugin
                         }
                 }
 
-                foreach (var payload in sendModel[device.DeviceName])
-                {
-                    if (payload.Values != null)
-                        foreach (var kv in payload.Values)
-                        {
-                            //更新到UAService
-                            _uaNodeManager?.UpdateNode($"{device.Parent.DeviceName}.{device.DeviceName}.{kv.Key}",
-                                kv.Value);
-                        }
-                }
+                //foreach (var payload in sendModel[device.DeviceName])
+                //{
+                //    if (payload.Values != null)
+                //        foreach (var kv in payload.Values)
+                //        {
+                //            //更新到UAService
+                //            _uaNodeManager?.UpdateNode($"{device.Parent.DeviceName}.{device.DeviceName}.{kv.Key}",
+                //                kv.Value);
+                //        }
+                //}
             }
             catch (Exception ex)
             {
