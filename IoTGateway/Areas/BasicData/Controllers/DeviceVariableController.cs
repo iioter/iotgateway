@@ -5,6 +5,7 @@ using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Mvc;
 using WalkingTec.Mvvm.Core.Extensions;
 using IoTGateway.ViewModel.BasicData.DeviceVariableVMs;
+using Opc.Ua.Security.Certificates;
 
 namespace IoTGateway.Controllers
 {
@@ -216,16 +217,21 @@ namespace IoTGateway.Controllers
         }
         #region 下发写入
         [ActionDescription("下发写入")]
-        public ActionResult SetValue()
+        [HttpPost]
+        public ActionResult SetValue(string[] IDs)
         {
-            var vm = Wtm.CreateVM<SetValueVM>();
+            var vm = Wtm.CreateVM<SetValueVM>(Ids: IDs);
             return PartialView(vm);
         }
 
         [HttpPost]
         [ActionDescription("下发写入")]
-        public ActionResult SetValue(SetValueVM vm)
+        public ActionResult DoSetValue()
         {
+            var ids = Request.Form["setValue.ID[]"].ToArray();
+            var values = Request.Form["setValue.SetRawValue[]"].ToArray();
+
+            var vm = Wtm.CreateVM<SetValueVM>(Ids: ids);
             if (!ModelState.IsValid)
             {
                 return PartialView(vm);
