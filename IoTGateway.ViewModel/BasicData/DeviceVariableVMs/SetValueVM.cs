@@ -22,8 +22,18 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
         {
             try
             {
-                var  ids = (StringValues)FC["setValue.ID[]"];
-                var values= (StringValues)FC["setValue.SetRawValue[]"];
+                StringValues ids , values;
+                if (FC.ContainsKey("setValue.ID[]"))
+                {
+                    ids = (StringValues)FC["setValue.ID[]"];
+                    values = (StringValues)FC["setValue.SetRawValue[]"];
+                }
+                else
+                {
+                    ids = (StringValues)FC["setValue.ID"];
+                    values = (StringValues)FC["setValue.SetRawValue"];
+                }
+
                 Dictionary<string, string> kv = new(0);
                 for (int i = 0; i < ids.Count; i++)
                 {
@@ -87,6 +97,8 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
             StringValues ids;
             if (FC.ContainsKey("setValue.ID[]"))
                 ids = (StringValues)FC["setValue.ID[]"];
+            else if (FC.ContainsKey("setValue.ID"))
+                ids = (StringValues)FC["setValue.ID"];
             else
                 ids = (StringValues)FC["Ids[]"];
 

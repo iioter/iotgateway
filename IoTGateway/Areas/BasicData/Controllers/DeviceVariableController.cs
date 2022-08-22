@@ -216,7 +216,7 @@ namespace IoTGateway.Controllers
             return vm.GetExportData();
         }
         #region 下发写入
-        [ActionDescription("下发写入")]
+        [ActionDescription("下发页面")]
         [HttpPost]
         public ActionResult SetValue(string[] IDs)
         {
@@ -225,11 +225,16 @@ namespace IoTGateway.Controllers
         }
 
         [HttpPost]
-        [ActionDescription("下发写入")]
+        [ActionDescription("下发确认按钮")]
         public ActionResult DoSetValue()
         {
             var ids = Request.Form["setValue.ID[]"].ToArray();
             var values = Request.Form["setValue.SetRawValue[]"].ToArray();
+            if (ids.Length == 0)
+            {
+                ids = Request.Form["setValue.ID"].ToArray();
+                values = Request.Form["setValue.SetRawValue"].ToArray();
+            }
 
             var vm = Wtm.CreateVM<SetValueVM>(Ids: ids);
             if (!ModelState.IsValid)
