@@ -2,6 +2,8 @@
 using S7.Net;
 using System.Text;
 using Microsoft.Extensions.Logging;
+using System;
+using S7.Net.Types;
 
 namespace DriverSiemensS7
 {
@@ -102,7 +104,15 @@ namespace DriverSiemensS7
             {
                 try
                 {
-                    ret.Value = plc.Read(ioarg.Address);
+                    if (ioarg.ValueType == DataTypeEnum.AsciiString)
+                    {
+                        var dataItem = S7.Net.Types.DataItem.FromAddress(ioarg.Address);
+                        var head = plc.ReadBytes(dataItem.DataType, dataItem.DB, dataItem.StartByteAdr, 2);
+                        var strBytes = plc.ReadBytes(dataItem.DataType, dataItem.DB, dataItem.StartByteAdr + 2, head[1]);
+                        ret.Value = Encoding.ASCII.GetString(strBytes).TrimEnd(new char[] { '\0' }); ;
+                    }
+                    else
+                        ret.Value = plc.Read(ioarg.Address);
                     if (ioarg.ValueType == DataTypeEnum.Float)
                     {
                         var buffer = new byte[4];
@@ -129,22 +139,25 @@ namespace DriverSiemensS7
             return ret;
         }
 
-        [Method("读字符串", description: "读字符串")]
-        public DriverReturnValueModel ReadString(DriverAddressIoArgModel ioarg)
+        [Method("读西门子字节字符串", description: "DB10.DBW6,10  即开始地址，字节长度")]
+        public DriverReturnValueModel ReadByteString(DriverAddressIoArgModel ioarg)
         {
             var ret = new DriverReturnValueModel { StatusType = VaribaleStatusTypeEnum.Good };
 
             if (plc != null && plc.IsConnected)
             {
+                var str = string.Empty;
                 try
                 {
-                    int db = int.Parse(ioarg.Address.Trim().Split(',')[0]);
-                    int startAdr = int.Parse(ioarg.Address.Trim().Split(',')[1]);
-                    int count = int.Parse(ioarg.Address.Trim().Split(',')[2]);
-                    var buffers = plc.ReadBytes(DataType.DataBlock, db, startAdr, count);
-                    var str = Encoding.ASCII.GetString(buffers);
-                    if (str.Contains('\0'))
-                        str = str.Split('\0')[0];
+                    var arrParams = ioarg.Address.Trim().Split(',');
+                    if (arrParams.Length ==2)
+                    {
+                        var dataItemitem = S7.Net.Types.DataItem.FromAddress(arrParams[0]);
+                        int.TryParse(arrParams[1], out var length);
+
+                        var data = plc.ReadBytes(dataItemitem.DataType, dataItemitem.DB, dataItemitem.StartByteAdr, length);
+                        str = Encoding.ASCII.GetString(data).TrimEnd(new char[] { '\0' });
+                    }
                     ret.Value = str;
                 }
                 catch (Exception ex)
@@ -260,7 +273,7 @@ namespace DriverSiemensS7
                             toWrite = float.Parse(ioarg.Value.ToString());
                             break;
                         case DataTypeEnum.AsciiString:
-                            toWrite = Encoding.ASCII.GetBytes(ioarg.Value.ToString());
+                            toWrite = GetStringBytes(ioarg);
                             break;
                         default:
                             rpcResponse.Description = $"类型{DataTypeEnum.Float}不支持写入";
@@ -268,7 +281,10 @@ namespace DriverSiemensS7
                     }
 
                     if (toWrite == null)
+                    {
+                        rpcResponse.Description = "解析错误";
                         return rpcResponse;
+                    }
 
                     //通用方法
                     if (method == nameof(Read))
@@ -279,18 +295,16 @@ namespace DriverSiemensS7
                         return rpcResponse;
                     }
                     //字符串
-                    else if (method == nameof(ReadString))
+                    else if (method == nameof(ReadByteString))
                     {
-                        int db = int.Parse(ioarg.Address.Trim().Split(',')[0]);
-                        int startAdr = int.Parse(ioarg.Address.Trim().Split(',')[1]);
-                        int count = int.Parse(ioarg.Address.Trim().Split(',')[2]);
-                        //防止写入到其他地址 进行截断
-                        if (((byte[])toWrite).Length > count)
-                            toWrite = ((byte[])toWrite).Take(count);
-                        plc?.Write(DataType.DataBlock, db, startAdr, toWrite);
-
-                        rpcResponse.IsSuccess = true;
-                        return rpcResponse;
+                        var arrParams = ioarg.Address.Trim().Split(',');
+                        if (arrParams.Length == 2)
+                        {
+                            var dataItem = DataItem.FromAddress(arrParams[0]);
+                            plc?.Write(dataItem.DataType, dataItem.DB, dataItem.StartByteAdr, toWrite);
+                            rpcResponse.IsSuccess = true;
+                            return rpcResponse;
+                        }
                     }
                     else
                         rpcResponse.Description = $"不支持写入:{method}";
@@ -302,6 +316,41 @@ namespace DriverSiemensS7
             }
 
             return rpcResponse;
+        }
+
+        private byte[]? GetStringBytes(DriverAddressIoArgModel ioarg)
+        {
+            var toWriteString = ioarg.Value.ToString();
+            try
+            {
+                var arrParams = ioarg.Address.Trim().Split(',');
+                int length = 0;//最大长度，因为字符串后面得补满'\0'
+                //直接读取byte[]的方式
+                if (arrParams.Length == 2)
+                {
+                    //如DB100.DBW23,10
+                    int.TryParse(arrParams[1], out length);
+                }
+                //使用西门子String读取
+                else
+                {
+                    //如DB100.DBW23
+                    var dataItem = DataItem.FromAddress(ioarg.Address);
+                    var head = plc.ReadBytes(dataItem.DataType, dataItem.DB, dataItem.StartByteAdr, 2);
+                    length = head[0];
+                }
+
+                if (toWriteString.Length > length)
+                    toWriteString = toWriteString.Take(length).ToString();
+                if (toWriteString.Length < length)
+                    toWriteString = toWriteString.PadRight(length, '\0');
+            }
+            catch (Exception e)
+            {
+                throw new Exception("字符串解析异常");
+            }
+
+            return Encoding.ASCII.GetBytes(toWriteString);
         }
     }
 }
