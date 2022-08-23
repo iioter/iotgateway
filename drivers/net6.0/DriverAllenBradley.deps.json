@@ -8,21 +8,21 @@
     ".NETCoreApp,Version=v6.0": {
       "DriverAllenBradley/1.0.0": {
         "dependencies": {
-          "IoTClient": "1.0.28",
+          "IoTClient": "1.0.30",
           "PluginInterface": "1.0.0"
         },
         "runtime": {
           "DriverAllenBradley.dll": {}
         }
       },
-      "IoTClient/1.0.28": {
+      "IoTClient/1.0.30": {
         "dependencies": {
           "System.IO.Ports": "4.6.0"
         },
         "runtime": {
           "lib/netstandard2.0/IoTClient.dll": {
-            "assemblyVersion": "1.0.28.0",
-            "fileVersion": "1.0.28.0"
+            "assemblyVersion": "1.0.30.0",
+            "fileVersion": "1.0.30.0"
           }
         }
       },
@@ -149,12 +149,12 @@
       "serviceable": false,
       "sha512": ""
     },
-    "IoTClient/1.0.28": {
+    "IoTClient/1.0.30": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-C9H2L6dkYE2zk3XPNhYIQgPzu+vfaDUHWao3xt4kR0/PxHO7LP94i2hnJqh+tmB/+k2wULKkdy+g1RbJEIxOvQ==",
-      "path": "iotclient/1.0.28",
-      "hashPath": "iotclient.1.0.28.nupkg.sha512"
+      "sha512": "sha512-GDQzKeBZABZ+hW8XZoou1cpd4Cg6Ke1GGEAloGUkPAmdXVXEGH70Ylsr8ryTsIPd+hqr9LhDQZNHQM/T7nTvwA==",
+      "path": "iotclient/1.0.30",
+      "hashPath": "iotclient.1.0.30.nupkg.sha512"
     },
     "Microsoft.Extensions.Logging.Abstractions/6.0.0": {
       "type": "package",

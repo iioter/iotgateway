@@ -8,7 +8,7 @@
     ".NETCoreApp,Version=v6.0": {
       "DriverFanucHsl/1.0.0": {
         "dependencies": {
-          "HslCommunication": "11.0.2",
+          "HslCommunication": "11.0.6",
           "Newtonsoft.Json": "13.0.1",
           "PluginInterface": "1.0.0"
         },
@@ -16,15 +16,15 @@
           "DriverFanucHsl.dll": {}
         }
       },
-      "HslCommunication/11.0.2": {
+      "HslCommunication/11.0.6": {
         "dependencies": {
           "Newtonsoft.Json": "13.0.1",
           "System.IO.Ports": "4.7.0"
         },
         "runtime": {
           "lib/netstandard2.1/HslCommunication.dll": {
-            "assemblyVersion": "11.0.2.0",
-            "fileVersion": "11.0.2.0"
+            "assemblyVersion": "11.0.6.0",
+            "fileVersion": "11.0.6.0"
           }
         }
       },
@@ -151,12 +151,12 @@
       "serviceable": false,
       "sha512": ""
     },
-    "HslCommunication/11.0.2": {
+    "HslCommunication/11.0.6": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-5nZiUlp9yoZXjV0M+qGbIlyp2Zoyo8wHL2BY7BXe0PW4J7CdCxnJt+my0K/T5+AyXreM+MO+HvC1K0HIKVH42A==",
-      "path": "hslcommunication/11.0.2",
-      "hashPath": "hslcommunication.11.0.2.nupkg.sha512"
+      "sha512": "sha512-MWLDV+r0kAdhvD8rRCr6iIxGq0EdPbauqkmrCGIwb5F9uM8X8A8ViotfITYCFCxAK+9leK25cfKTjspfyJG71Q==",
+      "path": "hslcommunication/11.0.6",
+      "hashPath": "hslcommunication.11.0.6.nupkg.sha512"
     },
     "Microsoft.Extensions.Logging.Abstractions/6.0.0": {
       "type": "package",
