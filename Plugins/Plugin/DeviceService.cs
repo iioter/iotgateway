@@ -19,18 +19,18 @@ namespace Plugin
         public List<DeviceThread> DeviceThreads = new List<DeviceThread>();
         private readonly MyMqttClient _myMqttClient;
         private readonly UAService _uAService;
-        private readonly IMqttServer _mqttServer;
+        private readonly MqttServer _mqttServer;
         private readonly string _connnectSetting = IoTBackgroundService.connnectSetting;
         private readonly DBTypeEnum _dbType = IoTBackgroundService.DbType;
 
+        //UAService? uAService, 
         public DeviceService(IConfiguration configRoot, DriverService drvierManager, MyMqttClient myMqttClient,
-            UAService uAService, IMqttServer mqttServer, ILogger<DeviceService> logger)
+            MqttServer mqttServer, ILogger<DeviceService> logger)
         {
-            if (mqttServer == null) throw new ArgumentNullException(nameof(mqttServer));
             _logger = logger;
             DrvierManager = drvierManager;
             _myMqttClient = myMqttClient;
-            _uAService = uAService;
+            //_uAService = uAService;
             _mqttServer = mqttServer ?? throw new ArgumentNullException(nameof(mqttServer));
             try
             {

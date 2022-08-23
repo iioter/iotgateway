@@ -9,7 +9,6 @@ using System.ComponentModel.DataAnnotations;
 using IoTGateway.Model;
 using Microsoft.Extensions.Primitives;
 using MQTTnet.Server;
-using MQTTnet.Server.Status;
 using MQTTnet.Formatter;
 
 namespace IoTGateway.ViewModel.MqttClient.MqttServerVMs
@@ -45,12 +44,12 @@ namespace IoTGateway.ViewModel.MqttClient.MqttServerVMs
         }
         public override void DoSearch()
         {
-            var mqttServer = Wtm.ServiceProvider.GetService(typeof(IMqttServer)) as IMqttServer;
-            foreach (var client in mqttServer.GetClientStatusAsync().Result)
+            var mqttServer = Wtm.ServiceProvider.GetService(typeof(MqttServer)) as MqttServer;
+            foreach (var client in mqttServer.GetClientsAsync().Result)
             {
                 MqttClient_View mqttClient_ = new MqttClient_View
                 {
-                    ClientId = client.ClientId,
+                    ClientId = client.Id,
                     BytesReceived = client.BytesReceived,
                     BytesSent = client.BytesSent,
                     MqttProtocolVersion = client.ProtocolVersion,

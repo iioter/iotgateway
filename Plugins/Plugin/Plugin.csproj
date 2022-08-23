@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -9,8 +9,9 @@
   <ItemGroup>
     <PackageReference Include="DynamicExpresso.Core" Version="2.13.0" />
     <PackageReference Include="Mono.Options" Version="6.12.0.148" />
-    <PackageReference Include="MQTTnet" Version="3.1.2" />
-    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Server" Version="1.4.369.30" />
+    <PackageReference Include="MQTTnet" Version="4.1.0.247" />
+    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Server" Version="1.4.370.12" />
+    <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.1.0.247" />
   </ItemGroup>
 
   <ItemGroup>

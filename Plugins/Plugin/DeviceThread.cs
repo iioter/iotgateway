@@ -1,11 +1,13 @@
 ﻿using PluginInterface;
 using System.Reflection;
+using System.Text;
 using IoTGateway.DataAccess;
 using IoTGateway.Model;
 using DynamicExpresso;
 using MQTTnet.Server;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
+using MQTTnet;
 
 namespace Plugin
 {
@@ -26,7 +28,7 @@ namespace Plugin
         private bool _lastConnected;
 
         public DeviceThread(Device device, IDriver driver, string projectId, MyMqttClient myMqttClient,
-            IMqttServer mqttServer, ILogger logger)
+            MqttServer mqttServer, ILogger logger)
         {
             _myMqttClient = myMqttClient;
             _myMqttClient.OnExcRpc += MyMqttClient_OnExcRpc;
@@ -119,13 +121,24 @@ namespace Plugin
                                                 ret.CookedValue?.ToString())
                                             {
                                                 //这是设备变量列表要用的
-                                                mqttServer.PublishAsync(
-                                                    $"internal/v1/gateway/telemetry/{Device.DeviceName}/{item.Name}",
-                                                    JsonConvert.SerializeObject(ret));
+                                                var msg = new InjectedMqttApplicationMessage(
+                                                    new MqttApplicationMessage()
+                                                    {
+                                                        Topic =
+                                                            $"internal/v1/gateway/telemetry/{Device.DeviceName}/{item.Name}",
+                                                        Payload = Encoding.UTF8.GetBytes(
+                                                            JsonConvert.SerializeObject(ret))
+                                                    });
+                                                mqttServer.InjectApplicationMessage(msg);
                                                 //这是在线组态要用的
-                                                mqttServer.PublishAsync(
-                                                    $"v1/gateway/telemetry/{Device.DeviceName}/{item.Name}",
-                                                    JsonConvert.SerializeObject(ret.CookedValue));
+                                                msg = new InjectedMqttApplicationMessage(
+                                                    new MqttApplicationMessage()
+                                                    {
+                                                        Topic =
+                                                            $"v1/gateway/telemetry/{Device.DeviceName}/{item.Name}",
+                                                        Payload = Encoding.UTF8.GetBytes(
+                                                            JsonConvert.SerializeObject(ret.CookedValue))
+                                                    });
                                             }
 
                                             DeviceValues[item.ID] = ret;
@@ -224,7 +237,7 @@ namespace Plugin
                                     if (!writeResponse.IsSuccess)
                                     {
                                         rpcResponse.Description = writeResponse.Description;
-                                        break;
+                                        continue;
                                     }
                                 }
                                 else

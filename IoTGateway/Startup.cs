@@ -12,7 +12,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using MQTTnet.AspNetCore;
-using MQTTnet.AspNetCore.Extensions;
 using Plugin;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
@@ -66,11 +65,8 @@ namespace IoTGateway
                 options.ReloadUserFunc = ReloadUser;
             });
 
-            //MQTTServer
-            services.AddHostedMqttServer(mqttServer =>
-            {
-                mqttServer.WithoutDefaultEndpoint();
-            })
+            //MqttServer
+            services.AddHostedMqttServer(mqttServer => mqttServer.WithoutDefaultEndpoint())
                 .AddMqttConnectionHandler()
                 .AddConnections();
 
@@ -78,7 +74,7 @@ namespace IoTGateway
             services.AddHostedService<IoTBackgroundService>();
             services.AddSingleton<DeviceService>();
             services.AddSingleton<DriverService>();
-            services.AddSingleton<UAService>();
+            //services.AddSingleton<UAService>();
             services.AddSingleton<MyMqttClient>();
             services.AddSingleton<ModbusSlaveService>();
 
@@ -125,10 +121,15 @@ namespace IoTGateway
 
             app.UseEndpoints(endpoints =>
             {
-                //MqttServerWebSocket
-                endpoints.MapConnectionHandler<MqttConnectionHandler>("/mqtt", options =>
+                //MqttServer
+                app.UseEndpoints(endpoints =>
                 {
-                    options.WebSockets.SubProtocolSelector = MqttSubProtocolSelector.SelectSubProtocol;
+                    endpoints.MapMqtt("/mqtt");
+                });
+
+                app.UseMqttServer(server =>
+                {
+                    // Todo: Do something with the server
                 });
 
                 endpoints.MapControllerRoute(
