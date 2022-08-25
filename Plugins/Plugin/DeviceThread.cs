@@ -53,7 +53,7 @@ namespace Plugin
 
                 _task = Task.Run(() =>
                 {
-                    Thread.Sleep(5000); //上传客户端属性
+                    //上传客户端属性
                     myMqttClient.UploadAttributeAsync(device.DeviceName,
                         device.DeviceConfigs.Where(x => x.DataSide == DataSide.ClientSide)
                             .ToDictionary(x => x.DeviceConfigName, x => x.Value));
