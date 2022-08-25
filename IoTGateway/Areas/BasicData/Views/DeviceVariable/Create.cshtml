@@ -5,6 +5,7 @@
     <wt:row items-per-row="ItemsPerRowEnum.Two">
         <wt:combobox field="Entity.DeviceId" items="AllDevices" trigger-url="/BasicData/Device/GetMethods" link-field="Entity.Method" required="true" />
         <wt:textbox field="Entity.Name" required="true" />
+        <wt:textbox field="Entity.Index"/>
         <wt:textbox field="Entity.Description" />
         <wt:combobox field="Entity.Method" items="AllMethods" required="true" />
         <wt:textbox field="Entity.DeviceAddress" />

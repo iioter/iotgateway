@@ -15,6 +15,8 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
     {
         [Display(Name = "变量名")]
         public ExcelPropety Name_Excel = ExcelPropety.CreateProperty<DeviceVariable>(x => x.Name);
+        [Display(Name = "排序")]
+        public ExcelPropety Index_Excel = ExcelPropety.CreateProperty<DeviceVariable>(x => x.Index);
         [Display(Name = "描述")]
         public ExcelPropety Description_Excel = ExcelPropety.CreateProperty<DeviceVariable>(x => x.Description);
         [Display(Name = "方法")]

@@ -121,6 +121,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                     ID = x.ID,
                     DeviceId = x.DeviceId,
                     Name = x.Name,
+                    Index = x.Index,
                     Description = x.Description,
                     Method = x.Method,
                     DeviceAddress = x.DeviceAddress,
@@ -130,7 +131,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                     DeviceName_view = x.Device.DeviceName,
                     Device = x.Device
                 })
-                .OrderBy(x => x.DeviceName_view).ThenBy(x => x.DeviceAddress);
+                .OrderBy(x => x.DeviceName_view).ThenBy(x => x.Index);
             return query;
         }
 

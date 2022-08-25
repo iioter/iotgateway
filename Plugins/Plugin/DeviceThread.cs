@@ -78,7 +78,7 @@ namespace Plugin
                                 {
                                     if (Device.DeviceVariables != null)
                                     {
-                                        foreach (var item in Device.DeviceVariables)
+                                        foreach (var item in Device.DeviceVariables.OrderBy(x=>x.Index))
                                         {
                                             var ret = new DriverReturnValueModel();
                                             var ioarg = new DriverAddressIoArgModel
