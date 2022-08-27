@@ -289,7 +289,9 @@ namespace DriverSiemensS7
                     //通用方法
                     if (method == nameof(Read))
                     {
-                        plc?.Write(ioarg.Address, toWrite);
+                        var dataItem = DataItem.FromAddress(ioarg.Address);
+                        //plc?.Write(dataItem.DataType, dataItem.DB, dataItem.StartByteAdr + 1, ((byte[])toWrite).Length);
+                        plc?.Write(dataItem.DataType, dataItem.DB, dataItem.StartByteAdr + 2, toWrite);
 
                         rpcResponse.IsSuccess = true;
                         return rpcResponse;
