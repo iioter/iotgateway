@@ -28,6 +28,10 @@ namespace IoTGateway.Model
         [Display(Name = "权限")]
         public ProtectTypeEnum ProtectType { get; set; }
 
+        [Display(Name = "排序")]
+        public uint Index { get; set; }
+
+        [Newtonsoft.Json.JsonIgnore]
         public Device Device { get; set; }
         [Display(Name = "设备")]
         public Guid? DeviceId { get; set; }

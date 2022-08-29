@@ -1,17 +1,26 @@
-﻿@model IoTGateway.ViewModel.BasicData.DeviceVariableVMs.SetValueVM
+﻿@using IoTGateway.ViewModel.BasicData.DeviceVariableVMs
+@model IoTGateway.ViewModel.BasicData.DeviceVariableVMs.SetValueVM
 @inject IStringLocalizer<Program> Localizer;
 
 
-<wt:form vm="@Model">
+<wt:form vm="@Model" Url="/BasicData/DeviceVariable/DoSetValue">
     <wt:row items-per-row="ItemsPerRowEnum.One">
-        <wt:quote>@Model.设备名/@Model.变量名</wt:quote>
-        <wt:quote>当前原始值:@Model.当前原始值======>当前计算值:@Model.当前计算值</wt:quote>
-        <wt:quote>类型:@Model.类型======状态:@Model.状态</wt:quote>
-        <wt:textbox field=设定原始值 />
+        @if (@Model.SetValues.Any())
+        {
+            foreach (var setValue in @Model.SetValues)
+            {
+                <hr class="layui-border-blue">
+                <wt:quote>@setValue.DeviceName/@setValue.Name：【原值：@setValue.RawValue】=>【计算值：@setValue.Value】</wt:quote>
+                <div style="display: none">
+                    <wt:textbox field=@setValue.ID />
+                </div>
+                <wt:textbox field=@setValue.SetRawValue/>
+            }
+        }
     </wt:row>
 
     <wt:row align="AlignEnum.Right">
-        <wt:submitbutton text="下发" />
+        <wt:submitbutton  text="下发" />
         <wt:closebutton text="取消" />
     </wt:row>
 </wt:form>

@@ -1,32 +1,32 @@
 ﻿using PluginInterface;
 using SimpleTCP;
-using System;
-using System.Text;
+using Microsoft.Extensions.Logging;
 
 namespace DriverSimTcpClient
 {
     [DriverSupported("SimTcpServerDevice")]
-    [DriverInfoAttribute("SimTcpClient", "V1.0.0", "Copyright IoTGateway© 2022-06-04")]
+    [DriverInfo("SimTcpClient", "V1.0.0", "Copyright IoTGateway© 2022-06-04")]
     public class SimTcpClient : IDriver
     {
         /// <summary>
         /// tcp客户端
         /// </summary>
-        private SimpleTcpClient? client;
+        private SimpleTcpClient? _client;
+
         /// <summary>
         /// 缓存最新的服务器返回的原始数据
         /// </summary>
-        private byte[] latestRcvData;
+        private byte[]? _latestRcvData;
+        public ILogger _logger { get; set; }
+        private readonly string _device;
+
         #region 配置参数
 
-        [ConfigParameter("设备Id")]
-        public Guid DeviceId { get; set; }
+        [ConfigParameter("设备Id")] public string DeviceId { get; set; }
 
-        [ConfigParameter("IP地址")]
-        public string IpAddress { get; set; } = "127.0.0.1";
+        [ConfigParameter("IP地址")] public string IpAddress { get; set; } = "127.0.0.1";
 
-        [ConfigParameter("端口号")]
-        public int Port { get; set; } = 6666;
+        [ConfigParameter("端口号")] public int Port { get; set; } = 6666;
 
         /// <summary>
         /// 为了演示枚举类型在web端的录入，这里没用到 但是你可以拿到
@@ -34,19 +34,19 @@ namespace DriverSimTcpClient
         [ConfigParameter("连接类型")]
         public ConnectionType ConnectionType { get; set; } = ConnectionType.Long;
 
-        [ConfigParameter("超时时间ms")]
-        public int Timeout { get; set; } = 300;
+        [ConfigParameter("超时时间ms")] public int Timeout { get; set; } = 300;
 
-        [ConfigParameter("最小通讯周期ms")]
-        public uint MinPeriod { get; set; } = 3000;
+        [ConfigParameter("最小通讯周期ms")] public uint MinPeriod { get; set; } = 3000;
 
         #endregion
 
-        public SimTcpClient(Guid deviceId)
+        public SimTcpClient(string device, ILogger logger)
         {
-            DeviceId = deviceId;
-        }
+            _device = device;
+            _logger = logger;
 
+            _logger.LogInformation($"Device:[{_device}],Create()");
+        }
 
         /// <summary>
         /// 判断连接状态
@@ -56,7 +56,7 @@ namespace DriverSimTcpClient
             get
             {
                 //客户端对象不为空并且客户端已连接则返回true
-                return client != null && client.TcpClient.Connected;
+                return _client != null && _client.TcpClient.Connected;
             }
         }
 
@@ -69,15 +69,17 @@ namespace DriverSimTcpClient
             try
             {
                 //进行连接
-                client = new SimpleTcpClient().Connect(IpAddress, Port);
-                client.DataReceived += Client_DataReceived;
+                _client = new SimpleTcpClient().Connect(IpAddress, Port);
+                _client.DataReceived += Client_DataReceived;
             }
             catch (Exception)
             {
                 return false;
             }
+
             return IsConnected;
         }
+
         /// <summary>
         /// 收到服务端数据
         /// </summary>
@@ -87,7 +89,7 @@ namespace DriverSimTcpClient
         {
             //如果收到的数据校验正确，则放在内存中
             if (e.Data.Length == 8 && e.Data[0] == 0x08)
-                latestRcvData = e.Data;
+                _latestRcvData = e.Data;
         }
 
         /// <summary>
@@ -98,14 +100,17 @@ namespace DriverSimTcpClient
         {
             try
             {
-                client.DataReceived -= Client_DataReceived;
-                //断开连接
-                client?.Disconnect();
+                if (_client != null)
+                {
+                    _client.DataReceived -= Client_DataReceived;
+                    //断开连接
+                    _client?.Disconnect();
+                }
+
                 return !IsConnected;
             }
             catch (Exception)
             {
-
                 return false;
             }
         }
@@ -118,18 +123,17 @@ namespace DriverSimTcpClient
             try
             {
                 //释放资源
-                client?.Dispose();
+                _client?.Dispose();
             }
             catch (Exception)
             {
-
             }
         }
 
         /// <summary>
         /// 发送数据
         /// </summary>
-        private byte[] sendCmd = new byte[4] { 0x01, 0x02, 0x03, 0x04 };
+        private readonly byte[] _sendCmd = { 0x01, 0x02, 0x03, 0x04 };
 
         /// <summary>
         /// 解析并返回
@@ -148,16 +152,17 @@ namespace DriverSimTcpClient
                 ret.Message = "起始字节编号错误";
                 return ret;
             }
+
             //连接正常则进行读取
             if (IsConnected)
             {
                 try
                 {
                     //发送请求
-                    client?.Write(sendCmd);
+                    _client?.Write(_sendCmd);
                     //等待恢复，这里可以优化
                     Thread.Sleep(Timeout);
-                    if (latestRcvData == null)
+                    if (_latestRcvData == null)
                     {
                         ret.StatusType = VaribaleStatusTypeEnum.Bad;
                         ret.Message = "没有收到数据";
@@ -169,27 +174,24 @@ namespace DriverSimTcpClient
                         {
                             case DataTypeEnum.UByte:
                             case DataTypeEnum.Byte:
-                                ret.Value = latestRcvData[startIndex];
+                                ret.Value = _latestRcvData[startIndex];
                                 break;
                             case DataTypeEnum.Int16:
-                                var buffer16 = latestRcvData.Skip(startIndex).Take(2).ToArray();
-                                ret.Value = BitConverter.ToInt16(new byte[] { buffer16[0], buffer16[1] }, 0);
+                                var buffer16 = _latestRcvData.Skip(startIndex).Take(2).ToArray();
+                                ret.Value = BitConverter.ToInt16(new[] { buffer16[0], buffer16[1] }, 0);
                                 break;
                             case DataTypeEnum.Float:
                                 //拿到有用的数据
-                                var buffer32 = latestRcvData.Skip(startIndex).Take(4).ToArray();
+                                var buffer32 = _latestRcvData.Skip(startIndex).Take(4).ToArray();
                                 //大小端转换一下
-                                ret.Value = BitConverter.ToSingle(new byte[] { buffer32[3], buffer32[2], buffer32[1], buffer32[0] }, 0);
-                                break;
-                            default:
+                                ret.Value = BitConverter.ToSingle(
+                                    new[] { buffer32[3], buffer32[2], buffer32[1], buffer32[0] }, 0);
                                 break;
                         }
                     }
-
                 }
                 catch (Exception ex)
                 {
-
                     ret.StatusType = VaribaleStatusTypeEnum.Bad;
                     ret.Message = $"读取失败,{ex.Message}";
                 }
@@ -199,11 +201,12 @@ namespace DriverSimTcpClient
                 ret.StatusType = VaribaleStatusTypeEnum.Bad;
                 ret.Message = "连接失败";
             }
+
             return ret;
         }
 
 
-        public async Task<RpcResponse> WriteAsync(string RequestId, string Method, DriverAddressIoArgModel Ioarg)
+        public async Task<RpcResponse> WriteAsync(string requestId, string method, DriverAddressIoArgModel ioarg)
         {
             RpcResponse rpcResponse = new() { IsSuccess = false, Description = "设备驱动内未实现写入功能" };
             return rpcResponse;

@@ -96,7 +96,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                             levelfieldname = Regex.Replace(levelfieldname, ".*?Searcher\\.", "");
                             cusmtomclick = $@"
     $.extend({gridid}defaultfilter.where,{{'{idfieldname}':data.data.id, '{levelfieldname}':data.data.level }});
-    layui.table.reload('{gridid}',{{where: {gridid}defaultfilter.where}});
+    layui.table.reload('{gridid}',{{url:{gridid}url, where: {gridid}defaultfilter.where}});
 ";
                         }
                     }
@@ -109,7 +109,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 {
                     cusmtomclick = $"{FormatFuncName(ClickFunc)};";
                 }
-                List<LayuiTreeItem> treeitems = GetLayuiTree(mm);
+                List<LayuiTreeItem2> treeitems = GetLayuiTree(mm);
                 var onclick = $@"
                 ,click: function(data){{
                     var ele = null;
@@ -167,15 +167,16 @@ layui.use(['tree'],function(){{
             base.Process(context, output);
         }
 
-        private List<LayuiTreeItem> GetLayuiTree(IEnumerable<TreeSelectListItem> tree, int level = 0)
+        private List<LayuiTreeItem2> GetLayuiTree(IEnumerable<TreeSelectListItem> tree, int level = 0)
         {
-            List<LayuiTreeItem> rv = new List<LayuiTreeItem>();
+            List<LayuiTreeItem2> rv = new List<LayuiTreeItem2>();
             foreach (var s in tree)
             {
-                var news = new LayuiTreeItem
+                var news = new LayuiTreeItem2
                 {
                     Id = s.Value.ToString(),
                     Title = s.Text,
+                    Icon = s.Icon,
                     Url = s.Url,
                     Expand = s.Expended,
                     Level = level,
@@ -195,7 +196,7 @@ layui.use(['tree'],function(){{
             return rv;
         }
 
-        private LayuiTreeItem GetSelectedItem(List<LayuiTreeItem> tree)
+        private LayuiTreeItem2 GetSelectedItem(List<LayuiTreeItem2> tree)
         {
             foreach (var item in tree)
             {

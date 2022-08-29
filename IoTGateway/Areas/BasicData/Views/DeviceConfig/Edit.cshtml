@@ -5,7 +5,7 @@
     <wt:row items-per-row="ItemsPerRowEnum.Two">
         @*<wt:textbox field="Entity.DeviceConfigName" />*@
         @{
-            if (Model.Entity.EnumInfo != null)
+            if (!string.IsNullOrEmpty(Model.Entity.EnumInfo))
             {
                 <wt:combobox field="Entity.Value" items="AllTypes" />
             }

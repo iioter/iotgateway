@@ -34,13 +34,19 @@ namespace IoTGateway.ViewModel.BasicData.DeviceConfigVMs
                 .OrderBy(x => x.Parent.Index).ThenBy(x => x.Parent.DeviceName)
                 .OrderBy(x => x.Index).ThenBy(x => x.DeviceName)
                 .GetTreeSelectListItems(Wtm, x => x.DeviceName);
+
+            var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
             foreach (var device in AllDevices)
             {
                 foreach (var item in device.Children)
                 {
-                    item.Text = item.Text;
-                    item.Icon = "layui-icon layui-icon-link";
+                    var deviceThread = deviceService.DeviceThreads.Where(x => x.Device.ID.ToString() == (string)item.Value).FirstOrDefault();
+                    if (deviceThread != null)
+                        item.Icon = deviceThread.Device.AutoStart ? (deviceThread.Driver.IsConnected ? "layui-icon layui-icon-link" : "layui-icon layui-icon-unlink") : "layui-icon layui-icon-pause";
+
+                    item.Text = " "+item.Text;
                     item.Expended = true;
+                    item.Selected =item.Value.ToString() == IoTBackgroundService.ConfigSelectDeviceId.ToString();
                 }
             }
             base.InitListVM();

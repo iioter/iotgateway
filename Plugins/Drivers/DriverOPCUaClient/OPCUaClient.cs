@@ -1,51 +1,43 @@
 ﻿using PluginInterface;
-using System;
-using System.Collections;
-using System.IO;
 using Opc.Ua;
-using Opc.Ua.Client;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Opc.Ua.Configuration;
+using Microsoft.Extensions.Logging;
 using OpcUaHelper;
 
 namespace DriverOPCUaClient
 {
     [DriverSupported("OPC UA")]
-    [DriverInfoAttribute("OPCUaClient", "V1.0.0", "Copyright IoTGateway© 2021-12-19")]
+    [DriverInfo("OPCUaClient", "V1.0.0", "Copyright IoTGateway© 2021-12-19")]
     public class OPCUaClient : IDriver
     {
-        OpcUaClientHelper opcUaClient = null;
+        private OpcUaClientHelper? opcUaClient;
+        public ILogger _logger { get; set; }
+        private readonly string _device;
+
         #region 配置参数
 
-        [ConfigParameter("设备Id")]
-        public Guid DeviceId { get; set; }
+        [ConfigParameter("设备Id")] public string DeviceId { get; set; }
 
         [ConfigParameter("uri")]
         public string Uri { get; set; } = "opc.tcp://localhost:62541/Quickstarts/ReferenceServer";
 
-        [ConfigParameter("超时时间ms")]
-        public int Timeout { get; set; } = 3000;
+        [ConfigParameter("超时时间ms")] public int Timeout { get; set; } = 3000;
 
-        [ConfigParameter("最小通讯周期ms")]
-        public uint MinPeriod { get; set; } = 3000;
+        [ConfigParameter("最小通讯周期ms")] public uint MinPeriod { get; set; } = 3000;
 
         #endregion
 
-        public OPCUaClient(Guid deviceId)
+        public OPCUaClient(string device, ILogger logger)
         {
-            DeviceId = deviceId;
+            _device = device;
+            _logger = logger;
 
+            _logger.LogInformation($"Device:[{_device}],Create()");
         }
 
 
         public bool IsConnected
         {
-            get
-            {
-
-                return opcUaClient != null && opcUaClient.Connected;
-            }
+            get { return opcUaClient != null && opcUaClient.Connected; }
         }
 
         public bool Connect()
@@ -59,6 +51,7 @@ namespace DriverOPCUaClient
             {
                 return false;
             }
+
             return IsConnected;
         }
 
@@ -71,7 +64,6 @@ namespace DriverOPCUaClient
             }
             catch (Exception)
             {
-
                 return false;
             }
         }
@@ -84,7 +76,6 @@ namespace DriverOPCUaClient
             }
             catch (Exception)
             {
-
             }
         }
 
@@ -98,9 +89,9 @@ namespace DriverOPCUaClient
             {
                 try
                 {
-                    var dataValue = opcUaClient.ReadNode(new NodeId(ioarg.Address));
+                    var dataValue = opcUaClient?.ReadNode(new NodeId(ioarg.Address));
                     if (DataValue.IsGood(dataValue))
-                        ret.Value = dataValue.Value;
+                        ret.Value = dataValue?.Value;
                 }
                 catch (Exception ex)
                 {
@@ -113,6 +104,7 @@ namespace DriverOPCUaClient
                 ret.StatusType = VaribaleStatusTypeEnum.Bad;
                 ret.Message = "连接失败";
             }
+
             return ret;
         }
 
@@ -128,10 +120,11 @@ namespace DriverOPCUaClient
                 ret.StatusType = VaribaleStatusTypeEnum.Bad;
                 ret.Message = "连接失败";
             }
+
             return ret;
         }
 
-        public async Task<RpcResponse> WriteAsync(string RequestId, string Method, DriverAddressIoArgModel Ioarg)
+        public async Task<RpcResponse> WriteAsync(string requestId, string method, DriverAddressIoArgModel ioarg)
         {
             RpcResponse rpcResponse = new() { IsSuccess = false, Description = "设备驱动内未实现写入功能" };
             return rpcResponse;

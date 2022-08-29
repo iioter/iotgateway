@@ -7,6 +7,8 @@ namespace IoTGateway.Model
     {
         [Display(Name = "网关名称")]
         public string GatewayName { get; set; }
+        [Display(Name = "ClientId")]
+        public string ClientId { get; set; }
         [Display(Name = "Mqtt服务器")]
         public string MqttIp { get; set; }
         [Display(Name = "Mqtt端口")]
@@ -34,6 +36,8 @@ namespace IoTGateway.Model
         OneNET = 5,
         [Display(Name = "ThingsCloud")]
         ThingsCloud = 6,
+        [Display(Name = "华为云")]
+        HuaWei = 7,
         [Display(Name = "IotDB")]
         IotDB = 99
     }

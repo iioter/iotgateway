@@ -39,7 +39,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                 AllMethods = deviceService.GetDriverMethods(Entity.DeviceId);
             }
 
-            if (AllMethods.Count() > 0)
+            if (AllMethods?.Count() > 0)
                 AllMethods[0].Selected = true;
         }
 

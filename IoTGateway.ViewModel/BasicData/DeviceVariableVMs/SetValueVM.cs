@@ -7,80 +7,151 @@ using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 using IoTGateway.Model;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.Extensions.Primitives;
+using System.Runtime.Intrinsics.Arm;
+using Newtonsoft.Json;
 
 namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
 {
     public class SetValueVM : BaseVM
     {
-        public string 设备名 { get; set; }
-        public string 变量名 { get; set; }
-        public string 类型 { get; set; }
-        public string 当前原始值 { get; set; }
-        public string 当前计算值 { get; set; }
-        public string 状态 { get; set; }
-        public string 设定原始值 { get; set; }
+        public List<SetValue> SetValues { get; set; } = new();
         public string 设置结果 { get; set; }
 
         public void Set()
         {
             try
             {
-                var variable = DC.Set<DeviceVariable>().Where(x => x.ID == Guid.Parse(FC["id"].ToString())).AsNoTracking().Include(x => x.Device).FirstOrDefault();
-                设备名 = variable.Device.DeviceName;
-                变量名 = variable.Name;
-                类型 = variable.DataType.GetEnumDisplayName();
-
-                var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
-                var dapThread = deviceService.DeviceThreads.Where(x => x._device.ID == variable.DeviceId).FirstOrDefault();
-
-                if (dapThread?.DeviceValues != null && dapThread.DeviceValues.ContainsKey(variable.ID))
+                StringValues ids , values;
+                if (FC.ContainsKey("setValue.ID[]"))
                 {
-                    当前原始值 = dapThread.DeviceValues[variable.ID].Value?.ToString();
-                    当前计算值 = dapThread.DeviceValues[variable.ID].CookedValue?.ToString();
-                    状态 = dapThread.DeviceValues[variable.ID].StatusType.ToString();
+                    ids = (StringValues)FC["setValue.ID[]"];
+                    values = (StringValues)FC["setValue.SetRawValue[]"];
                 }
-
-                if (variable == null || variable.Device == null || dapThread == null)
-                    设置结果 = "设置失败，找不到设备(变量)";
-
                 else
                 {
-                    PluginInterface.RpcRequest request = new PluginInterface.RpcRequest()
-                    {
-                        RequestId = Guid.NewGuid().ToString(),
-                        DeviceName = variable.Device.DeviceName,
-                        Method = "write",
-                        Params = new Dictionary<string, object>() { { variable.Name, 设定原始值 } }
-                    };
-                    dapThread.MyMqttClient_OnExcRpc(this, request);
-                    设置结果 = "设置成功";
+                    ids = (StringValues)FC["setValue.ID"];
+                    values = (StringValues)FC["setValue.SetRawValue"];
                 }
+
+                Dictionary<string, string> kv = new(0);
+                for (int i = 0; i < ids.Count; i++)
+                {
+                    kv[ids[i]]=values[i];
+                }
+
+
+                var setValues = JsonConvert.DeserializeObject<List<SetValue>>(
+                    JsonConvert.SerializeObject(DC.Set<DeviceVariable>()
+                        .Where(x => ids.Contains(x.ID.ToString().ToLower())).AsNoTracking()
+                        .OrderBy(x => x.DeviceId).ToList()));
+
+                var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
+
+                if (setValues != null)
+                    foreach (var deviceVariables in setValues.GroupBy(x => x.DeviceId))
+                    {
+                        if (deviceService != null)
+                        {
+                            var dapThread =
+                                deviceService.DeviceThreads.FirstOrDefault(x =>
+                                    x.Device.ID == deviceVariables.Key);
+
+                            if (dapThread != null)
+                            {
+                                string deviceName = dapThread.Device.DeviceName;
+                                foreach (var variable in deviceVariables)
+                                {
+                                    if (dapThread.DeviceValues.ContainsKey(variable.ID))
+                                    {
+                                        variable.DeviceName = deviceName;
+                                        variable.RawValue = dapThread.DeviceValues[variable.ID].Value?.ToString();
+                                        variable.Value = dapThread.DeviceValues[variable.ID].CookedValue?.ToString();
+                                        variable.Status = dapThread.DeviceValues[variable.ID].StatusType.ToString();
+                                        variable.SetRawValue = kv[variable.ID.ToString()];
+                                    }
+                                }
+
+                                PluginInterface.RpcRequest request = new PluginInterface.RpcRequest()
+                                {
+                                    RequestId = Guid.NewGuid().ToString(),
+                                    DeviceName = deviceName,
+                                    Method = "write",
+                                    Params = deviceVariables.ToDictionary(x => x.Name, x => x.SetRawValue)
+                                };
+                                dapThread.MyMqttClient_OnExcRpc(this, request);
+                            }
+                            
+                        }
+                    }
+                设置结果 = "设置成功";
             }
             catch (Exception ex)
             {
-
                 设置结果 = $"设置失败,{ex}";
             }
         }
 
         protected override void InitVM()
         {
-            var variable = DC.Set<DeviceVariable>().Where(x => x.ID == Guid.Parse(FC["id"].ToString())).AsNoTracking().Include(x => x.Device).FirstOrDefault();
-            设备名 = variable.Device.DeviceName;
-            变量名 = variable.Name;
-            类型 = variable.DataType.GetEnumDisplayName();
+            StringValues ids;
+            if (FC.ContainsKey("setValue.ID[]"))
+                ids = (StringValues)FC["setValue.ID[]"];
+            else if (FC.ContainsKey("setValue.ID"))
+                ids = (StringValues)FC["setValue.ID"];
+            else
+                ids = (StringValues)FC["Ids[]"];
+
+            var setValues = JsonConvert.DeserializeObject<List<SetValue>>(
+                JsonConvert.SerializeObject(DC.Set<DeviceVariable>()
+                    .Where(x => ids.Contains(x.ID.ToString().ToLower())).AsNoTracking()
+                    .OrderBy(x => x.DeviceId).ToList()));
 
             var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
-            var dapThread = deviceService.DeviceThreads.Where(x => x._device.ID == variable.DeviceId).FirstOrDefault();
 
-            if (dapThread?.DeviceValues != null && dapThread.DeviceValues.ContainsKey(variable.ID))
-            {
-                当前原始值 = dapThread.DeviceValues[variable.ID].Value?.ToString();
-                当前计算值 = dapThread.DeviceValues[variable.ID].CookedValue?.ToString();
-                状态 = dapThread.DeviceValues[variable.ID].StatusType.ToString();
-            }
+            if (setValues != null)
+                foreach (var deviceVariables in setValues.GroupBy(x => x.DeviceId))
+                {
+                    if (deviceService != null)
+                    {
+                        var dapThread =
+                            deviceService.DeviceThreads.FirstOrDefault(x =>
+                                x.Device.ID == deviceVariables.Key);
 
+                        if (dapThread != null)
+                        {
+                            string deviceName = dapThread.Device.DeviceName;
+                            foreach (var variable in deviceVariables)
+                            {
+                                if (dapThread.DeviceValues.ContainsKey(variable.ID))
+                                {
+                                    variable.DeviceName = deviceName;
+                                    variable.RawValue = dapThread.DeviceValues[variable.ID].Value?.ToString();
+                                    variable.Value = dapThread.DeviceValues[variable.ID].CookedValue?.ToString();
+                                    variable.Status = dapThread.DeviceValues[variable.ID].StatusType.ToString();
+                                }
+                            }
+                        }
+
+                    }
+                }
+
+            SetValues = setValues;
             base.InitVM();
         }
+    }
+
+    public class SetValue : DeviceVariable
+    {
+        [Display(Name = "设备名")]
+        public string DeviceName { get; set; }
+        [Display(Name = "设定原值")]
+        public object SetRawValue { get; set; }
+        [Display(Name = "原值")]
+        public string RawValue { get; set; }
+        [Display(Name = "计算值")]
+        public string Value { get; set; }
+        [Display(Name = "状态")]
+        public string Status { get; set; }
     }
 }

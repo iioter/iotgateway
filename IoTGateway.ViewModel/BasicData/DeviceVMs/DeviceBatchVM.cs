@@ -67,6 +67,10 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
         public Guid? DriverId { get; set; }
         [Display(Name = "自启动")]
         public Boolean? AutoStart { get; set; }
+        [Display(Name = "变化上传")]
+        public Boolean CgUpload { get; set; }
+        [Display(Name = "归档周期ms")]
+        public uint EnforcePeriod { get; set; }
         [Display(Name = "类型")]
         public DeviceTypeEnum? DeviceTypeEnum { get; set; }
         public List<ComboSelectListItem> AllParents { get; set; }

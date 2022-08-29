@@ -35,6 +35,7 @@ namespace WalkingTec.Mvvm.Mvc
     {
 
         [HttpPost]
+        [Public]
         public IActionResult Selector(string _DONOT_USE_VMNAME
             , string _DONOT_USE_KFIELD
             , string _DONOT_USE_VFIELD
@@ -298,7 +299,7 @@ namespace WalkingTec.Mvvm.Mvc
         {
             var FileData = Request.Form.Files[0];
             var file = fp.Upload(FileData.FileName, FileData.Length, FileData.OpenReadStream(), groupName, subdir, extra, sm, Wtm.CreateDC(cskey: _DONOT_USE_CS));
-            return JsonMore(new { Id = file.GetID(), Name = file.FileName});
+            return JsonMore(new { Id = file.GetID(), Name = file.FileName });
         }
 
         [HttpPost]
@@ -329,7 +330,7 @@ namespace WalkingTec.Mvvm.Mvc
             oimage.SaveAsJpeg(ms);
             ms.Position = 0;
 
-            var file = fp.Upload(FileData.FileName, ms.Length, ms, groupName,subdir,extra,sm, Wtm.CreateDC(cskey: _DONOT_USE_CS));
+            var file = fp.Upload(FileData.FileName, ms.Length, ms, groupName, subdir, extra, sm, Wtm.CreateDC(cskey: _DONOT_USE_CS));
             oimage.Dispose();
             ms.Dispose();
             return JsonMore(new { Id = file.GetID(), Name = file.FileName });
@@ -413,7 +414,7 @@ namespace WalkingTec.Mvvm.Mvc
             rv.Position = 0;
             if (stream == false)
             {
-                    return File(rv, contenttype, file.FileName ?? (Guid.NewGuid().ToString() + ext));
+                return File(rv, contenttype, file.FileName ?? (Guid.NewGuid().ToString() + ext));
             }
             else
             {
@@ -423,7 +424,7 @@ namespace WalkingTec.Mvvm.Mvc
                 }
                 else
                 {
-                    Response.Headers.TryAdd("Content-Disposition",$"inline; filename=\"{HttpUtility.UrlEncode( file.FileName)}\"");
+                    Response.Headers.TryAdd("Content-Disposition", $"inline; filename=\"{HttpUtility.UrlEncode(file.FileName)}\"");
                     await rv.CopyToAsync(Response.Body);
                     rv.Dispose();
                     return new EmptyResult();
@@ -455,6 +456,7 @@ namespace WalkingTec.Mvvm.Mvc
 
         }
 
+        [Public]
         public IActionResult OutSide(string url)
         {
             url = HttpUtility.UrlDecode(url);
@@ -470,12 +472,12 @@ namespace WalkingTec.Mvvm.Mvc
                     var pmenu = GlobaInfo.AllMenus.Where(x => x.ID == menu.ParentId).FirstOrDefault();
                     if (pmenu != null)
                     {
-                            pmenu.PageName = Core.CoreProgram._localizer?[pmenu.PageName];
+                        pmenu.PageName = Core.CoreProgram._localizer?[pmenu.PageName];
 
                         pagetitle = pmenu.PageName + " - ";
                     }
                 }
-                    menu.PageName = Core.CoreProgram._localizer?[menu.PageName];
+                menu.PageName = Core.CoreProgram._localizer?[menu.PageName];
 
                 pagetitle += menu.PageName;
             }
@@ -570,7 +572,7 @@ namespace WalkingTec.Mvvm.Mvc
             foreach (var menu in menus)
             {
                 LocalizeMenu(menu.Children);
-                    menu.Title = Core.CoreProgram._localizer?[menu.Title];
+                menu.Title = Core.CoreProgram._localizer?[menu.Title];
             }
         }
 
@@ -720,7 +722,7 @@ namespace WalkingTec.Mvvm.Mvc
         {
             int codeW = 80;
             int codeH = 30;
-            int fontSize = 20;
+            int fontSize = 16;
             string chkCode = string.Empty;
             Color[] color = { Color.Black, Color.Red, Color.Blue, Color.Green, Color.Orange, Color.Brown, Color.DarkBlue, Color.PaleGreen };
             string[] font = { "Times New Roman" };
@@ -751,8 +753,7 @@ namespace WalkingTec.Mvvm.Mvc
             //画验证码
             for (int i = 0; i < chkCode.Length; i++)
             {
-                string fnt = font[rnd.Next(font.Length)];
-                Font ft = new Font(SystemFonts.Find(fnt), fontSize);
+                Font ft = new Font(SystemFonts.Families.First(), fontSize);
                 Color clr = color[rnd.Next(color.Length)];
                 bmp.Mutate(x => x.DrawText(chkCode[i].ToString(),ft,clr,new PointF((float)i * 18, (float)0)));
             }
@@ -854,7 +855,7 @@ namespace WalkingTec.Mvvm.Mvc
                 new CookieOptions { Expires = DateTimeOffset.UtcNow.AddYears(1) }
             );
 
-            return Content($"<script>window.location.href='{HttpUtility.UrlDecode(redirect)}';</script>","text/html");
+            return Content($"<script>window.location.href='{HttpUtility.UrlDecode(redirect)}';</script>", "text/html");
         }
 
 

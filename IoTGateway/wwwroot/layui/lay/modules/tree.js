@@ -201,8 +201,8 @@ layui.define('form', function(exports){
               if(options.isJump && item.href){
                 return '<a href="'+ item.href +'" target="_blank" class="'+ ELEM_TEXT +'">'+ (item.title || item.label || options.text.defaultNodeName) +'</a>';
               } else {
-                  return '<span class="' + ELEM_TEXT + (item.disabled ? ' ' + DISABLED : '') + '"><i class="layui-icon ' + (item.icon || '') + '"></i>' + (item.title || item.label || options.text.defaultNodeName) + '</span>';
-                //return '<span class="' + ELEM_TEXT + (item.disabled ? ' ' + DISABLED : '') + '">' + (item.title || item.label || options.text.defaultNodeName) + '</span>';
+                  return '<span class="' + ELEM_TEXT + (item.disabled ? ' ' + DISABLED : '') + '"><i class="iconfont ' + (item.icon || '') + '"></i>' + (item.title || item.label || options.text.defaultNodeName) + '</span>';
+
               }
             }()
       ,'</div>'

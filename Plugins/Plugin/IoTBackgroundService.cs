@@ -1,46 +1,51 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using IoTGateway.DataAccess;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
 
 namespace Plugin
 {
     public class IoTBackgroundService : BackgroundService
     {
-        public static DBTypeEnum DBType;
+        public static DBTypeEnum DbType;
         public static string connnectSetting;
         public static Guid? VariableSelectDeviceId, ConfigSelectDeviceId;
-        public IoTBackgroundService(IConfiguration ConfigRoot)
+        public IoTBackgroundService(IConfiguration configRoot)
         {
             var connnectSettings = new List<ConnnectSettingsModel>();
-            ConfigRoot.Bind("Connections", connnectSettings);
+            configRoot.Bind("Connections", connnectSettings);
             connnectSetting = connnectSettings[0].Value;
 
-            switch (connnectSettings[0].DBType.Trim().ToLower())
+            switch (connnectSettings[0].DbType?.Trim().ToLower())
             {
                 case "oracle":
-                    DBType = DBTypeEnum.Oracle;
+                    DbType = DBTypeEnum.Oracle;
                     break;
                 case "mysql":
-                    DBType = DBTypeEnum.MySql;
+                    DbType = DBTypeEnum.MySql;
                     break;
                 case "pgsql":
-                    DBType = DBTypeEnum.PgSql;
+                    DbType = DBTypeEnum.PgSql;
                     break;
                 case "sqlite":
-                    DBType = DBTypeEnum.SQLite;
+                    DbType = DBTypeEnum.SQLite;
                     break;
                 case "memory":
-                    DBType = DBTypeEnum.Memory;
-                    break;
-                default:
+                    DbType = DBTypeEnum.Memory;
                     break;
             }
+
+            if (DbType == DBTypeEnum.SQLite)
+            {
+                using var dc = new DataContext(connnectSetting, DbType);
+                if (dc.Database.GetPendingMigrations().Any())
+                {
+                    dc.Database.Migrate();
+                }
+            }
+
+
         }
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
