@@ -151,6 +151,15 @@ namespace Plugin
                                             payLoad.Values = null;
                                             payLoad.DeviceStatus = DeviceStatusTypeEnum.Bad;
                                         }
+                                        else if (DeviceValues.Any(x => x.Value.StatusType == VaribaleStatusTypeEnum.Bad))
+                                        {
+                                            if (driver.IsConnected)
+                                            {
+                                                driver.Close();
+                                                driver.Dispose();
+                                            }
+                                            _myMqttClient?.DeviceDisconnected(Device);
+                                        }
                                         else
                                         {
                                             payLoad.DeviceStatus = DeviceStatusTypeEnum.Good;
