@@ -474,7 +474,7 @@ namespace Plugin
                         if (sendModel[device.DeviceName][0].TS - _lastTelemetrys[device.DeviceName][0].TS >
                             device.EnforcePeriod)
                             canPub = true;
-                        //是否变化
+                        //是否变化 这里不好先用
                         else
                         {
                             if (JsonConvert.SerializeObject(sendModel[device.DeviceName][0].Values) !=
@@ -535,7 +535,7 @@ namespace Plugin
 
                                 IotTsData tsData = new IotTsData()
                                 {
-                                    device = device.DeviceName,
+                                    device = _systemConfig.GatewayName + device.DeviceName,
                                     timestamp = payload.TS,
                                     measurements = payload.Values?.Keys.ToList(),
                                     values = payload.Values?.Values.ToList()
