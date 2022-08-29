@@ -12,6 +12,7 @@ using PluginInterface.HuaWeiRoma;
 using PluginInterface.IotDB;
 using PluginInterface.IoTSharp;
 using PluginInterface.ThingsBoard;
+using System.Xml.Linq;
 
 namespace Plugin
 {
@@ -540,7 +541,7 @@ namespace Plugin
                                     measurements = payload.Values?.Keys.ToList(),
                                     values = payload.Values?.Values.ToList()
                                 };
-                                await Client.EnqueueAsync(device.DeviceName, JsonConvert.SerializeObject(tsData));
+                                await Client.EnqueueAsync(_systemConfig.GatewayName + device.DeviceName, JsonConvert.SerializeObject(tsData));
                             }
 
                             break;
@@ -580,6 +581,10 @@ namespace Plugin
             }
         }
 
+        private readonly DateTime _tsStartDt = new(1970, 1, 1);
+        private readonly List<string> iotDbOnLineMeasurement = new() { "online" };
+        private readonly List<object> iotDbOnLine = new() { true };
+        private readonly List<object> iotDbOffLine = new() { false };
         public async Task DeviceConnected(Device device)
         {
             try
@@ -604,6 +609,17 @@ namespace Plugin
                         await Client.EnqueueAsync("gateway/connect",
                             JsonConvert.SerializeObject(new Dictionary<string, string>
                                 { { "device", device.DeviceName } }));
+                        break;
+                    case IoTPlatformType.IotDB:
+                        IotTsData onlineData = new IotTsData()
+                        {
+                            device = _systemConfig.GatewayName + device.DeviceName,
+                            timestamp = (long)(DateTime.UtcNow - _tsStartDt).TotalMilliseconds,
+                            measurements = iotDbOnLineMeasurement,
+                            values = iotDbOnLine
+                        };
+                        await Client.EnqueueAsync(_systemConfig.GatewayName + device.DeviceName,
+                            JsonConvert.SerializeObject(onlineData));
                         break;
                     case IoTPlatformType.HuaWei:
                         var deviceOnLine = new HwDeviceOnOffLine()
@@ -657,6 +673,17 @@ namespace Plugin
                             JsonConvert.SerializeObject(new Dictionary<string, string>
                                 { { "device", device.DeviceName } }));
                         break;
+                    case IoTPlatformType.IotDB:
+                        IotTsData onlineData = new IotTsData()
+                        {
+                            device = _systemConfig.GatewayName + device.DeviceName,
+                            timestamp = (long)(DateTime.UtcNow - _tsStartDt).TotalMilliseconds,
+                            measurements = iotDbOnLineMeasurement,
+                            values = iotDbOffLine
+                        };
+                        await Client.EnqueueAsync(_systemConfig.GatewayName + device.DeviceName,
+                            JsonConvert.SerializeObject(onlineData));
+                        break;
                     case IoTPlatformType.HuaWei:
                         var deviceOnLine = new HwDeviceOnOffLine()
                         {
@@ -683,7 +710,6 @@ namespace Plugin
                 _logger.LogError($"DeviceDisconnected:{device.DeviceName}", ex);
             }
         }
-
 
         public async Task DeviceAdded(Device device)
         {
@@ -719,7 +745,6 @@ namespace Plugin
                 _logger.LogError($"DeviceAdded:{device.DeviceName}", ex);
             }
         }
-
 
         public async Task DeviceDeleted(Device device)
         {
