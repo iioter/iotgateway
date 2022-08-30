@@ -25,7 +25,6 @@ namespace Plugin
         private readonly DateTime _tsStartDt = new(1970, 1, 1);
         private readonly CancellationTokenSource _tokenSource = new CancellationTokenSource();
         private readonly object _lock = new();
-        private bool _lastConnected;
 
         public DeviceThread(Device device, IDriver driver, string projectId, MyMqttClient myMqttClient,
             MqttServer mqttServer, ILogger logger)
@@ -139,6 +138,7 @@ namespace Plugin
                                                         Payload = Encoding.UTF8.GetBytes(
                                                             JsonConvert.SerializeObject(ret.CookedValue))
                                                     });
+                                                mqttServer.InjectApplicationMessage(msg);
                                             }
 
                                             DeviceValues[item.ID] = ret;
@@ -170,16 +170,9 @@ namespace Plugin
                                 }
                                 else
                                 {
+                                    _myMqttClient?.DeviceDisconnected(Device);
                                     if (driver.Connect())
-                                    {
-                                        _lastConnected = true;
                                         _myMqttClient?.DeviceConnected(Device);
-                                    }
-                                    else if (_lastConnected)
-                                    {
-                                        _lastConnected = false;
-                                        _myMqttClient?.DeviceDisconnected(Device);
-                                    }
                                 }
                             }
                             catch (Exception ex)
