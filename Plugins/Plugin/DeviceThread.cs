@@ -120,7 +120,7 @@ namespace Plugin
                                                 ret.CookedValue?.ToString())
                                             {
                                                 //这是设备变量列表要用的
-                                                var msg = new InjectedMqttApplicationMessage(
+                                                var msgInternal = new InjectedMqttApplicationMessage(
                                                     new MqttApplicationMessage()
                                                     {
                                                         Topic =
@@ -128,9 +128,9 @@ namespace Plugin
                                                         Payload = Encoding.UTF8.GetBytes(
                                                             JsonConvert.SerializeObject(ret))
                                                     });
-                                                mqttServer.InjectApplicationMessage(msg);
+                                                mqttServer.InjectApplicationMessage(msgInternal);
                                                 //这是在线组态要用的
-                                                msg = new InjectedMqttApplicationMessage(
+                                                var msgConfigure = new InjectedMqttApplicationMessage(
                                                     new MqttApplicationMessage()
                                                     {
                                                         Topic =
@@ -138,7 +138,7 @@ namespace Plugin
                                                         Payload = Encoding.UTF8.GetBytes(
                                                             JsonConvert.SerializeObject(ret.CookedValue))
                                                     });
-                                                mqttServer.InjectApplicationMessage(msg);
+                                                mqttServer.InjectApplicationMessage(msgConfigure);
                                             }
 
                                             DeviceValues[item.ID] = ret;
