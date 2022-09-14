@@ -47,7 +47,7 @@
         /// </summary>
         public override async Task ListenAsync()
         {
-            Debug.WriteLine("Start Modbus Udp Server.");
+            //Debug.WriteLine("Start Modbus Udp Server.");
 
             try
             {
@@ -57,8 +57,8 @@
                     IPEndPoint masterEndPoint = receiveResult.RemoteEndPoint;
                     byte[] frame = receiveResult.Buffer;
 
-                    Debug.WriteLine($"Read Frame completed {frame.Length} bytes");
-                    Debug.WriteLine($"RX: {string.Join(", ", frame)}");
+                    //Debug.WriteLine($"Read Frame completed {frame.Length} bytes");
+                    //Debug.WriteLine($"RX: {string.Join(", ", frame)}");
 
                     IModbusMessage request =
                         ModbusMessageFactory.CreateModbusRequest(frame.Slice(6, frame.Length - 6).ToArray());
@@ -70,7 +70,7 @@
 
                     // write response
                     byte[] responseFrame = Transport.BuildMessageFrame(response);
-                    Debug.WriteLine($"TX: {string.Join(", ", responseFrame)}");
+                    //Debug.WriteLine($"TX: {string.Join(", ", responseFrame)}");
                     await _udpClient.SendAsync(responseFrame, responseFrame.Length, masterEndPoint).ConfigureAwait(false);
                 }
             }

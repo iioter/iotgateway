@@ -109,7 +109,7 @@
         /// </summary>
         public override async Task ListenAsync()
         {
-            Debug.WriteLine("Start Modbus Tcp Server.");
+            //Debug.WriteLine("Start Modbus Tcp Server.");
             // TODO: add state {stoped, listening} and check it before starting
             Server.Start();
 
@@ -197,7 +197,7 @@
                 throw new ArgumentException(msg);
             }
 
-            Debug.WriteLine($"Removed Master {e.EndPoint}");
+            //Debug.WriteLine($"Removed Master {e.EndPoint}");
         }
     }
 }

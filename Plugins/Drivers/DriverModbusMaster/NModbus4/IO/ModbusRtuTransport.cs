@@ -46,7 +46,7 @@
                     break;
                 default:
                     string msg = $"Function code {functionCode} not supported.";
-                    Debug.WriteLine(msg);
+                    //Debug.WriteLine(msg);
                     throw new NotImplementedException(msg);
             }
 
@@ -81,7 +81,7 @@
                     break;
                 default:
                     string msg = $"Function code {functionCode} not supported.";
-                    Debug.WriteLine(msg);
+                    //Debug.WriteLine(msg);
                     throw new NotImplementedException(msg);
             }
 
@@ -124,7 +124,7 @@
             byte[] frameStart = Read(ResponseFrameStartLength);
             byte[] frameEnd = Read(ResponseBytesToRead(frameStart));
             byte[] frame = Enumerable.Concat(frameStart, frameEnd).ToArray();
-            Debug.WriteLine($"RX: {string.Join(", ", frame)}");
+            //Debug.WriteLine($"RX: {string.Join(", ", frame)}");
 
             return CreateResponse<T>(frame);
         }
@@ -134,7 +134,7 @@
             byte[] frameStart = Read(RequestFrameStartLength);
             byte[] frameEnd = Read(RequestBytesToRead(frameStart));
             byte[] frame = Enumerable.Concat(frameStart, frameEnd).ToArray();
-            Debug.WriteLine($"RX: {string.Join(", ", frame)}");
+            //Debug.WriteLine($"RX: {string.Join(", ", frame)}");
 
             return frame;
         }

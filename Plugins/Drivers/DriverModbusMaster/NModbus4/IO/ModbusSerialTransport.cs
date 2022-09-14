@@ -38,7 +38,7 @@
             DiscardInBuffer();
 
             byte[] frame = BuildMessageFrame(message);
-            Debug.WriteLine($"TX: {string.Join(", ", frame)}");
+            //Debug.WriteLine($"TX: {string.Join(", ", frame)}");
             StreamResource.Write(frame, 0, frame.Length);
         }
 
@@ -50,7 +50,7 @@
             if (CheckFrame && !ChecksumsMatch(response, frame))
             {
                 string msg = $"Checksums failed to match {string.Join(", ", response.MessageFrame)} != {string.Join(", ", frame)}";
-                Debug.WriteLine(msg);
+                //Debug.WriteLine(msg);
                 throw new IOException(msg);
             }
 

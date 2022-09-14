@@ -57,7 +57,7 @@
 
             // convert hex to bytes
             byte[] frame = ModbusUtility.HexToBytes(frameHex);
-            Debug.WriteLine($"RX: {string.Join(", ", frame)}");
+            //Debug.WriteLine($"RX: {string.Join(", ", frame)}");
 
             if (frame.Length < 3)
             {

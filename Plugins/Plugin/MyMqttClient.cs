@@ -77,6 +77,7 @@ namespace Plugin
                         //Message: {"device": "Device A", "data": {"attribute1": "value1", "attribute2": 42}}
                         subTopics.Add(new MqttTopicFilterBuilder().WithTopic("v1/gateway/attributese").WithExactlyOnceQoS().Build());
                         break;
+                    case IoTPlatformType.IotDB:
                     case IoTPlatformType.IoTSharp:
                         subTopics.Add(new MqttTopicFilterBuilder().WithTopic("devices/+/rpc/request/+/+").WithExactlyOnceQoS().Build());
                         subTopics.Add(new MqttTopicFilterBuilder().WithTopic("devices/+/attributes/update").WithExactlyOnceQoS().Build());
@@ -230,13 +231,16 @@ namespace Plugin
                 if (!string.IsNullOrEmpty(rpcMethodName) && !string.IsNullOrEmpty(rpcDeviceName) &&
                     !string.IsNullOrEmpty(rpcRequestId))
                 {
-                    OnExcRpc(Client, new RpcRequest()
+                    Task.Run(() =>
                     {
-                        Method = rpcMethodName,
-                        DeviceName = rpcDeviceName,
-                        RequestId = rpcRequestId,
-                        Params = JsonConvert.DeserializeObject<Dictionary<string, object>>(e.ApplicationMessage
-                            .ConvertPayloadToString())
+                        OnExcRpc(Client, new RpcRequest()
+                        {
+                            Method = rpcMethodName,
+                            DeviceName = rpcDeviceName,
+                            RequestId = rpcRequestId,
+                            Params = JsonConvert.DeserializeObject<Dictionary<string, object>>(e.ApplicationMessage
+                                .ConvertPayloadToString())
+                        });
                     });
                 }
             }

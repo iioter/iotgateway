@@ -177,7 +177,7 @@
 
             try
             {
-                Debug.WriteLine(request.ToString());
+                //Debug.WriteLine(request.ToString());
                 var eventArgs = new ModbusSlaveRequestEventArgs(request);
                 ModbusSlaveRequestReceived?.Invoke(this, eventArgs);
 
@@ -252,7 +252,7 @@
                         break;
                     default:
                         string msg = $"Unsupported function code {request.FunctionCode}.";
-                        Debug.WriteLine(msg);
+                        //Debug.WriteLine(msg);
                         throw new InvalidModbusRequestException(Modbus.IllegalFunction);
                 }
             }

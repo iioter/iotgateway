@@ -43,9 +43,9 @@
                 numBytesRead += bRead;
             }
 
-            Debug.WriteLine($"MBAP header: {string.Join(", ", mbapHeader)}");
+            //Debug.WriteLine($"MBAP header: {string.Join(", ", mbapHeader)}");
             var frameLength = (ushort)IPAddress.HostToNetworkOrder(BitConverter.ToInt16(mbapHeader, 4));
-            Debug.WriteLine($"{frameLength} bytes in PDU.");
+            //Debug.WriteLine($"{frameLength} bytes in PDU.");
 
             // read message
             var messageFrame = new byte[frameLength];
@@ -63,9 +63,9 @@
                 numBytesRead += bRead;
             }
 
-            Debug.WriteLine($"PDU: {frameLength}");
+            //Debug.WriteLine($"PDU: {frameLength}");
             var frame = mbapHeader.Concat(messageFrame).ToArray();
-            Debug.WriteLine($"RX: {string.Join(", ", frame)}");
+            //Debug.WriteLine($"RX: {string.Join(", ", frame)}");
 
             return frame;
         }
@@ -126,7 +126,7 @@
         {
             message.TransactionId = GetNewTransactionId();
             byte[] frame = BuildMessageFrame(message);
-            Debug.WriteLine($"TX: {string.Join(", ", frame)}");
+            //Debug.WriteLine($"TX: {string.Join(", ", frame)}");
             StreamResource.Write(frame, 0, frame.Length);
         }
 

@@ -142,7 +142,7 @@
 
                                 if (readAgain)
                                 {
-                                    Debug.WriteLine($"Received ACKNOWLEDGE slave exception response, waiting {_waitToRetryMilliseconds} milliseconds and retrying to read response.");
+                                    //Debug.WriteLine($"Received ACKNOWLEDGE slave exception response, waiting {_waitToRetryMilliseconds} milliseconds and retrying to read response.");
                                     Sleep(WaitToRetryMilliseconds);
                                 }
                                 else
@@ -173,7 +173,7 @@
                         throw;
                     }
 
-                    Debug.WriteLine($"Received SLAVE_DEVICE_BUSY exception response, waiting {_waitToRetryMilliseconds} milliseconds and resubmitting request.");
+                    //Debug.WriteLine($"Received SLAVE_DEVICE_BUSY exception response, waiting {_waitToRetryMilliseconds} milliseconds and resubmitting request.");
                     Sleep(WaitToRetryMilliseconds);
                 }
                 catch (Exception e)
@@ -183,7 +183,7 @@
                         e is TimeoutException ||
                         e is IOException)
                     {
-                        Debug.WriteLine($"{e.GetType().Name}, {(_retries - attempt + 1)} retries remaining - {e}");
+                        //Debug.WriteLine($"{e.GetType().Name}, {(_retries - attempt + 1)} retries remaining - {e}");
 
                         if (attempt++ > _retries)
                         {
