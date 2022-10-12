@@ -15,7 +15,7 @@ namespace IoTGateway.DataAccess.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.0");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.10");
 
             modelBuilder.Entity("IoTGateway.Model.Device", b =>
                 {
@@ -27,6 +27,9 @@ namespace IoTGateway.DataAccess.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("CgUpload")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<uint>("CmdPeriod")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("CreateBy")
