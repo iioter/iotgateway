@@ -79,6 +79,8 @@ namespace Plugin
                                     {
                                         foreach (var item in Device.DeviceVariables.OrderBy(x=>x.Index))
                                         {
+                                            Thread.Sleep((int)Device.CmdPeriod);
+
                                             var ret = new DriverReturnValueModel();
                                             var ioarg = new DriverAddressIoArgModel
                                             {

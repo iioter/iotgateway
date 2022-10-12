@@ -29,6 +29,9 @@ namespace IoTGateway.Model
         [Display(Name = "归档周期ms")]
         public uint EnforcePeriod { get; set; }
 
+        [Display(Name = "指令间隔ms")]
+        public uint CmdPeriod { get; set; }
+
         [Display(Name = "类型")]
         public DeviceTypeEnum DeviceTypeEnum { get; set; }
 

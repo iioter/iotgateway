@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using IoTGateway.Model;
 using Microsoft.Extensions.Primitives;
+using NPOI.OpenXmlFormats.Dml.Chart;
 
 namespace IoTGateway.ViewModel.BasicData.DeviceVMs
 {
@@ -42,6 +43,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                 this.MakeGridHeader(x => x.AutoStart),
                 this.MakeGridHeader(x => x.CgUpload),
                 this.MakeGridHeader(x => x.EnforcePeriod),
+                this.MakeGridHeader(x => x.CmdPeriod),
                 this.MakeGridHeader(x => x.DeviceTypeEnum),
                 //this.MakeGridHeader(x => x.DeviceName_view),
                 this.MakeGridHeader(x=>"copy").SetHide().SetFormat((a,b)=>{
@@ -100,6 +102,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                         AutoStart = y.AutoStart,
                         CgUpload = y.CgUpload,
                         EnforcePeriod = y.EnforcePeriod,
+                        CmdPeriod=y.CmdPeriod,
                         Description = y.Description,
                         DeviceTypeEnum = y.DeviceTypeEnum,
                         DriverName_view = y.Driver?.DriverName,
