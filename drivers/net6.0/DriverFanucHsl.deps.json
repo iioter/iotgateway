@@ -8,7 +8,7 @@
     ".NETCoreApp,Version=v6.0": {
       "DriverFanucHsl/1.0.0": {
         "dependencies": {
-          "HslCommunication": "11.0.6",
+          "HslCommunication": "11.1.1",
           "Newtonsoft.Json": "13.0.1",
           "PluginInterface": "1.0.0"
         },
@@ -16,23 +16,23 @@
           "DriverFanucHsl.dll": {}
         }
       },
-      "HslCommunication/11.0.6": {
+      "HslCommunication/11.1.1": {
         "dependencies": {
           "Newtonsoft.Json": "13.0.1",
           "System.IO.Ports": "4.7.0"
         },
         "runtime": {
           "lib/netstandard2.1/HslCommunication.dll": {
-            "assemblyVersion": "11.0.6.0",
-            "fileVersion": "11.0.6.0"
+            "assemblyVersion": "11.1.1.0",
+            "fileVersion": "11.1.1.0"
           }
         }
       },
-      "Microsoft.Extensions.Logging.Abstractions/6.0.0": {
+      "Microsoft.Extensions.Logging.Abstractions/6.0.2": {
         "runtime": {
           "lib/net6.0/Microsoft.Extensions.Logging.Abstractions.dll": {
             "assemblyVersion": "6.0.0.0",
-            "fileVersion": "6.0.21.52210"
+            "fileVersion": "6.0.922.41905"
           }
         }
       },
@@ -136,7 +136,7 @@
       "System.Security.Principal.Windows/4.7.0": {},
       "PluginInterface/1.0.0": {
         "dependencies": {
-          "Microsoft.Extensions.Logging.Abstractions": "6.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "6.0.2",
           "Newtonsoft.Json": "13.0.1"
         },
         "runtime": {
@@ -151,19 +151,19 @@
       "serviceable": false,
       "sha512": ""
     },
-    "HslCommunication/11.0.6": {
+    "HslCommunication/11.1.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-MWLDV+r0kAdhvD8rRCr6iIxGq0EdPbauqkmrCGIwb5F9uM8X8A8ViotfITYCFCxAK+9leK25cfKTjspfyJG71Q==",
-      "path": "hslcommunication/11.0.6",
-      "hashPath": "hslcommunication.11.0.6.nupkg.sha512"
+      "sha512": "sha512-+HUfjin0STcIuiSsZ7ksohWBbeTFW7XbkDR+/jK19/ikmzCoRwwB8688dWc4szTruuF00URB998SU8snPxtIKQ==",
+      "path": "hslcommunication/11.1.1",
+      "hashPath": "hslcommunication.11.1.1.nupkg.sha512"
     },
-    "Microsoft.Extensions.Logging.Abstractions/6.0.0": {
+    "Microsoft.Extensions.Logging.Abstractions/6.0.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-/HggWBbTwy8TgebGSX5DBZ24ndhzi93sHUBDvP1IxbZD7FDokYzdAr6+vbWGjw2XAfR2EJ1sfKUotpjHnFWPxA==",
-      "path": "microsoft.extensions.logging.abstractions/6.0.0",
-      "hashPath": "microsoft.extensions.logging.abstractions.6.0.0.nupkg.sha512"
+      "sha512": "sha512-pwXCZKaA7m5wgmCj49dW+H1RPSY7U62SKLTQYCcavf/k3Nyt/WnBgAjG4jMGnwy9rElfAZ2KvxvM5CJzJWG0hg==",
+      "path": "microsoft.extensions.logging.abstractions/6.0.2",
+      "hashPath": "microsoft.extensions.logging.abstractions.6.0.2.nupkg.sha512"
     },
     "Microsoft.NETCore.Platforms/3.1.0": {
       "type": "package",

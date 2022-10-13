@@ -15,11 +15,11 @@
           "DriverOPCUaClient.dll": {}
         }
       },
-      "Microsoft.Extensions.Logging.Abstractions/6.0.1": {
+      "Microsoft.Extensions.Logging.Abstractions/6.0.2": {
         "runtime": {
           "lib/net6.0/Microsoft.Extensions.Logging.Abstractions.dll": {
             "assemblyVersion": "6.0.0.0",
-            "fileVersion": "6.0.322.12309"
+            "fileVersion": "6.0.922.41905"
           }
         }
       },
@@ -56,7 +56,7 @@
       },
       "OPCFoundation.NetStandard.Opc.Ua.Core/1.4.370.12": {
         "dependencies": {
-          "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
+          "Microsoft.Extensions.Logging.Abstractions": "6.0.2",
           "Newtonsoft.Json": "13.0.1",
           "OPCFoundation.NetStandard.Opc.Ua.Security.Certificates": "1.4.370.12"
         },
@@ -81,7 +81,7 @@
       "System.Formats.Asn1/6.0.0": {},
       "PluginInterface/1.0.0": {
         "dependencies": {
-          "Microsoft.Extensions.Logging.Abstractions": "6.0.1",
+          "Microsoft.Extensions.Logging.Abstractions": "6.0.2",
           "Newtonsoft.Json": "13.0.1"
         },
         "runtime": {
@@ -96,12 +96,12 @@
       "serviceable": false,
       "sha512": ""
     },
-    "Microsoft.Extensions.Logging.Abstractions/6.0.1": {
+    "Microsoft.Extensions.Logging.Abstractions/6.0.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-dzB2Cgg+JmrouhjkcQGzSFjjvpwlq353i8oBQO2GWNjCXSzhbtBRUf28HSauWe7eib3wYOdb3tItdjRwAdwCSg==",
-      "path": "microsoft.extensions.logging.abstractions/6.0.1",
-      "hashPath": "microsoft.extensions.logging.abstractions.6.0.1.nupkg.sha512"
+      "sha512": "sha512-pwXCZKaA7m5wgmCj49dW+H1RPSY7U62SKLTQYCcavf/k3Nyt/WnBgAjG4jMGnwy9rElfAZ2KvxvM5CJzJWG0hg==",
+      "path": "microsoft.extensions.logging.abstractions/6.0.2",
+      "hashPath": "microsoft.extensions.logging.abstractions.6.0.2.nupkg.sha512"
     },
     "Newtonsoft.Json/13.0.1": {
       "type": "package",
