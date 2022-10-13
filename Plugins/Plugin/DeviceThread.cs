@@ -41,7 +41,7 @@ namespace Plugin
             if (Device.AutoStart)
             {
                 _logger.LogInformation($"线程已启动:{Device.DeviceName}");
-                Task.Delay(8000);
+                Thread.Sleep(8000);
 
                 if (Device.DeviceVariables != null)
                 {
@@ -80,7 +80,7 @@ namespace Plugin
                                     {
                                         foreach (var item in Device.DeviceVariables.OrderBy(x => x.Index))
                                         {
-                                            Task.Delay((int)Device.CmdPeriod);
+                                            Thread.Sleep((int)Device.CmdPeriod);
 
                                             var ret = new DriverReturnValueModel();
                                             var ioarg = new DriverAddressIoArgModel
@@ -189,7 +189,7 @@ namespace Plugin
                         }
 
 
-                        Task.Delay((int)Driver.MinPeriod);
+                        Thread.Sleep((int)Driver.MinPeriod);
                     }
                 }, TaskCreationOptions.LongRunning);
             }
