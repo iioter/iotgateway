@@ -50,7 +50,7 @@ namespace Plugin
                     }
                 }
 
-                _task = Task.Run(() =>
+                _task = Task.Factory.StartNew(() =>
                 {
                     //上传客户端属性
                     myMqttClient.UploadAttributeAsync(device.DeviceName,
@@ -77,7 +77,7 @@ namespace Plugin
                                 {
                                     if (Device.DeviceVariables != null)
                                     {
-                                        foreach (var item in Device.DeviceVariables.OrderBy(x=>x.Index))
+                                        foreach (var item in Device.DeviceVariables.OrderBy(x => x.Index))
                                         {
                                             Thread.Sleep((int)Device.CmdPeriod);
 
@@ -144,6 +144,8 @@ namespace Plugin
                                             }
 
                                             DeviceValues[item.ID] = ret;
+
+
                                         }
 
                                         payLoad.TS = (long)(DateTime.UtcNow - _tsStartDt).TotalMilliseconds;
@@ -153,13 +155,15 @@ namespace Plugin
                                             payLoad.Values = null;
                                             payLoad.DeviceStatus = DeviceStatusTypeEnum.Bad;
                                         }
-                                        else if (DeviceValues.Any(x => x.Value.StatusType == VaribaleStatusTypeEnum.Bad))
+                                        else if (DeviceValues.Any(x =>
+                                                     x.Value.StatusType == VaribaleStatusTypeEnum.Bad))
                                         {
                                             if (driver.IsConnected)
                                             {
                                                 driver.Close();
                                                 driver.Dispose();
                                             }
+
                                             _myMqttClient?.DeviceDisconnected(Device);
                                         }
                                         else
@@ -186,7 +190,7 @@ namespace Plugin
 
                         Thread.Sleep((int)Driver.MinPeriod);
                     }
-                });
+                }, TaskCreationOptions.LongRunning);
             }
             else
                 _myMqttClient?.DeviceDisconnected(Device);
@@ -277,11 +281,9 @@ namespace Plugin
                 rpcLog.EndTime = DateTime.Now;
 
 
-                using (var dc = new DataContext(IoTBackgroundService.connnectSetting, IoTBackgroundService.DbType))
-                {
-                    dc.Set<RpcLog>().Add(rpcLog);
-                    dc.SaveChanges();
-                }
+                using var dc = new DataContext(IoTBackgroundService.connnectSetting, IoTBackgroundService.DbType);
+                dc.Set<RpcLog>().Add(rpcLog);
+                dc.SaveChanges();
             }
         }
 
