@@ -30,7 +30,7 @@ namespace IoTGateway.ViewModel.Config.SystemConfigVMs
         {
             base.DoEdit(updateAllFields);
             var myMqttClient = Wtm.ServiceProvider.GetService(typeof(MyMqttClient)) as MyMqttClient;
-            myMqttClient.StartManagedClientAsync().Wait();
+            myMqttClient.StartClientAsync().Wait();
         }
 
         public override void DoDelete()
