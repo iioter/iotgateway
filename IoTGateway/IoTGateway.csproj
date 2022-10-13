@@ -7,6 +7,8 @@
 		<SatelliteResourceLanguages>zh-Hans,en</SatelliteResourceLanguages>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<ServerGarbageCollection>false</ServerGarbageCollection>
+		<ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
 		<!--<PlatformTarget>x86</PlatformTarget>-->
 	</PropertyGroup>
 

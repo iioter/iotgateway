@@ -1,22 +1,24 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<ServerGarbageCollection>false</ServerGarbageCollection>
+		<ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="DynamicExpresso.Core" Version="2.13.0" />
-    <PackageReference Include="Mono.Options" Version="6.12.0.148" />
-    <PackageReference Include="MQTTnet" Version="4.1.1.318" />
-    <PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Server" Version="1.4.370.12" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="DynamicExpresso.Core" Version="2.13.0" />
+		<PackageReference Include="Mono.Options" Version="6.12.0.148" />
+		<PackageReference Include="MQTTnet" Version="4.1.1.318" />
+		<PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Server" Version="1.4.370.12" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\IoTGateway.DataAccess\IoTGateway.DataAccess.csproj" />
-    <ProjectReference Include="..\..\IoTGateway.Model\IoTGateway.Model.csproj" />
-    <ProjectReference Include="..\Drivers\DriverModbusMaster\DriverModbusMaster.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\IoTGateway.DataAccess\IoTGateway.DataAccess.csproj" />
+		<ProjectReference Include="..\..\IoTGateway.Model\IoTGateway.Model.csproj" />
+		<ProjectReference Include="..\Drivers\DriverModbusMaster\DriverModbusMaster.csproj" />
+	</ItemGroup>
 
 </Project>
