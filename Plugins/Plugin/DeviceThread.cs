@@ -50,7 +50,7 @@ namespace Plugin
                     }
                 }
 
-                _task = Task.Factory.StartNew(() =>
+                _task = Task.Run(() =>
                 {
                     Thread.Sleep(8000);
                     //上传客户端属性
@@ -187,7 +187,7 @@ namespace Plugin
 
                         Thread.Sleep((int)Driver.MinPeriod);
                     }
-                }, TaskCreationOptions.LongRunning);
+                });
             }
             else
                 _myMqttClient?.DeviceDisconnected(Device);
