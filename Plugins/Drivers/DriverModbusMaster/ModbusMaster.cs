@@ -151,7 +151,7 @@ namespace DriverModbusMaster
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Device:[{_device}],Connect(),Error", ex);
+                _logger.LogError(ex, $"Device:[{_device}],Connect(),Error");
                 return false;
             }
 
@@ -170,7 +170,7 @@ namespace DriverModbusMaster
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Device:[{_device}],Close(),Error", ex);
+                _logger.LogError(ex, $"Device:[{_device}],Close(),Error");
                 return false;
             }
         }
@@ -187,7 +187,7 @@ namespace DriverModbusMaster
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Device:[{_device}],Dispose(),Error", ex);
+                _logger.LogError(ex, $"Device:[{_device}],Dispose(),Error");
             }
         }
 
@@ -209,7 +209,7 @@ namespace DriverModbusMaster
             {
                 ret.StatusType = VaribaleStatusTypeEnum.UnKnow;
                 ret.Message = ex.Message;
-                _logger.LogInformation($"Device:[{_device}],ReadHoldingRegisters(),Error", ex);
+                _logger.LogError(ex, $"Device:[{_device}],ReadHoldingRegisters(),Error");
             }
 
             return ret;
@@ -234,7 +234,7 @@ namespace DriverModbusMaster
             {
                 ret.StatusType = VaribaleStatusTypeEnum.UnKnow;
                 ret.Message = ex.Message;
-                _logger.LogInformation($"Device:[{_device}],ReadInputRegisters(),Error", ex);
+                _logger.LogError(ex, $"Device:[{_device}],ReadInputRegisters(),Error");
             }
 
             return ret;
@@ -272,7 +272,7 @@ namespace DriverModbusMaster
             {
                 ret.StatusType = VaribaleStatusTypeEnum.UnKnow;
                 ret.Message = ex.Message;
-                _logger.LogInformation($"Device:[{_device}],ReadCoil(),Error", ex);
+                _logger.LogError(ex, $"Device:[{_device}],ReadCoil(),Error");
             }
 
             return ret;
@@ -309,7 +309,7 @@ namespace DriverModbusMaster
             {
                 ret.StatusType = VaribaleStatusTypeEnum.UnKnow;
                 ret.Message = ex.Message;
-                _logger.LogInformation($"Device:[{_device}],ReadInput(),Error", ex);
+                _logger.LogError(ex, $"Device:[{_device}],ReadInput(),Error");
             }
 
             return ret;
@@ -381,7 +381,7 @@ namespace DriverModbusMaster
                 {
                     ret.StatusType = VaribaleStatusTypeEnum.Bad;
                     ret.Message = ex.Message;
-                    _logger.LogInformation($"Device:[{_device}],ReadRegistersBuffers(),Error", ex);
+                    _logger.LogError(ex, $"Device:[{_device}],ReadRegistersBuffers(),Error");
                 }
             }
 
@@ -493,7 +493,7 @@ namespace DriverModbusMaster
                 ret.Message = ex.Message;
                 startAddress = 0;
                 readCount = 0;
-                _logger.LogInformation($"Device:[{_device}],AnalyzeAddress(),Error", ex);
+                _logger.LogError(ex, $"Device:[{_device}],AnalyzeAddress(),Error");
                 return ret;
             }
         }
@@ -554,7 +554,7 @@ namespace DriverModbusMaster
             catch (Exception ex)
             {
                 rpcResponse.Description = $"写入失败,[method]:{method},[ioarg]:{ioarg},[ex]:{ex}";
-                _logger.LogInformation($"Device:[{_device}],WriteAsync(),Error", ex);
+                _logger.LogError(ex, $"Device:[{_device}],WriteAsync(),Error");
             }
 
             return rpcResponse;
