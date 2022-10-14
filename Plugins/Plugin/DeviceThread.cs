@@ -41,7 +41,6 @@ namespace Plugin
             if (Device.AutoStart)
             {
                 _logger.LogInformation($"线程已启动:{Device.DeviceName}");
-                Thread.Sleep(8000);
 
                 if (Device.DeviceVariables != null)
                 {
@@ -53,6 +52,7 @@ namespace Plugin
 
                 _task = Task.Factory.StartNew(() =>
                 {
+                    Thread.Sleep(8000);
                     //上传客户端属性
                     myMqttClient.UploadAttributeAsync(device.DeviceName,
                         device.DeviceConfigs.Where(x => x.DataSide == DataSide.ClientSide)
@@ -151,10 +151,12 @@ namespace Plugin
 
                                         payLoad.TS = (long)(DateTime.UtcNow - _tsStartDt).TotalMilliseconds;
 
-                                        if (DeviceValues.Any(x => x.Value.Value == null))
+                                        if (DeviceValues.All(x =>
+                                               x.Value.StatusType == VaribaleStatusTypeEnum.Good))
                                         {
-                                            payLoad.Values = null;
-                                            payLoad.DeviceStatus = DeviceStatusTypeEnum.Bad;
+                                            payLoad.DeviceStatus = DeviceStatusTypeEnum.Good;
+                                            sendModel[Device.DeviceName] = new List<PayLoad> { payLoad };
+                                            myMqttClient.PublishTelemetryAsync(Device, sendModel).Wait();
                                         }
                                         else if (DeviceValues.Any(x =>
                                                      x.Value.StatusType == VaribaleStatusTypeEnum.Bad))
@@ -166,12 +168,6 @@ namespace Plugin
                                             }
 
                                             _myMqttClient?.DeviceDisconnected(Device);
-                                        }
-                                        else
-                                        {
-                                            payLoad.DeviceStatus = DeviceStatusTypeEnum.Good;
-                                            sendModel[Device.DeviceName] = new List<PayLoad> { payLoad };
-                                            myMqttClient.PublishTelemetryAsync(Device, sendModel);
                                         }
                                     }
                                 }
