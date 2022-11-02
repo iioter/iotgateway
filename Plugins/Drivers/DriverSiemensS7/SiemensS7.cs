@@ -106,10 +106,21 @@ namespace DriverSiemensS7
                 {
                     if (ioarg.ValueType == DataTypeEnum.AsciiString)
                     {
+                        var str = string.Empty;
                         var dataItem = S7.Net.Types.DataItem.FromAddress(ioarg.Address);
                         var head = plc.ReadBytes(dataItem.DataType, dataItem.DB, dataItem.StartByteAdr, 2);
                         var strBytes = plc.ReadBytes(dataItem.DataType, dataItem.DB, dataItem.StartByteAdr + 2, head[1]);
-                        ret.Value = Encoding.ASCII.GetString(strBytes).TrimEnd(new char[] { '\0' }); ;
+                        var strRaw = Encoding.ASCII.GetString(strBytes).TrimEnd(new char[] { '\0' });
+                        if (strRaw.Any())
+                        {
+                            foreach (var chart in strRaw)
+                            {
+                                if (chart >= 0x20 && chart <= 0x7E)
+                                    str += chart;
+                            }
+                        }
+                        ret.Value = strRaw;
+
                     }
                     else
                         ret.Value = plc.Read(ioarg.Address);
@@ -150,14 +161,24 @@ namespace DriverSiemensS7
                 try
                 {
                     var arrParams = ioarg.Address.Trim().Split(',');
-                    if (arrParams.Length ==2)
+                    if (arrParams.Length == 2)
                     {
                         var dataItemitem = S7.Net.Types.DataItem.FromAddress(arrParams[0]);
                         int.TryParse(arrParams[1], out var length);
 
                         var data = plc.ReadBytes(dataItemitem.DataType, dataItemitem.DB, dataItemitem.StartByteAdr, length);
-                        str = Encoding.ASCII.GetString(data).TrimEnd(new char[] { '\0' });
+                        var strRaw = Encoding.ASCII.GetString(data).TrimEnd(new char[] { '\0' });
+                        if (strRaw.Any())
+                        {
+                            foreach (var chart in strRaw)
+                            {
+                                if (chart >= 0x20 && chart <= 0x7E)
+                                    str += chart;
+                            }
+                        }
                     }
+                    else
+                        ret.StatusType = VaribaleStatusTypeEnum.AddressError;
                     ret.Value = str;
                 }
                 catch (Exception ex)
@@ -290,14 +311,23 @@ namespace DriverSiemensS7
                     if (method == nameof(Read))
                     {
                         var dataItem = DataItem.FromAddress(ioarg.Address);
-                        //plc?.Write(dataItem.DataType, dataItem.DB, dataItem.StartByteAdr + 1, ((byte[])toWrite).Length);
-                        plc?.Write(dataItem.DataType, dataItem.DB, dataItem.StartByteAdr + 2, toWrite);
+                        if (ioarg.ValueType == DataTypeEnum.AsciiString)
+                        {
+                            //先写入长度
+                            plc?.Write(dataItem.DataType, dataItem.DB, dataItem.StartByteAdr + 1,
+                               (byte)((byte[])toWrite).Length);
+                            //在写入字符串内容
+                            plc?.Write(dataItem.DataType, dataItem.DB, dataItem.StartByteAdr + 2, (byte[])toWrite);
+
+                        }
+                        else
+                            plc?.Write(ioarg.Address, toWrite);
 
                         rpcResponse.IsSuccess = true;
                         return rpcResponse;
                     }
-                    //字符串
-                    else if (method == nameof(ReadByteString))
+                    //数组字符串
+                    if (method == nameof(ReadByteString))
                     {
                         var arrParams = ioarg.Address.Trim().Split(',');
                         if (arrParams.Length == 2)
@@ -307,6 +337,8 @@ namespace DriverSiemensS7
                             rpcResponse.IsSuccess = true;
                             return rpcResponse;
                         }
+                        else
+                            rpcResponse.Description = $"地址错误:{method}";
                     }
                     else
                         rpcResponse.Description = $"不支持写入:{method}";
@@ -332,6 +364,10 @@ namespace DriverSiemensS7
                 {
                     //如DB100.DBW23,10
                     int.TryParse(arrParams[1], out length);
+                    if (toWriteString.Length > length)
+                        toWriteString = toWriteString.Take(length).ToString();
+                    if (toWriteString.Length < length)
+                        toWriteString = toWriteString.PadRight(length, '\0');
                 }
                 //使用西门子String读取
                 else
@@ -340,12 +376,10 @@ namespace DriverSiemensS7
                     var dataItem = DataItem.FromAddress(ioarg.Address);
                     var head = plc.ReadBytes(dataItem.DataType, dataItem.DB, dataItem.StartByteAdr, 2);
                     length = head[0];
+                    if (toWriteString.Length > length)
+                        toWriteString = toWriteString.Take(length).ToString();
                 }
 
-                if (toWriteString.Length > length)
-                    toWriteString = toWriteString.Take(length).ToString();
-                if (toWriteString.Length < length)
-                    toWriteString = toWriteString.PadRight(length, '\0');
             }
             catch (Exception e)
             {
