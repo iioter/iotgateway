@@ -130,6 +130,7 @@ namespace Plugin
         {
             try
             {
+                _logger.LogError("MQTT CONNECTING FAILED");
                 await Client.ConnectAsync(_options);
             }
             catch (Exception ex)
@@ -503,7 +504,6 @@ namespace Plugin
             catch (Exception e)
             {
                 canPub = true;
-                Console.WriteLine(e);
             }
 
             if (canPub)
