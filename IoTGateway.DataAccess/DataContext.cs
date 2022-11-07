@@ -80,7 +80,7 @@ namespace IoTGateway.DataAccess
     {
         public DataContext CreateDbContext(string[] args)
         {
-            return new DataContext("Data Source = ../IoTGateway/iotgateway.db", DBTypeEnum.SQLite);
+            return new DataContext("server=127.0.0.1;database=iotgateway;user=iot;CharSet=utf8mb4;password=iot123456;port=3306;Allow User Variables=True;", DBTypeEnum.MySql);
         }
     }
 

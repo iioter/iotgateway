@@ -3,6 +3,7 @@ using System;
 using IoTGateway.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,276 +11,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IoTGateway.DataAccess.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20221107035009_Init")]
+    partial class Init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "6.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
-
-            modelBuilder.Entity("IoTGateway.Model.Device", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<bool>("AutoStart")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("CgUpload")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<uint>("CmdPeriod")
-                        .HasColumnType("int unsigned");
-
-                    b.Property<string>("CreateBy")
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime?>("CreateTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("DeviceName")
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("DeviceTypeEnum")
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("DriverId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<uint>("EnforcePeriod")
-                        .HasColumnType("int unsigned");
-
-                    b.Property<uint>("Index")
-                        .HasColumnType("int unsigned");
-
-                    b.Property<Guid?>("ParentId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("UpdateBy")
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime?>("UpdateTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("DriverId");
-
-                    b.HasIndex("ParentId");
-
-                    b.ToTable("Devices");
-                });
-
-            modelBuilder.Entity("IoTGateway.Model.DeviceConfig", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("CreateBy")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<DateTime?>("CreateTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("DataSide")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("DeviceConfigName")
-                        .HasColumnType("longtext");
-
-                    b.Property<Guid?>("DeviceId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("EnumInfo")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("UpdateBy")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<DateTime?>("UpdateTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("longtext");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("DeviceId");
-
-                    b.ToTable("DeviceConfigs");
-                });
-
-            modelBuilder.Entity("IoTGateway.Model.DeviceVariable", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<int>("DataType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("DeviceAddress")
-                        .HasColumnType("longtext");
-
-                    b.Property<Guid?>("DeviceId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Expressions")
-                        .HasColumnType("longtext");
-
-                    b.Property<uint>("Index")
-                        .HasColumnType("int unsigned");
-
-                    b.Property<string>("Method")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("ProtectType")
-                        .HasColumnType("int");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("DeviceId");
-
-                    b.ToTable("DeviceVariables");
-                });
-
-            modelBuilder.Entity("IoTGateway.Model.Driver", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("AssembleName")
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("AuthorizesNum")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CreateBy")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<DateTime?>("CreateTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("DriverName")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("FileName")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("UpdateBy")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<DateTime?>("UpdateTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Drivers");
-                });
-
-            modelBuilder.Entity("IoTGateway.Model.RpcLog", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("longtext");
-
-                    b.Property<Guid?>("DeviceId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<bool>("IsSuccess")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("Method")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Params")
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("RpcSide")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("DeviceId");
-
-                    b.ToTable("RpcLogs");
-                });
-
-            modelBuilder.Entity("IoTGateway.Model.SystemConfig", b =>
-                {
-                    b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("ClientId")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("CreateBy")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<DateTime?>("CreateTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("GatewayName")
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("IoTPlatformType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("MqttIp")
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("MqttPort")
-                        .HasColumnType("int");
-
-                    b.Property<string>("MqttUName")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("MqttUPwd")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("UpdateBy")
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
-
-                    b.Property<DateTime?>("UpdateTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("SystemConfig");
-                });
 
             modelBuilder.Entity("WalkingTec.Mvvm.Core.ActionLog", b =>
                 {
@@ -769,48 +509,6 @@ namespace IoTGateway.DataAccess.Migrations
                     b.ToTable("PersistedGrants");
                 });
 
-            modelBuilder.Entity("IoTGateway.Model.Device", b =>
-                {
-                    b.HasOne("IoTGateway.Model.Driver", "Driver")
-                        .WithMany()
-                        .HasForeignKey("DriverId");
-
-                    b.HasOne("IoTGateway.Model.Device", "Parent")
-                        .WithMany("Children")
-                        .HasForeignKey("ParentId");
-
-                    b.Navigation("Driver");
-
-                    b.Navigation("Parent");
-                });
-
-            modelBuilder.Entity("IoTGateway.Model.DeviceConfig", b =>
-                {
-                    b.HasOne("IoTGateway.Model.Device", "Device")
-                        .WithMany("DeviceConfigs")
-                        .HasForeignKey("DeviceId");
-
-                    b.Navigation("Device");
-                });
-
-            modelBuilder.Entity("IoTGateway.Model.DeviceVariable", b =>
-                {
-                    b.HasOne("IoTGateway.Model.Device", "Device")
-                        .WithMany("DeviceVariables")
-                        .HasForeignKey("DeviceId");
-
-                    b.Navigation("Device");
-                });
-
-            modelBuilder.Entity("IoTGateway.Model.RpcLog", b =>
-                {
-                    b.HasOne("IoTGateway.Model.Device", "Device")
-                        .WithMany()
-                        .HasForeignKey("DeviceId");
-
-                    b.Navigation("Device");
-                });
-
             modelBuilder.Entity("WalkingTec.Mvvm.Core.FrameworkMenu", b =>
                 {
                     b.HasOne("WalkingTec.Mvvm.Core.FrameworkMenu", "Parent")
@@ -839,15 +537,6 @@ namespace IoTGateway.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("MenuItem");
-                });
-
-            modelBuilder.Entity("IoTGateway.Model.Device", b =>
-                {
-                    b.Navigation("Children");
-
-                    b.Navigation("DeviceConfigs");
-
-                    b.Navigation("DeviceVariables");
                 });
 
             modelBuilder.Entity("WalkingTec.Mvvm.Core.FrameworkMenu", b =>
