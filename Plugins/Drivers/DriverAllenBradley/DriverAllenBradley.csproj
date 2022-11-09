@@ -9,7 +9,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="IoTClient" Version="1.0.37" />
+		<PackageReference Include="IoTClient" Version="1.0.40" />
 	</ItemGroup>
 
 	<ItemGroup>
