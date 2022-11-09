@@ -264,7 +264,7 @@ namespace Plugin
             await Client.PublishAsync(new MqttApplicationMessageBuilder()
                 .WithTopic(_tbRpcTopic)
                 .WithPayload(JsonConvert.SerializeObject(tBRpcResponse))
-                .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
+                .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtMostOnce).Build());
         }
 
         private async Task ResponseTcRpcAsync(TCRpcRequest tCRpcResponse)
@@ -320,7 +320,7 @@ namespace Plugin
             {
                 if (Client.IsConnected)
                     return Client.PublishAsync(new MqttApplicationMessageBuilder()
-                        .WithTopic($"devices/{deviceName}/attributes").WithPayload(JsonConvert.SerializeObject(obj))
+                        .WithTopic($"devices/{deviceName}/attributes").WithPayload(JsonConvert.SerializeObject(obj)).WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtMostOnce)
                         .Build());
             }
             catch (Exception ex)
@@ -522,7 +522,7 @@ namespace Plugin
                         case IoTPlatformType.ThingsBoard:
                             await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic("v1/gateway/telemetry")
                                 .WithPayload(JsonConvert.SerializeObject(sendModel))
-                                .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
+                                .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtMostOnce).Build());
                             break;
                         case IoTPlatformType.IoTSharp:
                             foreach (var payload in sendModel[device.DeviceName])
