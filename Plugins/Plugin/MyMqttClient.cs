@@ -3,6 +3,7 @@ using IoTGateway.Model;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
 using MQTTnet.Client;
+using MQTTnet.Formatter;
 using MQTTnet.Protocol;
 using Newtonsoft.Json;
 using PluginInterface;
@@ -50,13 +51,13 @@ namespace Plugin
                 #region ClientOptions
                 // Setup and start a managed MQTT client.
                 _options = new MqttClientOptionsBuilder()
-                        .WithClientId(string.IsNullOrWhiteSpace(_systemConfig.ClientId)
-                            ? Guid.NewGuid().ToString()
-                            : _systemConfig.ClientId)
-                        .WithTcpServer(_systemConfig.MqttIp, _systemConfig.MqttPort)
-                        .WithCredentials(_systemConfig.MqttUName, _systemConfig.MqttUPwd)
-                        .WithTimeout(TimeSpan.FromSeconds(30))
-                        .WithKeepAlivePeriod(TimeSpan.FromSeconds(20))
+                    .WithClientId(_systemConfig.ClientId ?? Guid.NewGuid().ToString())
+                    .WithTcpServer(_systemConfig.MqttIp, _systemConfig.MqttPort)
+                    .WithCredentials(_systemConfig.MqttUName, _systemConfig.MqttUPwd)
+                    .WithTimeout(TimeSpan.FromSeconds(30))
+                    .WithKeepAlivePeriod(TimeSpan.FromSeconds(60))
+                    .WithProtocolVersion(MqttProtocolVersion.V311)
+                    .WithCleanSession(true)
                         .Build();
                 #endregion
 
@@ -611,7 +612,7 @@ namespace Plugin
                         await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic("v1/gateway/connect")
                             .WithPayload(JsonConvert.SerializeObject(new Dictionary<string, string>
                                 { { "device", device.DeviceName } }))
-                            .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
+                            .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtMostOnce).Build());
                         break;
                     case IoTPlatformType.AliCloudIoT:
                         break;
@@ -677,7 +678,7 @@ namespace Plugin
                         await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic($"v1/gateway/disconnect")
                             .WithPayload(JsonConvert.SerializeObject(new Dictionary<string, string>
                                 { { "device", device.DeviceName } }))
-                            .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
+                            .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtMostOnce).Build());
                         break;
                     case IoTPlatformType.AliCloudIoT:
                         break;
