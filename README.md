@@ -14,15 +14,15 @@
 > 
 > 南向连接到你的任何设备和系统(如PLC、扫码枪、CNC、数据库、串口设备、上位机、OPC Server、OPC UA Server、Mqtt Server等)
 > 
-> 北向连接Thingsboard、IoTSharp、ThingsCloud、IoTDB或您自己的物联网平台进行双向数据通讯
+> 北向连接Thingsboard、IoTSharp、ThingsCloud、华为云或您自己的物联网平台进行双向数据通讯
 > 
 > 当然也可以进行边缘计算
 >
 ## 交流
 
-| 公众号:工业物联网网关 |    [QQ群:895199932](https://jq.qq.com/?_wv=1027&k=mus0CV0W)  | 微信扫我进群 |
-| ------ | ---- | ---- |
-| ![wx](./images/wx.jpg) | ![qq](./images/qq.png) | ![qq](./images/wxgroup.png) |
+| 微信扫我进群 | 公众号 |    [QQ群:895199932](https://jq.qq.com/?_wv=1027&k=mus0CV0W)  |
+| ---- | ------ | ---- |
+| ![qq](./images/wxgroup.png) | ![wx](./images/wx.jpg) | ![qq](./images/qq.png) |
 
 ## 重磅推出硬件网关
 
@@ -39,6 +39,7 @@
 - **间接为开源项目做贡献**，收益的一部分会投入到开源项目建设中去，包括但不限于云服务器资源租赁、先上线向下活动等
 - 可以**免费使用**后续"企业版网关项目(筹)"
 - 可以**免费使用**网络透传等服务
+- 可使用商业web组态
 - 提供详细的**教程文档**，包括**Linux系统**、**dotnet跨平台等**
 - 可用于**学习、评估、和生产环境**使用
 
@@ -47,7 +48,7 @@
 - 下列型号均有"**蓝牙BLE 5.0**、**Wi-Fi**"
 - 搭载**Linux**操作系统```debian.11```
 - 时间关系，目前只整理了 [A080](http://iotgateway.net/docs/hardware/A080/introduction) 、[B100](http://iotgateway.net/docs/hardware/B100/introduction)型号的资料，其他用法差不多，后续会更新
-- 9月后会推出**24v**版本
+- 23年Q2后会推出**24v**宽电压版本
 - 淘宝店是:[https://iotgateway.taobao.com/](https://iotgateway.taobao.com/)
 
 | 型号                                                         | 触摸屏   | USB  | 网口          | 通讯口            | SD扩展 | 4G   | 电源  | RTC  | 典型价格                                                     | 其他接口                                          |
