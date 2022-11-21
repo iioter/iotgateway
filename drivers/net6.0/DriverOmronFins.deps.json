@@ -8,21 +8,21 @@
     ".NETCoreApp,Version=v6.0": {
       "DriverOmronFins/1.0.0": {
         "dependencies": {
-          "IoTClient": "1.0.37",
+          "IoTClient": "1.0.40",
           "PluginInterface": "1.0.0"
         },
         "runtime": {
           "DriverOmronFins.dll": {}
         }
       },
-      "IoTClient/1.0.37": {
+      "IoTClient/1.0.40": {
         "dependencies": {
           "System.IO.Ports": "4.6.0"
         },
         "runtime": {
           "lib/netstandard2.0/IoTClient.dll": {
-            "assemblyVersion": "1.0.37.0",
-            "fileVersion": "1.0.37.0"
+            "assemblyVersion": "1.0.40.0",
+            "fileVersion": "1.0.40.0"
           }
         }
       },
@@ -149,12 +149,12 @@
       "serviceable": false,
       "sha512": ""
     },
-    "IoTClient/1.0.37": {
+    "IoTClient/1.0.40": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-+00iwsqE0CtSxcgje4V1GSG2CgLBwIrDOVLAYc7v87SFjXYfI+8or7jgA+H8kacDpJ+cmaYWi3x3eLlXPfRM1w==",
-      "path": "iotclient/1.0.37",
-      "hashPath": "iotclient.1.0.37.nupkg.sha512"
+      "sha512": "sha512-UP3hqrRbAVP5BantNe2xpNCCTNV/ASymt2j/NDDdU6mowhzZlZDLTrgwOBt93LGmX0hudc8x9zDCeRKv3f6F9Q==",
+      "path": "iotclient/1.0.40",
+      "hashPath": "iotclient.1.0.40.nupkg.sha512"
     },
     "Microsoft.Extensions.Logging.Abstractions/6.0.2": {
       "type": "package",

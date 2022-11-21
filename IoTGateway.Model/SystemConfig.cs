@@ -38,7 +38,5 @@ namespace IoTGateway.Model
         ThingsCloud = 6,
         [Display(Name = "华为云")]
         HuaWei = 7,
-        [Display(Name = "IotDB")]
-        IotDB = 99
     }
 }

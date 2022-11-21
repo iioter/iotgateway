@@ -185,7 +185,7 @@ namespace Plugin
                         }
 
 
-                        Thread.Sleep(Device.DeviceVariables!.Any() ? 10000 : (int)Driver.MinPeriod);
+                        Thread.Sleep(Device.DeviceVariables!.Any() ? (int)Driver.MinPeriod : 10000);
                     }
                 });
             }

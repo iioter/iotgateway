@@ -8,7 +8,6 @@ using MQTTnet.Protocol;
 using Newtonsoft.Json;
 using PluginInterface;
 using PluginInterface.HuaWeiRoma;
-using PluginInterface.IotDB;
 using PluginInterface.IoTSharp;
 using PluginInterface.ThingsBoard;
 
@@ -97,7 +96,6 @@ namespace Plugin
                         await Client.SubscribeAsync("v1/gateway/attributes", MqttQualityOfServiceLevel.ExactlyOnce);
                         break;
                     case IoTPlatformType.IoTSharp:
-                    case IoTPlatformType.IotDB:
                         await Client.SubscribeAsync("devices/+/rpc/request/+/+", MqttQualityOfServiceLevel.ExactlyOnce);
                         await Client.SubscribeAsync("devices/+/attributes/update", MqttQualityOfServiceLevel.ExactlyOnce);
                         //Message: {"device": "Device A", "data": {"attribute1": "value1", "attribute2": 42}}
@@ -541,27 +539,6 @@ namespace Plugin
                             }
 
                             break;
-                        case IoTPlatformType.IotDB:
-                            {
-                                foreach (var payload in sendModel[device.DeviceName])
-                                {
-                                    if (payload.DeviceStatus != DeviceStatusTypeEnum.Good)
-                                        continue;
-
-                                    IotTsData tsData = new IotTsData()
-                                    {
-                                        device = _systemConfig.GatewayName + device.DeviceName,
-                                        timestamp = payload.TS,
-                                        measurements = payload.Values?.Keys.ToList(),
-                                        values = payload.Values?.Values.ToList()
-                                    };
-                                    await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic(_systemConfig.GatewayName + device.DeviceName)
-                                        .WithPayload(JsonConvert.SerializeObject(tsData))
-                                        .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
-                                }
-
-                                break;
-                            }
                         case IoTPlatformType.HuaWei:
                             foreach (var payload in sendModel[device.DeviceName])
                             {
@@ -597,10 +574,6 @@ namespace Plugin
             }
         }
 
-        private readonly DateTime _tsStartDt = new(1970, 1, 1);
-        private readonly List<string> _iotDbOnLineMeasurement = new() { "online" };
-        private readonly List<object> _iotDbOnLine = new() { true };
-        private readonly List<object> _iotDbOffLine = new() { false };
         public async Task DeviceConnected(Device device)
         {
             try
@@ -626,18 +599,6 @@ namespace Plugin
                         await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic("gateway/connect")
                             .WithPayload(JsonConvert.SerializeObject(new Dictionary<string, string>
                                 { { "device", device.DeviceName } }))
-                            .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
-                        break;
-                    case IoTPlatformType.IotDB:
-                        IotTsData onlineData = new IotTsData()
-                        {
-                            device = _systemConfig.GatewayName + device.DeviceName,
-                            timestamp = (long)(DateTime.UtcNow - _tsStartDt).TotalMilliseconds,
-                            measurements = _iotDbOnLineMeasurement,
-                            values = _iotDbOnLine
-                        };
-                        await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic(_systemConfig.GatewayName + device.DeviceName)
-                            .WithPayload(JsonConvert.SerializeObject(onlineData))
                             .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
                         break;
                     case IoTPlatformType.HuaWei:
@@ -692,18 +653,6 @@ namespace Plugin
                         await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic($"gateway/disconnect")
                             .WithPayload(JsonConvert.SerializeObject(new Dictionary<string, string>
                                 { { "device", device.DeviceName } }))
-                            .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
-                        break;
-                    case IoTPlatformType.IotDB:
-                        IotTsData onlineData = new IotTsData()
-                        {
-                            device = _systemConfig.GatewayName + device.DeviceName,
-                            timestamp = (long)(DateTime.UtcNow - _tsStartDt).TotalMilliseconds,
-                            measurements = _iotDbOnLineMeasurement,
-                            values = _iotDbOffLine
-                        };
-                        await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic(_systemConfig.GatewayName + device.DeviceName)
-                            .WithPayload(JsonConvert.SerializeObject(onlineData))
                             .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
                         break;
                     case IoTPlatformType.HuaWei:
