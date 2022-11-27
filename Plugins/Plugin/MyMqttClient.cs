@@ -50,7 +50,7 @@ namespace Plugin
                 #region ClientOptions
                 // Setup and start a managed MQTT client.
                 _options = new MqttClientOptionsBuilder()
-                    .WithClientId(_systemConfig.ClientId ?? Guid.NewGuid().ToString())
+                    .WithClientId(string.IsNullOrEmpty(_systemConfig.ClientId) ? Guid.NewGuid().ToString():_systemConfig.ClientId)
                     .WithTcpServer(_systemConfig.MqttIp, _systemConfig.MqttPort)
                     .WithCredentials(_systemConfig.MqttUName, _systemConfig.MqttUPwd)
                     .WithTimeout(TimeSpan.FromSeconds(30))
