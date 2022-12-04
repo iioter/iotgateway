@@ -410,114 +410,130 @@ namespace DriverModbusMaster
         //预留了大小端转换的 
         private ushort[] ChangeBuffersOrder(ushort[] buffers, EndianEnum dataType)
         {
-            
             int datalen = buffers.Length;
             ushort[] newBuffers = new ushort[datalen];
-            if (datalen == 1)//16位
+            if (dataType == EndianEnum.None)
             {
-                var ab = BitConverter.GetBytes(buffers[0]);
-                newBuffers  [0] =BitConverter.ToUInt16((byte[])ab.Reverse());
-            }
-            else if (datalen == 2)//32位 
-            {
-                newBuffers = new ushort[2];
-                var ab = BitConverter.GetBytes(buffers[0]);
-                var cd = BitConverter.GetBytes(buffers[1]);
-                var _ab = new byte[2];
-                var _cd = new byte[2];
-                switch (dataType)
-                {
-                    case EndianEnum.BigEndian://ABCD
-                        _ab = ab;
-                        _cd = cd;
-                        break;
-                    case EndianEnum.LittleEndian://DCBA
-                        _ab[0] = cd[1];
-                        _ab[1] = cd[0];
-                        _cd[0] = ab[1];
-                        _cd[1] = ab[0];
-                        break;
-                    case EndianEnum.BigEndianSwap://BADC
-                        _ab[0] = ab[1];
-                        _ab[1] = ab[0];
-                        _cd[0] = cd[1];
-                        _cd[1] = cd[0];
-                        break;
-                    case EndianEnum.LittleEndianSwap://CDAB
-                        _ab[0] = cd[0];
-                        _ab[1] = cd[1];
-                        _cd[0] = ab[0];
-                        _cd[1] = ab[1];
-                        break;
-                    default:
-                        break;
-                }
-                newBuffers[0] = BitConverter.ToUInt16(_ab, 0);
-                newBuffers[1] = BitConverter.ToUInt16(_cd, 0);
-            }
-            else if (datalen == 4)//64位
-            {
-                newBuffers = new ushort[2];
-                var ab = BitConverter.GetBytes(buffers[0]);
-                var cd = BitConverter.GetBytes(buffers[1]);
-                var ef = BitConverter.GetBytes(buffers[2]);
-                var gh = BitConverter.GetBytes(buffers[3]);
-                var _ab = new byte[2];
-                var _cd = new byte[2];
-                var _ef = new byte[2];
-                var _gh = new byte[2];
-                switch (dataType)
-                {
-                    case EndianEnum.BigEndian://AB CD EF GH
-                        _ab = ab;
-                        _cd = cd;
-                        _ef = ef;
-                        _gh = gh;
-                        break;
-                    case EndianEnum.LittleEndian://HG FE DC BA
-                        _ab[0] = gh[1];
-                        _ab[1] = gh[0];
-                        _cd[0] = ef[1];
-                        _cd[1] = ef[0];
-
-                        _ef[0] = cd[1];
-                        _ef[1] = cd[0];
-                        _gh[0] = ab[1];
-                        _gh[1] = ab[0];
-                        break;
-                    case EndianEnum.BigEndianSwap://BA DC FE HG
-                        _ab[0] = ab[1];
-                        _ab[1] = ab[0];
-                        _cd[0] = cd[1];
-                        _cd[1] = cd[0];
-
-                        _ef[0] = ef[1];
-                        _ef[1] = ef[0];
-                        _gh[0] = gh[1];
-                        _gh[1] = gh[0];
-                        break;
-                    case EndianEnum.LittleEndianSwap://GH EF CD AB
-                        _ab[0] = gh[0];
-                        _ab[1] = gh[1];
-                        _cd[0] = ef[0];
-                        _cd[1] = ef[1];
-
-                        _ef[0] = cd[0];
-                        _ef[1] = cd[1];
-                        _gh[0] = ab[0];
-                        _gh[1] = ab[1];
-                        break;
-                    default:
-                        break;
-                }
-                newBuffers[0] = BitConverter.ToUInt16(_ab, 0);
-                newBuffers[1] = BitConverter.ToUInt16(_cd, 0);
-                newBuffers[2] = BitConverter.ToUInt16(_ef, 0);
-                newBuffers[3] = BitConverter.ToUInt16(_gh, 0);
+                newBuffers = buffers;
             }
             else
             {
-                newBuffers = buffers;
+            
+                if (datalen == 1)//16位
+                {
+                    switch (dataType)
+                    {
+                        case EndianEnum.LittleEndian://BA
+                            var ab = BitConverter.GetBytes(buffers[0]);
+                            newBuffers[0] = BitConverter.ToUInt16(new byte[] { ab[1], ab[0] });
+                            break;
+                        case EndianEnum.BigEndian://AB
+                        default:
+                            newBuffers[0] = buffers[0];
+                            break;
+                    }
+                }
+                else if (datalen == 2)//32位 
+                {
+                    newBuffers = new ushort[2];
+                    var ab = BitConverter.GetBytes(buffers[0]);
+                    var cd = BitConverter.GetBytes(buffers[1]);
+                    var _ab = new byte[2];
+                    var _cd = new byte[2];
+                    switch (dataType)
+                    {
+                        case EndianEnum.BigEndian://ABCD
+                            _ab = ab;
+                            _cd = cd;
+                            break;
+                        case EndianEnum.LittleEndian://DCBA
+                            _ab[0] = cd[1];
+                            _ab[1] = cd[0];
+                            _cd[0] = ab[1];
+                            _cd[1] = ab[0];
+                            break;
+                        case EndianEnum.BigEndianSwap://BADC
+                            _ab[0] = ab[1];
+                            _ab[1] = ab[0];
+                            _cd[0] = cd[1];
+                            _cd[1] = cd[0];
+                            break;
+                        case EndianEnum.LittleEndianSwap://CDAB
+                            _ab[0] = cd[0];
+                            _ab[1] = cd[1];
+                            _cd[0] = ab[0];
+                            _cd[1] = ab[1];
+                            break;
+                        default:
+                            break;
+                    }
+                    newBuffers[0] = BitConverter.ToUInt16(_ab, 0);
+                    newBuffers[1] = BitConverter.ToUInt16(_cd, 0);
+                }
+                else if (datalen == 4)//64位
+                {
+                    newBuffers = new ushort[2];
+                    var ab = BitConverter.GetBytes(buffers[0]);
+                    var cd = BitConverter.GetBytes(buffers[1]);
+                    var ef = BitConverter.GetBytes(buffers[2]);
+                    var gh = BitConverter.GetBytes(buffers[3]);
+                    var _ab = new byte[2];
+                    var _cd = new byte[2];
+                    var _ef = new byte[2];
+                    var _gh = new byte[2];
+                    switch (dataType)
+                    {
+                        case EndianEnum.BigEndian://AB CD EF GH
+                            _ab = ab;
+                            _cd = cd;
+                            _ef = ef;
+                            _gh = gh;
+                            break;
+                        case EndianEnum.LittleEndian://HG FE DC BA
+                            _ab[0] = gh[1];
+                            _ab[1] = gh[0];
+                            _cd[0] = ef[1];
+                            _cd[1] = ef[0];
+
+                            _ef[0] = cd[1];
+                            _ef[1] = cd[0];
+                            _gh[0] = ab[1];
+                            _gh[1] = ab[0];
+                            break;
+                        case EndianEnum.BigEndianSwap://BA DC FE HG
+                            _ab[0] = ab[1];
+                            _ab[1] = ab[0];
+                            _cd[0] = cd[1];
+                            _cd[1] = cd[0];
+
+                            _ef[0] = ef[1];
+                            _ef[1] = ef[0];
+                            _gh[0] = gh[1];
+                            _gh[1] = gh[0];
+                            break;
+                        case EndianEnum.LittleEndianSwap://GH EF CD AB
+                            _ab[0] = gh[0];
+                            _ab[1] = gh[1];
+                            _cd[0] = ef[0];
+                            _cd[1] = ef[1];
+
+                            _ef[0] = cd[0];
+                            _ef[1] = cd[1];
+                            _gh[0] = ab[0];
+                            _gh[1] = ab[1];
+                            break;
+                        default:
+                            break;
+                    }
+                    newBuffers[0] = BitConverter.ToUInt16(_ab, 0);
+                    newBuffers[1] = BitConverter.ToUInt16(_cd, 0);
+                    newBuffers[2] = BitConverter.ToUInt16(_ef, 0);
+                    newBuffers[3] = BitConverter.ToUInt16(_gh, 0);
+                }
+                else
+                {
+                    newBuffers = buffers;
+                }
             }
             return newBuffers;
         }

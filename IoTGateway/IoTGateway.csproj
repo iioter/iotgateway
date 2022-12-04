@@ -18,6 +18,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="iotgateway.db-shm" />
+	  <None Remove="iotgateway.db-wal" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
 		<PackageReference Include="MQTTnet" Version="4.1.2.350" />
 		<PackageReference Include="MQTTnet.AspNetCore" Version="4.1.2.350" />

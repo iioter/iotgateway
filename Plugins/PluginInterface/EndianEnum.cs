@@ -5,6 +5,8 @@ namespace PluginInterface
 {
     public enum EndianEnum
     {
+        [Display(Name = "无")]
+        None,
         [Display(Name = "大端")]
         BigEndian,
         [Display(Name = "小端")]
