@@ -348,19 +348,19 @@ namespace DriverModbusMaster
                     else if (funCode == 4)
                         rawBuffers = _master.ReadInputRegisters(SlaveAddress, startAddress, count);
 
-                    var retBuffers = ChangeBuffersOrder(rawBuffers, ioarg.ValueType);
+                    var retBuffers = ChangeBuffersOrder(rawBuffers, ioarg.Endian);
                     if (ioarg.ValueType == DataTypeEnum.AsciiString)
                         retBuffers = rawBuffers;
 
-                    if (ioarg.ValueType.ToString().Contains("Uint16"))
+                    if (ioarg.ValueType== DataTypeEnum.Uint16)
                         ret.Value = retBuffers[0];
-                    else if (ioarg.ValueType.ToString().Contains("Int16"))
+                    else if (ioarg.ValueType== DataTypeEnum.Int16)
                         ret.Value = (short)retBuffers[0];
-                    else if (ioarg.ValueType.ToString().Contains("Uint32"))
+                    else if (ioarg.ValueType== DataTypeEnum.Uint32)
                         ret.Value = (uint)(retBuffers[0] << 16) + retBuffers[1];
-                    else if (ioarg.ValueType.ToString().Contains("Int32"))
+                    else if (ioarg.ValueType== DataTypeEnum.Int32)
                         ret.Value = (retBuffers[0] << 16) + retBuffers[1];
-                    else if (ioarg.ValueType.ToString().Contains("Float"))
+                    else if (ioarg.ValueType== DataTypeEnum.Float)
                     {
                         var bytes = new[]
                         {
@@ -369,7 +369,7 @@ namespace DriverModbusMaster
                         };
                         ret.Value = BitConverter.ToSingle(bytes, 0);
                     }
-                    else if (ioarg.ValueType.ToString().Contains("AsciiString"))
+                    else if (ioarg.ValueType== DataTypeEnum.AsciiString)
                     {
                         var str = Encoding.ASCII.GetString(GetBytes(retBuffers).ToArray());
                         if (str.Contains('\0'))
@@ -390,69 +390,135 @@ namespace DriverModbusMaster
 
         private ushort GetModbusReadCount(uint functionCode, DataTypeEnum dataType)
         {
-            if (dataType.ToString().Contains("32") || dataType.ToString().Contains("Float"))
+            if (Is32Bit(dataType))
                 return 2;
-            if (dataType.ToString().Contains("64") || dataType.ToString().Contains("Double"))
+            if (Is64Bit(dataType))
                 return 4;
             return 1;
         }
 
-        //预留了大小端转换的 
-        private ushort[] ChangeBuffersOrder(ushort[] buffers, DataTypeEnum dataType)
+        private static bool Is64Bit(DataTypeEnum dataType)
         {
-            var newBuffers = new ushort[buffers.Length];
-            if (dataType.ToString().Contains("32") || dataType.ToString().Contains("Float"))
+            return dataType == DataTypeEnum.Uint64 || dataType == DataTypeEnum.Uint64 || dataType == DataTypeEnum.Double;
+        }
+
+        private static bool Is32Bit(DataTypeEnum dataType)
+        {
+            return dataType == DataTypeEnum.Uint32 || dataType == DataTypeEnum.Int32 || dataType == DataTypeEnum.Bcd32 || dataType == DataTypeEnum.Float;
+        }
+
+        //预留了大小端转换的 
+        private ushort[] ChangeBuffersOrder(ushort[] buffers, EndianEnum dataType)
+        {
+            
+            int datalen = buffers.Length;
+            ushort[] newBuffers = new ushort[datalen];
+            if (datalen == 1)//16位
             {
-                var a = buffers[0] & 0xff00; //A
-                var b = buffers[0] & 0x00ff; //B
-                var c = buffers[1] & 0xff00; //C
-                var d = buffers[1] & 0x00ff; //D
-                if (dataType.ToString().Contains("_1"))
-                {
-                    newBuffers[0] = (ushort)(a + b); //AB
-                    newBuffers[1] = (ushort)(c + d); //CD
-                }
-                else if (dataType.ToString().Contains("_2"))
-                {
-                    newBuffers[0] = (ushort)((a >> 8) + (b << 8)); //BA
-                    newBuffers[1] = (ushort)((c >> 8) + (d << 8)); //DC
-                }
-                else if (dataType.ToString().Contains("_3"))
-                {
-                    newBuffers[0] = (ushort)((c >> 8) + (d << 8)); //DC
-                    newBuffers[1] = (ushort)((a >> 8) + (b << 8)); //BA
-                }
-                else
-                {
-                    newBuffers[0] = (ushort)(c + d); //CD
-                    newBuffers[1] = (ushort)(a + b); //AB
-                }
+                var ab = BitConverter.GetBytes(buffers[0]);
+                newBuffers  [0] =BitConverter.ToUInt16((byte[])ab.Reverse());
             }
-            else if (dataType.ToString().Contains("64") || dataType.ToString().Contains("Double"))
+            else if (datalen == 2)//32位 
             {
-                if (dataType.ToString().Contains("_1"))
+                newBuffers = new ushort[2];
+                var ab = BitConverter.GetBytes(buffers[0]);
+                var cd = BitConverter.GetBytes(buffers[1]);
+                var _ab = new byte[2];
+                var _cd = new byte[2];
+                switch (dataType)
                 {
+                    case EndianEnum.BigEndian://ABCD
+                        _ab = ab;
+                        _cd = cd;
+                        break;
+                    case EndianEnum.LittleEndian://DCBA
+                        _ab[0] = cd[1];
+                        _ab[1] = cd[0];
+                        _cd[0] = ab[1];
+                        _cd[1] = ab[0];
+                        break;
+                    case EndianEnum.BigEndianSwap://BADC
+                        _ab[0] = ab[1];
+                        _ab[1] = ab[0];
+                        _cd[0] = cd[1];
+                        _cd[1] = cd[0];
+                        break;
+                    case EndianEnum.LittleEndianSwap://CDAB
+                        _ab[0] = cd[0];
+                        _ab[1] = cd[1];
+                        _cd[0] = ab[0];
+                        _cd[1] = ab[1];
+                        break;
+                    default:
+                        break;
                 }
-                else
+                newBuffers[0] = BitConverter.ToUInt16(_ab, 0);
+                newBuffers[1] = BitConverter.ToUInt16(_cd, 0);
+            }
+            else if (datalen == 4)//64位
+            {
+                newBuffers = new ushort[2];
+                var ab = BitConverter.GetBytes(buffers[0]);
+                var cd = BitConverter.GetBytes(buffers[1]);
+                var ef = BitConverter.GetBytes(buffers[2]);
+                var gh = BitConverter.GetBytes(buffers[3]);
+                var _ab = new byte[2];
+                var _cd = new byte[2];
+                var _ef = new byte[2];
+                var _gh = new byte[2];
+                switch (dataType)
                 {
-                    newBuffers[0] = buffers[3];
-                    newBuffers[1] = buffers[2];
-                    newBuffers[2] = buffers[1];
-                    newBuffers[3] = buffers[0];
+                    case EndianEnum.BigEndian://AB CD EF GH
+                        _ab = ab;
+                        _cd = cd;
+                        _ef = ef;
+                        _gh = gh;
+                        break;
+                    case EndianEnum.LittleEndian://HG FE DC BA
+                        _ab[0] = gh[1];
+                        _ab[1] = gh[0];
+                        _cd[0] = ef[1];
+                        _cd[1] = ef[0];
+
+                        _ef[0] = cd[1];
+                        _ef[1] = cd[0];
+                        _gh[0] = ab[1];
+                        _gh[1] = ab[0];
+                        break;
+                    case EndianEnum.BigEndianSwap://BA DC FE HG
+                        _ab[0] = ab[1];
+                        _ab[1] = ab[0];
+                        _cd[0] = cd[1];
+                        _cd[1] = cd[0];
+
+                        _ef[0] = ef[1];
+                        _ef[1] = ef[0];
+                        _gh[0] = gh[1];
+                        _gh[1] = gh[0];
+                        break;
+                    case EndianEnum.LittleEndianSwap://GH EF CD AB
+                        _ab[0] = gh[0];
+                        _ab[1] = gh[1];
+                        _cd[0] = ef[0];
+                        _cd[1] = ef[1];
+
+                        _ef[0] = cd[0];
+                        _ef[1] = cd[1];
+                        _gh[0] = ab[0];
+                        _gh[1] = ab[1];
+                        break;
+                    default:
+                        break;
                 }
+                newBuffers[0] = BitConverter.ToUInt16(_ab, 0);
+                newBuffers[1] = BitConverter.ToUInt16(_cd, 0);
+                newBuffers[2] = BitConverter.ToUInt16(_ef, 0);
+                newBuffers[3] = BitConverter.ToUInt16(_gh, 0);
             }
             else
             {
-                if (dataType.ToString().Contains("_1"))
-                {
-                    var h8 = buffers[0] & 0xf0;
-                    var l8 = buffers[0] & 0x0f;
-                    newBuffers[0] = (ushort)(h8 >> 8 + l8 << 8);
-                }
-                else
-                    newBuffers[0] = buffers[0];
+                newBuffers = buffers;
             }
-
             return newBuffers;
         }
 
@@ -461,10 +527,8 @@ namespace DriverModbusMaster
             List<byte> vs = new();
             foreach (var retBuffer in retBuffers)
             {
-                vs.Add((byte)(retBuffer & 0xFF));
-                vs.Add((byte)((retBuffer & 0xFF00) >> 8));
+                vs.AddRange(BitConverter.GetBytes(retBuffer));
             }
-
             return vs;
         }
 
