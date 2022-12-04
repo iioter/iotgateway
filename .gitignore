@@ -18,3 +18,5 @@ bin-release/
 # information for Eclipse / Flash Builder.
 /.vs
 /IoTGateway/wwwroot/3d
+/IoTGateway/iotgateway.db-wal
+/IoTGateway/iotgateway.db-shm
