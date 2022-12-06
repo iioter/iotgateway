@@ -12,9 +12,11 @@ namespace PluginInterface
         public string Address { get; set; }
         public object Value { get; set; }
         public DataTypeEnum ValueType { get; set; }
+
+        public EndianEnum Endian { get; set; }
         public override string ToString()
         {
-            return $"变量ID:{ID},Address:{Address},Value:{Value},ValueType:{ValueType}";
+            return $"变量ID:{ID},Address:{Address},Value:{Value},ValueType:{ValueType},Endian{Endian}";
         }
     }
 }
