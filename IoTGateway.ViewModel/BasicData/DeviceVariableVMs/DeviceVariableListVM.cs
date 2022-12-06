@@ -66,6 +66,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                 this.MakeGridHeader(x => x.Method).SetSort(true).SetWidth(160),
                 this.MakeGridHeader(x => x.DeviceAddress).SetSort(true).SetWidth(80),
                 this.MakeGridHeader(x => x.DataType).SetSort(true).SetWidth(80),
+                this.MakeGridHeader(x => x.EndianType).SetSort(true).SetWidth(120),
                 this.MakeGridHeader(x => x.Value).SetWidth(80).SetFormat((a,b)=>{
                     return $"<div id='id{a.ID}_Value'>{a.Value}</div>";
                 }),
@@ -126,6 +127,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                     Method = x.Method,
                     DeviceAddress = x.DeviceAddress,
                     DataType = x.DataType,
+                    EndianType = x.EndianType,
                     Expressions = x.Expressions,
                     ProtectType = x.ProtectType,
                     DeviceName_view = x.Device.DeviceName,

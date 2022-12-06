@@ -348,7 +348,7 @@ namespace DriverModbusMaster
                     else if (funCode == 4)
                         rawBuffers = _master.ReadInputRegisters(SlaveAddress, startAddress, count);
 
-                    var retBuffers = ChangeBuffersOrder(rawBuffers, ioarg.Endian);
+                    var retBuffers = ChangeBuffersOrder(rawBuffers, ioarg.EndianType);
                     if (ioarg.ValueType == DataTypeEnum.AsciiString)
                         retBuffers = rawBuffers;
 

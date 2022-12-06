@@ -2,16 +2,17 @@
 @inject IStringLocalizer<Program> Localizer;
 
 <wt:form vm="@Model">
-<wt:row items-per-row="ItemsPerRowEnum.Two">
-<wt:display field="Entity.Name" />
-<wt:display field="Entity.Description" />
-<wt:display field="Entity.Method" />
-<wt:display field="Entity.DeviceAddress" />
-<wt:display field="Entity.DataType" />
-<wt:display field="Entity.Expressions" />
-<wt:display field="Entity.ProtectType" />
-<wt:display field="Entity.Device.DeviceName" />
-</wt:row>
+    <wt:row items-per-row="ItemsPerRowEnum.Two">
+        <wt:display field="Entity.Name" />
+        <wt:display field="Entity.Description" />
+        <wt:display field="Entity.Method" />
+        <wt:display field="Entity.DeviceAddress" />
+        <wt:display field="Entity.DataType" />
+        <wt:display field="Entity.EndianType" />
+        <wt:display field="Entity.Expressions" />
+        <wt:display field="Entity.ProtectType" />
+        <wt:display field="Entity.Device.DeviceName" />
+    </wt:row>
     <wt:row align="AlignEnum.Right">
         <wt:closebutton />
     </wt:row>

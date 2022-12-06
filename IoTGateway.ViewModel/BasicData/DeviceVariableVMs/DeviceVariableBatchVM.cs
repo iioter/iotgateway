@@ -53,6 +53,8 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
         public String DeviceAddress { get; set; }
         [Display(Name = "数据类型")]
         public DataTypeEnum? DataType { get; set; }
+        [Display(Name = "大小端")]
+        public EndianEnum? EndianType { get; set; }
         [Display(Name = "表达式")]
         public string Expression { get; set; }
         [Display(Name = "权限")]

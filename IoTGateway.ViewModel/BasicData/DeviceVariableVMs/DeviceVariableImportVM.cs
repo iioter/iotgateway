@@ -25,6 +25,8 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
         public ExcelPropety DeviceAddress_Excel = ExcelPropety.CreateProperty<DeviceVariable>(x => x.DeviceAddress);
         [Display(Name = "数据类型")]
         public ExcelPropety DataType_Excel = ExcelPropety.CreateProperty<DeviceVariable>(x => x.DataType);
+        [Display(Name = "大小端")]
+        public ExcelPropety EndianType_Excel = ExcelPropety.CreateProperty<DeviceVariable>(x => x.EndianType);
         [Display(Name = "表达式")]
         public ExcelPropety Expressions_Excel = ExcelPropety.CreateProperty<DeviceVariable>(x => x.Expressions);
         [Display(Name = "权限")]
