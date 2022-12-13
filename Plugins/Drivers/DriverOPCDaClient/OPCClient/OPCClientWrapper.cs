@@ -156,7 +156,7 @@ namespace Automation.OPCClient
                 {
                     list.Add(new OPCChangeModel() 
                     {
-                        Name = this.clientNameList[(int)ClientHandles.GetValue(i)],
+                        Name = this.clientNameList[(int)ClientHandles.GetValue(i) - 1],
                         Value = ItemValues.GetValue(i),
                         Quality = (TagQuality)Qualities.GetValue(i),
                         TimeStamp = (DateTime)TimeStamps.GetValue(i),
