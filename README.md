@@ -78,7 +78,7 @@
   
 
 ## 北向
-- thingsboard、iotsharp、thingscloud、IoTDB第三方平台
+- thingsboard、iotsharp、thingscloud、华为云第三方平台
 - 遥测、属性上传
 - RPC反向控制
   ![rpc](./images/rpc.gif)
@@ -112,6 +112,18 @@
 https://github.com/zhaopeiym/IoTClient
 概述：
 这是一个基于.NET Standard 2.0物联网设备通讯协议实现客户端，包括主流PLC、Bacnet等。
+
+## 获得奖项
+
+### .NET20周年云原生开发挑战赛一等奖
+
+### Gitee 2022 GVP
+
+### OSC 2022 最火热中国开源项目社区
+
+## 企业客户(部分)
+
+*国家电网*、*歌尔股份*、*经纬纺机*、*BOSCH*、*荣恒实业*、*卧晨自动化*、*惠斯通*、*......*
 
 ## 打赏请留微信或QQ
 
