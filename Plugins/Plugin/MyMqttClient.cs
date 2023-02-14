@@ -390,7 +390,7 @@ namespace Plugin
                         await ResponseIsRpcAsync(new ISRpcResponse
                         {
                             DeviceId = rpcResponse.DeviceName,
-                            Method = "Method",
+                            Method = rpcResponse.Method,
                             ResponseId = rpcResponse.RequestId,
                             Data = JsonConvert.SerializeObject(new Dictionary<string, object>
                             {

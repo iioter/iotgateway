@@ -209,7 +209,7 @@ namespace Plugin
 
                 _logger.LogInformation($"{Device.DeviceName}收到RPC,{e}");
                 RpcResponse rpcResponse = new()
-                { DeviceName = e.DeviceName, RequestId = e.RequestId, IsSuccess = false };
+                { DeviceName = e.DeviceName, RequestId = e.RequestId, IsSuccess = false, Method = e.Method};
                 //执行写入变量RPC
                 if (e.Method.ToLower() == "write")
                 {
