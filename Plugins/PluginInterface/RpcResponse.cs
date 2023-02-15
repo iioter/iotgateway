@@ -9,6 +9,7 @@ namespace PluginInterface
     public class RpcResponse
     {
         public string RequestId { get; set; }
+        public string Method { get; set; }
         public string DeviceName { get; set; }
         public bool IsSuccess { get; set; }
         public string Description { get; set; }
