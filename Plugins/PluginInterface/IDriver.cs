@@ -16,8 +16,8 @@ namespace PluginInterface
         public bool Connect();
         public bool Close();
         //标准数据读取
-        public DriverReturnValueModel Read(DriverAddressIoArgModel Ioarg);
+        public DriverReturnValueModel Read(DriverAddressIoArgModel ioArg);
         //Rpc写入
-        public Task<RpcResponse> WriteAsync(string RequestId, string Method, DriverAddressIoArgModel Ioarg);
+        public Task<RpcResponse> WriteAsync(string RequestId, string Method, DriverAddressIoArgModel ioArg);
     }
 }

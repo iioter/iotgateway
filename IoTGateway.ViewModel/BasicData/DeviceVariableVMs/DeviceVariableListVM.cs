@@ -63,22 +63,27 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
             return new List<GridColumn<DeviceVariable_View>>{
                 this.MakeGridHeader(x => x.Name).SetSort(true).SetWidth(100),
                 //this.MakeGridHeader(x => x.Description),
-                this.MakeGridHeader(x => x.Method).SetSort(true).SetWidth(160),
-                this.MakeGridHeader(x => x.DeviceAddress).SetSort(true).SetWidth(80),
-                this.MakeGridHeader(x => x.DataType).SetSort(true).SetWidth(80),
-                this.MakeGridHeader(x => x.EndianType).SetSort(true).SetWidth(120),
-                this.MakeGridHeader(x => x.Value).SetWidth(80).SetFormat((a,b)=>{
+                this.MakeGridHeader(x => x.Method).SetSort(true).SetWidth(130),
+                this.MakeGridHeader(x => x.DeviceAddress).SetSort(true).SetWidth(100),
+                this.MakeGridHeader(x => x.DataType).SetSort(true).SetWidth(75),
+                this.MakeGridHeader(x => x.EndianType).SetSort(true).SetWidth(90),
+                this.MakeGridHeader(x => x.Value).SetWidth(95).SetFormat((a,b)=>{
                     return $"<div id='id{a.ID}_Value'>{a.Value}</div>";
                 }),
-                this.MakeGridHeader(x => x.CookedValue).SetWidth(80).SetFormat((a,b)=>{
+                this.MakeGridHeader(x => x.CookedValue).SetWidth(95).SetFormat((a,b)=>{
                     return $"<div id='id{a.ID}_CookedValue'>{a.CookedValue}</div>";
                 }),
-                this.MakeGridHeader(x => x.State).SetWidth(80).SetFormat((a,b)=>{
-                    return $"<div id='id{a.ID}_State'>{a.State}</div>";
+                this.MakeGridHeader(x => x.StatusType).SetWidth(75).SetFormat((a,b)=>{
+                    return $"<div id='id{a.ID}_State'>{a.StatusType}</div>";
                 }),
                 this.MakeGridHeader(x => x.Expressions).SetWidth(150),
+                this.MakeGridHeader(x => x.IsUpload).SetWidth(80),
                 //this.MakeGridHeader(x => x.ProtectType).SetSort(true),
                 this.MakeGridHeader(x => x.DeviceName_view).SetSort(true).SetWidth(90),
+                this.MakeGridHeader(x => x.Alias).SetSort(true).SetWidth(90),
+                this.MakeGridHeader(x => x.Timestamp).SetWidth(100).SetFormat((a,b)=>{
+                    return $"<div id='id{a.ID}_Timestamp'>{a.Timestamp:HH:mm:ss.fff}</div>";
+                }),
                 this.MakeGridHeader(x=> "detail").SetHide().SetFormat((a,b)=>{
                     return "false";
                 }),
@@ -96,12 +101,15 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
             var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
             foreach (var item in EntityList)
             {
-                var DapThread = deviceService.DeviceThreads.Where(x => x.Device.ID == item.DeviceId).FirstOrDefault();
-                if (DapThread?.DeviceValues != null && DapThread.DeviceValues.ContainsKey(item.ID))
+                var dapThread = deviceService!.DeviceThreads.FirstOrDefault(x => x.Device.ID == item.DeviceId);
+                var variable = dapThread?.Device?.DeviceVariables?.FirstOrDefault(x => x.ID == item.ID);
+
+                if (variable != null)
                 {
-                    item.Value = DapThread?.DeviceValues[item.ID]?.Value?.ToString();
-                    item.CookedValue = DapThread?.DeviceValues[item.ID]?.CookedValue?.ToString();
-                    item.State = DapThread?.DeviceValues[item.ID]?.StatusType.ToString();
+                    item.Value = variable.Value;
+                    item.CookedValue = variable.CookedValue;
+                    item.StatusType = variable.StatusType;
+                    item.Timestamp = variable.Timestamp;
                 }
             }
 
@@ -113,6 +121,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
 
             var query = DC.Set<DeviceVariable>().Include(x => x.Device)
                 .CheckContain(Searcher.Name, x => x.Name)
+                .CheckContain(Searcher.Alias, x => x.Alias)
                 .CheckContain(Searcher.Method, x => x.Method)
                 .CheckContain(Searcher.DeviceAddress, x => x.DeviceAddress)
                 .CheckEqual(Searcher.DataType, x => x.DataType)
@@ -129,11 +138,13 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                     DataType = x.DataType,
                     EndianType = x.EndianType,
                     Expressions = x.Expressions,
+                    IsUpload=x.IsUpload,
                     ProtectType = x.ProtectType,
                     DeviceName_view = x.Device.DeviceName,
+                    Alias = x.Alias,
                     Device = x.Device
                 })
-                .OrderBy(x => x.DeviceName_view).ThenBy(x => x.Index);
+                .OrderBy(x => x.Index).ThenBy(x => x.DeviceName_view).ThenBy(x => x.Alias).ThenBy(x => x.Method).ThenBy(x => x.DeviceAddress);
             return query;
         }
 
@@ -196,13 +207,6 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
     public class DeviceVariable_View : DeviceVariable
     {
         [Display(Name = "设备名")]
-        public String DeviceName_view { get; set; }
-        [Display(Name = "原值")]
-        public String Value { get; set; }
-        [Display(Name = "值")]
-        public String CookedValue { get; set; }
-        [Display(Name = "状态")]
-        public String State { get; set; }
-
+        public string DeviceName_view { get; set; }
     }
 }

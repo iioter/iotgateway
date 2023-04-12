@@ -52,7 +52,7 @@ namespace IoTGateway.ViewModel.BasicData.DriverVMs
                     AssembleName = x.AssembleName,
                     AuthorizesNum = x.AuthorizesNum,
                 })
-                .OrderBy(x => x.ID);
+                .OrderBy(x => x.FileName);
             return query;
         }
 

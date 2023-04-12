@@ -6,6 +6,7 @@ using WalkingTec.Mvvm.Mvc;
 using WalkingTec.Mvvm.Core.Extensions;
 using IoTGateway.ViewModel.BasicData.DeviceVMs;
 using Plugin;
+using IoTGateway.ViewModel.BasicData;
 
 namespace IoTGateway.Controllers
 {
@@ -253,7 +254,18 @@ namespace IoTGateway.Controllers
         [HttpPost]
         public IActionResult ExportExcel(DeviceListVM vm)
         {
-            return vm.GetExportData();
+            ExportDevicesSetting myExporter = new ExportDevicesSetting();
+            myExporter.DC = vm.DC;
+            var data = myExporter.Export();
+
+            string ContentType = "application/vnd.ms-excel";
+            string exportName = "DeviceSettings";
+            exportName = $"Export_{exportName}_{DateTime.Now.ToString("yyyyMMddHHmmssffff")}.xlsx";
+            FileContentResult Result = new FileContentResult(data, ContentType);
+            Result.FileDownloadName = exportName;
+            return Result;
+
+            //return vm.GetExportData();
         }
 
         #region 设备复制
@@ -307,5 +319,30 @@ namespace IoTGateway.Controllers
         {
             return JsonMore(_DeviceService.GetDriverMethods(ID));
         }
+
+
+        #region 导入Excel
+        [ActionDescription("导入Excel")]
+        public ActionResult ImportExcel()
+        {
+            var vm = Wtm.CreateVM<ImportExcelVM>();
+            return PartialView(vm);
+        }
+
+        [HttpPost]
+        [ActionDescription("导入Excel")]
+        public ActionResult ImportExcel(ImportExcelVM vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return PartialView(vm);
+            }
+            else
+            {
+                vm.Import();
+                return FFResult().CloseDialog().RefreshGrid().Alert($"{vm.导入结果}");
+            }
+        }
+        #endregion
     }
 }

@@ -7,16 +7,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DynamicExpresso.Core" Version="2.13.0" />
+		<PackageReference Include="DynamicExpresso.Core" Version="2.16.0" />
 		<PackageReference Include="Mono.Options" Version="6.12.0.148" />
-		<PackageReference Include="MQTTnet" Version="4.1.2.350" />
-		<PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Server" Version="1.4.370.12" />
+		<PackageReference Include="MQTTnet" Version="4.1.4.563" />
+		<PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Server" Version="1.4.371.60" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\IoTGateway.DataAccess\IoTGateway.DataAccess.csproj" />
 		<ProjectReference Include="..\..\IoTGateway.Model\IoTGateway.Model.csproj" />
-		<ProjectReference Include="..\Drivers\DriverModbusMaster\DriverModbusMaster.csproj" />
+		<ProjectReference Include="..\Drivers\PLC.ModBusMaster\PLC.ModBusMaster.csproj" />
 	</ItemGroup>
 
 </Project>

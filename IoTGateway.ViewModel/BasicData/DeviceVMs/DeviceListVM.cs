@@ -29,6 +29,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                 this.MakeStandardAction("Device", GridActionStandardTypesEnum.BatchDelete, Localizer["Sys.BatchDelete"], "BasicData", dialogWidth: 800),
                 //this.MakeStandardAction("Device", GridActionStandardTypesEnum.Import, Localizer["Sys.Import"], "BasicData", dialogWidth: 800),
                 this.MakeStandardAction("Device", GridActionStandardTypesEnum.ExportExcel, Localizer["Sys.Export"], "BasicData"),
+                this.MakeAction("Device","ImportExcel","导入Excel","导入Excel", GridActionParameterTypesEnum.NoId,"BasicData",600).SetIconCls("layui-icon layui-icon-upload-circle").SetDialogTitle("导入Excel模板").SetHideOnToolBar(false).SetShowInRow(false),
             };
         }
 
@@ -36,15 +37,15 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
         protected override IEnumerable<IGridColumn<Device_View>> InitGridHeader()
         {
             return new List<GridColumn<Device_View>>{
-                this.MakeGridHeader(x => x.DeviceName),
-                this.MakeGridHeader(x => x.Index),
+                this.MakeGridHeader(x => x.DeviceName).SetWidth(150),
+                this.MakeGridHeader(x => x.Index).SetWidth(60),
                 //this.MakeGridHeader(x => x.Description),
-                this.MakeGridHeader(x => x.DriverName_view),
-                this.MakeGridHeader(x => x.AutoStart),
-                this.MakeGridHeader(x => x.CgUpload),
-                this.MakeGridHeader(x => x.EnforcePeriod),
-                this.MakeGridHeader(x => x.CmdPeriod),
-                this.MakeGridHeader(x => x.DeviceTypeEnum),
+                this.MakeGridHeader(x => x.DriverName_view).SetWidth(150),
+                this.MakeGridHeader(x => x.AutoStart).SetWidth(80),
+                this.MakeGridHeader(x => x.CgUpload).SetWidth(100),
+                this.MakeGridHeader(x => x.EnforcePeriod).SetWidth(110),
+                this.MakeGridHeader(x => x.CmdPeriod).SetWidth(110),
+                this.MakeGridHeader(x => x.DeviceTypeEnum).SetWidth(80),
                 //this.MakeGridHeader(x => x.DeviceName_view),
                 this.MakeGridHeader(x=>"copy").SetHide().SetFormat((a,b)=>{
                     if(a.DeviceTypeEnum== DeviceTypeEnum.Device)

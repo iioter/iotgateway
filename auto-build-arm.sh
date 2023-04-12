@@ -1,5 +1,5 @@
 echo start
-tag="0.9.2"
+tag="2.0.0"
 echo $tag
 docker build -t iotgateway .
 
@@ -15,13 +15,13 @@ docker cp IoTGateway/Quickstarts.ReferenceServer.Config.xml iotgateway:app/
 
 docker restart iotgateway
 
-docker commit iotgateway registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway:arm-$tag
-docker push registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway:arm-$tag
+docker commit iotgateway registry.cn-hangzhou.aliyuncs.com/iotgateway/iotgateway:arm-$tag
+docker push registry.cn-hangzhou.aliyuncs.com/iotgateway/iotgateway:arm-$tag
 
-docker tag registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway:arm-$tag registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway:arm
-docker push registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway:arm
+docker tag registry.cn-hangzhou.aliyuncs.com/iotgateway/iotgateway:arm-$tag registry.cn-hangzhou.aliyuncs.com/iotgateway/iotgateway:arm
+docker push registry.cn-hangzhou.aliyuncs.com/iotgateway/iotgateway:arm
 
-docker tag registry.cn-hangzhou.aliyuncs.com/wanghaidong/iotgateway:arm  15261671110/iotgateway:arm-$tag
+docker tag registry.cn-hangzhou.aliyuncs.com/iotgateway/iotgateway:arm  15261671110/iotgateway:arm-$tag
 docker push 15261671110/iotgateway:arm-$tag
 
 docker tag 15261671110/iotgateway:arm-$tag 15261671110/iotgateway:arm

@@ -83,14 +83,14 @@ namespace IoTGateway.Controllers
                 data.Add(new ChartData
                 {
                     Category = deviceThread.Device.DeviceName,
-                    Value = deviceThread.DeviceValues.Where(x => x.Value.StatusType != VaribaleStatusTypeEnum.Good).Count(),
+                    Value = deviceThread.Device.DeviceVariables.Count(x => x.StatusType != VaribaleStatusTypeEnum.Good),
                     Series = "Others"
                 });
 
                 data.Add(new ChartData
                 {
                     Category = deviceThread.Device.DeviceName,
-                    Value = deviceThread.DeviceValues.Where(x => x.Value.StatusType == VaribaleStatusTypeEnum.Good).Count(),
+                    Value = deviceThread.Device.DeviceVariables.Count(x => x.StatusType == VaribaleStatusTypeEnum.Good),
                     Series = "Good"
                 });
 

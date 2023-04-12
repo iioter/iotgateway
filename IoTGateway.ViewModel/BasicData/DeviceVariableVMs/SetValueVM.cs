@@ -62,12 +62,16 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                                 string deviceName = dapThread.Device.DeviceName;
                                 foreach (var variable in deviceVariables)
                                 {
-                                    if (dapThread.DeviceValues.ContainsKey(variable.ID))
+                                    var currentVariable = dapThread!.Device.DeviceVariables.FirstOrDefault(x => x.ID == variable.ID);
+                                    
+                                    if (currentVariable!=null)
                                     {
-                                        variable.DeviceName = deviceName;
-                                        variable.RawValue = dapThread.DeviceValues[variable.ID].Value?.ToString();
-                                        variable.Value = dapThread.DeviceValues[variable.ID].CookedValue?.ToString();
-                                        variable.Status = dapThread.DeviceValues[variable.ID].StatusType.ToString();
+                                        variable.DeviceName = deviceName + (!string.IsNullOrEmpty(variable.Alias)
+                                            ? $"->{variable.Alias}"
+                                            : "");
+                                        variable.RawValue = currentVariable.Value?.ToString();
+                                        variable.Value = currentVariable.CookedValue?.ToString();
+                                        variable.Status = currentVariable.StatusType.ToString();
                                         variable.SetRawValue = kv[variable.ID.ToString()];
                                     }
                                 }
@@ -123,12 +127,13 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                             string deviceName = dapThread.Device.DeviceName;
                             foreach (var variable in deviceVariables)
                             {
-                                if (dapThread.DeviceValues.ContainsKey(variable.ID))
+                                var currentVariable = dapThread!.Device.DeviceVariables.FirstOrDefault(x => x.ID == variable.ID);
+                                if (currentVariable != null)
                                 {
                                     variable.DeviceName = deviceName;
-                                    variable.RawValue = dapThread.DeviceValues[variable.ID].Value?.ToString();
-                                    variable.Value = dapThread.DeviceValues[variable.ID].CookedValue?.ToString();
-                                    variable.Status = dapThread.DeviceValues[variable.ID].StatusType.ToString();
+                                    variable.RawValue = currentVariable.Value?.ToString();
+                                    variable.Value = currentVariable.CookedValue?.ToString();
+                                    variable.Status = currentVariable.StatusType.ToString();
                                 }
                             }
                         }

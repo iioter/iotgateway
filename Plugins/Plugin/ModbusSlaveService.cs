@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
-using Modbus.Data;
-using Modbus.Device;
 using System.Net;
 using System.Net.Sockets;
+using Modbus.Data;
+using Modbus.Device;
 
 namespace Plugin
 {

@@ -29,9 +29,13 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
         public ExcelPropety EndianType_Excel = ExcelPropety.CreateProperty<DeviceVariable>(x => x.EndianType);
         [Display(Name = "表达式")]
         public ExcelPropety Expressions_Excel = ExcelPropety.CreateProperty<DeviceVariable>(x => x.Expressions);
+        [Display(Name = "上传")]
+        public ExcelPropety IsUpload_Excel = ExcelPropety.CreateProperty<DeviceVariable>(x => x.IsUpload);
         [Display(Name = "权限")]
         public ExcelPropety ProtectType_Excel = ExcelPropety.CreateProperty<DeviceVariable>(x => x.ProtectType);
         public ExcelPropety Device_Excel = ExcelPropety.CreateProperty<DeviceVariable>(x => x.DeviceId);
+        [Display(Name = "设备别名")]
+        public ExcelPropety Alias_Excel = ExcelPropety.CreateProperty<DeviceVariable>(x => x.Alias);
 
         protected override void InitVM()
         {

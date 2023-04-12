@@ -58,7 +58,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceConfigVMs
             return new List<GridColumn<DeviceConfig_View>>{
                 this.MakeGridHeader(x => x.DeviceConfigName).SetWidth(100),
                 this.MakeGridHeader(x => x.DataSide).SetWidth(100),
-                this.MakeGridHeader(x => x.Description).SetWidth(100),
+                this.MakeGridHeader(x => x.Description).SetWidth(120),
                 this.MakeGridHeader(x => x.Value).SetWidth(100),
                 this.MakeGridHeader(x => x.DeviceName_view).SetWidth(100),
                 this.MakeGridHeader(x => x.EnumInfo),

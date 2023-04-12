@@ -12,7 +12,6 @@ namespace PluginInterface
         public string Address { get; set; }
         public object Value { get; set; }
         public DataTypeEnum ValueType { get; set; }
-
         public EndianEnum EndianType { get; set; }
         public override string ToString()
         {

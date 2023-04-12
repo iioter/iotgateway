@@ -59,6 +59,5 @@ namespace PluginInterface
         Custome4,
         [Display(Name = "自定义5")]
         Custome5,
-        ABCD,
     }
 }

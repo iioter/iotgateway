@@ -38,10 +38,10 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                         {
                             var dapConfigs = DC.Set<DeviceConfig>().Where(x => x.DeviceId == dap.ID).ToList();
                             var dapVariables = DC.Set<DeviceVariable>().Where(x => x.DeviceId == dap.ID).ToList();
-                            var rpcLogs = DC.Set<RpcLog>().Where(x => x.DeviceId == dap.ID).ToList();
+                            var rpcs = DC.Set<RpcLog>().Where(x => x.DeviceId == dap.ID).ToList();
                             DC.Set<DeviceConfig>().RemoveRange(dapConfigs);
                             DC.Set<DeviceVariable>().RemoveRange(dapVariables);
-                            DC.Set<RpcLog>().RemoveRange(rpcLogs);
+                            DC.Set<RpcLog>().RemoveRange(rpcs);
                         }
                         pluginManager.RemoveDeviceThread(dap);
                     }

@@ -67,7 +67,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                                 DC.Set<DeviceConfig>().Add(newDeviceConfig);
                             }
 
-                            foreach (var deviceVariable in deviceVariables)
+                            foreach (var deviceVariable in deviceVariables.OrderBy(x=>x.Index))
                             {
                                 var newDeviceVariable = new DeviceVariable
                                 {
@@ -78,7 +78,9 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                                     Method = deviceVariable.Method,
                                     ProtectType = deviceVariable.ProtectType,
                                     Expressions = deviceVariable.Expressions,
-                                    DeviceAddress = deviceVariable.DeviceAddress
+                                    DeviceAddress = deviceVariable.DeviceAddress,
+                                    Index = deviceVariable.Index,
+                                    IsUpload = deviceVariable.IsUpload
                                 };
                                 DC.Set<DeviceVariable>().Add(newDeviceVariable);
 

@@ -24,6 +24,8 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
         public List<ComboSelectListItem> AllDevices { get; set; }
         [Display(Name = "设备名")]
         public Guid? DeviceId { get; set; }
+        [Display(Name = "设备别名")]
+        public String Alias { get; set; }
 
         protected override void InitVM()
         {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using IoTGateway.DataAccess.Migrations;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 using IoTGateway.Model;
@@ -24,6 +25,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
 
         protected override void InitVM()
         {
+            this.Entity.IsUpload = true;
             AllDevices = DC.Set<Device>().AsNoTracking().Where(x => x.DeviceTypeEnum == DeviceTypeEnum.Device)
                 .OrderBy(x => x.Parent.Index).ThenBy(x => x.Parent.DeviceName)
                 .OrderBy(x => x.Index).ThenBy(x => x.DeviceName)
@@ -74,7 +76,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
         }
         public override DuplicatedInfo<DeviceVariable> SetDuplicatedCheck()
         {
-            var rv = CreateFieldsInfo(SimpleField(x => x.DeviceId), SimpleField(x => x.Name));
+            var rv = CreateFieldsInfo(SimpleField(x => x.DeviceId), SimpleField(x => x.Name), SimpleField(x => x.Alias));
             return rv;
         }
     }

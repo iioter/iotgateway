@@ -1,0 +1,18 @@
+﻿@model IoTGateway.ViewModel.BasicData.ImportExcelVM
+@inject IStringLocalizer<Program> Localizer;
+
+
+<wt:form vm="@Model" >
+    <wt:row items-per-row="ItemsPerRowEnum.One">
+        <wt:quote>导入会删除系统内所有设备</wt:quote>
+    </wt:row>
+    <wt:row items-per-row="ItemsPerRowEnum.Two">
+        @*<wt:switch field=Cover />*@
+        <wt:upload field="ExcelFileId" upload-type="ExcelFile"/>
+    </wt:row>
+
+    <wt:row align="AlignEnum.Right">
+        <wt:submitbutton text="导入" />
+        <wt:closebutton text="取消" />
+    </wt:row>
+</wt:form>

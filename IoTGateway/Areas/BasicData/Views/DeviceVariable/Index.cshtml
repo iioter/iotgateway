@@ -10,6 +10,7 @@
             <wt:combobox field="Searcher.DataType" empty-text="@Localizer["Sys.All"]" />
         </wt:row>
     </wt:searchpanel>
+    <wt:quote>Modbus驱动已支持大小端</wt:quote>
     <wt:grid vm="@Model" url="/BasicData/DeviceVariable/Search" hidden-grid-index="true" done-func="inimqttclient" />
 </wt:treecontainer>
 <link href="~/sitecss/animate.min.css" rel="stylesheet" />
@@ -22,39 +23,53 @@
             clientId: 'mqttjs_' + (Math.random() * 10000000).toString()
         }
         var client = mqtt.connect('ws://' + window.location.host + '/mqtt', options);
-        client.on('connect', function () {
-            client.subscribe('internal/v1/gateway/telemetry/+/+', function (err) {
-                if (!err) {
-                    console.log("订阅成功!")
-                } else {
-                    console.log(err)
-                }
-            })
-        })
+        client.on('connect',
+            function() {
+                client.subscribe('internal/v1/gateway/telemetry/+/+',
+                    function(err) {
+                        if (!err) {
+                            console.log("订阅成功!");
+                        } else {
+                            console.log(err);
+                        }
+                    });
+            });
 
-        client.on('message', function (topic, message) {
-            var objmsg = $.parseJSON(message.toString());
+        client.on('message',
+            function(topic, message) {
+                var objmsg = $.parseJSON(message.toString());
 
-            //原值
-            $('#id' + objmsg.VarId + '_Value').text(objmsg.Value);
-            $('#id' + objmsg.VarId + '_Value').addClass('animated bounceIn');
-            setTimeout(function(){
-                $('#id' + objmsg.VarId + '_Value').removeClass('bounceIn');
-            }, 1500);
+                //原值
+                $('#id' + objmsg.VarId + '_Value').text(objmsg.Value);
+                $('#id' + objmsg.VarId + '_Value').addClass('animated bounceIn');
+                setTimeout(function() {
+                        $('#id' + objmsg.VarId + '_Value').removeClass('bounceIn');
+                    },
+                    1500);
 
-            //加工值
-            $('#id' + objmsg.VarId + '_CookedValue').text(objmsg.CookedValue);
-            $('#id' + objmsg.VarId + '_CookedValue').addClass('animated bounceIn');            
-            setTimeout(function(){
-                $('#id' + objmsg.VarId + '_CookedValue').removeClass('bounceIn');
-            }, 1500);
+                //加工值
+                $('#id' + objmsg.VarId + '_CookedValue').text(objmsg.CookedValue);
+                $('#id' + objmsg.VarId + '_CookedValue').addClass('animated bounceIn');
+                setTimeout(function() {
+                        $('#id' + objmsg.VarId + '_CookedValue').removeClass('bounceIn');
+                    },
+                    1500);
 
-            //状态
-            $('#id' + objmsg.VarId + '_State').text(objmsg.StatusType);
-            $('#id' + objmsg.VarId + '_State').addClass('animated bounceIn');
-            setTimeout(function(){
-                 $('#id' + objmsg.VarId + '_State').removeClass('bounceIn');
-            }, 1500);
-        })
+                //状态
+                $('#id' + objmsg.VarId + '_State').text(objmsg.StatusType);
+                $('#id' + objmsg.VarId + '_State').addClass('animated bounceIn');
+                setTimeout(function() {
+                        $('#id' + objmsg.VarId + '_State').removeClass('bounceIn');
+                    },
+                    1500);
+
+                //时间
+                $('#id' + objmsg.VarId + '_Timestamp').text(objmsg.Timestamp);
+                $('#id' + objmsg.VarId + '_Timestamp').addClass('animated bounceIn');
+                setTimeout(function () {
+                    $('#id' + objmsg.VarId + '_Timestamp').removeClass('bounceIn');
+                },
+                    1500);
+            });
     }
 </script>

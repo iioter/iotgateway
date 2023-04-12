@@ -1,15 +1,15 @@
-﻿using IoTGateway.DataAccess;
-using IoTGateway.Model;
-using Microsoft.Extensions.Logging;
-using MQTTnet;
+﻿using MQTTnet;
 using MQTTnet.Client;
-using MQTTnet.Formatter;
-using MQTTnet.Protocol;
 using Newtonsoft.Json;
 using PluginInterface;
-using PluginInterface.HuaWeiRoma;
+using IoTGateway.Model;
+using MQTTnet.Protocol;
+using MQTTnet.Formatter;
+using IoTGateway.DataAccess;
 using PluginInterface.IoTSharp;
+using PluginInterface.HuaWeiRoma;
 using PluginInterface.ThingsBoard;
+using Microsoft.Extensions.Logging;
 
 namespace Plugin
 {
@@ -21,7 +21,7 @@ namespace Plugin
         private SystemConfig _systemConfig;
         private MqttClientOptions _options;
         public bool IsConnected => (Client.IsConnected);
-        private IMqttClient Client { get; set; }
+        private IMqttClient? Client { get; set; }
         public event EventHandler<RpcRequest> OnExcRpc;
         public event EventHandler<ISAttributeResponse> OnReceiveAttributes;
         private readonly string _tbRpcTopic = "v1/gateway/rpc";
@@ -48,30 +48,25 @@ namespace Plugin
                 _systemConfig = dc.Set<SystemConfig>().First();
 
                 #region ClientOptions
-                // Setup and start a managed MQTT client.
                 _options = new MqttClientOptionsBuilder()
-                    .WithClientId(string.IsNullOrEmpty(_systemConfig.ClientId) ? Guid.NewGuid().ToString():_systemConfig.ClientId)
+                    .WithClientId(string.IsNullOrEmpty(_systemConfig.ClientId)
+                        ? Guid.NewGuid().ToString()
+                        : _systemConfig.ClientId)
                     .WithTcpServer(_systemConfig.MqttIp, _systemConfig.MqttPort)
                     .WithCredentials(_systemConfig.MqttUName, _systemConfig.MqttUPwd)
                     .WithTimeout(TimeSpan.FromSeconds(30))
                     .WithKeepAlivePeriod(TimeSpan.FromSeconds(60))
                     .WithProtocolVersion(MqttProtocolVersion.V311)
                     .WithCleanSession(true)
-                        .Build();
+                    .Build();
                 #endregion
-
                 Client.ConnectedAsync += Client_ConnectedAsync;
                 Client.DisconnectedAsync += Client_DisconnectedAsync;
                 Client.ApplicationMessageReceivedAsync += Client_ApplicationMessageReceivedAsync;
 
-                try
-                {
-                    await Client.ConnectAsync(_options);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "MQTT CONNECTING FAILED");
-                }
+                await Client.ConnectAsync(_options);
+
+                _logger.LogInformation("MQTT WAITING FOR APPLICATION MESSAGES");
             }
             catch (Exception ex)
             {
@@ -129,7 +124,7 @@ namespace Plugin
         {
             try
             {
-                _logger.LogError("MQTT CONNECTING FAILED");
+                _logger.LogError($"MQTT DISCONNECTED WITH SERVER ");
                 await Client.ConnectAsync(_options);
             }
             catch (Exception ex)
@@ -317,10 +312,10 @@ namespace Plugin
             //Message: {"Device A":{"attribute1":"value1", "attribute2": 42}, "Device B":{"attribute1":"value1", "attribute2": 42}
             try
             {
-                if (Client.IsConnected)
-                    return Client.PublishAsync(new MqttApplicationMessageBuilder()
-                        .WithTopic($"devices/{deviceName}/attributes").WithPayload(JsonConvert.SerializeObject(obj)).WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtMostOnce)
-                        .Build());
+                return Client.PublishAsync(new MqttApplicationMessageBuilder()
+                    .WithTopic($"devices/{deviceName}/attributes").WithPayload(JsonConvert.SerializeObject(obj))
+                    .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtMostOnce)
+                    .Build());
             }
             catch (Exception ex)
             {
@@ -470,13 +465,12 @@ namespace Plugin
         /// <param name="device">设备</param>
         /// <param name="sendModel">遥测</param>
         /// <returns></returns>
-        private bool CanPubTelemetry(Device device, Dictionary<string, List<PayLoad>> sendModel)
+        private bool CanPubTelemetry(string DeviceName, Device device, Dictionary<string, List<PayLoad>> sendModel)
         {
             bool canPub = false;
             try
-            {
-                //第一次上传
-                if (!_lastTelemetrys.ContainsKey(device.DeviceName))
+            {//第一次上传
+                if (!_lastTelemetrys.ContainsKey(DeviceName))
                     canPub = true;
                 else
                 {
@@ -484,14 +478,14 @@ namespace Plugin
                     if (device.CgUpload)
                     {
                         //是否超过归档周期
-                        if (sendModel[device.DeviceName][0].TS - _lastTelemetrys[device.DeviceName][0].TS >
+                        if (sendModel[DeviceName][0].TS - _lastTelemetrys[DeviceName][0].TS >
                             device.EnforcePeriod)
                             canPub = true;
                         //是否变化 这里不好先用
                         else
                         {
-                            if (JsonConvert.SerializeObject(sendModel[device.DeviceName][0].Values) !=
-                                JsonConvert.SerializeObject(_lastTelemetrys[device.DeviceName][0].Values))
+                            if (JsonConvert.SerializeObject(sendModel[DeviceName][0].Values) !=
+                                JsonConvert.SerializeObject(_lastTelemetrys[DeviceName][0].Values))
                                 canPub = true;
                         }
                     }
@@ -503,18 +497,19 @@ namespace Plugin
             catch (Exception e)
             {
                 canPub = true;
+                Console.WriteLine(e);
             }
 
             if (canPub)
-                _lastTelemetrys[device.DeviceName] = sendModel[device.DeviceName];
+                _lastTelemetrys[DeviceName] = sendModel[DeviceName];
             return canPub;
         }
 
-        public async Task PublishTelemetryAsync(Device device, Dictionary<string, List<PayLoad>> sendModel)
+        public async Task PublishTelemetryAsync(string deviceName, Device device, Dictionary<string, List<PayLoad>> sendModel)
         {
             try
             {
-                if (CanPubTelemetry(device, sendModel))
+                if (CanPubTelemetry(deviceName ,device, sendModel))
                 {
                     switch (_systemConfig.IoTPlatformType)
                     {
@@ -524,23 +519,26 @@ namespace Plugin
                                 .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtMostOnce).Build());
                             break;
                         case IoTPlatformType.IoTSharp:
-                            foreach (var payload in sendModel[device.DeviceName])
+                            foreach (var payload in sendModel[deviceName])
                             {
                                 if (payload.Values != null)
-                                    await UploadIsTelemetryDataAsync(device.DeviceName, payload.Values);
+                                {
+                                    payload.Values["_ts_"] = (long)(DateTime.UtcNow - _tsStartDt).TotalMilliseconds;
+                                    await UploadIsTelemetryDataAsync(deviceName, payload.Values);
+                                }
                             }
 
                             break;
                         case IoTPlatformType.ThingsCloud:
-                            foreach (var payload in sendModel[device.DeviceName])
+                            foreach (var payload in sendModel[deviceName])
                             {
                                 if (payload.Values != null)
-                                    await UploadTcTelemetryDataAsync(device.DeviceName, payload.Values);
+                                    await UploadTcTelemetryDataAsync(deviceName, payload.Values);
                             }
 
                             break;
                         case IoTPlatformType.HuaWei:
-                            foreach (var payload in sendModel[device.DeviceName])
+                            foreach (var payload in sendModel[deviceName])
                             {
                                 if (payload.Values != null)
                                     await UploadHwTelemetryDataAsync(device, payload.Values);
@@ -557,13 +555,13 @@ namespace Plugin
                     }
                 }
 
-                //foreach (var payload in sendModel[device.DeviceName])
+                //foreach (var payload in sendModel[DeviceName])
                 //{
                 //    if (payload.Values != null)
                 //        foreach (var kv in payload.Values)
                 //        {
                 //            //更新到UAService
-                //            _uaNodeManager?.UpdateNode($"{device.Parent.DeviceName}.{device.DeviceName}.{kv.Key}",
+                //            _uaNodeManager?.UpdateNode($"{device.Parent.DeviceName}.{DeviceName}.{kv.Key}",
                 //                kv.Value);
                 //        }
                 //}
@@ -574,7 +572,9 @@ namespace Plugin
             }
         }
 
-        public async Task DeviceConnected(Device device)
+        private readonly DateTime _tsStartDt = new(1970, 1, 1);
+
+        public async Task DeviceConnected(string DeviceName ,Device device)
         {
             try
             {
@@ -584,7 +584,7 @@ namespace Plugin
                     case IoTPlatformType.IoTSharp:
                         await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic("v1/gateway/connect")
                             .WithPayload(JsonConvert.SerializeObject(new Dictionary<string, string>
-                                { { "device", device.DeviceName } }))
+                                { { "device", DeviceName } }))
                             .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtMostOnce).Build());
                         break;
                     case IoTPlatformType.AliCloudIoT:
@@ -598,7 +598,7 @@ namespace Plugin
                     case IoTPlatformType.ThingsCloud:
                         await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic("gateway/connect")
                             .WithPayload(JsonConvert.SerializeObject(new Dictionary<string, string>
-                                { { "device", device.DeviceName } }))
+                                { { "device", DeviceName } }))
                             .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
                         break;
                     case IoTPlatformType.HuaWei:
@@ -624,11 +624,11 @@ namespace Plugin
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"DeviceConnected:{device.DeviceName}");
+                _logger.LogError(ex, $"DeviceConnected:{DeviceName}");
             }
         }
 
-        public async Task DeviceDisconnected(Device device)
+        public async Task DeviceDisconnected(string DeviceName, Device device)
         {
             try
             {
@@ -638,7 +638,7 @@ namespace Plugin
                     case IoTPlatformType.IoTSharp:
                         await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic($"v1/gateway/disconnect")
                             .WithPayload(JsonConvert.SerializeObject(new Dictionary<string, string>
-                                { { "device", device.DeviceName } }))
+                                { { "device", DeviceName } }))
                             .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtMostOnce).Build());
                         break;
                     case IoTPlatformType.AliCloudIoT:
@@ -652,7 +652,7 @@ namespace Plugin
                     case IoTPlatformType.ThingsCloud:
                         await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic($"gateway/disconnect")
                             .WithPayload(JsonConvert.SerializeObject(new Dictionary<string, string>
-                                { { "device", device.DeviceName } }))
+                                { { "device", DeviceName } }))
                             .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
                         break;
                     case IoTPlatformType.HuaWei:
@@ -678,7 +678,7 @@ namespace Plugin
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"DeviceDisconnected:{device.DeviceName}");
+                _logger.LogError(ex, $"DeviceDisconnected:{DeviceName}");
             }
         }
 

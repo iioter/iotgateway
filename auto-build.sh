@@ -1,6 +1,6 @@
 #!/bin/bash
 echo start
-tag="0.9.2"
+tag="2.0.0"
 echo $tag
 docker build -t iotgateway .
 

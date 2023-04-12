@@ -59,6 +59,8 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
         public string Expression { get; set; }
         [Display(Name = "权限")]
         public ProtectTypeEnum? ProtectType { get; set; }
+        [Display(Name = "设备别名")]
+        public String Alias { get; set; }
 
         protected override void InitVM()
         {

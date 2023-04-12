@@ -22,7 +22,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
 
         protected override void InitVM()
         {
-            AllDrivers = DC.Set<Driver>().GetSelectListItems(Wtm, y => y.DriverName);
+            AllDrivers = DC.Set<Driver>().GetSelectListItems(Wtm, y => y.FileName);
             AllParents = DC.Set<Device>().Where(x=>x.DeviceTypeEnum== DeviceTypeEnum.Group).GetSelectListItems(Wtm, y => y.DeviceName);
         }
 

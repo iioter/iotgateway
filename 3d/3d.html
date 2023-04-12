@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>3D</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<link type="text/css" rel="stylesheet" href="./css/main.css">
+	<style>
+		body {
+			background-color: #bfe3dd;
+			color: #000;
+		}
+
+		a {
+			color: #2983ff;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div id="container"></div>
+	<script src="../jquery.min.js"></script>
+	<script src="../mqtt.min.js"></script>
+	<script type="module">
+		import * as THREE from './lib/three.module.js';
+
+		import Stats from './lib/stats.module.js';
+
+		import { OrbitControls } from './lib/OrbitControls.js';
+		import { RoomEnvironment } from './lib/RoomEnvironment.js';
+
+		import { GLTFLoader } from './lib/GLTFLoader.js';
+		import { DRACOLoader } from './lib/DRACOLoader.js';
+		import { CSS3DObject, CSS3DRenderer } from './lib/CSS3DRenderer.js';
+
+		let W = window.innerWidth;
+		let H = window.innerHeight;
+		let mixer;
+		let labelArr = [];
+
+		//标签数据
+		let modelData = [{
+			id: 1,
+			cname: "Modbus设备",
+			ename: "modbus_01",
+			position: {
+				x: -0.5,
+				y: 0.6,
+				z: 1.55,
+			},
+			param: [{
+				name: "温度",
+				value: 123,
+			},
+			{
+				name: "湿度",
+				value: 123,
+			},
+			],
+		}
+		];
+
+		//定时更新数据
+		//setInterval(() => {
+		//	modelData.forEach((item) => {
+		//		if (item.id > 0) {
+		//			item.param[0].value = parseInt(Math.random() * 30 + 150).toFixed(0);
+		//			item.param[1].value = parseInt(Math.random() * 30 + 150).toFixed(0);
+		//		}
+		//	});
+
+		//	updateData();
+
+		//}, 2000);
+		inimqttclient();
+		const clock = new THREE.Clock();
+		const container = document.getElementById('container');
+
+		const stats = new Stats();
+		container.appendChild(stats.dom);
+
+		const css3dRenderer = new CSS3DRenderer();
+		css3dRenderer.setSize(W, H);
+		css3dRenderer.domElement.style.position = 'absolute';
+		css3dRenderer.domElement.style.top = 0;
+		container.appendChild(css3dRenderer.domElement);
+
+		const renderer = new THREE.WebGLRenderer({ antialias: true });
+		renderer.setPixelRatio(window.devicePixelRatio);
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		renderer.outputEncoding = THREE.sRGBEncoding;
+		container.appendChild(renderer.domElement);
+
+		const pmremGenerator = new THREE.PMREMGenerator(renderer);
+
+		const scene = new THREE.Scene();
+		scene.background = new THREE.Color(0xbfe3dd);
+		scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
+
+		const camera = new THREE.PerspectiveCamera(40, W / H, .1, 10000);
+		camera.position.set(5, 2, 8);
+
+		const controls = new OrbitControls(camera, container);
+		controls.target.set(0, 0.5, 0);
+		controls.update();
+		controls.enablePan = false;
+		controls.enableDamping = true;
+
+		const dracoLoader = new DRACOLoader();
+		dracoLoader.setDecoderPath('./lib/gltf/');
+
+		const loader = new GLTFLoader();
+		loader.setDRACOLoader(dracoLoader);
+		loader.load('./model/LittlestTokyo.glb', function (gltf) {
+
+			const model = gltf.scene;
+			model.position.set(1, 1, 0);
+			model.scale.set(0.01, 0.01, 0.01);
+			scene.add(model);
+
+			createLableArr();
+
+			mixer = new THREE.AnimationMixer(model);
+			mixer.clipAction(gltf.animations[0]).play();
+
+			animate();
+
+		}, undefined, function (e) {
+
+			console.error(e);
+
+		});
+
+		//创建标签
+		function createLableArr() {
+            let style = "color:	#00CED1;cursor:pointer;font-size:30px;padding:5px 15px;"; //background:#43bafe;
+			modelData.forEach((item) => {
+				let label = createLabel(item.cname, style, item.param);
+				label.position.set(item.position.x, item.position.y, item.position.z);
+				let scale = 0.003;
+				label.scale.set(scale, scale, scale); //缩放比例
+				label.name = item.ename;
+				//label.visible = true;
+				scene.add(label);
+				labelArr.push(label);
+
+				const axesHelper = new THREE.AxesHelper(5);
+				label.add(axesHelper);
+			});
+		}
+
+		/**销毁模型*/
+		function destroyObject(object) {
+			if (!object) return;
+			object.traverse((item) => {
+				if (item.material) {
+					if (Array.isArray(item.material)) {
+						item.material.forEach(m => m.dispose());
+					} else {
+						item.material.dispose();
+					}
+				}
+				if (item.geometry) item.geometry.dispose();
+				item = null;
+			});
+
+			scene.remove(object);
+			object = null;
+		}
+
+		/**信息标注的生成*/
+		function createLabel(text, style, param) {
+			//创建CSS3D
+			let div_label = document.createElement("div");
+			div_label.className = "div-label";
+			let div_ul = document.createElement("ul");
+			let div_li = document.createElement("li");
+
+			style ? (div_li.style = style) : "";
+			div_li.textContent = `设备名称:${text}`;
+			div_ul.appendChild(div_li);
+
+			if (param.length) {
+				param.forEach((item) => {
+					let param_li = document.createElement("li");
+					style ? (param_li.style = style) : "";
+					param_li.textContent = `${item.name}:${item.value}`;
+					div_ul.appendChild(param_li);
+				});
+			}
+
+			div_label.appendChild(div_ul);
+			let label = new CSS3DObject(div_label);
+
+			return label;
+		}
+
+		//更新数据标签
+		function updateData() {
+			if (labelArr.length) {
+				labelArr.forEach(item => {
+					destroyObject(item);
+				});
+				createLableArr();
+			}
+		}
+
+
+		window.onresize = function () {
+
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
+
+			renderer.setSize(window.innerWidth, window.innerHeight);
+
+		};
+
+
+		function animate() {
+
+			requestAnimationFrame(animate);
+
+			const delta = clock.getDelta();
+
+			mixer.update(delta);
+
+			controls.update();
+
+			//标签
+			// if (labelArr.length) {
+			// 	labelArr.forEach((item) => {
+			// 		if (item.visible) {
+			// 			item.quaternion.slerp(camera.quaternion, 1);
+			// 		}
+			// 	});
+			// }
+
+			stats.update();
+
+			renderer.render(scene, camera);
+			css3dRenderer.render(scene, camera);
+
+		}
+
+
+
+
+		function inimqttclient() {
+			var options = {
+				//mqtt客户端的id，这里面应该还可以加上其他参数，具体看官方文档
+				clientId: 'mqttjs3d_' + (Math.random() * 10000000).toString()
+			}
+			var client = mqtt.connect('ws://' + window.location.host + '/mqtt', options);
+			client.on('connect', function () {
+				client.subscribe('internal/v1/gateway/telemetry/+/+', function (err) {
+					if (!err) {
+						console.log("订阅成功!")
+					} else {
+						console.log(err)
+					}
+				})
+			})
+
+            client.on('message', function (topic, message) {
+                if (topic == 'internal/v1/gateway/telemetry/Modbus/temperature') {
+                    var objmsg = $.parseJSON(message.toString());
+                    modelData[0].param[0].value = objmsg.CookedValue;
+                    updateData();
+                } else if (topic == 'internal/v1/gateway/telemetry/Modbus/humidity') {
+                    var objmsg = $.parseJSON(message.toString());
+                    modelData[0].param[1].value = objmsg.CookedValue;
+                    updateData();
+                }
+			})
+		}
+	</script>
+
+</body>
+
+</html>
