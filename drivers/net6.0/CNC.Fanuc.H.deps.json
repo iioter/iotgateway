@@ -8,7 +8,7 @@
     ".NETCoreApp,Version=v6.0": {
       "CNC.Fanuc.H/1.0.0": {
         "dependencies": {
-          "HslCommunication": "11.5.0",
+          "HslCommunication": "11.5.2",
           "Newtonsoft.Json": "13.0.1",
           "PluginInterface": "1.0.0"
         },
@@ -16,15 +16,15 @@
           "CNC.Fanuc.H.dll": {}
         }
       },
-      "HslCommunication/11.5.0": {
+      "HslCommunication/11.5.2": {
         "dependencies": {
           "Newtonsoft.Json": "13.0.1",
           "System.IO.Ports": "6.0.0"
         },
         "runtime": {
           "lib/netstandard2.1/HslCommunication.dll": {
-            "assemblyVersion": "11.5.0.0",
-            "fileVersion": "11.5.0.0"
+            "assemblyVersion": "11.5.2.0",
+            "fileVersion": "11.5.2.0"
           }
         }
       },
@@ -140,12 +140,12 @@
       "serviceable": false,
       "sha512": ""
     },
-    "HslCommunication/11.5.0": {
+    "HslCommunication/11.5.2": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-VD+nfNHPb9zNuk/eULWkhPvwYIBNz+mB2HHKmBac9BnY1MhaHPYr1xrMQYRv1AphuNjPFoZrwB3GUU3d1qALoA==",
-      "path": "hslcommunication/11.5.0",
-      "hashPath": "hslcommunication.11.5.0.nupkg.sha512"
+      "sha512": "sha512-8h6s/KzAlq4jndzURYFjmqGnZFRxuE0N39H+IQKk9ojJ0+YbTlv3afBytNaqMZf3mZauZmH1//FMaluef7+P7g==",
+      "path": "hslcommunication/11.5.2",
+      "hashPath": "hslcommunication.11.5.2.nupkg.sha512"
     },
     "Microsoft.Extensions.Logging.Abstractions/6.0.2": {
       "type": "package",

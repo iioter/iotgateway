@@ -8,9 +8,9 @@
 > 
 > 南向连接到你的任何设备和系统(如PLC、扫码枪、CNC、数据库、串口设备、上位机、非标设备、OPC Server、OPC UA Server、Mqtt Server等)
 > 
-> 北向连接Thingsboard、IoTSharp、华为云或您自己的物联网平台(MES、SCADA)等进行双向数据通讯
+> 北向连接[IoTSharp](https://github.com/IoTSharp/IoTSharp)、[ThingsCloud](https://www.thingscloud.xyz/)、[ThingsBoard](https://thingsboard.io/)、华为云或您自己的物联网平台(MES、SCADA)等进行双向数据通讯
 > 
-> 当然也可以进行边缘计算
+> 当然也可以进行边缘计算。
 >
 
 ## [教程文档](http://iotgateway.net/)
@@ -44,7 +44,7 @@
   
 
 ## 北向
-- thingsboard、iotsharp、华为云等第三方平台
+- iotsharp、thingscloud、thingsboard、华为云等第三方平台
 - 遥测、属性上传
 - RPC反向控制
   ![rpc](./images/rpc.gif)
@@ -75,24 +75,67 @@
 - 请*严格*遵循**MIT**协议
 - [企业版介绍点我](http://iotgateway.net/docs/enterprise/intro)
 
+
+
+## 获得奖项(部分)
+
+- **.NET20周年云原生开发挑战赛一等奖**
+
+- **Gitee 2022 GVP**
+
+- **OSC 2022 最火热中国开源项目社区**
+
+## 企业客户(部分)
+
+国家电网(电力)、中国移动、歌尔股份(3C)、经纬纺机(央企上市)、BOSCH(汽车零部件)、凌坤智能(AGV)、容恒、卧晨、惠斯通、益信......
+
 ## 友情链接
 
-### IoTClient
+### ThingsCloud公有云
+
+项目地址：
+https://www.thingscloud.xyz/
+概述：
+ThingsCloud 在设备和用户之间建立开箱即用的云平台和云应用，实现数据采集、实时控制、数据可视化、开放 API，构建灵活强大的物联网应用。
+
+### IoTClient通讯库
 
 开源地址：
 https://github.com/zhaopeiym/IoTClient
 概述：
 这是一个基于.NET Standard 2.0物联网设备通讯协议实现客户端，包括主流PLC、Bacnet等。
 
-## 获得奖项(部分)
+## 致谢
 
-### .NET20周年云原生开发挑战赛一等奖
-### Gitee 2022 GVP
-### OSC 2022 最火热中国开源项目社区
+Star、代码贡献、文档贡献和赞助是我持续更新的动力。
 
-## 企业客户(部分)
+感谢贡献代码的各位：**麦壳饼、谷草、老翁钓大鱼、dapeng17951、ccliushou、BenjaminChenGH、sugerlcc、wqliceman**
 
-国家电网(电力)、歌尔股份(3C)、经纬纺机(央企上市)、BOSCH(汽车零部件)、凌坤智能(AGV)、容恒、卧晨、惠斯通、益信......
+打赏列表：
+
+| 昵称          | 金额  | 时间     |
+| ------------- | ----- | -------- |
+| TerryHj       | 8.88  | 不可考证 |
+| Amengone      | 50    | 不可考证 |
+| xiaotuxing    | 66    | 20220520 |
+| 华仔          | 28.88 | 20220524 |
+| Mr.Ethan      | 5     | 20220611 |
+| 刘金平        | 50    | 20220712 |
+| 农民也疯狂    | 600   | 20220725 |
+| .             | 10    | 20220725 |
+| Gary          | 50    | 20220808 |
+| .             | 200   | 20220902 |
+| 匿名          | 20    | 20220908 |
+| 浪上飞郑      | 10    | 20220915 |
+| SPA           | 50    | 20221119 |
+| iKuo          | 100   | 20221212 |
+| 陶白白        | 100   | 20230109 |
+| Carrey        | 100   | 20230113 |
+| MC            | 400   | 20230114 |
+| LoveChina8888 | 6.66  | 20230121 |
+| guoke         | 200   | 20230207 |
+
+
 
 ## 打赏请留微信或QQ
 
