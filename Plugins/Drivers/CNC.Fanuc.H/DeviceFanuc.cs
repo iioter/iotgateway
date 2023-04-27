@@ -66,7 +66,6 @@ namespace CNC.Fanuc.H
             {
                 _logger.LogInformation($"Device:[{_device}],Connect()");
 
-                _fanuc.ConnectClose();
                 _fanuc = new FanucSeries0i(IpAddress, Port);
                 return _fanuc.ConnectServer().IsSuccess;
             }
