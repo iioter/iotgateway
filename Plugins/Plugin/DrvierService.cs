@@ -132,7 +132,7 @@ namespace Plugin
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogDebug($"LoadAllDrivers Error {ex}");
+                    _logger.LogError(ex,$"LoadAllDrivers Error {file}");
                 }
             }
 

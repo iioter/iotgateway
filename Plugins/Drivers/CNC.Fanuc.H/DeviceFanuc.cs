@@ -33,8 +33,8 @@ namespace CNC.Fanuc.H
         public DeviceFanuc(string device, ILogger logger)
         {
             //输入授权码，禁止非法使用
-            if (!Authorization.SetAuthorizationCode(""))
-                return;
+            //if (!Authorization.SetAuthorizationCode(""))
+               // return;
 
             _device = device;
             _logger = logger;
