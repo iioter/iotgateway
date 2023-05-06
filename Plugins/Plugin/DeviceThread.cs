@@ -74,7 +74,7 @@ namespace Plugin
                             {
                                 if (driver.IsConnected)
                                 {
-                                    foreach (var deviceVariables in Device.DeviceVariables!.GroupBy(x => x.Alias))
+                                    foreach (var deviceVariables in Device.DeviceVariables.Where(x=>x.ProtectType!= ProtectTypeEnum.WriteOnly).GroupBy(x => x.Alias))
                                     {
                                         string deviceName = string.IsNullOrWhiteSpace(deviceVariables.Key)
                                             ? Device.DeviceName
@@ -158,7 +158,7 @@ namespace Plugin
 
                                             payLoad.TS = (long)(DateTime.UtcNow - _tsStartDt).TotalMilliseconds;
 
-                                            if (deviceVariables.All(x => x.StatusType == VaribaleStatusTypeEnum.Good))
+                                            if (deviceVariables.Where(x=>x.IsUpload&&x.ProtectType!=ProtectTypeEnum.WriteOnly).All(x => x.StatusType == VaribaleStatusTypeEnum.Good))
                                             {
                                                 payLoad.DeviceStatus = DeviceStatusTypeEnum.Good;
                                                 sendModel[deviceName] = new List<PayLoad> { payLoad };
@@ -173,7 +173,7 @@ namespace Plugin
                                     }
 
                                     //只要有读取异常且连接正常就断开
-                                    if (Device.DeviceVariables!.Any(x => x.StatusType != VaribaleStatusTypeEnum.Good) && driver.IsConnected)
+                                    if (Device.DeviceVariables.Where(x => x.IsUpload && x.ProtectType != ProtectTypeEnum.WriteOnly).Any(x => x.StatusType != VaribaleStatusTypeEnum.Good) && driver.IsConnected)
                                     {
                                         driver.Close();
                                         driver.Dispose();
@@ -261,7 +261,7 @@ namespace Plugin
                                     deviceVariable = Device.DeviceVariables.FirstOrDefault(x =>
                                         x.Name == para.Key && x.Alias == e.DeviceName);
 
-                                if (deviceVariable != null)
+                                if (deviceVariable != null&& deviceVariable.ProtectType!= ProtectTypeEnum.ReadOnly)
                                 {
                                     DriverAddressIoArgModel ioArgModel = new()
                                     {
@@ -280,7 +280,7 @@ namespace Plugin
                                 else
                                 {
                                     rpcResponse.IsSuccess = false;
-                                    rpcResponse.Description += $"未能找到变量:{para.Key},";
+                                    rpcResponse.Description += $"未能找到支持写入的变量:{para.Key},";
                                 }
                             }
 

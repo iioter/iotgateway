@@ -13,5 +13,7 @@ namespace PluginInterface
         ReadOnly,
         [Display(Name = "读写")]
         ReadWrite,
+        [Display(Name = "只写")]
+        WriteOnly,
     }
 }

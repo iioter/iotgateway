@@ -3,7 +3,7 @@
 
 <wt:form vm="@Model" height="400">
     <wt:row items-per-row="ItemsPerRowEnum.Two">
-        @*<wt:textbox field="Entity.DeviceConfigName" />*@
+        <wt:textbox field="Entity.DeviceConfigName" />
         @{
             if (!string.IsNullOrEmpty(Model.Entity.EnumInfo))
             {
@@ -15,7 +15,7 @@
             }
         }
         <wt:textbox field="Entity.Description" />
-        @*<wt:textbox field="Entity.EnumInfo" />*@
+        <wt:combobox field="Entity.DataSide" />
         @*<wt:combobox field="Entity.DeviceId" items="AllDevices" />*@
     </wt:row>
     <wt:hidden field="Entity.ID" />

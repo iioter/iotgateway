@@ -78,7 +78,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                 }),
                 this.MakeGridHeader(x => x.Expressions).SetWidth(150),
                 this.MakeGridHeader(x => x.IsUpload).SetWidth(80),
-                //this.MakeGridHeader(x => x.ProtectType).SetSort(true),
+                this.MakeGridHeader(x => x.ProtectType).SetWidth(80).SetSort(true),
                 this.MakeGridHeader(x => x.DeviceName_view).SetSort(true).SetWidth(90),
                 this.MakeGridHeader(x => x.Alias).SetSort(true).SetWidth(90),
                 this.MakeGridHeader(x => x.Timestamp).SetWidth(100).SetFormat((a,b)=>{

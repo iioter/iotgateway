@@ -20,7 +20,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceConfigVMs
             {
                 this.MakeStandardAction("DeviceConfig", GridActionStandardTypesEnum.Create, Localizer["Sys.Create"],"BasicData", dialogWidth: 800),
                 this.MakeStandardAction("DeviceConfig", GridActionStandardTypesEnum.Edit, Localizer["Sys.Edit"], "BasicData", dialogWidth: 800),
-                //this.MakeStandardAction("DeviceConfig", GridActionStandardTypesEnum.Delete, Localizer["Sys.Delete"], "BasicData", dialogWidth: 800),
+                this.MakeStandardAction("DeviceConfig", GridActionStandardTypesEnum.Delete, Localizer["Sys.Delete"], "BasicData", dialogWidth: 800),
                 this.MakeStandardAction("DeviceConfig", GridActionStandardTypesEnum.Details, Localizer["Sys.Details"], "BasicData", dialogWidth: 800),
                 this.MakeStandardAction("DeviceConfig", GridActionStandardTypesEnum.BatchEdit, Localizer["Sys.BatchEdit"], "BasicData", dialogWidth: 800),
                 //this.MakeStandardAction("DeviceConfig", GridActionStandardTypesEnum.BatchDelete, Localizer["Sys.BatchDelete"], "BasicData", dialogWidth: 800),
