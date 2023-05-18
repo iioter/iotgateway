@@ -560,13 +560,13 @@ namespace Plugin
                     }
                 }
 
-                //foreach (var payload in sendModel[DeviceName])
+                //foreach (var payload in sendModel[deviceName])
                 //{
                 //    if (payload.Values != null)
                 //        foreach (var kv in payload.Values)
                 //        {
                 //            //更新到UAService
-                //            _uaNodeManager?.UpdateNode($"{device.Parent.DeviceName}.{DeviceName}.{kv.Key}",
+                //            _uaNodeManager?.UpdateNode($"{device.Parent.DeviceName}.{deviceName}.{kv.Key}",
                 //                kv.Value);
                 //        }
                 //}
