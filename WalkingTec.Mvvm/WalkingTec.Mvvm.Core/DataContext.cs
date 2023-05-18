@@ -1,3 +1,4 @@
+using Dm;
 using Microsoft.Data.SqlClient;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -6,9 +7,6 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
-using Microsoft.Extensions.Logging.Debug;
-using Microsoft.Extensions.Options;
 using MySqlConnector;
 using Npgsql;
 using System;
@@ -649,6 +647,9 @@ namespace WalkingTec.Mvvm.Core
                         }
                     });
                     break;
+                case DBTypeEnum.DaMeng:
+                    optionsBuilder.UseDm(CSName);
+                    break;
                 default:
                     break;
             }
@@ -786,6 +787,9 @@ namespace WalkingTec.Mvvm.Core
                     break;
                 case DBTypeEnum.Oracle:
                     //rv = new OracleParameter(name, value) { Direction = dir };
+                    break;
+                case DBTypeEnum.DaMeng:
+                    rv = new DmParameter(name, value) { Direction = dir };
                     break;
             }
             return rv;

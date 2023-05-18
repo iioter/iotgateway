@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Description>WalkingTec.Mvvm</Description>
@@ -40,6 +40,15 @@
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="6.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="DmProvider">
+      <HintPath>Lib\DmProvider.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.EntityFrameworkCore.Dm">
+      <HintPath>Lib\Microsoft.EntityFrameworkCore.Dm.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
