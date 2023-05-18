@@ -10,6 +10,9 @@ using WalkingTec.Mvvm.Mvc;
 
 namespace IoTGateway.Areas.API
 {
+    /// <summary>
+    /// 设备和数据查询api
+    /// </summary>
     [Area("API")]
     [ActionDescription("MenuKey.ActionLog")]
     public class DeviceController : BaseController
