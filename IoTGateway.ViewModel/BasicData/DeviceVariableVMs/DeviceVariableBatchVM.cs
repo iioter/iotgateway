@@ -56,7 +56,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
         [Display(Name = "大小端")]
         public EndianEnum? EndianType { get; set; }
         [Display(Name = "表达式")]
-        public string Expression { get; set; }
+        public string Expressions { get; set; }
         [Display(Name = "权限")]
         public ProtectTypeEnum? ProtectType { get; set; }
         [Display(Name = "设备别名")]
