@@ -3,6 +3,7 @@ using System.Text;
 using S7.Net.Types;
 using PluginInterface;
 using Microsoft.Extensions.Logging;
+using System.IO;
 
 namespace PLC.SiemensS7
 {
@@ -47,6 +48,7 @@ namespace PLC.SiemensS7
             _device = device;
             _logger = logger;
 
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             _logger.LogInformation($"Device:[{_device}],Create()");
         }
 
@@ -132,27 +134,21 @@ namespace PLC.SiemensS7
         [Method("读西门子PLC标准地址", description: "读西门子PLC标准地址")]
         public DriverReturnValueModel Read(DriverAddressIoArgModel ioArg)
         {
+            var encodeArr = System.Text.Encoding.GetEncodings();
             var ret = new DriverReturnValueModel { StatusType = VaribaleStatusTypeEnum.Good };
 
             if (_plc is { IsConnected: true })
             {
                 try
                 {
-                    if (ioArg.ValueType == DataTypeEnum.AsciiString)
+                    if (ioArg.ValueType == DataTypeEnum.AsciiString || ioArg.ValueType == DataTypeEnum.Utf8String || ioArg.ValueType == DataTypeEnum.Gb2312String)
                     {
                         var str = string.Empty;
                         var dataItem = S7.Net.Types.DataItem.FromAddress(ioArg.Address);
                         var head = _plc.ReadBytes(dataItem.DataType, dataItem.DB, dataItem.StartByteAdr, 2);
                         var strBytes = _plc.ReadBytes(dataItem.DataType, dataItem.DB, dataItem.StartByteAdr + 2, head[1]);
-                        var strRaw = Encoding.ASCII.GetString(strBytes).TrimEnd(new char[] { '\0' });
-                        if (strRaw.Any())
-                        {
-                            foreach (var chart in strRaw)
-                            {
-                                if (chart >= 0x20 && chart <= 0x7E)
-                                    str += chart;
-                            }
-                        }
+                        var strRaw = GetString(ioArg.ValueType, strBytes);
+                        
                         ret.Value = strRaw;
 
                     }
@@ -373,15 +369,48 @@ namespace PLC.SiemensS7
                         toWriteString = toWriteString.Take(length).ToString();
                 }
 
+
+                switch (ioArg.ValueType)
+                {
+                    case DataTypeEnum.Utf8String:
+                        return Encoding.UTF8.GetBytes(toWriteString);
+                    case DataTypeEnum.Gb2312String:
+                        Encoding toEcoding = Encoding.GetEncoding("gb2312");
+                        byte[] fromBytes = Encoding.UTF8.GetBytes(toWriteString);
+                        return Encoding.Convert(Encoding.UTF8, toEcoding, fromBytes);
+                    case DataTypeEnum.AsciiString:
+                    default:
+                        return Encoding.ASCII.GetBytes(toWriteString);
+                }
             }
             catch (Exception e)
             {
                 throw new Exception("字符串解析异常");
             }
-
-            return Encoding.ASCII.GetBytes(toWriteString);
         }
 
+
+        private string GetString(DataTypeEnum dataType, byte[] strBytes)
+        {
+            string? str = string.Empty;
+            switch (dataType)
+            {
+                case DataTypeEnum.Utf8String:
+                    str = Encoding.UTF8.GetString(strBytes);
+                    break;
+                case DataTypeEnum.Gb2312String:
+                    Encoding fromEncoding = Encoding.GetEncoding("gb2312");
+                    byte[] toBytes = Encoding.Convert(fromEncoding, Encoding.UTF8, strBytes);
+                    str = Encoding.UTF8.GetString(toBytes);
+                    break;
+                case DataTypeEnum.AsciiString:
+                default:
+                    var strRaw = Encoding.ASCII.GetString(strBytes.Where(x => x is >= 0x20 and <= 0x7E).ToArray());
+                    break;
+            }
+
+            return str.TrimEnd(new char[] { '\0' });
+        }
         #endregion
 
     }

@@ -59,5 +59,7 @@ namespace PluginInterface
         Custome4,
         [Display(Name = "自定义5")]
         Custome5,
+        [Display(Name = "Gb2312")]
+        Gb2312String,
     }
 }
