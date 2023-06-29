@@ -56,7 +56,7 @@ namespace Plugin
                         myMqttClient.UploadAttributeAsync(string.IsNullOrWhiteSpace(deviceVariables.Key)
                                 ? Device.DeviceName
                                 : deviceVariables.Key,
-                            device.DeviceConfigs.Where(x => x.DataSide == DataSide.ClientSide)
+                            device.DeviceConfigs.Where(x => x.DataSide == DataSide.ClientSide || x.DataSide == DataSide.AnySide)
                                 .ToDictionary(x => x.DeviceConfigName, x => x.Value));
                     }
 
