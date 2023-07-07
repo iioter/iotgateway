@@ -13,6 +13,7 @@
 > 当然也可以进行边缘计算。
 >
 
+## [Tesla引荐：https://ts.la/oidq233243](https://ts.la/oidq233243)
 ## [教程文档](http://iotgateway.net/)
 ## [硬件网关](http://iotgateway.net/docs/hardware/selection/)
 ## [企业版](http://iotgateway.net/docs/enterprise/intro)
