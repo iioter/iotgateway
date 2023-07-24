@@ -652,6 +652,17 @@ namespace PLC.ModBusMaster
                         };
                         ret.Value = BitConverter.ToSingle(bytes, 0);
                     }
+                    else if (ioArg.ValueType.ToString().Contains("Double"))
+                    {
+                        var bytes = new[]
+                        {
+                            (byte)(retBuffers[0] & 0xff), (byte)((retBuffers[0] >> 8) & 0xff),
+                            (byte)(retBuffers[1] & 0xff), (byte)((retBuffers[1] >> 8) & 0xff),
+                            (byte)(retBuffers[2] & 0xff), (byte)((retBuffers[2] >> 8) & 0xff),
+                            (byte)(retBuffers[3] & 0xff), (byte)((retBuffers[3] >> 8) & 0xff)
+                        };
+                        ret.Value = BitConverter.ToDouble(bytes, 0);
+                    }
                     else if (ioArg.ValueType.ToString().Contains("AsciiString"))
                     {
                         var str = Encoding.ASCII.GetString(GetBytes(retBuffers).ToArray());
