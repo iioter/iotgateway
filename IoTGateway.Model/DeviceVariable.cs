@@ -63,5 +63,13 @@ namespace IoTGateway.Model
         [Display(Name = "状态")]
         [JsonConverter(typeof(StringEnumConverter))]
         public VaribaleStatusTypeEnum StatusType { get; set; } = VaribaleStatusTypeEnum.UnKnow;
+
+        [NotMapped][Display(Name = "最近几次的值")] public object[] Values { get; set; } = new object[3];
+        public void EnqueueVariable(object value)
+        {
+            Values[2] = Values[1];
+            Values[1] = Values[0];
+            Values[0] = value;
+        }
     }
 }

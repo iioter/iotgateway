@@ -88,6 +88,10 @@ namespace Plugin
                                         {
                                             foreach (var item in deviceVariables.OrderBy(x => x.Index))
                                             {
+                                                item.Value = null;
+                                                item.CookedValue = null;
+                                                item.StatusType = VaribaleStatusTypeEnum.Bad;
+
                                                 Thread.Sleep((int)Device.CmdPeriod);
 
                                                 var ret = new DriverReturnValueModel();
@@ -105,13 +109,27 @@ namespace Plugin
                                                     ret = (DriverReturnValueModel)method.Invoke(Driver,
                                                         new object[] { ioarg })!;
 
+                                                item.EnqueueVariable(ret.Value);
                                                 if (ret.StatusType == VaribaleStatusTypeEnum.Good &&
                                                     !string.IsNullOrWhiteSpace(item.Expressions?.Trim()))
                                                 {
+                                                    var expressionText = DealMysqlStr(item.Expressions)
+                                                        .Replace("raw",
+                                                            item.Values[0] is bool
+                                                                ? $"Convert.ToBoolean(\"{item.Values[0]}\")"
+                                                                : item.Values[0]?.ToString())
+                                                        .Replace("$ppv",
+                                                            item.Values[2] is bool
+                                                                ? $"Convert.ToBoolean(\"{item.Values[2]}\")"
+                                                                : item.Values[2]?.ToString())
+                                                        .Replace("$pv",
+                                                            item.Values[1] is bool
+                                                                ? $"Convert.ToBoolean(\"{item.Values[1]}\")"
+                                                                : item.Values[1]?.ToString());
+
                                                     try
                                                     {
-                                                        ret.CookedValue = _interpreter.Eval(DealMysqlStr(item.Expressions)
-                                                            .Replace("raw", ret.Value?.ToString()));
+                                                        ret.CookedValue = _interpreter.Eval(expressionText);
                                                     }
                                                     catch (Exception)
                                                     {
@@ -128,9 +146,8 @@ namespace Plugin
                                                 ret.VarId = item.ID;
 
                                                 //变化了才推送到mqttserver，用于前端展示
-                                                if (item.StatusType != ret.StatusType ||
-                                                    item.Value?.ToString() != ret.Value?.ToString() ||
-                                                    item.CookedValue?.ToString() != ret.CookedValue?.ToString())
+                                                if ((item.Values[1] == null && item.Values[0] != null) ||
+                                                    (item.Values[1] != null && item.Values[0] != null && item.Values[1].ToString() != item.Values[0].ToString()))
                                                 {
                                                     //这是设备变量列表要用的
                                                     var msgInternal = new InjectedMqttApplicationMessage(
