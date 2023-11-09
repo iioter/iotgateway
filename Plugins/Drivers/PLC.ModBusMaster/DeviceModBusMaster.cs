@@ -226,6 +226,8 @@ namespace PLC.ModBusMaster
         /// 批量读后缓存
         /// </summary>
         private Dictionary<string, object> _cache = new();
+        private Dictionary<string, string> _cacheType = new();
+        private Dictionary<string, ushort> _cacheStart = new();
         [Method("多地址读取", description: "多地址读取缓存")]
         public DriverReturnValueModel ReadMultiple(DriverAddressIoArgModel ioArg)
         {
@@ -240,6 +242,7 @@ namespace PLC.ModBusMaster
             var startAddress = ushort.Parse(args[1]);//开始地址
             var length = ushort.Parse(args[2]);//读取字数
             var cacheKey = args[3];//缓存字典名
+            _cacheStart[cacheKey] = startAddress;
             try
             {
 
@@ -248,31 +251,36 @@ namespace PLC.ModBusMaster
                     case "1":
                         var coils = _master.ReadCoils(slaveId, startAddress, length);
                         _cache[cacheKey] = coils;
+                        _cacheType[cacheKey] = "bool";
                         break;
                     case "2":
                         var inputs = _master.ReadInputs(slaveId, startAddress, length);
                         _cache[cacheKey] = inputs;
+                        _cacheType[cacheKey] = "bool";
                         break;
                     case "3":
                         var holdingRs = _master.ReadHoldingRegisters(slaveId, startAddress, length);
                         _cache[cacheKey] = holdingRs;
+                        _cacheType[cacheKey] = "ushort";
                         break;
                     case "4":
                         var inputRs = _master.ReadInputRegisters(slaveId, startAddress, length);
                         _cache[cacheKey] = inputRs;
+                        _cacheType[cacheKey] = "ushort";
                         break;
                 }
 
                 return new DriverReturnValueModel()
                 {
                     StatusType = VaribaleStatusTypeEnum.Good,
-                    Value = Newtonsoft.Json.JsonConvert.SerializeObject(_cache[cacheKey])
+                    Value = _cache[cacheKey]
                 };
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Device:[{_device}],ReadMultiple(),Error");
                 _cache[cacheKey] = null;
+                _cacheStart[cacheKey] = 0;
                 return new DriverReturnValueModel()
                 {
                     StatusType = VaribaleStatusTypeEnum.Bad
@@ -298,57 +306,115 @@ namespace PLC.ModBusMaster
                 {
                     var args = ioArg.Address.Split(',');
                     cacheName = args[0];
-                    startIndex = int.Parse(args[1]);
+                    startIndex = ushort.Parse(args[1]) - _cacheStart[cacheName];
                 }
                 else
                 {
-                    startIndex = int.Parse(ioArg.Address);
+                    startIndex = ushort.Parse(ioArg.Address) - _cacheStart[cacheName];
                 }
 
 
                 if (_cache.ContainsKey(cacheName) && _cache[cacheName] != null)
                 {
-                    var cacheBuffers = (ushort[])_cache[cacheName];
-                    var rawBuffers = cacheBuffers.Skip(startIndex).Take(cacheBuffers.Length - startIndex).ToArray();
-
-
-                    var retBuffers = ChangeBuffersOrder(rawBuffers, ioArg.EndianType);
-                    if (ioArg.ValueType == DataTypeEnum.AsciiString)
-                        retBuffers = rawBuffers;
-
-                    if (ioArg.ValueType.ToString().Contains("Uint16"))
-                        ret.Value = retBuffers[0];
-                    else if (ioArg.ValueType.ToString().Contains("Int16"))
-                        ret.Value = (short)retBuffers[0];
-                    else if (ioArg.ValueType.ToString().Contains("Bcd16"))
-                        ret.Value = ModBusDataConvert.GetBCD(GetBytes(retBuffers));
-                    else if (ioArg.ValueType.ToString().Contains("Uint32"))
-                        ret.Value = (uint)(retBuffers[0] << 16) + retBuffers[1];
-                    else if (ioArg.ValueType.ToString().Contains("Int32"))
-                        ret.Value = (retBuffers[0] << 16) + retBuffers[1];
-                    else if (ioArg.ValueType.ToString().Contains("Bcd32"))
+                    if (_cacheType[cacheName] == "ushort")
                     {
-                        var newBuffers = new ushort[2] { retBuffers[1], retBuffers[0] };
-                        ret.Value = ModBusDataConvert.GetBCD(GetBytes(newBuffers));
-                    }
-                    else if (ioArg.ValueType.ToString().Contains("Float"))
-                    {
-                        var bytes = new[]
+                        var cacheBuffers = (ushort[])_cache[cacheName];
+                        var wordLen = GetModbusReadCount(0, ioArg.ValueType);
+                        var rawBuffers = cacheBuffers.Skip(startIndex).Take(wordLen).ToArray();
+
+
+                        var retBuffers = ChangeBuffersOrder(rawBuffers, ioArg.EndianType);
+                        if (ioArg.ValueType == DataTypeEnum.AsciiString)
+                            retBuffers = rawBuffers;
+
+
+                        ret.StatusType = VaribaleStatusTypeEnum.Good;
+                        if (ioArg.ValueType == DataTypeEnum.Uint16)
+                            ret.Value = retBuffers[0];
+                        else if (ioArg.ValueType == DataTypeEnum.Int16)
+                            ret.Value = (short)retBuffers[0];
+                        else if (ioArg.ValueType == DataTypeEnum.Bcd16)
+                            ret.Value = ModBusDataConvert.GetBCD(GetBytes(retBuffers));
+                        else if (ioArg.ValueType == DataTypeEnum.Uint32)
+                            ret.Value = (uint)(retBuffers[0] << 16) + retBuffers[1];
+                        else if (ioArg.ValueType == DataTypeEnum.Int32)
+                            ret.Value = (retBuffers[0] << 16) + retBuffers[1];
+                        else if (ioArg.ValueType == DataTypeEnum.Bcd32)
                         {
+                            var newBuffers = new ushort[2] { retBuffers[1], retBuffers[0] };
+                            ret.Value = ModBusDataConvert.GetBCD(GetBytes(newBuffers));
+                        }
+                        else if (ioArg.ValueType == DataTypeEnum.Float)
+                        {
+                            var bytes = new[]
+                            {
                             (byte)(retBuffers[1] & 0xff), (byte)((retBuffers[1] >> 8) & 0xff),
                             (byte)(retBuffers[0] & 0xff), (byte)((retBuffers[0] >> 8) & 0xff)
                         };
-                        ret.Value = BitConverter.ToSingle(bytes, 0);
+                            ret.Value = BitConverter.ToSingle(bytes, 0);
+                        }
+                        else if (ioArg.ValueType == DataTypeEnum.Uint64)
+                        {
+                            var bytes = new[]
+                            {
+                            (byte)(retBuffers[0] & 0xff), (byte)((retBuffers[0] >> 8) & 0xff),
+                            (byte)(retBuffers[1] & 0xff), (byte)((retBuffers[1] >> 8) & 0xff),
+                            (byte)(retBuffers[2] & 0xff), (byte)((retBuffers[2] >> 8) & 0xff),
+                            (byte)(retBuffers[3] & 0xff), (byte)((retBuffers[3] >> 8) & 0xff)
+                        };
+                            ret.Value = BitConverter.ToUInt64(bytes, 0);
+                        }
+                        else if (ioArg.ValueType == DataTypeEnum.Int64)
+                        {
+                            var bytes = new[]
+                            {
+                            (byte)(retBuffers[0] & 0xff), (byte)((retBuffers[0] >> 8) & 0xff),
+                            (byte)(retBuffers[1] & 0xff), (byte)((retBuffers[1] >> 8) & 0xff),
+                            (byte)(retBuffers[2] & 0xff), (byte)((retBuffers[2] >> 8) & 0xff),
+                            (byte)(retBuffers[3] & 0xff), (byte)((retBuffers[3] >> 8) & 0xff)
+                        };
+                            ret.Value = BitConverter.ToInt64(bytes, 0);
+                        }
+                        else if (ioArg.ValueType == DataTypeEnum.Double)
+                        {
+                            var bytes = new[]
+                            {
+                            (byte)(retBuffers[0] & 0xff), (byte)((retBuffers[0] >> 8) & 0xff),
+                            (byte)(retBuffers[1] & 0xff), (byte)((retBuffers[1] >> 8) & 0xff),
+                            (byte)(retBuffers[2] & 0xff), (byte)((retBuffers[2] >> 8) & 0xff),
+                            (byte)(retBuffers[3] & 0xff), (byte)((retBuffers[3] >> 8) & 0xff)
+                        };
+                            ret.Value = BitConverter.ToDouble(bytes, 0);
+                        }
+                        else if (ioArg.ValueType == DataTypeEnum.AsciiString)
+                        {
+                            var str = Encoding.ASCII.GetString(GetBytes(retBuffers).Where(x => x is >= 32 and <= 126).ToArray());
+                            if (str.Contains('\0'))
+                                str = str.Split('\0')[0];
+                            ret.Value = str;
+                        }
+                        else
+                        {
+                            ret.StatusType = VaribaleStatusTypeEnum.UnKnow;
+                            ret.Message = "类型未定义";
+                            _logger.LogError($"Device:[{_device}],[{ioArg.ValueType}]类型未定义");
+                        }
                     }
-                    else if (ioArg.ValueType.ToString().Contains("AsciiString"))
+                    else if (_cacheType[cacheName] == "bool")
                     {
-                        var str = Encoding.ASCII.GetString(GetBytes(retBuffers).ToArray());
-                        if (str.Contains('\0'))
-                            str = str.Split('\0')[0];
-                        ret.Value = str;
+                        ret.StatusType = VaribaleStatusTypeEnum.Good;
+
+                        var cacheBuffers = (bool[])_cache[cacheName];
+                        var boolValue = cacheBuffers.Skip(startIndex).ToArray()[0];
+                        if (ioArg.ValueType == DataTypeEnum.Bool)
+                            ret.Value = boolValue;
+                        else
+                        {
+                            ret.Value = boolValue ? 1 : 0;
+                        }
                     }
 
-                    ret.StatusType = VaribaleStatusTypeEnum.Good;
+
                 }
                 else
                 {
@@ -628,22 +694,22 @@ namespace PLC.ModBusMaster
                     if (ioArg.ValueType == DataTypeEnum.AsciiString)
                         retBuffers = rawBuffers;
 
-                    if (ioArg.ValueType.ToString().Contains("Uint16"))
+                    if (ioArg.ValueType == DataTypeEnum.Uint16)
                         ret.Value = retBuffers[0];
-                    else if (ioArg.ValueType.ToString().Contains("Int16"))
+                    else if (ioArg.ValueType == DataTypeEnum.Int16)
                         ret.Value = (short)retBuffers[0];
-                    else if (ioArg.ValueType.ToString().Contains("Bcd16"))
+                    else if (ioArg.ValueType == DataTypeEnum.Bcd16)
                         ret.Value = ModBusDataConvert.GetBCD(GetBytes(retBuffers));
-                    else if (ioArg.ValueType.ToString().Contains("Uint32"))
+                    else if (ioArg.ValueType == DataTypeEnum.Uint32)
                         ret.Value = (uint)(retBuffers[0] << 16) + retBuffers[1];
-                    else if (ioArg.ValueType.ToString().Contains("Int32"))
+                    else if (ioArg.ValueType == DataTypeEnum.Int32)
                         ret.Value = (retBuffers[0] << 16) + retBuffers[1];
-                    else if (ioArg.ValueType.ToString().Contains("Bcd32"))
+                    else if (ioArg.ValueType == DataTypeEnum.Bcd32)
                     {
                         var newBuffers = new ushort[2] { retBuffers[1], retBuffers[0] };
                         ret.Value = ModBusDataConvert.GetBCD(GetBytes(newBuffers));
                     }
-                    else if (ioArg.ValueType.ToString().Contains("Float"))
+                    else if (ioArg.ValueType == DataTypeEnum.Float)
                     {
                         var bytes = new[]
                         {
@@ -652,23 +718,51 @@ namespace PLC.ModBusMaster
                         };
                         ret.Value = BitConverter.ToSingle(bytes, 0);
                     }
-                    else if (ioArg.ValueType.ToString().Contains("Double"))
+                    else if (ioArg.ValueType == DataTypeEnum.Uint64)
                     {
                         var bytes = new[]
                         {
-                            (byte)(retBuffers[0] & 0xff), (byte)((retBuffers[0] >> 8) & 0xff),
-                            (byte)(retBuffers[1] & 0xff), (byte)((retBuffers[1] >> 8) & 0xff),
+                            (byte)(retBuffers[3] & 0xff), (byte)((retBuffers[3] >> 8) & 0xff),
                             (byte)(retBuffers[2] & 0xff), (byte)((retBuffers[2] >> 8) & 0xff),
-                            (byte)(retBuffers[3] & 0xff), (byte)((retBuffers[3] >> 8) & 0xff)
+                            (byte)(retBuffers[1] & 0xff), (byte)((retBuffers[1] >> 8) & 0xff),
+                            (byte)(retBuffers[0] & 0xff), (byte)((retBuffers[0] >> 8) & 0xff)
+                        };
+                        ret.Value = BitConverter.ToUInt64(bytes, 0);
+                    }
+                    else if (ioArg.ValueType == DataTypeEnum.Int64)
+                    {
+                        var bytes = new[]
+                        {
+                            (byte)(retBuffers[3] & 0xff), (byte)((retBuffers[3] >> 8) & 0xff),
+                            (byte)(retBuffers[2] & 0xff), (byte)((retBuffers[2] >> 8) & 0xff),
+                            (byte)(retBuffers[1] & 0xff), (byte)((retBuffers[1] >> 8) & 0xff),
+                            (byte)(retBuffers[0] & 0xff), (byte)((retBuffers[0] >> 8) & 0xff)
+                        };
+                        ret.Value = BitConverter.ToInt64(bytes, 0);
+                    }
+                    else if (ioArg.ValueType == DataTypeEnum.Double)
+                    {
+                        var bytes = new[]
+                        {
+                            (byte)(retBuffers[3] & 0xff), (byte)((retBuffers[3] >> 8) & 0xff),
+                            (byte)(retBuffers[2] & 0xff), (byte)((retBuffers[2] >> 8) & 0xff),
+                            (byte)(retBuffers[1] & 0xff), (byte)((retBuffers[1] >> 8) & 0xff),
+                            (byte)(retBuffers[0] & 0xff), (byte)((retBuffers[0] >> 8) & 0xff)
                         };
                         ret.Value = BitConverter.ToDouble(bytes, 0);
                     }
-                    else if (ioArg.ValueType.ToString().Contains("AsciiString"))
+                    else if (ioArg.ValueType == DataTypeEnum.AsciiString)
                     {
-                        var str = Encoding.ASCII.GetString(GetBytes(retBuffers).ToArray());
+                        var str = Encoding.ASCII.GetString(GetBytes(retBuffers).Where(x => x is >= 32 and <= 126).ToArray());
                         if (str.Contains('\0'))
                             str = str.Split('\0')[0];
                         ret.Value = str;
+                    }
+                    else
+                    {
+                        ret.StatusType = VaribaleStatusTypeEnum.UnKnow;
+                        ret.Message = "类型未定义";
+                        _logger.LogError($"Device:[{_device}],[{ioArg.ValueType}]类型未定义");
                     }
                 }
                 catch (Exception ex)
@@ -678,6 +772,7 @@ namespace PLC.ModBusMaster
                     _logger.LogError(ex, $"Device:[{_device}],ReadRegistersBuffers(),Error");
                 }
             }
+
 
             return ret;
         }
