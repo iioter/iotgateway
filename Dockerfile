@@ -32,8 +32,6 @@ FROM base AS final
 WORKDIR /app
 COPY drivers /app/drivers/
 COPY 3d /app/wwwroot/3d/
-COPY IoTGateway/iotgateway.db /app/
-COPY IoTGateway/Quickstarts.ReferenceServer.Config.xml /app/
 COPY --from=publish /app/publish .
 
 ENV TZ=Asia/Shanghai
