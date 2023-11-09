@@ -84,31 +84,11 @@ namespace IoTGateway
         public void Configure(IApplicationBuilder app, IOptionsMonitor<Configs> configs, DeviceService deviceService, ModbusSlaveService modbusSlaveService)
         {
             IconFontsHelper.GenerateIconFont();
-
-            var pvd = new StaticFileOptions
+            app.UseExceptionHandler(configs.CurrentValue.ErrorHandler); 
+            app.UseStaticFiles(new StaticFileOptions()
             {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot")),
-                RequestPath = new PathString(""),
-                //设置不限制content-type 该设置可以下载所有类型的文件，但是不建议这么设置，因为不安全
-                //下面设置可以下载apk和nupkg类型的文件
-                ContentTypeProvider = new FileExtensionContentTypeProvider(new Dictionary<string, string>
-                {
-                    { ".html", "text/html" },
-                    { ".glb", "model/gltf-binary" },
-                    { ".json", " application/json" },
-                    { ".js", "application/javascript" },
-                    { ".css", "text/css" },
-                    { ".wasm", "application/wasm" },
-                    { ".png", "image/png" },
-                    { ".jpg", "image/jpg" },
-                    { ".woff", "application/font-woff" },
-                    { ".woff2", "application/font-woff" },
-                    { ".ico", "image/x-icon" },
-                })
-            };
-
-            app.UseExceptionHandler(configs.CurrentValue.ErrorHandler);
-            app.UseStaticFiles(pvd);
+                ServeUnknownFileTypes = true
+            });
             app.UseWtmStaticFiles();
             app.UseRouting();
             app.UseWtmMultiLanguages();
