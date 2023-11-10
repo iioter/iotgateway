@@ -1,15 +1,17 @@
 # IoTGateway
 
-## [在线体验](http://online.iotgateway.net/)
+## [在线体验 http://online.iotgateway.net](http://online.iotgateway.net/)
+
+- 用户名：`admin`     密码：`iotgateway.net`
 
 > 基于.NET6的跨平台工业物联网网关
-> 
+>
 > B/S架构，可视化配置
-> 
+>
 > 南向连接到你的任何设备和系统(如PLC、扫码枪、CNC、数据库、串口设备、上位机、非标设备、OPC Server、OPC UA Server、Mqtt Server等)
-> 
+>
 > 北向连接[IoTSharp](https://github.com/IoTSharp/IoTSharp)、[ThingsCloud](https://www.thingscloud.xyz/)、[ThingsBoard](https://thingsboard.io/)、华为云或您自己的物联网平台(MES、SCADA)等进行双向数据通讯
-> 
+>
 > 当然也可以进行边缘计算。
 >
 
