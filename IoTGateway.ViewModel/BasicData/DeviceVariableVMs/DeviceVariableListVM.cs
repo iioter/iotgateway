@@ -41,20 +41,24 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                 .GetTreeSelectListItems(Wtm, x => x.DeviceName);
 
             var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
-            foreach (var device in AllDevices)
+            Parallel.ForEach(AllDevices, device =>
             {
-                foreach (var item in device.Children)
+                Parallel.ForEach(device.Children, item =>
                 {
-                    var deviceThread = deviceService.DeviceThreads.Where(x => x.Device.ID.ToString() == (string)item.Value).FirstOrDefault();
+                    var deviceThread = deviceService.DeviceThreads.FirstOrDefault(x => x.Device.ID.ToString() == (string)item.Value);
                     if (deviceThread != null)
-                        item.Icon = deviceThread.Device.AutoStart ? (deviceThread.Driver.IsConnected ? "layui-icon layui-icon-link" : "layui-icon layui-icon-unlink") : "layui-icon layui-icon-pause";
+                        item.Icon = deviceThread.Device.AutoStart
+                            ? (deviceThread.Driver.IsConnected
+                                ? "layui-icon layui-icon-link"
+                                : "layui-icon layui-icon-unlink")
+                            : "layui-icon layui-icon-pause";
 
                     item.Text = " " + item.Text;
                     item.Expended = true;
                     item.Selected = item.Value.ToString() == IoTBackgroundService.VariableSelectDeviceId.ToString();
 
-                }
-            }
+                });
+            });
             DevicesTree = GetLayuiTree(AllDevices);
             base.InitListVM();
         }
@@ -99,7 +103,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
         public override void AfterDoSearcher()
         {
             var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
-            foreach (var item in EntityList)
+            Parallel.ForEach(EntityList, item =>
             {
                 var dapThread = deviceService!.DeviceThreads.FirstOrDefault(x => x.Device.ID == item.DeviceId);
                 var variable = dapThread?.Device?.DeviceVariables?.FirstOrDefault(x => x.ID == item.ID);
@@ -111,7 +115,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                     item.StatusType = variable.StatusType;
                     item.Timestamp = variable.Timestamp;
                 }
-            }
+            });
 
         }
         public override IOrderedQueryable<DeviceVariable_View> GetSearchQuery()
