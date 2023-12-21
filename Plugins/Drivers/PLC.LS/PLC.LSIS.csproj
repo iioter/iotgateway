@@ -1,9 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<OutputPath>../../../IoTGateway/bin/Debug/net6.0/drivers</OutputPath>
-		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
@@ -12,7 +11,7 @@
 		<PackageReference Include="HslCommunication" Version="11.7.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<ProjectReference Include="..\..\PluginInterface\PluginInterface.csproj" />
 	</ItemGroup>
