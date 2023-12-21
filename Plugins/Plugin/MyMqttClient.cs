@@ -32,7 +32,7 @@ namespace Plugin
             _logger = logger;
             //_uaNodeManager = uaService.server.m_server.nodeManagers[0] as ReferenceNodeManager;
 
-            //StartClientAsync().Wait();
+            StartClientAsync().Wait();
         }
 
         public async Task StartClientAsync()
@@ -76,10 +76,6 @@ namespace Plugin
 
         private async Task Client_ConnectedAsync(MqttClientConnectedEventArgs arg)
         {
-            if (Client == null)
-            {
-                StartClientAsync().Wait();
-            }
             _logger.LogInformation($"MQTT CONNECTED WITH SERVER ");
             #region Topics
             try
@@ -127,10 +123,6 @@ namespace Plugin
 
         private async Task Client_DisconnectedAsync(MqttClientDisconnectedEventArgs arg)
         {
-            if (Client == null)
-            {
-                StartClientAsync().Wait();
-            }
             try
             {
                 _logger.LogError($"MQTT DISCONNECTED WITH SERVER ");
@@ -264,10 +256,6 @@ namespace Plugin
 
         private async Task ResponseTbRpcAsync(TBRpcResponse tBRpcResponse)
         {
-            if (Client == null)
-            {
-                StartClientAsync().Wait();
-            }
             await Client.PublishAsync(new MqttApplicationMessageBuilder()
                 .WithTopic(_tbRpcTopic)
                 .WithPayload(JsonConvert.SerializeObject(tBRpcResponse))
@@ -276,10 +264,6 @@ namespace Plugin
 
         private async Task ResponseTcRpcAsync(TCRpcRequest tCRpcResponse)
         {
-            if (Client == null)
-            {
-                StartClientAsync().Wait();
-            }
             var topic = $"command/reply/{tCRpcResponse.RequestData.RequestId}";
             await Client.PublishAsync(new MqttApplicationMessageBuilder()
                 .WithTopic(topic)
@@ -289,10 +273,6 @@ namespace Plugin
 
         private async Task ResponseIsRpcAsync(ISRpcResponse rpcResult)
         {
-            if (Client == null)
-            {
-                StartClientAsync().Wait();
-            }
             //var responseTopic = $"/devices/{deviceid}/rpc/response/{methodName}/{rpcid}";
             var topic = $"devices/{rpcResult.DeviceId}/rpc/response/{rpcResult.Method}/{rpcResult.ResponseId}";
             await Client.PublishAsync(new MqttApplicationMessageBuilder()
@@ -333,10 +313,6 @@ namespace Plugin
             //Message: {"Device A":{"attribute1":"value1", "attribute2": 42}, "Device B":{"attribute1":"value1", "attribute2": 42}
             try
             {
-                if (Client == null)
-                {
-                    StartClientAsync().Wait();
-                }
                 return Client.PublishAsync(new MqttApplicationMessageBuilder()
                     .WithTopic($"devices/{deviceName}/attributes").WithPayload(JsonConvert.SerializeObject(obj))
                     .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtMostOnce)
@@ -352,20 +328,12 @@ namespace Plugin
 
         public async Task UploadIsTelemetryDataAsync(string deviceName, object obj)
         {
-            if (Client == null)
-            {
-                StartClientAsync().Wait();
-            }
             await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic($"devices/{deviceName}/telemetry")
                 .WithPayload(JsonConvert.SerializeObject(obj)).Build());
         }
 
         public async Task UploadTcTelemetryDataAsync(string deviceName, object obj)
         {
-            if (Client == null)
-            {
-                StartClientAsync().Wait();
-            }
             var toSend = new Dictionary<string, object> { { deviceName, obj } };
             await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic($"gateway/attributes")
                 .WithPayload(JsonConvert.SerializeObject(toSend)).WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
@@ -393,10 +361,6 @@ namespace Plugin
             {
                 Devices = hwTelemetry
             };
-            if (Client == null)
-            {
-                StartClientAsync().Wait();
-            }
 
             await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic($"/v1/devices/{_systemConfig.GatewayName}/datas")
                 .WithPayload(JsonConvert.SerializeObject(hwTelemetrys)).WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
@@ -454,10 +418,6 @@ namespace Plugin
         {
             try
             {
-                if (Client == null)
-                {
-                    StartClientAsync().Wait();
-                }
                 string id = Guid.NewGuid().ToString();
                 switch (_systemConfig.IoTPlatformType)
                 {
@@ -552,10 +512,6 @@ namespace Plugin
         {
             try
             {
-                if (Client == null)
-                {
-                    StartClientAsync().Wait();
-                }
                 if (CanPubTelemetry(deviceName, device, sendModel))
                 {
                     switch (_systemConfig.IoTPlatformType)
@@ -627,10 +583,6 @@ namespace Plugin
         {
             try
             {
-                if (Client == null)
-                {
-                    StartClientAsync().Wait();
-                }
                 switch (_systemConfig.IoTPlatformType)
                 {
                     case IoTPlatformType.ThingsBoard:
@@ -686,10 +638,6 @@ namespace Plugin
         {
             try
             {
-                if (Client == null)
-                {
-                    StartClientAsync().Wait();
-                }
                 switch (_systemConfig.IoTPlatformType)
                 {
                     case IoTPlatformType.ThingsBoard:
@@ -745,10 +693,6 @@ namespace Plugin
         {
             try
             {
-                if (Client == null)
-                {
-                    StartClientAsync().Wait();
-                }
                 switch (_systemConfig.IoTPlatformType)
                 {
                     case IoTPlatformType.HuaWei:
@@ -784,10 +728,6 @@ namespace Plugin
         {
             try
             {
-                if (Client == null)
-                {
-                    StartClientAsync().Wait();
-                }
                 switch (_systemConfig.IoTPlatformType)
                 {
                     case IoTPlatformType.HuaWei:
