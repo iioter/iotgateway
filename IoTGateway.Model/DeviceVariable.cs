@@ -42,7 +42,7 @@ namespace IoTGateway.Model
 
         [Newtonsoft.Json.JsonIgnore]
         public Device Device { get; set; }
-        [Display(Name = "ID")]
+        [Display(Name = "Device Name")]
         public Guid? DeviceId { get; set; }
 
         [Display(Name = "Alias")]

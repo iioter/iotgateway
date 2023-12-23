@@ -7,20 +7,20 @@ namespace IoTGateway.Model
 {
     public class Device : TreePoco<Device>, IBasePoco
     {
-        [Display(Name = "Name")]
+        [Display(Name = "Device Name")]
         public string DeviceName { get; set; }
 
-        [Display(Name = "sort")]
+        [Display(Name = "Sort")]
         public uint Index { get; set; }
 
-        [Display(Name = "describe")]
+        [Display(Name = "Description")]
         public string Description { get; set; }
 
         public Driver Driver { get; set; }
-        [Display(Name = "drive")]
+        [Display(Name = "Device PLC")]
         public Guid? DriverId { get; set; }
 
-        [Display(Name = "start up")]
+        [Display(Name = "Start up")]
         public bool AutoStart { get; set; }
 
         [Display(Name = "Change upload")]
@@ -32,7 +32,7 @@ namespace IoTGateway.Model
         [Display(Name = "Command interval ms")]
         public uint CmdPeriod { get; set; }
 
-        [Display(Name = "Type")]
+        [Display(Name = "Device Type")]
         public DeviceTypeEnum DeviceTypeEnum { get; set; }
 
         [Display(Name = "Creation time")]
