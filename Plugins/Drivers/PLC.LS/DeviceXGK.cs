@@ -1,30 +1,28 @@
 ﻿using HslCommunication;
 using HslCommunication.Profinet.LSIS;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using PluginInterface;
 using System.IO.Ports;
-using System.Net;
 
 namespace PLC.LSIS
 {
     [DriverSupported("FENet")]
     [DriverSupported("CNet")]
-    [DriverInfo("XGB", "V1.0.0", "Copyright IoTGateway.net 20231223")]
-    public class DeviceXGB : IDriver
+    [DriverInfo("XGK", "V1.0.0", "Copyright IoTGateway.net 20231223")]
+    public class DeviceXGK : IDriver
     {
         public ILogger _logger { get; set; }
         private readonly string _device;
 
-        private XGBCnet xGBCnet = null;
-        private XGBFastEnet fastEnet = null;
+        private XGKCnet xGBCnet = null;
+        private XGKFastEnet fastEnet = null;
 
 
         #region ConfigParameter
 
         [ConfigParameter("Device Id")] public string DeviceId { get; set; }
 
-        [ConfigParameter("PLC LSCpuInfo")] public LSCpuInfo lSCpuInfo { get; set; } = LSCpuInfo.XGB;
+        [ConfigParameter("PLC LSCpuInfo")] public LSCpuInfo lSCpuInfo { get; set; } = LSCpuInfo.XGK;
 
         [ConfigParameter("PLC TypeConnect")] public LSTypeConnect lSTypeConnect { get; set; } = LSTypeConnect.FENet;
 
@@ -58,7 +56,7 @@ namespace PLC.LSIS
         /// </summary>
         /// <param name="device"></param>
         /// <param name="logger"></param>
-        public DeviceXGB(string device, ILogger logger)
+        public DeviceXGK(string device, ILogger logger)
         {
             _device = device;
             _logger = logger;
@@ -80,7 +78,8 @@ namespace PLC.LSIS
                         case LSTypeConnect.FENet:
                             if (fastEnet == null || !IsConnected)
                             {
-                                fastEnet = new XGBFastEnet(IpAddress, Port);
+                                fastEnet = new XGKFastEnet(IpAddress, Port);
+                                
                                 fastEnet.SlotNo = (byte)Slot;
                                 fastEnet.SetCpuType = $"{lSCpuInfo}";
                                 IsConnected = fastEnet.ConnectServer().IsSuccess;
@@ -89,7 +88,7 @@ namespace PLC.LSIS
                         case LSTypeConnect.CNet:
                             if (xGBCnet == null || !IsConnected)
                             {
-                                xGBCnet = new XGBCnet
+                                xGBCnet = new XGKCnet
                                 {
                                     Station = Station
                                 };
@@ -197,7 +196,7 @@ namespace PLC.LSIS
             }
 
         }
-        [Method("XGB", description: "Read")]
+        [Method("XGK", description: "Read")]
         public DriverReturnValueModel Read(DriverAddressIoArgModel ioArg)
         {
             DriverReturnValueModel ret = new() { StatusType = VaribaleStatusTypeEnum.Good };
@@ -213,7 +212,7 @@ namespace PLC.LSIS
 
                     if (ioArg.ValueType == DataTypeEnum.Bool)
                     {
-                        
+
                         OperateResult<bool[]> read = lSTypeConnect == LSTypeConnect.FENet ? fastEnet.ReadBool(ioArg.Address, 1) : xGBCnet.ReadBool(ioArg.Address, 1);
                         if (read.IsSuccess)
                             ret.Value = Newtonsoft.Json.JsonConvert.SerializeObject(read.Content[0]);
@@ -253,7 +252,7 @@ namespace PLC.LSIS
                     }
                     if (ioArg.ValueType == DataTypeEnum.Uint16)
                     {
-                        OperateResult<ushort[]> read = lSTypeConnect == LSTypeConnect.FENet ? fastEnet.ReadUInt16(ioArg.Address, 1) : xGBCnet.ReadUInt16(ioArg.Address, 1);  
+                        OperateResult<ushort[]> read = lSTypeConnect == LSTypeConnect.FENet ? fastEnet.ReadUInt16(ioArg.Address, 1) : xGBCnet.ReadUInt16(ioArg.Address, 1);
                         if (read.IsSuccess)
                             ret.Value = Newtonsoft.Json.JsonConvert.SerializeObject(read.Content[0]);
                         else
@@ -268,7 +267,7 @@ namespace PLC.LSIS
                     else if (ioArg.ValueType == DataTypeEnum.Int16)
                     {
 
-                        OperateResult<short[]> read = lSTypeConnect == LSTypeConnect.FENet ? fastEnet.ReadInt16(ioArg.Address, 1) : xGBCnet.ReadInt16(ioArg.Address, 1); 
+                        OperateResult<short[]> read = lSTypeConnect == LSTypeConnect.FENet ? fastEnet.ReadInt16(ioArg.Address, 1) : xGBCnet.ReadInt16(ioArg.Address, 1);
                         if (read.IsSuccess)
                             ret.Value = Newtonsoft.Json.JsonConvert.SerializeObject(read.Content[0]);
                         else
@@ -399,7 +398,7 @@ namespace PLC.LSIS
             return ret;
 
         }
-        [Method("XGB", description: "ReadMultiple")]
+        [Method("XGK", description: "ReadMultiple")]
         public DriverReturnValueModel ReadMultiple(DriverAddressIoArgModel ioArg)
         {
             DriverReturnValueModel ret = new() { StatusType = VaribaleStatusTypeEnum.Good };
@@ -428,7 +427,7 @@ namespace PLC.LSIS
                     if (ioArg.ValueType == DataTypeEnum.Bool)
                     {
                         OperateResult<bool[]> read = lSTypeConnect == LSTypeConnect.FENet ? fastEnet.ReadBool(startAddress, length) : xGBCnet.ReadBool(startAddress, length);
-                      
+
                         if (read.IsSuccess)
                             ret.Value = Newtonsoft.Json.JsonConvert.SerializeObject(read.Content);
                         else
@@ -614,7 +613,7 @@ namespace PLC.LSIS
             return ret;
 
         }
-        [Method("XGB", description: "Write")]
+        [Method("XGK", description: "Write")]
         public async Task<RpcResponse> WriteAsync(string RequestId, string Method, DriverAddressIoArgModel ioArg)
         {
             RpcResponse rpcResponse = new() { IsSuccess = false };
@@ -731,13 +730,6 @@ namespace PLC.LSIS
             return rpcResponse;
         }
         #endregion
-
-    }
-
-    public enum LSTypeConnect
-    {
-        CNet = 0,
-        FENet = 1,
 
     }
 }
