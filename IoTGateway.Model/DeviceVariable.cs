@@ -10,61 +10,61 @@ namespace IoTGateway.Model
 {
     public class DeviceVariable : TopBasePoco, IVariable
     {
-        [Display(Name = "变量名")]
+        [Display(Name = "Tag Name")]
         public string Name { get; set; }
 
-        [Display(Name = "描述")]
+        [Display(Name = "Description")]
         public string Description { get; set; }
 
-        [Display(Name = "方法")]
+        [Display(Name = "Method")]
         public string Method { get; set; }
 
-        [Display(Name = "地址")]
+        [Display(Name = "Address")]
         public string DeviceAddress { get; set; }
 
-        [Display(Name = "类型")]
+        [Display(Name = "DataType")]
         public DataTypeEnum DataType { get; set; }
 
-        [Display(Name = "大小端")]
+        [Display(Name = "EndianType")]
         public EndianEnum EndianType { get; set; }
 
-        [Display(Name = "表达式")]
+        [Display(Name = "Expressions")]
         public string Expressions { get; set; }
 
-        [Display(Name = "上传")]
+        [Display(Name = "Upload")]
         public bool IsUpload { get; set; }
 
-        [Display(Name = "权限")]
+        [Display(Name = "Permissions")]
         public ProtectTypeEnum ProtectType { get; set; }
 
-        [Display(Name = "排序")]
+        [Display(Name = "sort")]
         public uint Index { get; set; }
 
         [Newtonsoft.Json.JsonIgnore]
         public Device Device { get; set; }
-        [Display(Name = "设备")]
+        [Display(Name = "ID")]
         public Guid? DeviceId { get; set; }
 
-        [Display(Name = "别名")]
+        [Display(Name = "Alias")]
         public string Alias { get; set; }
 
         [NotMapped]
-        [Display(Name = "原值")]
+        [Display(Name = "Value")]
         public object Value { get; set; }
         [NotMapped]
-        [Display(Name = "值")]
+        [Display(Name = "CookedValue")]
         public object CookedValue { get; set; }
         [NotMapped]
         public string Message { get; set; }
         [NotMapped]
-        [Display(Name = "更新时间")]
+        [Display(Name = "Update time")]
         public DateTime Timestamp { get; set; }
         [NotMapped]
-        [Display(Name = "状态")]
+        [Display(Name = "State")]
         [JsonConverter(typeof(StringEnumConverter))]
         public VaribaleStatusTypeEnum StatusType { get; set; } = VaribaleStatusTypeEnum.UnKnow;
 
-        [NotMapped][Display(Name = "最近几次的值")] public object[] Values { get; set; } = new object[3];
+        [NotMapped][Display(Name = "The Most Recent Values")] public object[] Values { get; set; } = new object[3];
         public void EnqueueVariable(object value)
         {
             Values[2] = Values[1];
