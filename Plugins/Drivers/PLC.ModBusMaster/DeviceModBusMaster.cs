@@ -622,25 +622,73 @@ namespace PLC.ModBusMaster
                     if (method == nameof(HoldingRegisters))
                     {
                         ushort[] shortArray = new ushort[count];
-
+                        ushort[] toWriteArray = null;
                         switch (ioArg.ValueType)
                         {
                             case DataTypeEnum.AsciiString:
                                 ModBusDataConvert.SetString(shortArray, 0, ioArg.Value.ToString());
                                 await _master.WriteMultipleRegistersAsync(slaveAddress, address, shortArray);
-
                                 break;
                             case DataTypeEnum.Float:
-                                float f = 0;
-                                float.TryParse(ioArg.Value.ToString(), out f);
+                                var f = float.Parse(ioArg.Value.ToString());
                                 ModBusDataConvert.SetReal(shortArray, 0, f);
+                                toWriteArray = ChangeBuffersOrder(shortArray, ioArg.EndianType);
+                                await _master.WriteMultipleRegistersAsync(slaveAddress, address, toWriteArray);
+                                break;
+                            case DataTypeEnum.Int16:
+                                shortArray[0] = (ushort)short.Parse(ioArg.Value.ToString());
+                                toWriteArray = ChangeBuffersOrder(shortArray, ioArg.EndianType);
+                                await _master.WriteMultipleRegistersAsync(slaveAddress, address, toWriteArray);
+                                break;
+                            case DataTypeEnum.Uint16:
+                                shortArray[0] = ushort.Parse(ioArg.Value.ToString());
+                                toWriteArray = ChangeBuffersOrder(shortArray, ioArg.EndianType);
+                                await _master.WriteMultipleRegistersAsync(slaveAddress, address, toWriteArray);
+                                break;
+                            case DataTypeEnum.Int32:
+                                var int32Value = int.Parse(ioArg.Value.ToString());
+                                shortArray[1] = (ushort)(int32Value & 0xffff);
+                                shortArray[0] = (ushort)(int32Value >> 16 & 0xffff);
+                                toWriteArray = ChangeBuffersOrder(shortArray, ioArg.EndianType);
+                                await _master.WriteMultipleRegistersAsync(slaveAddress, address, toWriteArray);
+                                break;
+                            case DataTypeEnum.Uint32:
+                                var uInt32Value = uint.Parse(ioArg.Value.ToString());
+                                shortArray[1] = (ushort)(uInt32Value & 0xffff);
+                                shortArray[0] = (ushort)(uInt32Value >> 16 & 0xffff);
+                                toWriteArray = ChangeBuffersOrder(shortArray, ioArg.EndianType);
+                                await _master.WriteMultipleRegistersAsync(slaveAddress, address, toWriteArray);
+                                break;
+                            case DataTypeEnum.Int64:
+                                var int64Value = long.Parse(ioArg.Value.ToString());
+                                shortArray[3] = (ushort)(int64Value & 0xffff);
+                                shortArray[2] = (ushort)(int64Value >> 16 & 0xffff);
+                                shortArray[1] = (ushort)(int64Value >> 32 & 0xffff);
+                                shortArray[0] = (ushort)(int64Value >> 48 & 0xffff);
+                                toWriteArray = ChangeBuffersOrder(shortArray, ioArg.EndianType);
                                 await _master.WriteMultipleRegistersAsync(slaveAddress, address, shortArray);
-
+                                break;
+                            case DataTypeEnum.Uint64:
+                                var uInt64Value = ulong.Parse(ioArg.Value.ToString());
+                                shortArray[3] = (ushort)(uInt64Value & 0xffff);
+                                shortArray[2] = (ushort)(uInt64Value >> 16 & 0xffff);
+                                shortArray[1] = (ushort)(uInt64Value >> 32 & 0xffff);
+                                shortArray[0] = (ushort)(uInt64Value >> 48 & 0xffff);
+                                toWriteArray = ChangeBuffersOrder(shortArray, ioArg.EndianType);
+                                await _master.WriteMultipleRegistersAsync(slaveAddress, address, shortArray);
+                                break;
+                            case DataTypeEnum.Double:
+                                double d = double.Parse(ioArg.Value.ToString());
+                                var ulongValue = BitConverter.DoubleToUInt64Bits(d);
+                                shortArray[3] = (ushort)(ulongValue & 0xffff);
+                                shortArray[2] = (ushort)(ulongValue >> 16 & 0xffff);
+                                shortArray[1] = (ushort)(ulongValue >> 32 & 0xffff);
+                                shortArray[0] = (ushort)(ulongValue >> 48 & 0xffff);
+                                toWriteArray = ChangeBuffersOrder(shortArray, ioArg.EndianType);
+                                await _master.WriteMultipleRegistersAsync(slaveAddress, address, toWriteArray.ToArray());
                                 break;
                             default:
-                                await _master.WriteSingleRegisterAsync(slaveAddress, address,
-                                    ushort.Parse(ioArg.Value.ToString()));
-                                break;
+                                throw new ArgumentException("数据类型未实现写入");
                         }
 
                         rpcResponse.IsSuccess = true;
