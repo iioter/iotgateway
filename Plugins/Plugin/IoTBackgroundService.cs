@@ -1,6 +1,7 @@
 ﻿using IoTGateway.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WalkingTec.Mvvm.Core;
 
@@ -11,8 +12,14 @@ namespace Plugin
         public static DBTypeEnum DbType;
         public static string connnectSetting;
         public static Guid? VariableSelectDeviceId, ConfigSelectDeviceId;
-        public IoTBackgroundService(IConfiguration configRoot)
+        private readonly IHostApplicationLifetime _appLifeTime;
+        private readonly IServiceProvider _serviceProvider;
+
+        public IoTBackgroundService(IConfiguration configRoot, IHostApplicationLifetime appLifeTime, IServiceProvider serviceProvider)
         {
+            _appLifeTime = appLifeTime;
+            _serviceProvider = serviceProvider;
+
             var connnectSettings = new List<ConnnectSettingsModel>();
             configRoot.Bind("Connections", connnectSettings);
             connnectSetting = connnectSettings[0].Value;
@@ -53,12 +60,18 @@ namespace Plugin
         }
         public override Task StartAsync(CancellationToken cancellationToken)
         {
+            _appLifeTime.ApplicationStarted.Register(OnStarted);
             return Task.CompletedTask;
         }
 
         public override Task StopAsync(CancellationToken cancellationToken)
         {
             return Task.CompletedTask;
+        }
+        private void OnStarted()
+        {
+            _ = _serviceProvider.GetRequiredService<DeviceService>();
+            _ = _serviceProvider.GetRequiredService<ModbusSlaveService>();
         }
     }
 }

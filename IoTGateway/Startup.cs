@@ -81,7 +81,7 @@ namespace IoTGateway
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IOptionsMonitor<Configs> configs, DeviceService deviceService, ModbusSlaveService modbusSlaveService)
+        public void Configure(IApplicationBuilder app, IOptionsMonitor<Configs> configs)
         {
             IconFontsHelper.GenerateIconFont();
             app.UseExceptionHandler(configs.CurrentValue.ErrorHandler); 
