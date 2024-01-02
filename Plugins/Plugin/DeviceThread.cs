@@ -289,7 +289,8 @@ namespace Plugin
                                 {
                                     Address = deviceVariable.DeviceAddress,
                                     Value = para.Value,
-                                    ValueType = deviceVariable.DataType
+                                    ValueType = deviceVariable.DataType,
+                                    EndianType = deviceVariable.EndianType
                                 };
                                 var writeResponse = Driver
                                     .WriteAsync(e.RequestId, deviceVariable.Method, ioArgModel).Result;
