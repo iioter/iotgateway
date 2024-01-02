@@ -631,7 +631,9 @@ namespace PLC.ModBusMaster
                                 break;
                             case DataTypeEnum.Float:
                                 var f = float.Parse(ioArg.Value.ToString());
-                                ModBusDataConvert.SetReal(shortArray, 0, f);
+                                var fValue = BitConverter.SingleToUInt32Bits(f);
+                                shortArray[1] = (ushort)(fValue & 0xffff);
+                                shortArray[0] = (ushort)(fValue >> 16 & 0xffff);
                                 toWriteArray = ChangeBuffersOrder(shortArray, ioArg.EndianType);
                                 await _master.WriteMultipleRegistersAsync(slaveAddress, address, toWriteArray);
                                 break;
