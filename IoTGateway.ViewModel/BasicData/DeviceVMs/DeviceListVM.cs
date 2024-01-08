@@ -18,10 +18,10 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
         {
             return new List<GridAction>
             {
-                this.MakeAction("Device","Copy","设备复制","设备复制", GridActionParameterTypesEnum.SingleId,"BasicData",600).SetIconCls("layui-icon layui-icon-template-1").SetPromptMessage("你确定复制设备，包括配置参数和变量？").SetDialogTitle("复制设备确认").SetHideOnToolBar(true).SetShowInRow(true).SetBindVisiableColName("copy"),
-                this.MakeAction("Device","Attribute","请求属性","请求属性", GridActionParameterTypesEnum.SingleId,"BasicData",600).SetIconCls("layui-icon layui-icon-download-circle").SetPromptMessage("你确定请求客户端属性和共享属性吗？").SetDialogTitle("请求属性确认").SetHideOnToolBar(true).SetShowInRow(true).SetBindVisiableColName("attribute"),
-                this.MakeAction("Device","CreateGroup","创建组","创建组", GridActionParameterTypesEnum.NoId,"BasicData",600).SetIconCls("_wtmicon _wtmicon-zuzhiqunzu").SetDialogTitle("创建组").SetShowInRow(false),
-                this.MakeStandardAction("Device", GridActionStandardTypesEnum.Create, "创建设备","BasicData", dialogWidth: 800,name:"创建设备").SetIconCls("layui-icon layui-icon-senior"),
+                this.MakeAction("Device","Copy",Localizer["CopyDevice"],Localizer["CopyDevice"], GridActionParameterTypesEnum.SingleId,"BasicData",600).SetIconCls("layui-icon layui-icon-template-1").SetPromptMessage("你确定复制设备，包括配置参数和变量？").SetDialogTitle(Localizer["CopyDevice"]).SetHideOnToolBar(true).SetShowInRow(true).SetBindVisiableColName("copy"),
+                this.MakeAction("Device","Attribute",Localizer["RequestAttribute"],Localizer["RequestAttribute"], GridActionParameterTypesEnum.SingleId,"BasicData",600).SetIconCls("layui-icon layui-icon-download-circle").SetPromptMessage("你确定请求客户端属性和共享属性吗？").SetDialogTitle(Localizer["RequestAttribute"]).SetHideOnToolBar(true).SetShowInRow(true).SetBindVisiableColName("attribute"),
+                this.MakeAction("Device",Localizer["CreateGroup"],Localizer["CreateGroup"],Localizer["CreateGroup"], GridActionParameterTypesEnum.NoId,"BasicData",600).SetIconCls("_wtmicon _wtmicon-zuzhiqunzu").SetDialogTitle(Localizer["CreateGroup"]).SetShowInRow(false),
+                this.MakeStandardAction("Device", GridActionStandardTypesEnum.Create, Localizer["CreateDevice"],"BasicData", dialogWidth: 800,name:Localizer["CreateDevice"]).SetIconCls("layui-icon layui-icon-senior"),
                 this.MakeStandardAction("Device", GridActionStandardTypesEnum.Edit, Localizer["Sys.Edit"], "BasicData", dialogWidth: 800),
                 this.MakeStandardAction("Device", GridActionStandardTypesEnum.Delete, Localizer["Sys.Delete"], "BasicData", dialogWidth: 800),
                 this.MakeStandardAction("Device", GridActionStandardTypesEnum.Details, Localizer["Sys.Details"], "BasicData", dialogWidth: 800),
@@ -29,7 +29,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                 this.MakeStandardAction("Device", GridActionStandardTypesEnum.BatchDelete, Localizer["Sys.BatchDelete"], "BasicData", dialogWidth: 800),
                 //this.MakeStandardAction("Device", GridActionStandardTypesEnum.Import, Localizer["Sys.Import"], "BasicData", dialogWidth: 800),
                 this.MakeStandardAction("Device", GridActionStandardTypesEnum.ExportExcel, Localizer["Sys.Export"], "BasicData"),
-                this.MakeAction("Device","ImportExcel","导入Excel","导入Excel", GridActionParameterTypesEnum.NoId,"BasicData",600).SetIconCls("layui-icon layui-icon-upload-circle").SetDialogTitle("导入Excel模板").SetHideOnToolBar(false).SetShowInRow(false),
+                this.MakeAction("Device","ImportExcel",Localizer["ImportExcel"],Localizer["ImportExcel"], GridActionParameterTypesEnum.NoId,"BasicData",600).SetIconCls("layui-icon layui-icon-upload-circle").SetDialogTitle(Localizer["ImportExcel"]).SetHideOnToolBar(false).SetShowInRow(false),
             };
         }
 
@@ -103,7 +103,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                         AutoStart = y.AutoStart,
                         CgUpload = y.CgUpload,
                         EnforcePeriod = y.EnforcePeriod,
-                        CmdPeriod=y.CmdPeriod,
+                        CmdPeriod = y.CmdPeriod,
                         Description = y.Description,
                         DeviceTypeEnum = y.DeviceTypeEnum,
                         DriverName_view = y.Driver?.DriverName,
@@ -122,9 +122,9 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
 
     public class Device_View : Device
     {
-        [Display(Name = "驱动名")]
+        [Display(Name = "DriverName")]
         public String DriverName_view { get; set; }
-        [Display(Name = "父级名")]
+        [Display(Name = "GroupName")]
         public String DeviceName_view { get; set; }
         public int ExtraOrder { get; set; }
     }

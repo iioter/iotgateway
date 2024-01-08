@@ -38,7 +38,7 @@ namespace IoTGateway.ViewModel.Rpc.RpcLogVMs
                 this.MakeGridHeader(x => x.DeviceName_view),
                 this.MakeGridHeader(x => x.Method),
                 this.MakeGridHeader(x => x.Params),
-                this.MakeGridHeader(x => x.IsSuccess).SetHeader("是否成功"),
+                this.MakeGridHeader(x => x.IsSuccess),
                 this.MakeGridHeader(x => x.Description),
                 this.MakeGridHeaderAction(width: 200)
             };
@@ -92,9 +92,9 @@ namespace IoTGateway.ViewModel.Rpc.RpcLogVMs
 
     public class RpcLog_View : RpcLog
     {
-        [Display(Name = "设备名")]
+        [Display(Name = "DeviceName")]
         public String DeviceName_view { get; set; }
-        [Display(Name = "持续时间(ms)")]
+        [Display(Name = "Duration(ms)")]
         public double Duration { get; set; }
 
     }

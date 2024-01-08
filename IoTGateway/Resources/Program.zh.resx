@@ -117,6 +117,36 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Address" xml:space="preserve">
+    <value>地址</value>
+  </data>
+  <data name="Alias" xml:space="preserve">
+    <value>别名</value>
+  </data>
+  <data name="AnySide" xml:space="preserve">
+    <value>共享属性</value>
+  </data>
+  <data name="AssembleName" xml:space="preserve">
+    <value>程序集名</value>
+  </data>
+  <data name="AutoStart" xml:space="preserve">
+    <value>启动</value>
+  </data>
+  <data name="ChangeUpload" xml:space="preserve">
+    <value>变化上传</value>
+  </data>
+  <data name="Client Status" xml:space="preserve">
+    <value>客户端状态</value>
+  </data>
+  <data name="ClientId" xml:space="preserve">
+    <value>客户端Id</value>
+  </data>
+  <data name="ClientSide" xml:space="preserve">
+    <value>客户端属性</value>
+  </data>
+  <data name="CmdPeriodms" xml:space="preserve">
+    <value>指令间隔ms</value>
+  </data>
   <data name="Codegen.ApiOnly" xml:space="preserve">
     <value>勾选此项将只生成api，而没有前端代码</value>
   </data>
@@ -207,6 +237,87 @@
   <data name="Codegen.VMNs" xml:space="preserve">
     <value>VM命名空间</value>
   </data>
+  <data name="Communication" xml:space="preserve">
+    <value>通讯配置</value>
+  </data>
+  <data name="ConfigName" xml:space="preserve">
+    <value>名称</value>
+  </data>
+  <data name="CookedValue" xml:space="preserve">
+    <value>值</value>
+  </data>
+  <data name="CopyDevice" xml:space="preserve">
+    <value>复制设备</value>
+  </data>
+  <data name="CreateDevice" xml:space="preserve">
+    <value>创建设备</value>
+  </data>
+  <data name="CreateGroup" xml:space="preserve">
+    <value>创建组</value>
+  </data>
+  <data name="DataCollect Conf" xml:space="preserve">
+    <value>采集配置</value>
+  </data>
+  <data name="DataSide" xml:space="preserve">
+    <value>属性侧</value>
+  </data>
+  <data name="DataType" xml:space="preserve">
+    <value>类型</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>描述</value>
+  </data>
+  <data name="Device" xml:space="preserve">
+    <value>设备</value>
+  </data>
+  <data name="DeviceName" xml:space="preserve">
+    <value>设备名</value>
+  </data>
+  <data name="Devices" xml:space="preserve">
+    <value>设备维护</value>
+  </data>
+  <data name="Driver" xml:space="preserve">
+    <value>驱动</value>
+  </data>
+  <data name="DriverName" xml:space="preserve">
+    <value>驱动名</value>
+  </data>
+  <data name="Drivers" xml:space="preserve">
+    <value>驱动管理</value>
+  </data>
+  <data name="Duration(ms)" xml:space="preserve">
+    <value>持续时间(ms)</value>
+  </data>
+  <data name="EndianType" xml:space="preserve">
+    <value>大小端</value>
+  </data>
+  <data name="EndTime" xml:space="preserve">
+    <value>结束时间</value>
+  </data>
+  <data name="EnforcePeriodms" xml:space="preserve">
+    <value>归档周期ms</value>
+  </data>
+  <data name="Expressions" xml:space="preserve">
+    <value>表达式</value>
+  </data>
+  <data name="FileName" xml:space="preserve">
+    <value>文件名</value>
+  </data>
+  <data name="Gateway Conf" xml:space="preserve">
+    <value>网关配置</value>
+  </data>
+  <data name="GatewayName" xml:space="preserve">
+    <value>网关名称</value>
+  </data>
+  <data name="Group" xml:space="preserve">
+    <value>组</value>
+  </data>
+  <data name="ImportExcel" xml:space="preserve">
+    <value>导入Excel</value>
+  </data>
+  <data name="IsSuccess" xml:space="preserve">
+    <value>是否成功</value>
+  </data>
   <data name="Login.ChangePassword" xml:space="preserve">
     <value>修改密码</value>
   </data>
@@ -288,8 +399,80 @@
   <data name="MenuMangement" xml:space="preserve">
     <value>菜单管理</value>
   </data>
+  <data name="Method" xml:space="preserve">
+    <value>方法</value>
+  </data>
+  <data name="MqttPort" xml:space="preserve">
+    <value>Mqtt端口</value>
+  </data>
+  <data name="MqttServer" xml:space="preserve">
+    <value>Mqtt服务器</value>
+  </data>
+  <data name="OutputPlatform" xml:space="preserve">
+    <value>输出平台</value>
+  </data>
+  <data name="Parameters" xml:space="preserve">
+    <value>参数</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>密码</value>
+  </data>
+  <data name="PendingMessage" xml:space="preserve">
+    <value>未决消息数</value>
+  </data>
+  <data name="Permissions" xml:space="preserve">
+    <value>权限</value>
+  </data>
+  <data name="ProtocolVersion" xml:space="preserve">
+    <value>协议版本</value>
+  </data>
+  <data name="RawValue" xml:space="preserve">
+    <value>原值</value>
+  </data>
+  <data name="ReadOnly" xml:space="preserve">
+    <value>只读</value>
+  </data>
+  <data name="ReadWrite" xml:space="preserve">
+    <value>读写</value>
+  </data>
   <data name="Reg.Success" xml:space="preserve">
     <value>注册成功</value>
+  </data>
+  <data name="Remains" xml:space="preserve">
+    <value>剩余授权数量</value>
+  </data>
+  <data name="Remark" xml:space="preserve">
+    <value>备注</value>
+  </data>
+  <data name="RequestAttribute" xml:space="preserve">
+    <value>请求属性</value>
+  </data>
+  <data name="Rpc Logs" xml:space="preserve">
+    <value>Rpc日志</value>
+  </data>
+  <data name="RpcSide" xml:space="preserve">
+    <value>发起方</value>
+  </data>
+  <data name="RxBytes" xml:space="preserve">
+    <value>收字节数</value>
+  </data>
+  <data name="RxMessages" xml:space="preserve">
+    <value>收消息数</value>
+  </data>
+  <data name="RxPackets" xml:space="preserve">
+    <value>收包数</value>
+  </data>
+  <data name="ServerSide" xml:space="preserve">
+    <value>服务端</value>
+  </data>
+  <data name="Sort" xml:space="preserve">
+    <value>排序</value>
+  </data>
+  <data name="StartTime" xml:space="preserve">
+    <value>开始时间</value>
+  </data>
+  <data name="Status" xml:space="preserve">
+    <value>状态</value>
   </data>
   <data name="Sys.Account" xml:space="preserve">
     <value>账号</value>
@@ -672,6 +855,33 @@
   <data name="Sys.{0}ValueTypeNotAllowed" xml:space="preserve">
     <value>{0}输入的值不在允许的数据类型范围内</value>
   </data>
+  <data name="Timestamp" xml:space="preserve">
+    <value>更新时间</value>
+  </data>
+  <data name="Transport" xml:space="preserve">
+    <value>传输配置</value>
+  </data>
+  <data name="Tutorial Docs" xml:space="preserve">
+    <value>教程文档</value>
+  </data>
+  <data name="TxBytes" xml:space="preserve">
+    <value>发字节数</value>
+  </data>
+  <data name="TxMessages" xml:space="preserve">
+    <value>收发消息数</value>
+  </data>
+  <data name="TxPackets" xml:space="preserve">
+    <value>发包数</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>类型</value>
+  </data>
+  <data name="Upload" xml:space="preserve">
+    <value>上传</value>
+  </data>
+  <data name="UserName" xml:space="preserve">
+    <value>用户名</value>
+  </data>
   <data name="Validate.{0}formaterror" xml:space="preserve">
     <value>{0}格式错误</value>
   </data>
@@ -692,6 +902,18 @@
   </data>
   <data name="Validate.{0}stringmax{1}" xml:space="preserve">
     <value>{0}最多输入{1}个字符</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>值</value>
+  </data>
+  <data name="VariableName" xml:space="preserve">
+    <value>变量名</value>
+  </data>
+  <data name="Variables" xml:space="preserve">
+    <value>变量配置</value>
+  </data>
+  <data name="WriteValue" xml:space="preserve">
+    <value>写入值</value>
   </data>
   <data name="_Admin.Account" xml:space="preserve">
     <value>账号</value>

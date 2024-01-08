@@ -7,7 +7,7 @@ namespace IoTGateway.Model
 {
     public class Device : TreePoco<Device>, IBasePoco
     {
-        [Display(Name = "Device Name")]
+        [Display(Name = "DeviceName")]
         public string DeviceName { get; set; }
 
         [Display(Name = "Sort")]
@@ -17,31 +17,31 @@ namespace IoTGateway.Model
         public string Description { get; set; }
 
         public Driver Driver { get; set; }
-        [Display(Name = "Device PLC")]
+        [Display(Name = "Driver")]
         public Guid? DriverId { get; set; }
 
-        [Display(Name = "Start up")]
+        [Display(Name = "AutoStart")]
         public bool AutoStart { get; set; }
 
-        [Display(Name = "Change upload")]
+        [Display(Name = "ChangeUpload")]
         public bool CgUpload { get; set; }
 
-        [Display(Name = "Archiving cycle ms")]
+        [Display(Name = "EnforcePeriodms")]
         public uint EnforcePeriod { get; set; }
 
-        [Display(Name = "Command interval ms")]
+        [Display(Name = "CmdPeriodms")]
         public uint CmdPeriod { get; set; }
 
-        [Display(Name = "Device Type")]
+        [Display(Name = "Type")]
         public DeviceTypeEnum DeviceTypeEnum { get; set; }
 
-        [Display(Name = "Creation time")]
+        [Display(Name = "CreateTime")]
         public DateTime? CreateTime { get; set; }
-        [Display(Name = "Founder")]
+        [Display(Name = "CreateBy")]
         public string CreateBy { get; set; }
-        [Display(Name = "Update time")]
+        [Display(Name = "UpdateTime")]
         public DateTime? UpdateTime { get; set; }
-        [Display(Name = "updater")]
+        [Display(Name = "UpdateBy")]
         public string UpdateBy { get; set; }
 
         public List<DeviceConfig> DeviceConfigs { get; set; }

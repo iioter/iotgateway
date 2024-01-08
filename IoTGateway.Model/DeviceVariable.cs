@@ -10,7 +10,7 @@ namespace IoTGateway.Model
 {
     public class DeviceVariable : TopBasePoco, IVariable
     {
-        [Display(Name = "Tag Name")]
+        [Display(Name = "VariableName")]
         public string Name { get; set; }
 
         [Display(Name = "Description")]
@@ -37,34 +37,35 @@ namespace IoTGateway.Model
         [Display(Name = "Permissions")]
         public ProtectTypeEnum ProtectType { get; set; }
 
-        [Display(Name = "sort")]
+        [Display(Name = "Sort")]
         public uint Index { get; set; }
 
         [Newtonsoft.Json.JsonIgnore]
         public Device Device { get; set; }
-        [Display(Name = "Device Name")]
+        [Display(Name = "Device")]
         public Guid? DeviceId { get; set; }
 
         [Display(Name = "Alias")]
         public string Alias { get; set; }
 
         [NotMapped]
-        [Display(Name = "Value")]
+        [Display(Name = "RawValue")]
         public object Value { get; set; }
         [NotMapped]
         [Display(Name = "CookedValue")]
         public object CookedValue { get; set; }
         [NotMapped]
+        [Display(Name = "Message")]
         public string Message { get; set; }
         [NotMapped]
-        [Display(Name = "Update time")]
+        [Display(Name = "Timestamp")]
         public DateTime Timestamp { get; set; }
         [NotMapped]
-        [Display(Name = "State")]
+        [Display(Name = "Status")]
         [JsonConverter(typeof(StringEnumConverter))]
         public VaribaleStatusTypeEnum StatusType { get; set; } = VaribaleStatusTypeEnum.UnKnow;
 
-        [NotMapped][Display(Name = "The Most Recent Values")] public object[] Values { get; set; } = new object[3];
+        [NotMapped][Display(Name = "MostRecentValues")] public object[] Values { get; set; } = new object[3];
         public void EnqueueVariable(object value)
         {
             Values[2] = Values[1];

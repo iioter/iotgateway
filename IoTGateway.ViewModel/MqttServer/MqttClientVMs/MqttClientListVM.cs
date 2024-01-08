@@ -67,34 +67,34 @@ namespace IoTGateway.ViewModel.MqttClient.MqttServerVMs
     }
     public class MqttClient_View : TopBasePoco
     {
-        [Display(Name = "客户端Id")]
+        [Display(Name = "ClientId")]
         public string ClientId { get; set; }
 
         [Display(Name = "Endpoint")]
         public string Endpoint { get; set; }
 
-        [Display(Name = "收消息数")]
+        [Display(Name = "RxMessages")]
         public long ReceivedApplicationMessagesCount { get; set; }
 
-        [Display(Name = "收发消息数")]
+        [Display(Name = "TxMessages")]
         public long SentApplicationMessagesCount { get; set; }
 
-        [Display(Name = "收包数")]
+        [Display(Name = "RxPackets")]
         public long ReceivedPacketsCount { get; set; }
 
-        [Display(Name = "发包数")]
+        [Display(Name = "TxPackets")]
         public long SentPacketsCount { get; set; }
 
-        [Display(Name = "发字节数")]
+        [Display(Name = "TxBytes")]
         public long BytesSent { get; set; }
 
-        [Display(Name = "收字节数")]
+        [Display(Name = "RxBytes")]
         public long BytesReceived { get; set; }
 
-        [Display(Name = "未决消息数")]
+        [Display(Name = "PendingMessage")]
         public long PendingApplicationMessagesCount { get; set; }
 
-        [Display(Name = "协议版本")]
+        [Display(Name = "ProtocolVersion")]
         public MqttProtocolVersion MqttProtocolVersion { get; set; }
     }
 

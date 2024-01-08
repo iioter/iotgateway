@@ -93,7 +93,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceConfigVMs
 
     public class DeviceConfig_View : DeviceConfig
     {
-        [Display(Name = "设备名")]
+        [Display(Name = "DeviceName")]
         public String DeviceName_view { get; set; }
 
     }

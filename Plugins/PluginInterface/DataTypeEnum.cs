@@ -49,15 +49,15 @@ namespace PluginInterface
         TimeStampS,
         [Display(Name = "Any")]
         Any,
-        [Display(Name = "Custom 1")]
+        [Display(Name = "Custom1")]
         Custome1,
-        [Display(Name = "Custom 2")]
+        [Display(Name = "Custom2")]
         Custome2,
-        [Display(Name = "Custom 3")]
+        [Display(Name = "Custom3")]
         Custome3,
         [Display(Name = "Custom4")]
         Custome4,
-        [Display(Name = "Custom 5")]
+        [Display(Name = "Custom5")]
         Custome5,
         [Display(Name = "Gb2312")]
         Gb2312String,

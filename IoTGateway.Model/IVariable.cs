@@ -5,7 +5,7 @@ namespace IoTGateway.Model
 {
     public interface IVariable
     {
-        [Display(Name = "Variable Name")]
+        [Display(Name = "VariableName")]
         public string Name { get; set; }
 
         [Display(Name = "Description")]
@@ -20,7 +20,7 @@ namespace IoTGateway.Model
         [Display(Name = "Expressions")]
         public string Expressions { get; set; }
 
-        [Display(Name = "Permissions")]
+        [Display(Name = "Permission")]
         public ProtectTypeEnum ProtectType { get; set; }
     }
 }

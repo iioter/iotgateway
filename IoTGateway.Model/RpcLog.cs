@@ -10,27 +10,27 @@ namespace IoTGateway.Model
 {
     public class RpcLog:TopBasePoco
     {
-        [Display(Name = "Initiator")]
+        [Display(Name = "RpcSide")]
         public RpcSide RpcSide { get; set; }    
 
-        [Display(Name = "Starting Time")]
+        [Display(Name = "StartTime")]
         public DateTime StartTime { get; set; }
 
         public Device Device { get; set; }
 
-        [Display(Name = "ID")]
+        [Display(Name = "Device")]
         public Guid? DeviceId { get; set; }
 
         [Display(Name = "Method")]
         public string Method { get; set; }
 
-        [Display(Name = "Request Parameters")]
+        [Display(Name = "Parameters")]
         public string Params { get; set; }
 
-        [Display(Name = "End Time")]
+        [Display(Name = "EndTime")]
         public DateTime EndTime { get; set; }
 
-        [Display(Name = "Result")]
+        [Display(Name = "IsSuccess")]
         public bool IsSuccess { get; set; }
 
         [Display(Name = "Description")]
@@ -39,9 +39,9 @@ namespace IoTGateway.Model
 
     public enum RpcSide
     {
-        [Display(Name = "Server Request")]
+        [Display(Name = "ServerSide")]
         ServerSide=1,
-        [Display(Name = "Client Request")]
+        [Display(Name = "ClientSide")]
         ClientSide =1
     }
 }

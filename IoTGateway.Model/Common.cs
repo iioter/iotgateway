@@ -4,26 +4,26 @@ namespace IoTGateway.Model
 {
     public enum DeviceTypeEnum
     {
-        [Display(Name = "Collection Group")]
+        [Display(Name = "Group")]
         Group = 0,
 
-        [Display(Name = "Collection Device")]
+        [Display(Name = "Device")]
         Device = 1
     }
     public enum AccessEnum
     {
-        [Display(Name = "Read Only")]
+        [Display(Name = "ReadOnly")]
         ReadOnly = 0,
-        [Display(Name = "Read and write")]
+        [Display(Name = "ReadWrite")]
         ReadAndWrite = 1
     }
 
     public enum DataSide
     {
-        [Display(Name = "Shared Properties")]
+        [Display(Name = "AnySide")]
         AnySide=0,
         //ServerSide=1,
-        [Display(Name = "Client Properties")]
+        [Display(Name = "ClientSide")]
         ClientSide =2,
     }
 }

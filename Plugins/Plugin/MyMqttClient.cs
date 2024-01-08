@@ -129,7 +129,7 @@ namespace Plugin
             try
             {
                 _logger.LogError($"MQTT DISCONNECTED WITH SERVER ");
-                await Client.DisconnectAsync();
+                await Client.ConnectAsync(_options);
             }
             catch (Exception ex)
             {
