@@ -5,22 +5,22 @@ namespace IoTGateway.Model
 {
     public interface IVariable
     {
-        [Display(Name = "变量名")]
+        [Display(Name = "Variable Name")]
         public string Name { get; set; }
 
-        [Display(Name = "描述")]
+        [Display(Name = "Description")]
         public string Description { get; set; }
 
-        [Display(Name = "地址")]
+        [Display(Name = "Address")]
         public string DeviceAddress { get; set; }
 
-        [Display(Name = "数据类型")]
+        [Display(Name = "DataType")]
         public PluginInterface.DataTypeEnum DataType { get; set; }
 
-        [Display(Name = "表达式")]
+        [Display(Name = "Expressions")]
         public string Expressions { get; set; }
 
-        [Display(Name = "权限")]
+        [Display(Name = "Permissions")]
         public ProtectTypeEnum ProtectType { get; set; }
     }
 }

@@ -64,9 +64,12 @@ namespace Plugin
                 Client.DisconnectedAsync += Client_DisconnectedAsync;
                 Client.ApplicationMessageReceivedAsync += Client_ApplicationMessageReceivedAsync;
 
-                await Client.ConnectAsync(_options);
+                if(Client.ConnectAsync(_options).IsCompletedSuccessfully) ;
+                {
+                 _logger.LogInformation("MQTT WAITING FOR APPLICATION MESSAGES");
+                }
 
-                _logger.LogInformation("MQTT WAITING FOR APPLICATION MESSAGES");
+               
             }
             catch (Exception ex)
             {
@@ -126,7 +129,7 @@ namespace Plugin
             try
             {
                 _logger.LogError($"MQTT DISCONNECTED WITH SERVER ");
-                await Client.ConnectAsync(_options);
+                await Client.DisconnectAsync();
             }
             catch (Exception ex)
             {

@@ -6,13 +6,13 @@ namespace IoTGateway.Model
 {
     public class Driver : BasePoco
     {
-        [Display(Name = "驱动名")]
+        [Display(Name = "Name")]
         public string DriverName { get; set; }
-        [Display(Name = "文件名")]
+        [Display(Name = "FileName")]
         public string FileName { get; set; }
-        [Display(Name = "程序集名")]
+        [Display(Name = "AssembleName")]
         public string AssembleName { get; set; }
-        [Display(Name = "剩余授权数量")]
+        [Display(Name = "Number of licenses remaining")]
         public int AuthorizesNum { get; set; }
     }
 }

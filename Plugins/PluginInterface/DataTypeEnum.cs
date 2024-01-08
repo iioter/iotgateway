@@ -47,17 +47,17 @@ namespace PluginInterface
         TimeStampMs,
         [Display(Name = "timestamp(s)")]
         TimeStampS,
-        [Display(Name = "任意类型")]
+        [Display(Name = "Any")]
         Any,
-        [Display(Name = "自定义1")]
+        [Display(Name = "Custom 1")]
         Custome1,
-        [Display(Name = "自定义2")]
+        [Display(Name = "Custom 2")]
         Custome2,
-        [Display(Name = "自定义3")]
+        [Display(Name = "Custom 3")]
         Custome3,
-        [Display(Name = "自定义4")]
+        [Display(Name = "Custom4")]
         Custome4,
-        [Display(Name = "自定义5")]
+        [Display(Name = "Custom 5")]
         Custome5,
         [Display(Name = "Gb2312")]
         Gb2312String,

@@ -6,18 +6,18 @@ namespace IoTGateway.Model
 {
     public class DeviceConfig : BasePoco
     {
-        [Display(Name = "名称")]
+        [Display(Name = "Name")]
         public string DeviceConfigName { get; set; }
-        [Display(Name = "属性侧")]
+        [Display(Name = "attribute side")]
         public DataSide DataSide { get; set; }
-        [Display(Name = "描述")]
+        [Display(Name = "Description")]
         public string Description { get; set; }
-        [Display(Name = "值")]
+        [Display(Name = "Value")]
         public string Value { get; set; }
-        [Display(Name = "备注")]
+        [Display(Name = "Remark")]
         public string EnumInfo { get; set; }
         public Device Device { get; set; }
-        [Display(Name = "设备")]
+        [Display(Name = "ID")]
         public Guid? DeviceId { get; set; }
     }
 }
