@@ -58,7 +58,7 @@ namespace Mock.TcpClient
             get
             {
                 //客户端对象不为空并且客户端已连接则返回true
-                return _client != null && _client.TcpClient.Connected;
+                return _client != null && _client.TcpClient != null && _client.TcpClient.Connected;
             }
         }
 
