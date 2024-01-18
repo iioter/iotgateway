@@ -2,6 +2,9 @@
 using PluginInterface;
 using IoTClient.Clients.PLC;
 using Microsoft.Extensions.Logging;
+using DataTypeEnum = IoTClient.Enums.DataTypeEnum;
+using System.Text;
+using System.Linq;
 
 namespace PLC.MelsecMc
 {
@@ -195,6 +198,163 @@ namespace PLC.MelsecMc
 
             return ret;
         }
+
+
+        private Dictionary<string, object> _cache = new();
+        /// <summary>
+        /// 读
+        /// </summary>
+        /// <param name="ioArg"></param>
+        /// <returns></returns>
+        [Method("批量读PLC标准地址", description: "数据区,开始地址,地址间隔,读取总数")]
+        public DriverReturnValueModel ReadMultiple(DriverAddressIoArgModel ioArg)
+        {
+            var ret = new DriverReturnValueModel { StatusType = VaribaleStatusTypeEnum.Good };
+
+            if (_plc != null && this.IsConnected)
+            {
+                try
+                {
+                    var addresStrings = ioArg.Address.Split(',');
+                    string block = addresStrings[0];
+                    ushort start = ushort.Parse(addresStrings[1]);
+                    ushort step = ushort.Parse(addresStrings[2]);
+                    ushort count = ushort.Parse(addresStrings[3]);
+
+                    var dataType = DataTypeEnum.UInt16;
+
+                    switch (ioArg.ValueType)
+                    {
+                        case PluginInterface.DataTypeEnum.Bool:
+                            dataType = DataTypeEnum.Bool;
+                            break;
+                        case PluginInterface.DataTypeEnum.Bit:
+                        case PluginInterface.DataTypeEnum.UByte:
+                        case PluginInterface.DataTypeEnum.Byte:
+                            dataType = DataTypeEnum.Byte;
+                            break;
+                        case PluginInterface.DataTypeEnum.Uint16:
+                            dataType = DataTypeEnum.UInt16;
+                            break;
+                        case PluginInterface.DataTypeEnum.Int16:
+                            dataType = DataTypeEnum.Int16;
+                            break;
+                        case PluginInterface.DataTypeEnum.Uint32:
+                            dataType = DataTypeEnum.UInt32;
+                            break;
+                        case PluginInterface.DataTypeEnum.Int32:
+                            dataType = DataTypeEnum.Int32;
+                            break;
+                        case PluginInterface.DataTypeEnum.Float:
+                            dataType = DataTypeEnum.Float;
+                            break;
+                        case PluginInterface.DataTypeEnum.Double:
+                            dataType = DataTypeEnum.Double;
+                            break;
+                        case PluginInterface.DataTypeEnum.Uint64:
+                            dataType = DataTypeEnum.UInt64;
+                            break;
+                        case PluginInterface.DataTypeEnum.Int64:
+                            dataType = DataTypeEnum.Int64;
+                            break;
+                        case PluginInterface.DataTypeEnum.AsciiString:
+                            dataType = DataTypeEnum.String;
+                            break;
+                        case PluginInterface.DataTypeEnum.Utf8String:
+                            dataType = DataTypeEnum.String;
+                            break;
+                        default:
+                            ret.StatusType = VaribaleStatusTypeEnum.Bad;
+                            ret.Message = $"读取失败,不支持的类型:{ioArg.ValueType}";
+                            break;
+                    }
+
+                    var batchAddress = new Dictionary<string, DataTypeEnum>();
+                    for (int i = 0; i < count; i++)
+                    {
+                        batchAddress[$"{block}{start + i * step}"] = dataType;
+                    }
+
+                    try
+                    {
+                        var batchResult = _plc.BatchRead(batchAddress, count);
+
+                        if (batchResult.IsSucceed)
+                        {
+                            foreach (var value in batchResult.Value)
+                            {
+                                _cache[value.Key] = value.Value;
+                            }
+
+                            ret.Value = batchResult.Value.Select(x => x.Value).ToList();
+                        }
+                        else
+                        {
+                            ret.StatusType = VaribaleStatusTypeEnum.Bad;
+                            foreach (var address in batchAddress)
+                            {
+                                if (_cache.ContainsKey(address.Key))
+                                    _cache.Remove(address.Key);
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        ret.StatusType = VaribaleStatusTypeEnum.Bad;
+                        foreach (var address in batchAddress)
+                        {
+                            if (_cache.ContainsKey(address.Key))
+                                _cache.Remove(address.Key);
+                        }
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    ret.StatusType = VaribaleStatusTypeEnum.Bad;
+                    ret.Message = $"读取失败,{ex.Message}";
+                }
+            }
+            else
+            {
+                ret.StatusType = VaribaleStatusTypeEnum.Bad;
+                ret.Message = "连接失败";
+            }
+
+            return ret;
+        }
+
+        /// <summary>
+        /// 从缓存内读
+        /// </summary>
+        /// <param name="ioArg"></param>
+        /// <returns></returns>
+        [Method("从缓存读取", description: "从缓存读取")]
+        public DriverReturnValueModel ReadFromCache(DriverAddressIoArgModel ioArg)
+        {
+            DriverReturnValueModel ret = new();
+            try
+            {
+                if (_cache.ContainsKey(ioArg.Address) && _cache[ioArg.Address] != null)
+                {
+                    ret.StatusType = VaribaleStatusTypeEnum.Good;
+                    ret.Value = _cache[ioArg.Address];
+                }
+                else
+                {
+                    ret.StatusType = VaribaleStatusTypeEnum.Bad;
+                }
+            }
+            catch (Exception ex)
+            {
+                ret.StatusType = VaribaleStatusTypeEnum.Bad;
+                _logger.LogError(ex, $"Device:[{_device}],ReadFromCache(),Error");
+            }
+
+            return ret;
+        }
+
+
 
         /// <summary>
         /// 写
