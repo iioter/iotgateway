@@ -114,7 +114,7 @@ namespace Plugin
         public void LoadAllDrivers()
         {
             _logger.LogInformation("LoadAllDrivers Start");
-            Parallel.ForEach(_driverFiles, file =>
+            foreach (var file in _driverFiles)
             {
                 try
                 {
@@ -134,7 +134,7 @@ namespace Plugin
                 {
                     _logger.LogError(ex, $"LoadAllDrivers Error {file}");
                 }
-            });
+            };
 
             _logger.LogInformation($"LoadAllDrivers End,Count{DriverInfos.Count}");
         }

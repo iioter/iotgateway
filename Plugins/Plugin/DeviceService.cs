@@ -40,7 +40,10 @@ namespace Plugin
                         .Include(x => x.Parent).Include(x => x.Driver).Include(x => x.DeviceConfigs)
                         .Include(x => x.DeviceVariables).AsNoTracking().ToList();
                     _logger.LogInformation($"Loaded Devices Count:{devices.Count()}");
-                    Parallel.ForEach(devices, CreateDeviceThread);
+                    foreach (var device in devices)
+                    {
+                        CreateDeviceThread(device);
+                    }
                 }
             }
             catch (Exception ex)
