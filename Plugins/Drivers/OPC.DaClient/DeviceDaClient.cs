@@ -158,6 +158,7 @@ namespace OPC.DaClient
                             break;
                         case DataTypeEnum.AsciiString:
                         case DataTypeEnum.Utf8String:
+                        case DataTypeEnum.Any:
                             ret.Value = dataValue;
                             break;
                         default:

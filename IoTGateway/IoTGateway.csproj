@@ -5,9 +5,12 @@
 		<CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>
 		<AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
 		<SatelliteResourceLanguages>zh-Hans,en</SatelliteResourceLanguages>
+		<ServerGarbageCollection>false</ServerGarbageCollection>
+		<ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<!--<PlatformTarget>x86</PlatformTarget>-->
 	</PropertyGroup>
 
 
