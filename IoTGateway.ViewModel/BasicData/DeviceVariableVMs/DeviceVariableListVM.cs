@@ -70,6 +70,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                 this.MakeGridHeader(x => x.Method).SetSort(true).SetWidth(130),
                 this.MakeGridHeader(x => x.DeviceAddress).SetSort(true).SetWidth(100),
                 this.MakeGridHeader(x => x.DataType).SetSort(true).SetWidth(75),
+                this.MakeGridHeader(x => x.IsTrigger).SetWidth(90),
                 this.MakeGridHeader(x => x.EndianType).SetSort(true).SetWidth(90),
                 this.MakeGridHeader(x => x.Value).SetWidth(95).SetFormat((a,b)=>{
                     return $"<div id='id{a.ID}_Value'>{a.Value}</div>";
@@ -88,6 +89,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                 this.MakeGridHeader(x => x.Timestamp).SetWidth(100).SetFormat((a,b)=>{
                     return $"<div id='id{a.ID}_Timestamp'>{a.Timestamp:HH:mm:ss.fff}</div>";
                 }),
+                this.MakeGridHeader(x => x.Message).SetSort(true).SetWidth(200),
                 this.MakeGridHeader(x=> "detail").SetHide().SetFormat((a,b)=>{
                     return "false";
                 }),
@@ -114,6 +116,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                     item.CookedValue = variable.CookedValue;
                     item.StatusType = variable.StatusType;
                     item.Timestamp = variable.Timestamp;
+                    item.Message = variable.Message;
                 }
             });
 
@@ -140,6 +143,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                     Method = x.Method,
                     DeviceAddress = x.DeviceAddress,
                     DataType = x.DataType,
+                    IsTrigger = x.IsTrigger,
                     EndianType = x.EndianType,
                     Expressions = x.Expressions,
                     IsUpload=x.IsUpload,

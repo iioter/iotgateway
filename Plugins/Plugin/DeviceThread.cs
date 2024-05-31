@@ -150,14 +150,15 @@ namespace Plugin
                                             ret.CookedValue = ret.Value;
 
 
+                                        item.EnqueueCookedVariable(ret.CookedValue);
+
                                         if (item.IsUpload)
                                             payLoad.Values[item.Name] = ret.CookedValue;
 
                                         ret.VarId = item.ID;
 
                                         //变化了才推送到mqttserver，用于前端展示
-                                        if ((item.Values[1] == null && item.Values[0] != null) ||
-                                            (item.Values[1] != null && item.Values[0] != null && JsonConvert.SerializeObject(item.Values[1]) != JsonConvert.SerializeObject(item.Values[0])))
+                                        if (JsonConvert.SerializeObject(item.Values[1]) != JsonConvert.SerializeObject(item.Values[0])|| JsonConvert.SerializeObject(item.CookedValues[1]) != JsonConvert.SerializeObject(item.CookedValues[0]))
                                         {
                                             //这是设备变量列表要用的
                                             var msgInternal = new InjectedMqttApplicationMessage(
@@ -181,6 +182,7 @@ namespace Plugin
                                         item.CookedValue = ret.CookedValue;
                                         item.Timestamp = ret.Timestamp;
                                         item.StatusType = ret.StatusType;
+                                        item.Message = ret.Message;
                                     }
 
                                     payLoad.TS = (long)(DateTime.UtcNow - _tsStartDt).TotalMilliseconds;

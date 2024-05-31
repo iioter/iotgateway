@@ -318,6 +318,9 @@
   <data name="IsSuccess" xml:space="preserve">
     <value>是否成功</value>
   </data>
+  <data name="IsTrigger" xml:space="preserve">
+    <value>触发</value>
+  </data>
   <data name="Login.ChangePassword" xml:space="preserve">
     <value>修改密码</value>
   </data>
@@ -398,6 +401,9 @@
   </data>
   <data name="MenuMangement" xml:space="preserve">
     <value>菜单管理</value>
+  </data>
+  <data name="Message" xml:space="preserve">
+    <value>信息</value>
   </data>
   <data name="Method" xml:space="preserve">
     <value>方法</value>

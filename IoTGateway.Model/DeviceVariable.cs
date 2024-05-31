@@ -25,6 +25,9 @@ namespace IoTGateway.Model
         [Display(Name = "DataType")]
         public DataTypeEnum DataType { get; set; }
 
+        [Display(Name = "IsTrigger")]
+        public bool IsTrigger { get; set; }
+
         [Display(Name = "EndianType")]
         public EndianEnum EndianType { get; set; }
 
@@ -66,11 +69,18 @@ namespace IoTGateway.Model
         public VaribaleStatusTypeEnum StatusType { get; set; } = VaribaleStatusTypeEnum.UnKnow;
 
         [NotMapped][Display(Name = "MostRecentValues")] public object[] Values { get; set; } = new object[3];
+        [NotMapped][Display(Name = "MostRecentCookedValues")] public object[] CookedValues { get; set; } = new object[3];
         public void EnqueueVariable(object value)
         {
             Values[2] = Values[1];
             Values[1] = Values[0];
             Values[0] = value;
+        }
+        public void EnqueueCookedVariable(object value)
+        {
+            CookedValues[2] = CookedValues[1];
+            CookedValues[1] = CookedValues[0];
+            CookedValues[0] = value;
         }
     }
 }
