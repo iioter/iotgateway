@@ -22,7 +22,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
         {
             try
             {
-                StringValues ids , values;
+                StringValues ids, values;
                 if (FC.ContainsKey("setValue.ID[]"))
                 {
                     ids = (StringValues)FC["setValue.ID[]"];
@@ -37,7 +37,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                 Dictionary<string, string> kv = new(0);
                 for (int i = 0; i < ids.Count; i++)
                 {
-                    kv[ids[i]]=values[i];
+                    kv[ids[i]] = values[i];
                 }
 
 
@@ -63,8 +63,8 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                                 foreach (var variable in deviceVariables)
                                 {
                                     var currentVariable = dapThread!.Device.DeviceVariables.FirstOrDefault(x => x.ID == variable.ID);
-                                    
-                                    if (currentVariable!=null)
+
+                                    if (currentVariable != null)
                                     {
                                         variable.DeviceName = deviceName + (!string.IsNullOrEmpty(variable.Alias)
                                             ? $"->{variable.Alias}"
@@ -85,10 +85,10 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                                 };
                                 dapThread.MyMqttClient_OnExcRpc(this, request);
                             }
-                            
+
                         }
                     }
-                设置结果 = "设置成功";
+                设置结果 = "下发完成，请在Rpc日志页面查看结果";
             }
             catch (Exception ex)
             {
@@ -127,8 +127,8 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                             string deviceName = dapThread.Device.DeviceName;
                             foreach (var variable in deviceVariables)
                             {
-                                var currentVariable = dapThread!.Device.DeviceVariables.FirstOrDefault(x => x.ID == variable.ID);
-                                if (currentVariable != null)
+                                var currentVariable = dapThread!.DeviceValues.Where(x => x.Key == variable.ID).Select(x => x.Value).FirstOrDefault();
+                                if (currentVariable is { Value: not null })
                                 {
                                     variable.DeviceName = deviceName;
                                     variable.RawValue = currentVariable.Value?.ToString();

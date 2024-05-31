@@ -69,6 +69,14 @@
                     $('#id' + objmsg.VarId + '_Timestamp').removeClass('bounceIn');
                 },
                     1500);
+
+                //Message
+                $('#id' + objmsg.VarId + '_Message').text(objmsg.Message);
+                $('#id' + objmsg.VarId + '_Message').addClass('animated bounceIn');
+                setTimeout(function () {
+                    $('#id' + objmsg.VarId + '_Message').removeClass('bounceIn');
+                },
+                    1500);
             });
     }
 </script>

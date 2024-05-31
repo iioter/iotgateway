@@ -20,6 +20,7 @@ namespace Plugin
         private readonly string _projectId;
         private readonly MyMqttClient? _myMqttClient;
         private Interpreter? _interpreter;
+        public Dictionary<Guid, DriverReturnValueModel> DeviceValues { get; set; } = new();
         internal List<MethodInfo>? Methods { get; set; }
         private Task? _task;
         private readonly DateTime _tsStartDt = new(1970, 1, 1);
@@ -92,117 +93,62 @@ namespace Plugin
 
                                 Dictionary<string, List<PayLoad>> sendModel = new()
                                             { { deviceName, new() } };
-                                var payLoad = new PayLoad() { Values = new() };
 
                                 if (deviceVariables.Any())
                                 {
-                                    foreach (var item in deviceVariables.OrderBy(x => x.Index))
+                                    var payLoadTrigger = new PayLoad() { Values = new() };
+
+                                    bool canPub = false;
+                                    var triggerVariables = deviceVariables.Where(x => x.IsTrigger).ToList();
+                                    ReadVariables(ref triggerVariables, ref payLoadTrigger, _mqttServer);
+
+                                    var triggerValues = DeviceValues.Where(x =>
+                                            triggerVariables.Select(x => x.ID).Contains(x.Key))
+                                        .ToDictionary(
+                                            x => Device.DeviceVariables.FirstOrDefault(y => y.ID == x.Key).Name,
+                                            z => z.Value.CookedValue);
+
+
+                                    var payLoadUnTrigger = new PayLoad() { Values = new() };
+                                    //有需要上传 或者全部是非触发
+                                    if (triggerValues.Values.Any(x => x is true) || !triggerVariables.Any())
                                     {
-                                        item.Value = null;
-                                        item.CookedValue = null;
-                                        item.StatusType = VaribaleStatusTypeEnum.Bad;
 
-                                        await Task.Delay((int)Device.CmdPeriod);
-
-                                        var ret = new DriverReturnValueModel();
-                                        var ioarg = new DriverAddressIoArgModel
-                                        {
-                                            ID = item.ID,
-                                            Address = item.DeviceAddress,
-                                            ValueType = item.DataType,
-                                            EndianType = item.EndianType
-                                        };
-                                        var method = Methods.FirstOrDefault(x => x.Name == item.Method);
-                                        if (method == null)
-                                            ret.StatusType = VaribaleStatusTypeEnum.MethodError;
-                                        else
-                                            ret = (DriverReturnValueModel)method.Invoke(Driver,
-                                                new object[] { ioarg })!;
-
-                                        item.EnqueueVariable(ret.Value);
-                                        if (ret.StatusType == VaribaleStatusTypeEnum.Good &&
-                                            !string.IsNullOrWhiteSpace(item.Expressions?.Trim()))
-                                        {
-                                            var expressionText = DealMysqlStr(item.Expressions)
-                                                .Replace("raw",
-                                                    item.Values[0] is bool
-                                                        ? $"Convert.ToBoolean(\"{item.Values[0]}\")"
-                                                        : item.Values[0]?.ToString())
-                                                .Replace("$ppv",
-                                                    item.Values[2] is bool
-                                                        ? $"Convert.ToBoolean(\"{item.Values[2]}\")"
-                                                        : item.Values[2]?.ToString())
-                                                .Replace("$pv",
-                                                    item.Values[1] is bool
-                                                        ? $"Convert.ToBoolean(\"{item.Values[1]}\")"
-                                                        : item.Values[1]?.ToString());
-
-                                            try
-                                            {
-                                                ret.CookedValue = _interpreter.Eval(expressionText);
-                                            }
-                                            catch (Exception)
-                                            {
-                                                ret.StatusType = VaribaleStatusTypeEnum.ExpressionError;
-                                            }
-                                        }
-                                        else
-                                            ret.CookedValue = ret.Value;
-
-
-                                        item.EnqueueCookedVariable(ret.CookedValue);
-
-                                        if (item.IsUpload)
-                                            payLoad.Values[item.Name] = ret.CookedValue;
-
-                                        ret.VarId = item.ID;
-
-                                        //变化了才推送到mqttserver，用于前端展示
-                                        if (JsonConvert.SerializeObject(item.Values[1]) != JsonConvert.SerializeObject(item.Values[0])|| JsonConvert.SerializeObject(item.CookedValues[1]) != JsonConvert.SerializeObject(item.CookedValues[0]))
-                                        {
-                                            //这是设备变量列表要用的
-                                            var msgInternal = new InjectedMqttApplicationMessage(
-                                                new MqttApplicationMessage()
-                                                {
-                                                    Topic = $"internal/v1/gateway/telemetry/{deviceName}/{item.Name}",
-                                                    Payload = Encoding.UTF8.GetBytes(JsonUtility.SerializeToJson(ret))
-                                                });
-                                            _mqttServer.InjectApplicationMessage(msgInternal);
-                                            //这是在线组态要用的
-                                            var msgConfigure = new InjectedMqttApplicationMessage(
-                                                new MqttApplicationMessage()
-                                                {
-                                                    Topic = $"v1/gateway/telemetry/{deviceName}/{item.Name}",
-                                                    Payload = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(ret.CookedValue))
-                                                });
-                                            _mqttServer.InjectApplicationMessage(msgConfigure);
-                                        }
-
-                                        item.Value = ret.Value;
-                                        item.CookedValue = ret.CookedValue;
-                                        item.Timestamp = ret.Timestamp;
-                                        item.StatusType = ret.StatusType;
-                                        item.Message = ret.Message;
+                                        var variables = Device.DeviceVariables.Where(x => !triggerVariables.Select(y => y.ID).Contains(x.ID)).ToList();
+                                        ReadVariables(ref variables, ref payLoadUnTrigger, _mqttServer);
+                                        canPub = true;
                                     }
 
-                                    payLoad.TS = (long)(DateTime.UtcNow - _tsStartDt).TotalMilliseconds;
 
-                                    if (deviceVariables.Where(x => x.IsUpload && x.ProtectType != ProtectTypeEnum.WriteOnly).All(x => x.StatusType == VaribaleStatusTypeEnum.Good))
+                                    if (canPub)
                                     {
+                                        var payLoad = new PayLoad()
+                                        {
+                                            Values = DeviceValues
+                                                .Where(x => x.Value.StatusType == VaribaleStatusTypeEnum.Good &&
+                                                            deviceVariables.Where(x => x.IsUpload).Select(x => x.ID)
+                                                                .Contains(x.Key))
+                                                .ToDictionary(kv => deviceVariables.First(x => x.ID == kv.Key).Name,
+                                                    kv => kv.Value.CookedValue),
+                                            DeviceStatus = payLoadTrigger.DeviceStatus
+                                        };
+                                        payLoad.TS = (long)(DateTime.UtcNow - _tsStartDt).TotalMilliseconds;
                                         payLoad.DeviceStatus = DeviceStatusTypeEnum.Good;
                                         sendModel[deviceName] = new List<PayLoad> { payLoad };
                                         _myMqttClient
                                             .PublishTelemetryAsync(deviceName,
                                                 Device, sendModel).Wait();
                                     }
-                                    else if (deviceVariables.Any(x => x.StatusType == VaribaleStatusTypeEnum.Bad))
+                                    
+                                    if (deviceVariables.Any(x => x.StatusType == VaribaleStatusTypeEnum.Bad))
                                         _myMqttClient?.DeviceDisconnected(deviceName, Device);
                                 }
 
                             }
 
                             //只要有读取异常且连接正常就断开
-                            if (Device.DeviceVariables.Where(x => x.IsUpload && x.ProtectType != ProtectTypeEnum.WriteOnly).Any(x => x.StatusType != VaribaleStatusTypeEnum.Good) && Driver.IsConnected)
+                            if (DeviceValues
+                                    .Any(x => x.Value.StatusType != VaribaleStatusTypeEnum.Good)&& Driver.IsConnected)
                             {
                                 Driver.Close();
                                 Driver.Dispose();
@@ -242,6 +188,85 @@ namespace Plugin
                 }
             }, TaskCreationOptions.LongRunning);
         }
+
+        private void ReadVariables(ref List<DeviceVariable> variables, ref PayLoad payLoad, MqttServer mqttServer)
+        {
+            if (!variables.Any())
+                return;
+            foreach (var item in variables.OrderBy(x => x.Index))
+            {
+                var ret = new DriverReturnValueModel();
+                var ioarg = new DriverAddressIoArgModel
+                {
+                    ID = item.ID,
+                    Address = item.DeviceAddress,
+                    ValueType = item.DataType
+                };
+                var method = Methods.Where(x => x.Name == item.Method).FirstOrDefault();
+                if (method == null)
+                    ret.StatusType = VaribaleStatusTypeEnum.MethodError;
+                else
+                    ret = (DriverReturnValueModel)method.Invoke(Driver,
+                        new object[] { ioarg })!;
+
+                ret.Timestamp = DateTime.Now;
+                item.EnqueueVariable(ret.Value);
+                if (ret.StatusType == VaribaleStatusTypeEnum.Good &&
+                    !string.IsNullOrWhiteSpace(item.Expressions?.Trim()))
+                {
+                    var expressionText = DealMysqlStr(item.Expressions)
+                        .Replace("raw",
+                            item.Values[0] is bool
+                                ? $"Convert.ToBoolean(\"{item.Values[0]}\")"
+                                : item.Values[0]?.ToString())
+                        .Replace("$ppv",
+                            item.Values[2] is bool
+                                ? $"Convert.ToBoolean(\"{item.Values[2]}\")"
+                                : item.Values[2]?.ToString())
+                        .Replace("$pv",
+                            item.Values[1] is bool
+                                ? $"Convert.ToBoolean(\"{item.Values[1]}\")"
+                                : item.Values[1]?.ToString());
+                    try
+                    {
+                        ret.CookedValue = _interpreter.Eval(expressionText);
+                    }
+                    catch (Exception)
+                    {
+                        ret.Message = $"表达式错误：{expressionText}";
+                        ret.StatusType = VaribaleStatusTypeEnum.ExpressionError;
+                    }
+                }
+                else
+                    ret.CookedValue = ret.Value;
+
+
+                item.EnqueueCookedVariable(ret.CookedValue);
+
+                payLoad.Values[item.Name] = ret.CookedValue;
+
+                ret.VarId = item.ID;
+
+                //变化了才推送到mqttserver，用于前端展示
+                if (JsonConvert.SerializeObject(item.Values[1]) != JsonConvert.SerializeObject(item.Values[0])|| JsonConvert.SerializeObject(item.CookedValues[1]) != JsonConvert.SerializeObject(item.CookedValues[0]))
+                {
+                    var msgInternal = new InjectedMqttApplicationMessage(
+                        new MqttApplicationMessage()
+                        {
+                            Topic =
+                                $"internal/v1/gateway/telemetry/{Device.DeviceName}/{item.Name}",
+                            PayloadSegment = Encoding.UTF8.GetBytes(
+                                JsonConvert.SerializeObject(ret))
+                        });
+                    mqttServer.InjectApplicationMessage(msgInternal);
+                }
+
+                DeviceValues[item.ID] = ret;
+
+                Thread.Sleep((int)Device.CmdPeriod);
+            }
+        }
+
         public void MyMqttClient_OnExcRpc(object? sender, RpcRequest e)
         {
             //设备名或者设备别名

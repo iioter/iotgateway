@@ -89,7 +89,9 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                 this.MakeGridHeader(x => x.Timestamp).SetWidth(100).SetFormat((a,b)=>{
                     return $"<div id='id{a.ID}_Timestamp'>{a.Timestamp:HH:mm:ss.fff}</div>";
                 }),
-                this.MakeGridHeader(x => x.Message).SetSort(true).SetWidth(200),
+                this.MakeGridHeader(x => x.Message).SetSort(true).SetWidth(200).SetFormat((a,b)=>{
+                    return $"<div id='id{a.ID}_Message'>{a.Message}</div>";
+                }),
                 this.MakeGridHeader(x=> "detail").SetHide().SetFormat((a,b)=>{
                     return "false";
                 }),
@@ -108,9 +110,9 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
             Parallel.ForEach(EntityList, item =>
             {
                 var dapThread = deviceService!.DeviceThreads.FirstOrDefault(x => x.Device.ID == item.DeviceId);
-                var variable = dapThread?.Device?.DeviceVariables?.FirstOrDefault(x => x.ID == item.ID);
+                var variable = dapThread?.DeviceValues?.Where(x => x.Key == item.ID).Select(x=>x.Value).FirstOrDefault();
 
-                if (variable != null)
+                if (variable is { Value: not null })
                 {
                     item.Value = variable.Value;
                     item.CookedValue = variable.CookedValue;
