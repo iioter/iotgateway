@@ -259,8 +259,7 @@ namespace IoTGateway.Controllers
             var data = myExporter.Export();
 
             string ContentType = "application/vnd.ms-excel";
-            string exportName = "DeviceSettings";
-            exportName = $"Export_{exportName}_{DateTime.Now.ToString("yyyyMMddHHmmssffff")}.xlsx";
+            string exportName = $"iotgateway.net_bakup_{DateTime.Now.ToString("yyyyMMddHHmmssffff")}.xlsx";
             FileContentResult Result = new FileContentResult(data, ContentType);
             Result.FileDownloadName = exportName;
             return Result;

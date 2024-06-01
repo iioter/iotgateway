@@ -10,6 +10,7 @@ using PluginInterface.IoTSharp;
 using PluginInterface.HuaWeiRoma;
 using PluginInterface.ThingsBoard;
 using Microsoft.Extensions.Logging;
+using MQTTnet.Extensions.ManagedClient;
 
 namespace Plugin
 {
@@ -19,9 +20,9 @@ namespace Plugin
         //private readonly ReferenceNodeManager? _uaNodeManager;
 
         private SystemConfig _systemConfig;
-        private MqttClientOptions _options;
+        private ManagedMqttClientOptions _options;
         public bool IsConnected => (Client.IsConnected);
-        private IMqttClient? Client { get; set; }
+        private IManagedMqttClient? Client { get; set; }
         public event EventHandler<RpcRequest> OnExcRpc;
         public event EventHandler<ISAttributeResponse> OnReceiveAttributes;
         private readonly string _tbRpcTopic = "v1/gateway/rpc";
@@ -43,33 +44,37 @@ namespace Plugin
                 {
                     Client.Dispose();
                 }
-                Client = new MqttFactory().CreateMqttClient();
+                Client = new MqttFactory().CreateManagedMqttClient();
                 await using var dc = new DataContext(IoTBackgroundService.connnectSetting, IoTBackgroundService.DbType);
                 _systemConfig = dc.Set<SystemConfig>().First();
 
                 #region ClientOptions
-                _options = new MqttClientOptionsBuilder()
-                    .WithClientId(string.IsNullOrEmpty(_systemConfig.ClientId)
-                        ? Guid.NewGuid().ToString()
-                        : _systemConfig.ClientId)
-                    .WithTcpServer(_systemConfig.MqttIp, _systemConfig.MqttPort)
-                    .WithCredentials(_systemConfig.MqttUName, _systemConfig.MqttUPwd)
-                    .WithTimeout(TimeSpan.FromSeconds(30))
-                    .WithKeepAlivePeriod(TimeSpan.FromSeconds(60))
-                    .WithProtocolVersion(MqttProtocolVersion.V311)
-                    .WithCleanSession(true)
+
+                _options = new ManagedMqttClientOptionsBuilder()
+                    .WithAutoReconnectDelay(TimeSpan.FromSeconds(5))
+                    .WithMaxPendingMessages(100000)
+                    .WithClientOptions(new MqttClientOptionsBuilder()
+                        .WithClientId(string.IsNullOrEmpty(_systemConfig.ClientId)
+                            ? Guid.NewGuid().ToString()
+                            : _systemConfig.ClientId)
+                        .WithTcpServer(_systemConfig.MqttIp, _systemConfig.MqttPort)
+                        .WithCredentials(_systemConfig.MqttUName, _systemConfig.MqttUPwd)
+                        .WithTimeout(TimeSpan.FromSeconds(30))
+                        .WithKeepAlivePeriod(TimeSpan.FromSeconds(60))
+                        .WithProtocolVersion(MqttProtocolVersion.V311)
+                        .WithCleanSession(true)
+                        .Build())
                     .Build();
                 #endregion
+
                 Client.ConnectedAsync += Client_ConnectedAsync;
                 Client.DisconnectedAsync += Client_DisconnectedAsync;
                 Client.ApplicationMessageReceivedAsync += Client_ApplicationMessageReceivedAsync;
 
-                if(Client.ConnectAsync(_options).IsCompletedSuccessfully) ;
-                {
-                 _logger.LogInformation("MQTT WAITING FOR APPLICATION MESSAGES");
-                }
+                await Client.StartAsync(_options);
 
-               
+                _logger.LogInformation("MQTT WAITING FOR APPLICATION MESSAGES");
+
             }
             catch (Exception ex)
             {
@@ -129,7 +134,7 @@ namespace Plugin
             try
             {
                 _logger.LogError($"MQTT DISCONNECTED WITH SERVER ");
-                await Client.ConnectAsync(_options);
+                //await Client.ConnectAsync(_options);
             }
             catch (Exception ex)
             {
@@ -259,7 +264,7 @@ namespace Plugin
 
         private async Task ResponseTbRpcAsync(TBRpcResponse tBRpcResponse)
         {
-            await Client.PublishAsync(new MqttApplicationMessageBuilder()
+            await Client.EnqueueAsync(new MqttApplicationMessageBuilder()
                 .WithTopic(_tbRpcTopic)
                 .WithPayload(JsonConvert.SerializeObject(tBRpcResponse))
                 .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtMostOnce).Build());
@@ -268,7 +273,7 @@ namespace Plugin
         private async Task ResponseTcRpcAsync(TCRpcRequest tCRpcResponse)
         {
             var topic = $"command/reply/{tCRpcResponse.RequestData.RequestId}";
-            await Client.PublishAsync(new MqttApplicationMessageBuilder()
+            await Client.EnqueueAsync(new MqttApplicationMessageBuilder()
                 .WithTopic(topic)
                 .WithPayload(JsonConvert.SerializeObject(tCRpcResponse))
                 .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
@@ -278,7 +283,7 @@ namespace Plugin
         {
             //var responseTopic = $"/devices/{deviceid}/rpc/response/{methodName}/{rpcid}";
             var topic = $"devices/{rpcResult.DeviceId}/rpc/response/{rpcResult.Method}/{rpcResult.ResponseId}";
-            await Client.PublishAsync(new MqttApplicationMessageBuilder()
+            await Client.EnqueueAsync(new MqttApplicationMessageBuilder()
                 .WithTopic(topic)
                 .WithPayload(JsonConvert.SerializeObject(rpcResult))
                 .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
@@ -316,7 +321,7 @@ namespace Plugin
             //Message: {"Device A":{"attribute1":"value1", "attribute2": 42}, "Device B":{"attribute1":"value1", "attribute2": 42}
             try
             {
-                return Client.PublishAsync(new MqttApplicationMessageBuilder()
+                return Client.EnqueueAsync(new MqttApplicationMessageBuilder()
                     .WithTopic($"devices/{deviceName}/attributes").WithPayload(JsonConvert.SerializeObject(obj))
                     .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtMostOnce)
                     .Build());
@@ -331,14 +336,14 @@ namespace Plugin
 
         public async Task UploadIsTelemetryDataAsync(string deviceName, object obj)
         {
-            await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic($"devices/{deviceName}/telemetry")
+            await Client.EnqueueAsync(new MqttApplicationMessageBuilder().WithTopic($"devices/{deviceName}/telemetry")
                 .WithPayload(JsonConvert.SerializeObject(obj)).Build());
         }
 
         public async Task UploadTcTelemetryDataAsync(string deviceName, object obj)
         {
             var toSend = new Dictionary<string, object> { { deviceName, obj } };
-            await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic($"gateway/attributes")
+            await Client.EnqueueAsync(new MqttApplicationMessageBuilder().WithTopic($"gateway/attributes")
                 .WithPayload(JsonConvert.SerializeObject(toSend)).WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
         }
 
@@ -365,7 +370,7 @@ namespace Plugin
                 Devices = hwTelemetry
             };
 
-            await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic($"/v1/devices/{_systemConfig.GatewayName}/datas")
+            await Client.EnqueueAsync(new MqttApplicationMessageBuilder().WithTopic($"/v1/devices/{_systemConfig.GatewayName}/datas")
                 .WithPayload(JsonConvert.SerializeObject(hwTelemetrys)).WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
         }
 
@@ -433,7 +438,7 @@ namespace Plugin
                             { "client", true },
                             { "key", args[0] }
                         };
-                        await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic($"v1/gateway/attributes/request")
+                        await Client.EnqueueAsync(new MqttApplicationMessageBuilder().WithTopic($"v1/gateway/attributes/request")
                             .WithPayload(JsonConvert.SerializeObject(tbRequestData)).WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
                         break;
                     case IoTPlatformType.IoTSharp:
@@ -443,7 +448,7 @@ namespace Plugin
                         keys.Add(anySide ? "anySide" : "server", string.Join(",", args));
                         await Client.SubscribeAsync($"devices/{deviceName}/attributes/response/{id}",
                             MqttQualityOfServiceLevel.ExactlyOnce);
-                        await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic(topic)
+                        await Client.EnqueueAsync(new MqttApplicationMessageBuilder().WithTopic(topic)
                             .WithPayload(JsonConvert.SerializeObject(keys))
                             .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
                         break;
@@ -520,7 +525,7 @@ namespace Plugin
                     switch (_systemConfig.IoTPlatformType)
                     {
                         case IoTPlatformType.ThingsBoard:
-                            await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic("v1/gateway/telemetry")
+                            await Client.EnqueueAsync(new MqttApplicationMessageBuilder().WithTopic("v1/gateway/telemetry")
                                 .WithPayload(JsonConvert.SerializeObject(sendModel))
                                 .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtMostOnce).Build());
                             break;
@@ -591,7 +596,7 @@ namespace Plugin
                     case IoTPlatformType.ThingsBoard:
                     case IoTPlatformType.IoTSharp:
                     case IoTPlatformType.IoTGateway:
-                        await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic("v1/gateway/connect")
+                        await Client.EnqueueAsync(new MqttApplicationMessageBuilder().WithTopic("v1/gateway/connect")
                             .WithPayload(JsonConvert.SerializeObject(new Dictionary<string, string>
                                 { { "device", DeviceName } }))
                             .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtMostOnce).Build());
@@ -605,7 +610,7 @@ namespace Plugin
                     case IoTPlatformType.OneNET:
                         break;
                     case IoTPlatformType.ThingsCloud:
-                        await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic("gateway/connect")
+                        await Client.EnqueueAsync(new MqttApplicationMessageBuilder().WithTopic("gateway/connect")
                             .WithPayload(JsonConvert.SerializeObject(new Dictionary<string, string>
                                 { { "device", DeviceName } }))
                             .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
@@ -625,7 +630,7 @@ namespace Plugin
                                 }
                             }
                         };
-                        await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic($"/v1/devices/{_systemConfig.GatewayName}/topo/update")
+                        await Client.EnqueueAsync(new MqttApplicationMessageBuilder().WithTopic($"/v1/devices/{_systemConfig.GatewayName}/topo/update")
                             .WithPayload(JsonConvert.SerializeObject(deviceOnLine))
                             .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
                         break;
@@ -646,7 +651,7 @@ namespace Plugin
                     case IoTPlatformType.ThingsBoard:
                     case IoTPlatformType.IoTSharp:
                     case IoTPlatformType.IoTGateway:
-                        await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic($"v1/gateway/disconnect")
+                        await Client.EnqueueAsync(new MqttApplicationMessageBuilder().WithTopic($"v1/gateway/disconnect")
                             .WithPayload(JsonConvert.SerializeObject(new Dictionary<string, string>
                                 { { "device", DeviceName } }))
                             .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtMostOnce).Build());
@@ -660,7 +665,7 @@ namespace Plugin
                     case IoTPlatformType.OneNET:
                         break;
                     case IoTPlatformType.ThingsCloud:
-                        await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic($"gateway/disconnect")
+                        await Client.EnqueueAsync(new MqttApplicationMessageBuilder().WithTopic($"gateway/disconnect")
                             .WithPayload(JsonConvert.SerializeObject(new Dictionary<string, string>
                                 { { "device", DeviceName } }))
                             .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
@@ -680,7 +685,7 @@ namespace Plugin
                                 }
                             }
                         };
-                        await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic($"/v1/devices/{_systemConfig.GatewayName}/topo/update")
+                        await Client.EnqueueAsync(new MqttApplicationMessageBuilder().WithTopic($"/v1/devices/{_systemConfig.GatewayName}/topo/update")
                             .WithPayload(JsonConvert.SerializeObject(deviceOnLine))
                             .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
                         break;
@@ -715,7 +720,7 @@ namespace Plugin
                                 ProductType = "A_n"
                             }
                         );
-                        await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic(topic)
+                        await Client.EnqueueAsync(new MqttApplicationMessageBuilder().WithTopic(topic)
                             .WithPayload(JsonConvert.SerializeObject(addDeviceDto))
                             .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
                         break;
@@ -753,7 +758,7 @@ namespace Plugin
                                     ProductType = "A_n"
                                 }
                             };
-                            await Client.PublishAsync(new MqttApplicationMessageBuilder().WithTopic(topic)
+                            await Client.EnqueueAsync(new MqttApplicationMessageBuilder().WithTopic(topic)
                                 .WithPayload(JsonConvert.SerializeObject(deleteDeviceDto))
                                 .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.ExactlyOnce).Build());
                         }
