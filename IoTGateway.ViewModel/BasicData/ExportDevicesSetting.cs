@@ -175,7 +175,7 @@ namespace IoTGateway.ViewModel.BasicData
 
             #region 生成表头
 
-            string[] colName = { "设备名", "变量名", "方法", "地址", "类型", "大小端", "表达式", "别名","上传", "排序" };
+            string[] colName = { "设备名", "变量名", "方法", "地址", "类型", "大小端", "表达式", "别名","上传", "排序", "触发" };
             IRow row = sheet.CreateRow(currentRow);
             row.HeightInPoints = 20;
 
@@ -211,6 +211,8 @@ namespace IoTGateway.ViewModel.BasicData
                 rowData.CreateCell(currentCol).SetCellValue(deviceVariable.IsUpload);
                 currentCol++;
                 rowData.CreateCell(currentCol).SetCellValue(deviceVariable.Index);
+                currentCol++;
+                rowData.CreateCell(currentCol).SetCellValue(deviceVariable.IsTrigger);
 
                 currentRow++;
             }
@@ -282,11 +284,11 @@ namespace IoTGateway.ViewModel.BasicData
             var allDevices = GetAllDevices();
             book = GenerateDevicesSheet(book, allDevices);
 
-            //Sheet2-通讯设置
+            //Sheet2-变量配置
             var allDeviceVariables = GetAllDeviceVariables();
             book = GenerateDeviceVariablesSheet(book, allDeviceVariables);
 
-            //Sheet3-变量配置
+            //Sheet3-通讯设置
             var allDeviceConfigs = GetAllDeviceConfigs();
             book = GenerateDeviceConfigsSheet(book, allDeviceConfigs);
 

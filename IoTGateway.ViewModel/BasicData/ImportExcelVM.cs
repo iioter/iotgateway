@@ -178,6 +178,7 @@ namespace IoTGateway.ViewModel.BasicData
                     variable.Index = string.IsNullOrWhiteSpace(row.GetCell(9)?.ToString())
                         ? 999
                         : uint.Parse(row.GetCell(9).ToString());
+                    variable.IsTrigger = row.GetCell(10)?.ToString().ToLower() == "false" ? false : true;
 
                     deviceVariables.Add(variable);
                 }
