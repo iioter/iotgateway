@@ -10,6 +10,7 @@ using IoTGateway.Model;
 using PluginInterface;
 using Plugin;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
 {
@@ -104,31 +105,25 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
             };
         }
 
-        public override void AfterDoSearcher()
-        {
-            var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
-            Parallel.ForEach(EntityList, item =>
-            {
-                var dapThread = deviceService!.DeviceThreads.FirstOrDefault(x => x.Device.ID == item.DeviceId);
-                var variable = dapThread?.DeviceValues?.Where(x => x.Key == item.ID).Select(x=>x.Value).FirstOrDefault();
-
-                if (variable is { Value: not null })
-                {
-                    item.Value = variable.Value;
-                    item.CookedValue = variable.CookedValue;
-                    item.StatusType = variable.StatusType;
-                    item.Timestamp = variable.Timestamp;
-                    item.Message = variable.Message;
-                }
-            });
-
-        }
         public override IOrderedQueryable<DeviceVariable_View> GetSearchQuery()
         {
             if (Searcher.DeviceId != null)
                 IoTBackgroundService.VariableSelectDeviceId = Searcher.DeviceId;
 
-            var query = DC.Set<DeviceVariable>().Include(x => x.Device)
+
+            var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
+            //设备线程中的所有设备
+            var threadDeviceIds = deviceService?.DeviceThreads.Select(x => x.Device.ID).Distinct(x => x);
+            //设备线程中的变量
+            var threadVariables =
+                deviceService?.DeviceThreads.SelectMany(deviceThread => deviceThread.Device.DeviceVariables);
+            //查找数据库中额外的变量
+            var dcVariables = DC.Set<DeviceVariable>().AsNoTracking().Include(x => x.Device)
+                .Where(x => !threadDeviceIds.Contains((Guid)x.DeviceId)).AsEnumerable();
+
+            var variables = dcVariables.Union(threadVariables).AsQueryable();
+
+            var query = variables
                 .CheckContain(Searcher.Name, x => x.Name)
                 .CheckContain(Searcher.Alias, x => x.Alias)
                 .CheckContain(Searcher.Method, x => x.Method)
@@ -148,13 +143,19 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                     IsTrigger = x.IsTrigger,
                     EndianType = x.EndianType,
                     Expressions = x.Expressions,
-                    IsUpload=x.IsUpload,
+                    IsUpload = x.IsUpload,
                     ProtectType = x.ProtectType,
                     DeviceName_view = x.Device.DeviceName,
                     Alias = x.Alias,
-                    Device = x.Device
+                    Device = x.Device,
+                    Value = x.Value,
+                    CookedValue = x.CookedValue,
+                    StatusType = x.StatusType,
+                    Timestamp = x.Timestamp,
+                    Message = x.Message,
                 })
-                .OrderBy(x => x.Index).ThenBy(x => x.DeviceName_view).ThenBy(x => x.Alias).ThenBy(x => x.Method).ThenBy(x => x.DeviceAddress);
+                .OrderBy(x => x.Index).ThenBy(x => x.DeviceName_view).ThenBy(x => x.Alias).ThenBy(x => x.Method)
+                .ThenBy(x => x.DeviceAddress);
             return query;
         }
 

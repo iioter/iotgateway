@@ -47,7 +47,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                                 DriverId = device.DriverId,
                                 Description = device.Description,
                                 DeviceTypeEnum = device.DeviceTypeEnum,
-                                Parent= device.Parent
+                                Parent = device.Parent
                             };
                             DC.Set<Device>().Add(newDevice);
                             devices.Add(newDevice);
@@ -67,7 +67,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                                 DC.Set<DeviceConfig>().Add(newDeviceConfig);
                             }
 
-                            foreach (var deviceVariable in deviceVariables.OrderBy(x=>x.Index))
+                            foreach (var deviceVariable in deviceVariables.OrderBy(x => x.Index))
                             {
                                 var newDeviceVariable = new DeviceVariable
                                 {
@@ -75,6 +75,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                                     Name = deviceVariable.Name,
                                     Description = deviceVariable.Description,
                                     DataType = deviceVariable.DataType,
+                                    IsTrigger = deviceVariable.IsTrigger,
                                     Method = deviceVariable.Method,
                                     ProtectType = deviceVariable.ProtectType,
                                     Expressions = deviceVariable.Expressions,
