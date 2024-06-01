@@ -127,8 +127,8 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                             string deviceName = dapThread.Device.DeviceName;
                             foreach (var variable in deviceVariables)
                             {
-                                var currentVariable = dapThread!.DeviceValues.Where(x => x.Key == variable.ID).Select(x => x.Value).FirstOrDefault();
-                                if (currentVariable is { Value: not null })
+                                var currentVariable = dapThread!.Device.DeviceVariables.FirstOrDefault(x => x.ID == variable.ID);
+                                if (currentVariable != null)
                                 {
                                     variable.DeviceName = deviceName;
                                     variable.RawValue = currentVariable.Value?.ToString();

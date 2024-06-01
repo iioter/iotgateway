@@ -20,7 +20,6 @@ namespace Plugin
         private readonly string _projectId;
         private readonly MyMqttClient? _myMqttClient;
         private Interpreter? _interpreter;
-        public Dictionary<Guid, DriverReturnValueModel> DeviceValues { get; set; } = new();
         internal List<MethodInfo>? Methods { get; set; }
         private Task? _task;
         private readonly DateTime _tsStartDt = new(1970, 1, 1);
@@ -102,19 +101,14 @@ namespace Plugin
                                     var triggerVariables = deviceVariables.Where(x => x.IsTrigger).ToList();
                                     ReadVariables(ref triggerVariables, ref payLoadTrigger, _mqttServer);
 
-                                    var triggerValues = DeviceValues.Where(x =>
-                                            triggerVariables.Select(x => x.ID).Contains(x.Key))
-                                        .ToDictionary(
-                                            x => Device.DeviceVariables.FirstOrDefault(y => y.ID == x.Key).Name,
-                                            z => z.Value.CookedValue);
+                                    var triggerValues = triggerVariables.ToDictionary(x=>x.Name,x=>x.CookedValue);
 
 
                                     var payLoadUnTrigger = new PayLoad() { Values = new() };
                                     //有需要上传 或者全部是非触发
                                     if (triggerValues.Values.Any(x => x is true) || !triggerVariables.Any())
                                     {
-
-                                        var variables = Device.DeviceVariables.Where(x => !triggerVariables.Select(y => y.ID).Contains(x.ID)).ToList();
+                                        var variables = deviceVariables.Where(x => !triggerVariables.Select(y => y.ID).Contains(x.ID)).ToList();
                                         ReadVariables(ref variables, ref payLoadUnTrigger, _mqttServer);
                                         canPub = true;
                                     }
@@ -124,12 +118,9 @@ namespace Plugin
                                     {
                                         var payLoad = new PayLoad()
                                         {
-                                            Values = DeviceValues
-                                                .Where(x => x.Value.StatusType == VaribaleStatusTypeEnum.Good &&
-                                                            deviceVariables.Where(x => x.IsUpload).Select(x => x.ID)
-                                                                .Contains(x.Key))
-                                                .ToDictionary(kv => deviceVariables.First(x => x.ID == kv.Key).Name,
-                                                    kv => kv.Value.CookedValue),
+                                            Values = deviceVariables
+                                                .Where(x => x.StatusType == VaribaleStatusTypeEnum.Good && x.IsUpload)
+                                                .ToDictionary(kv => kv.Name, kv => kv.CookedValue),
                                             DeviceStatus = payLoadTrigger.DeviceStatus
                                         };
                                         payLoad.TS = (long)(DateTime.UtcNow - _tsStartDt).TotalMilliseconds;
@@ -146,9 +137,9 @@ namespace Plugin
 
                             }
 
-                            //只要有读取异常且连接正常就断开
-                            if (DeviceValues
-                                    .Any(x => x.Value.StatusType != VaribaleStatusTypeEnum.Good)&& Driver.IsConnected)
+                            //全部读取异常且连接正常就断开
+                            if (Device.DeviceVariables
+                                    .All(x => x.StatusType != VaribaleStatusTypeEnum.Good) && Driver.IsConnected)
                             {
                                 Driver.Close();
                                 Driver.Dispose();
@@ -247,6 +238,12 @@ namespace Plugin
 
                 ret.VarId = item.ID;
 
+                item.Value = ret.Value;
+                item.CookedValue = ret.CookedValue;
+                item.StatusType = ret.StatusType;
+                item.Timestamp = ret.Timestamp;
+                item.Message = ret.Message;
+
                 //变化了才推送到mqttserver，用于前端展示
                 if (JsonConvert.SerializeObject(item.Values[1]) != JsonConvert.SerializeObject(item.Values[0])|| JsonConvert.SerializeObject(item.CookedValues[1]) != JsonConvert.SerializeObject(item.CookedValues[0]))
                 {
@@ -260,9 +257,7 @@ namespace Plugin
                         });
                     mqttServer.InjectApplicationMessage(msgInternal);
                 }
-
-                DeviceValues[item.ID] = ret;
-
+                
                 Thread.Sleep((int)Device.CmdPeriod);
             }
         }
