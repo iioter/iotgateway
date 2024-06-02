@@ -36,6 +36,13 @@ namespace IoTGateway.ViewModel.BasicData.DriverVMs
 
         public override void DoEdit(bool updateAllFields = false)
         {
+            var DriverService = Wtm.ServiceProvider.GetService(typeof(DriverService)) as DriverService;
+            Entity.AssembleName = DriverService.GetAssembleNameByFileName(Entity.FileName);
+            if (string.IsNullOrEmpty(Entity.AssembleName))
+            {
+                MSD.AddModelError("", "程序集获取失败");
+                return;
+            }
             base.DoEdit(updateAllFields);
         }
 

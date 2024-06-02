@@ -82,9 +82,9 @@ namespace Plugin
                 {
                     var systemManage = dc.Set<SystemConfig>().FirstOrDefault();
                     var driver = DrvierManager.DriverInfos
-                        .SingleOrDefault(x => x.Type.FullName == device.Driver.AssembleName);
+                        .SingleOrDefault(x => x.Type.FullName == device.Driver?.AssembleName);
                     if (driver == null)
-                        _logger.LogError($"找不到设备:[{device.DeviceName}]的驱动:[{device.Driver.AssembleName}]");
+                        _logger.LogError($"找不到设备:[{device.DeviceName}]的驱动:[{device.Driver?.AssembleName}]");
                     else
                     {
                         var settings = dc.Set<DeviceConfig>().Where(x => x.DeviceId == device.ID).AsNoTracking()
