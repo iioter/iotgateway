@@ -101,11 +101,8 @@ namespace IoTGateway.ViewModel.BasicData
                 myMqttClient.StartClientAsync().Wait();
 
                 //重新启动采集
-                foreach (var device in devices.Where(x => x.DeviceTypeEnum == DeviceTypeEnum.Device && x.DriverId != null))
-                {
-                    device.Driver = _drivers.FirstOrDefault(x => x.ID == device.DriverId);
-                    deviceService.CreateDeviceThread(device);
-                }
+                deviceService.CreateDeviceThreads();
+
                 导入结果 =
                     $"成功导入{devices.Count(x => x.DeviceTypeEnum == DeviceTypeEnum.Device)}个设备，{devices.Count(x => x.DeviceTypeEnum == DeviceTypeEnum.Group)}个组";
             }

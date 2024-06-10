@@ -32,6 +32,12 @@ namespace Plugin
             _myMqttClient = myMqttClient;
             //_uAService = uAService;
             _mqttServer = mqttServer ?? throw new ArgumentNullException(nameof(mqttServer));
+
+            CreateDeviceThreads();
+        }
+
+        public void CreateDeviceThreads()
+        {
             try
             {
                 using (var dc = new DataContext(_connnectSetting, _dbType))
