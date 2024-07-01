@@ -191,7 +191,8 @@ namespace Plugin
                 {
                     ID = item.ID,
                     Address = item.DeviceAddress,
-                    ValueType = item.DataType
+                    ValueType = item.DataType,
+                    EndianType = item.EndianType
                 };
                 var method = Methods.Where(x => x.Name == item.Method).FirstOrDefault();
                 if (method == null)
