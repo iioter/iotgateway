@@ -33,7 +33,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="iotgateway.db">
+	  <None Update="data\iotgateway.db">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	  <None Update="Quickstarts.ReferenceServer.Config.xml">
