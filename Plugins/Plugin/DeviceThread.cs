@@ -301,7 +301,7 @@ namespace Plugin
                             DeviceVariable? deviceVariable;
                             if (e.DeviceName == Device.DeviceName)
                                 deviceVariable = Device.DeviceVariables.FirstOrDefault(x =>
-                                    x.Name == para.Key && string.IsNullOrWhiteSpace(x.Alias));
+                                    x.Name == para.Key );
                             else
                                 deviceVariable = Device.DeviceVariables.FirstOrDefault(x =>
                                     x.Name == para.Key && x.Alias == e.DeviceName);
