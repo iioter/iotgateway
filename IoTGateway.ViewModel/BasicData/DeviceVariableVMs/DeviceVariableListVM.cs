@@ -123,7 +123,39 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
 
             var variables = dcVariables.Union(threadVariables).AsQueryable();
 
-            var query = variables
+            if (SearcherMode == ListVMSearchModeEnum.Batch)
+            {
+                var ids = UpdateDevices.FC2Guids(FC);
+
+                return variables.Where(x=> ids.Contains(x.ID)).Select(x => new DeviceVariable_View
+                    {
+                        ID = x.ID,
+                        DeviceId = x.DeviceId,
+                        Name = x.Name,
+                        Index = x.Index,
+                        Description = x.Description,
+                        Method = x.Method,
+                        DeviceAddress = x.DeviceAddress,
+                        DataType = x.DataType,
+                        IsTrigger = x.IsTrigger,
+                        EndianType = x.EndianType,
+                        Expressions = x.Expressions,
+                        IsUpload = x.IsUpload,
+                        ProtectType = x.ProtectType,
+                        DeviceName_view = x.Device.DeviceName,
+                        Alias = x.Alias,
+                        Device = x.Device,
+                        Value = x.Value,
+                        CookedValue = x.CookedValue,
+                        StatusType = x.StatusType,
+                        Timestamp = x.Timestamp,
+                        Message = x.Message,
+                    })
+                    .OrderBy(x => x.Index).ThenBy(x => x.DeviceName_view).ThenBy(x => x.Alias).ThenBy(x => x.Method)
+                    .ThenBy(x => x.DeviceAddress);
+            }
+
+            return variables
                 .CheckContain(Searcher.Name, x => x.Name)
                 .CheckContain(Searcher.Alias, x => x.Alias)
                 .CheckContain(Searcher.Method, x => x.Method)
@@ -156,7 +188,11 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                 })
                 .OrderBy(x => x.Index).ThenBy(x => x.DeviceName_view).ThenBy(x => x.Alias).ThenBy(x => x.Method)
                 .ThenBy(x => x.DeviceAddress);
-            return query;
+        }
+
+        public override IOrderedQueryable<DeviceVariable_View> GetBatchQuery()
+        {
+            return GetSearchQuery();
         }
 
         private List<LayuiTreeItem> GetLayuiTree(List<TreeSelectListItem> tree, int level = 0)

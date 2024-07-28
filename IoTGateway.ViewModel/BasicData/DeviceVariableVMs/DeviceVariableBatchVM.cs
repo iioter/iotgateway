@@ -8,6 +8,7 @@ using WalkingTec.Mvvm.Core.Extensions;
 using IoTGateway.Model;
 using PluginInterface;
 using Plugin;
+using Microsoft.Extensions.Primitives;
 
 namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
 {
@@ -21,10 +22,15 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
 
         public override bool DoBatchDelete()
         {
+            //先获取id
+            var id = UpdateDevices.FC2Guids(FC);
+            var deviceId = DC.Set<DeviceVariable>().Where(x => id.Contains(x.ID)).Select(x => x.DeviceId).FirstOrDefault();
+            FC["Entity.DeviceId"] = (StringValues)deviceId.ToString();
             var ret = base.DoBatchDelete();
             if (ret)
             {
                 var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
+                
                 UpdateDevices.UpdateVaribale(DC, deviceService, FC);
             }
             return ret;
