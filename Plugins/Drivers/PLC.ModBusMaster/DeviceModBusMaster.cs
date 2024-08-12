@@ -640,12 +640,12 @@ namespace PLC.ModBusMaster
                             case DataTypeEnum.Int16:
                                 shortArray[0] = (ushort)short.Parse(ioArg.Value.ToString());
                                 toWriteArray = ChangeBuffersOrder(shortArray, ioArg.EndianType);
-                                await _master.WriteMultipleRegistersAsync(slaveAddress, address, toWriteArray);
+                                await _master.WriteSingleRegisterAsync(slaveAddress, address, toWriteArray[0]);
                                 break;
                             case DataTypeEnum.Uint16:
                                 shortArray[0] = ushort.Parse(ioArg.Value.ToString());
                                 toWriteArray = ChangeBuffersOrder(shortArray, ioArg.EndianType);
-                                await _master.WriteMultipleRegistersAsync(slaveAddress, address, toWriteArray);
+                                await _master.WriteSingleRegisterAsync(slaveAddress, address, toWriteArray[0]);
                                 break;
                             case DataTypeEnum.Int32:
                                 var int32Value = int.Parse(ioArg.Value.ToString());
