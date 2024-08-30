@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 using IoTGateway.Model;
+using Microsoft.Extensions.Primitives;
+using Plugin;
 using PluginInterface;
 
 
@@ -48,7 +50,16 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
 
     public class DeviceVariableImportVM : BaseImportVM<DeviceVariableTemplateVM, DeviceVariable>
     {
+        public override bool BatchSaveData()
+        {
+            var result = base.BatchSaveData();
 
+            FC["Ids"] = new StringValues(EntityList.Select(x => x.DeviceId.ToString()).ToArray());
+            var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
+            UpdateDevices.UpdateDevice(DC, deviceService, FC);
+
+            return result;
+        }
     }
 
 }
