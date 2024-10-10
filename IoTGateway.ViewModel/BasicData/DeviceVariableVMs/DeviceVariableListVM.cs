@@ -116,7 +116,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
             var threadDeviceIds = deviceService?.DeviceThreads.Select(x => x.Device.ID).Distinct(x => x);
             //设备线程中的变量
             var threadVariables =
-                deviceService?.DeviceThreads.SelectMany(deviceThread => deviceThread.Device.DeviceVariables);
+                deviceService?.DeviceThreads.Where(x => x.Device.DeviceVariables != null).SelectMany(deviceThread => deviceThread.Device.DeviceVariables);
             //查找数据库中额外的变量
             var dcVariables = DC.Set<DeviceVariable>().AsNoTracking().Include(x => x.Device)
                 .Where(x => !threadDeviceIds.Contains((Guid)x.DeviceId)).AsEnumerable();
@@ -127,30 +127,30 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
             {
                 var ids = UpdateDevices.FC2Guids(FC);
 
-                return variables.Where(x=> ids.Contains(x.ID)).Select(x => new DeviceVariable_View
-                    {
-                        ID = x.ID,
-                        DeviceId = x.DeviceId,
-                        Name = x.Name,
-                        Index = x.Index,
-                        Description = x.Description,
-                        Method = x.Method,
-                        DeviceAddress = x.DeviceAddress,
-                        DataType = x.DataType,
-                        IsTrigger = x.IsTrigger,
-                        EndianType = x.EndianType,
-                        Expressions = x.Expressions,
-                        IsUpload = x.IsUpload,
-                        ProtectType = x.ProtectType,
-                        DeviceName_view = x.Device.DeviceName,
-                        Alias = x.Alias,
-                        Device = x.Device,
-                        Value = x.Value,
-                        CookedValue = x.CookedValue,
-                        StatusType = x.StatusType,
-                        Timestamp = x.Timestamp,
-                        Message = x.Message,
-                    })
+                return variables.Where(x => ids.Contains(x.ID)).Select(x => new DeviceVariable_View
+                {
+                    ID = x.ID,
+                    DeviceId = x.DeviceId,
+                    Name = x.Name,
+                    Index = x.Index,
+                    Description = x.Description,
+                    Method = x.Method,
+                    DeviceAddress = x.DeviceAddress,
+                    DataType = x.DataType,
+                    IsTrigger = x.IsTrigger,
+                    EndianType = x.EndianType,
+                    Expressions = x.Expressions,
+                    IsUpload = x.IsUpload,
+                    ProtectType = x.ProtectType,
+                    DeviceName_view = x.Device.DeviceName,
+                    Alias = x.Alias,
+                    Device = x.Device,
+                    Value = x.Value,
+                    CookedValue = x.CookedValue,
+                    StatusType = x.StatusType,
+                    Timestamp = x.Timestamp,
+                    Message = x.Message,
+                })
                     .OrderBy(x => x.Index).ThenBy(x => x.DeviceName_view).ThenBy(x => x.Alias).ThenBy(x => x.Method)
                     .ThenBy(x => x.DeviceAddress);
             }

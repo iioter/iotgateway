@@ -23,7 +23,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
         protected override void InitVM()
         {
             AllDrivers = DC.Set<Driver>().GetSelectListItems(Wtm, y => y.FileName);
-            AllParents = DC.Set<Device>().Where(x=>x.DeviceTypeEnum== DeviceTypeEnum.Group).GetSelectListItems(Wtm, y => y.DeviceName);
+            AllParents = DC.Set<Device>().Where(x => x.DeviceTypeEnum == DeviceTypeEnum.Group).GetSelectListItems(Wtm, y => y.DeviceName);
         }
 
         public override void DoAdd()
@@ -36,7 +36,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                 {
                     var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
                     deviceService.DrvierManager.AddConfigs(this.Entity.ID, this.Entity.DriverId);
-                    var device = DC.Set<Device>().Where(x => x.ID == Entity.ID).Include(x=>x.Parent).Include(x => x.Driver).SingleOrDefault();
+                    var device = DC.Set<Device>().Where(x => x.ID == Entity.ID).Include(x => x.Parent).Include(x => x.Driver).Include(x => x.DeviceVariables).SingleOrDefault();
                     deviceService.CreateDeviceThread(device);
 
                     var myMqttClient = Wtm.ServiceProvider.GetService(typeof(MyMqttClient)) as MyMqttClient;
