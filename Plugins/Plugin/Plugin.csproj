@@ -7,10 +7,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DynamicExpresso.Core" Version="2.16.1" />
+		<PackageReference Include="DynamicExpresso.Core" Version="2.17.2" />
 		<PackageReference Include="Mono.Options" Version="6.12.0.148" />
-		<PackageReference Include="MQTTnet" Version="4.3.6.1152" />
-		<PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.3.6.1152" />
+		<PackageReference Include="MQTTnet" Version="4.3.7.1207" />
+		<PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.3.7.1207" />
 		<PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Server" Version="1.4.370.12" />
 	</ItemGroup>
 
