@@ -26,8 +26,8 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                         请求结果 = "复制失败，找不到设备";
                     else
                     {
-                        var myMqttClient = Wtm.ServiceProvider.GetService(typeof(MyMqttClient)) as MyMqttClient;
-                        myMqttClient.RequestAttributes(device.DeviceName, true, device.DeviceConfigs.Where(x => x.DataSide == DataSide.AnySide).Select(x => x.DeviceConfigName).ToArray());
+                        var messageService = Wtm.ServiceProvider.GetService(typeof(MessageService)) as MessageService;
+                        messageService.RequestAttributes(device.DeviceName, true, device.DeviceConfigs.Where(x => x.DataSide == DataSide.AnySide).Select(x => x.DeviceConfigName).ToArray());
                     }
                     DC.SaveChanges();
                     transaction.Commit();

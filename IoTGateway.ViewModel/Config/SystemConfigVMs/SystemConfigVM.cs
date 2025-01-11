@@ -29,8 +29,8 @@ namespace IoTGateway.ViewModel.Config.SystemConfigVMs
         public override void DoEdit(bool updateAllFields = false)
         {
             base.DoEdit(updateAllFields);
-            var myMqttClient = Wtm.ServiceProvider.GetService(typeof(MyMqttClient)) as MyMqttClient;
-            myMqttClient.StartClientAsync().Wait();
+            var messageService = Wtm.ServiceProvider.GetService(typeof(MessageService)) as MessageService;
+            messageService.StartClientAsync().Wait();
         }
 
         public override void DoDelete()

@@ -97,8 +97,8 @@ namespace IoTGateway.ViewModel.BasicData
 
                 transaction.Commit();
 
-                var myMqttClient = Wtm.ServiceProvider.GetService(typeof(MyMqttClient)) as MyMqttClient;
-                myMqttClient.StartClientAsync().Wait();
+                var messageService = Wtm.ServiceProvider.GetService(typeof(MessageService)) as MessageService;
+                messageService.StartClientAsync().Wait();
 
                 //重新启动采集
                 deviceService.CreateDeviceThreads();

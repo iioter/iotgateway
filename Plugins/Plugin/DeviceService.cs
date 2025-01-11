@@ -17,19 +17,18 @@ namespace Plugin
         public DriverService DrvierManager;
 
         public List<DeviceThread> DeviceThreads = new List<DeviceThread>();
-        private readonly MyMqttClient _myMqttClient;
-        private readonly UAService _uAService;
+        private readonly MessageService _messageService;
         private readonly MqttServer _mqttServer;
         private readonly string _connnectSetting = IoTBackgroundService.connnectSetting;
         private readonly DBTypeEnum _dbType = IoTBackgroundService.DbType;
 
         //UAService? uAService, 
-        public DeviceService(IConfiguration configRoot, DriverService drvierManager, MyMqttClient myMqttClient,
+        public DeviceService(IConfiguration configRoot, DriverService drvierManager, MessageService messageService,
             MqttServer mqttServer, ILogger<DeviceService> logger)
         {
             _logger = logger;
             DrvierManager = drvierManager;
-            _myMqttClient = myMqttClient;
+            _messageService = messageService;
             //_uAService = uAService;
             _mqttServer = mqttServer ?? throw new ArgumentNullException(nameof(mqttServer));
 
@@ -152,7 +151,7 @@ namespace Plugin
                         if (deviceObj != null && systemManage != null)
                         {
                             var deviceThread = new DeviceThread(device, deviceObj, systemManage.GatewayName,
-                                _myMqttClient,
+                                _messageService,
                                 _mqttServer, _logger);
                             DeviceThreads.Add(deviceThread);
                         }

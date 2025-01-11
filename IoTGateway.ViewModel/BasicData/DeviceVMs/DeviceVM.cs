@@ -39,8 +39,8 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                     var device = DC.Set<Device>().Where(x => x.ID == Entity.ID).Include(x => x.Parent).Include(x => x.Driver).Include(x => x.DeviceVariables).SingleOrDefault();
                     deviceService.CreateDeviceThread(device);
 
-                    var myMqttClient = Wtm.ServiceProvider.GetService(typeof(MyMqttClient)) as MyMqttClient;
-                    myMqttClient.DeviceAdded(device);
+                    var messageService = Wtm.ServiceProvider.GetService(typeof(MessageService)) as MessageService;
+                    messageService.DeviceAdded(device);
                 }
             }
             catch (Exception ex)
@@ -62,8 +62,8 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
             List<Guid> Ids = new List<Guid>() { Guid.Parse(FC["id"].ToString()) };
 
             var pluginManager = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
-            var myMqttClient = Wtm.ServiceProvider.GetService(typeof(MyMqttClient)) as MyMqttClient;
-            myMqttClient.DeviceDeleted(Entity);
+            var messageService = Wtm.ServiceProvider.GetService(typeof(MessageService)) as MessageService;
+            messageService.DeviceDeleted(Entity);
             var ret = DeleteDevices.doDelete(pluginManager, DC, Ids);
             if (!ret.IsSuccess)
             {
