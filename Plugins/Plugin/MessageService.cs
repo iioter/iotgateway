@@ -89,39 +89,7 @@ namespace Plugin
             #region Topics
             try
             {
-                switch (_systemConfig.IoTPlatformType)
-                {
-                    case IoTPlatformType.ThingsBoard:
-                        //{"device": "Device A", "data": {"id": $request_id, "method": "toggle_gpio", "params": {"pin":1}}}
-                        await Client.SubscribeAsync(_tbRpcTopic, MqttQualityOfServiceLevel.ExactlyOnce);
-                        //Message: {"id": $request_id, "device": "Device A", "value": "value1"}
-                        await Client.SubscribeAsync("v1/gateway/attributes/response", MqttQualityOfServiceLevel.ExactlyOnce);
-                        //Message: {"device": "Device A", "data": {"attribute1": "value1", "attribute2": 42}}
-                        await Client.SubscribeAsync("v1/gateway/attributes", MqttQualityOfServiceLevel.ExactlyOnce);
-                        break;
-                    case IoTPlatformType.IoTSharp:
-                    case IoTPlatformType.IoTGateway:
-                        await Client.SubscribeAsync("devices/+/rpc/request/+/+", MqttQualityOfServiceLevel.ExactlyOnce);
-                        await Client.SubscribeAsync("devices/+/attributes/update", MqttQualityOfServiceLevel.ExactlyOnce);
-                        //Message: {"device": "Device A", "data": {"attribute1": "value1", "attribute2": 42}}
-                        await Client.SubscribeAsync("devices/+/attributes/response/+", MqttQualityOfServiceLevel.ExactlyOnce);
-                        break;
-                    case IoTPlatformType.ThingsCloud:
-                        await Client.SubscribeAsync("gateway/attributes/response", MqttQualityOfServiceLevel.ExactlyOnce);
-                        await Client.SubscribeAsync("gateway/attributes/get/response", MqttQualityOfServiceLevel.ExactlyOnce);
-                        await Client.SubscribeAsync("gateway/attributes/push", MqttQualityOfServiceLevel.ExactlyOnce);
-                        await Client.SubscribeAsync("gateway/event/response", MqttQualityOfServiceLevel.ExactlyOnce);
-                        await Client.SubscribeAsync("gateway/command/send", MqttQualityOfServiceLevel.ExactlyOnce);
-                        break;
-                    case IoTPlatformType.AliCloudIoT:
-                        break;
-                    case IoTPlatformType.TencentIoTHub:
-                        break;
-                    case IoTPlatformType.BaiduIoTCore:
-                        break;
-                    case IoTPlatformType.OneNET:
-                        break;
-                }
+                await _platformHandler.ClientConnected();
             }
             catch (Exception ex)
             {
