@@ -15,6 +15,8 @@ namespace Plugin.PlatformHandler
                     return new ThingsBoardHandler(mqttClient, logger, onExcRpc);
                 case IoTPlatformType.ThingsCloud:
                     return new ThingsCloudHandler(mqttClient, logger, onExcRpc);
+                case IoTPlatformType.ThingsPanel:
+                    return new ThingsPanelHandler(mqttClient, logger, onExcRpc);
                 case IoTPlatformType.IoTSharp:
                 default:
                     return new IoTSharpHandler(mqttClient, logger, onExcRpc);

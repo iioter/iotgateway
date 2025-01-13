@@ -54,6 +54,8 @@ namespace IoTGateway.Model
         [Display(Name = "HuaWeiCloud")]
         HuaWei = 7,
         [Display(Name = "IoTGateway")]
-        IoTGateway = 8
+        IoTGateway = 8,
+        [Display(Name = "ThingsPanel")]
+        ThingsPanel = 9
     }
 }
