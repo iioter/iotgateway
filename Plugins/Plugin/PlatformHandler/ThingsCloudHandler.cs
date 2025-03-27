@@ -20,7 +20,7 @@ namespace Plugin.PlatformHandler
         {
             MqttClient = mqttClient;
             Logger = logger;
-            OnExcRpc = onExcRpc;
+            OnExcRpc += onExcRpc;
         }
 
 
@@ -39,13 +39,20 @@ namespace Plugin.PlatformHandler
                 var tCRpcRequest =
                     JsonConvert.DeserializeObject<TCRpcRequest>(e.ApplicationMessage.ConvertPayloadToString());
                 if (tCRpcRequest != null)
-                    OnExcRpc.Invoke(MqttClient, new RpcRequest()
+                {
+                    Task.Run(() =>
                     {
-                        Method = tCRpcRequest.RequestData.Method,
-                        DeviceName = tCRpcRequest.DeviceName,
-                        RequestId = tCRpcRequest.RequestData.RequestId,
-                        Params = tCRpcRequest.RequestData.Params
+                        var request = new RpcRequest()
+                        {
+                            Method = tCRpcRequest.RequestData.Method,
+                            DeviceName = tCRpcRequest.DeviceName,
+                            RequestId = tCRpcRequest.RequestData.RequestId,
+                            Params = tCRpcRequest.RequestData.Params
+                        };
+                        OnExcRpc?.Invoke(this, request);
                     });
+                }
+                    
             }
             catch (Exception ex)
             {

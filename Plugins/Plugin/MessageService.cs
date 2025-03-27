@@ -73,6 +73,11 @@ namespace Plugin
 
                 // 使用工厂模式创建对应平台的处理器
                 _platformHandler = PlatformHandlerFactory.CreateHandler(_systemConfig.IoTPlatformType, Client, _logger, OnExcRpc);
+                _platformHandler.OnExcRpc += (sender, request) =>
+                {
+                    // 将事件再抛出，让外部服务可以监听
+                    OnExcRpc?.Invoke(sender, request);
+                };
 
                 _logger.LogInformation("MQTT WAITING FOR APPLICATION MESSAGES");
 

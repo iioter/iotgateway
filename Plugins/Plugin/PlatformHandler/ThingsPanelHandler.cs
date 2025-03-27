@@ -21,7 +21,7 @@ namespace Plugin.PlatformHandler
         {
             MqttClient = mqttClient;
             Logger = logger;
-            OnExcRpc = onExcRpc;
+            OnExcRpc += onExcRpc;
         }
 
 

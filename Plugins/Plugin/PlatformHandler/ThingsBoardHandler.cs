@@ -22,7 +22,7 @@ namespace Plugin.PlatformHandler
         {
             MqttClient = mqttClient;
             Logger = logger;
-            OnExcRpc = onExcRpc;
+            OnExcRpc += onExcRpc;
         }
 
         public async Task ClientConnected()
@@ -43,12 +43,16 @@ namespace Plugin.PlatformHandler
                     JsonConvert.DeserializeObject<TBRpcRequest>(e.ApplicationMessage.ConvertPayloadToString());
                 if (tBRpcRequest != null && !string.IsNullOrWhiteSpace(tBRpcRequest.RequestData.Method))
                 {
-                    OnExcRpc(MqttClient, new RpcRequest()
+                    Task.Run(() =>
                     {
-                        Method = tBRpcRequest.RequestData.Method,
-                        DeviceName = tBRpcRequest.DeviceName,
-                        RequestId = tBRpcRequest.RequestData.RequestId,
-                        Params = tBRpcRequest.RequestData.Params
+                        var request = new RpcRequest()
+                        {
+                            Method = tBRpcRequest.RequestData.Method,
+                            DeviceName = tBRpcRequest.DeviceName,
+                            RequestId = tBRpcRequest.RequestData.RequestId,
+                            Params = tBRpcRequest.RequestData.Params
+                        };
+                        OnExcRpc?.Invoke(this, request);
                     });
                 }
             }

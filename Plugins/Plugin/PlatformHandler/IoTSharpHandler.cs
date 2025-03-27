@@ -49,14 +49,15 @@ namespace Plugin.PlatformHandler
                 {
                     Task.Run(() =>
                     {
-                        OnExcRpc(MqttClient, new RpcRequest()
+                        var request = new RpcRequest()
                         {
                             Method = rpcMethodName,
                             DeviceName = rpcDeviceName,
                             RequestId = rpcRequestId,
                             Params = JsonConvert.DeserializeObject<Dictionary<string, object>>(e.ApplicationMessage
                                 .ConvertPayloadToString())
-                        });
+                        };
+                        OnExcRpc?.Invoke(this, request);
                     });
                 }
             }
