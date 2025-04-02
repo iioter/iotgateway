@@ -138,7 +138,10 @@
           "Newtonsoft.Json": "13.0.3"
         },
         "runtime": {
-          "PluginInterface.dll": {}
+          "PluginInterface.dll": {
+            "assemblyVersion": "1.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       }
     }

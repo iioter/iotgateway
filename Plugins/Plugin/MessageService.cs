@@ -10,7 +10,12 @@ using MQTTnet;
 using MQTTnet.Protocol;
 using Plugin.PlatformHandler;
 using Newtonsoft.Json;
-using Quartz.Logging;
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Plugin
 {
@@ -18,20 +23,25 @@ namespace Plugin
     {
         private readonly ILogger<MessageService> _logger;
         private IPlatformHandler _platformHandler;
-
         private SystemConfig _systemConfig;
         private ManagedMqttClientOptions _options;
-        public bool IsConnected => (Client.IsConnected);
         private IManagedMqttClient? Client { get; set; }
-        public event EventHandler<RpcRequest> OnExcRpc;
-        public event EventHandler<ISAttributeResponse> OnReceiveAttributes;
+
+        public bool IsConnected => Client?.IsConnected ?? false;
+
+        public event EventHandler<RpcRequest>? OnExcRpc;
+        public event EventHandler<ISAttributeResponse>? OnReceiveAttributes;
+
         private readonly string _tbRpcTopic = "v1/gateway/rpc";
+
+        // 使用线程安全的集合确保并发访问安全
+        private readonly ConcurrentDictionary<string, List<PayLoad>> _lastTelemetrys = new();
+
         public MessageService(ILogger<MessageService> logger)
         {
             _logger = logger;
-
-            StartClientAsync().Wait();
-
+            // 异步启动客户端，避免构造函数阻塞
+            _ = StartClientAsync();
         }
 
         public async Task StartClientAsync()
@@ -40,21 +50,23 @@ namespace Plugin
             {
                 if (Client != null)
                 {
+                    await Client.StopAsync().ConfigureAwait(false);
                     Client.Dispose();
                 }
+
                 Client = new MqttFactory().CreateManagedMqttClient();
+
+                // 使用 using 声明，确保资源及时释放
                 await using var dc = new DataContext(IoTBackgroundService.connnectSetting, IoTBackgroundService.DbType);
-                _systemConfig = dc.Set<SystemConfig>().First();
+                _systemConfig = await dc.Set<SystemConfig>().FirstOrDefaultAsync().ConfigureAwait(false)
+                                ?? throw new Exception("系统配置未找到");
 
                 #region ClientOptions
-
                 _options = new ManagedMqttClientOptionsBuilder()
                     .WithAutoReconnectDelay(TimeSpan.FromSeconds(5))
                     .WithMaxPendingMessages(100000)
                     .WithClientOptions(new MqttClientOptionsBuilder()
-                        .WithClientId(string.IsNullOrEmpty(_systemConfig.ClientId)
-                            ? Guid.NewGuid().ToString()
-                            : _systemConfig.ClientId)
+                        .WithClientId(string.IsNullOrEmpty(_systemConfig.ClientId) ? Guid.NewGuid().ToString() : _systemConfig.ClientId)
                         .WithTcpServer(_systemConfig.MqttIp, _systemConfig.MqttPort)
                         .WithCredentials(_systemConfig.MqttUName, _systemConfig.MqttUPwd)
                         .WithTimeout(TimeSpan.FromSeconds(30))
@@ -69,199 +81,126 @@ namespace Plugin
                 Client.DisconnectedAsync += Client_DisconnectedAsync;
                 Client.ApplicationMessageReceivedAsync += Client_ApplicationMessageReceivedAsync;
 
-                await Client.StartAsync(_options);
+                await Client.StartAsync(_options).ConfigureAwait(false);
 
                 // 使用工厂模式创建对应平台的处理器
                 _platformHandler = PlatformHandlerFactory.CreateHandler(_systemConfig.IoTPlatformType, Client, _logger, OnExcRpc);
-                _platformHandler.OnExcRpc += (sender, request) =>
-                {
-                    // 将事件再抛出，让外部服务可以监听
-                    OnExcRpc?.Invoke(sender, request);
-                };
+                _platformHandler.OnExcRpc += (sender, request) => OnExcRpc?.Invoke(sender, request);
 
                 _logger.LogInformation("MQTT WAITING FOR APPLICATION MESSAGES");
-
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"StartManagedClientAsync FAILED ");
+                _logger.LogError(ex, "StartClientAsync FAILED");
             }
         }
 
         public async Task Client_ConnectedAsync(MqttClientConnectedEventArgs arg)
         {
-            _logger.LogInformation($"MQTT CONNECTED WITH SERVER ");
-            #region Topics
+            _logger.LogInformation("MQTT CONNECTED WITH SERVER");
             try
             {
-                await _platformHandler.ClientConnected();
+                await _platformHandler.ClientConnected().ConfigureAwait(false);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "MQTT Subscribe FAILED");
             }
-            #endregion
         }
 
-        public async Task Client_DisconnectedAsync(MqttClientDisconnectedEventArgs arg)
+        public Task Client_DisconnectedAsync(MqttClientDisconnectedEventArgs arg)
         {
-            try
-            {
-                _logger.LogError($"MQTT DISCONNECTED WITH SERVER ");
-                await Task.CompletedTask;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "MQTT CONNECTING FAILED");
-            }
+            _logger.LogError("MQTT DISCONNECTED WITH SERVER");
+            return Task.CompletedTask;
         }
 
-        public Task Client_ApplicationMessageReceivedAsync(MqttApplicationMessageReceivedEventArgs e)
+        public async Task Client_ApplicationMessageReceivedAsync(MqttApplicationMessageReceivedEventArgs e)
         {
-            _logger.LogDebug(
-                $"ApplicationMessageReceived Topic {e.ApplicationMessage.Topic}  QualityOfServiceLevel:{e.ApplicationMessage.QualityOfServiceLevel} Retain:{e.ApplicationMessage.Retain} ");
+            _logger.LogDebug($"ApplicationMessageReceived Topic: {e.ApplicationMessage.Topic}");
             try
             {
                 _platformHandler.ReceiveRpc(e);
             }
             catch (Exception ex)
             {
-                _logger.LogError(
-                    ex, $"ClientId:{e.ClientId} Topic:{e.ApplicationMessage.Topic},Payload:{e.ApplicationMessage.ConvertPayloadToString()}");
-            }
-
-            return Task.CompletedTask;
-        }
-
-        public async Task PublishTelemetryAsync(string deviceName, Device device,
-            Dictionary<string, List<PayLoad>> sendModel)
-        {
-            if (CanPubTelemetry(deviceName, device, sendModel))
-            {
-                await _platformHandler.PublishTelemetryAsync(deviceName, device, sendModel);
+                _logger.LogError(ex, $"ClientId:{e.ClientId} Topic:{e.ApplicationMessage.Topic}");
             }
         }
-
-        public async Task UploadAttributeAsync(string deviceName, object obj)
-        {
-            await _platformHandler.UploadAttributeAsync(deviceName, obj);
-        }
-
-        public async Task DeviceConnected(string deviceName, Device device)
-        {
-            try
-            {
-                await _platformHandler.DeviceConnected(deviceName, device);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"DeviceConnected:{deviceName}");
-            }
-        }
-
-        public async Task DeviceDisconnected(string deviceName, Device device)
-        {
-            try
-            {
-                await _platformHandler.DeviceDisconnected(deviceName, device);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"DeviceDisconnected:{deviceName}");
-            }
-        }
-
-        public async Task ResponseRpcAsync(RpcResponse rpcResponse)
-        {
-            try
-            {
-                await _platformHandler.ResponseRpcAsync(rpcResponse);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"ResponseRpc Error,{rpcResponse}");
-            }
-        }
-
-        public async Task RequestAttributes(string deviceName, bool anySide, params string[] args)
-        {
-
-            await _platformHandler.RequestAttributes(deviceName, anySide, args);
-        }
-
-
-        public async Task DeviceAdded(Device device)
-        {
-            try
-            {
-                await _platformHandler.DeviceAdded(device);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"DeviceAdded:{device.DeviceName}");
-            }
-        }
-
-        public async Task DeviceDeleted(Device device)
-        {
-            try
-            {
-                await _platformHandler.DeviceDeleted(device);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"DeviceAdded:{device.DeviceName}");
-            }
-        }
-
-
-        private Dictionary<string, List<PayLoad>> _lastTelemetrys = new(0);
 
         /// <summary>
-        /// 判断是否推送遥测数据
+        /// 判断是否需要发布遥测数据（仅在数据有更新或超过规定时间间隔时发布）。
         /// </summary>
-        /// <param name="deviceName"></param>
-        /// <param name="device">设备</param>
-        /// <param name="sendModel">遥测</param>
-        /// <returns></returns>
         private bool CanPubTelemetry(string deviceName, Device device, Dictionary<string, List<PayLoad>> sendModel)
         {
-            bool canPub = false;
             try
-            {//第一次上传
-                if (!_lastTelemetrys.ContainsKey(deviceName))
-                    canPub = true;
+            {
+                // 缓存本次待发送的数据，减少重复查找
+                if (!sendModel.TryGetValue(deviceName, out var newTelemetry) || newTelemetry.Count == 0)
+                {
+                    return false;
+                }
+
+                // 尝试获取上一次的遥测数据
+                if (!_lastTelemetrys.TryGetValue(deviceName, out var lastTelemetry))
+                {
+                    _lastTelemetrys[deviceName] = newTelemetry;
+                    return true;
+                }
+
+                var newPayload = newTelemetry[0];
+                var lastPayload = lastTelemetry[0];
+
+                if (device.CgUpload)
+                {
+                    if (newPayload.TS - lastPayload.TS > device.EnforcePeriod ||
+                        !newPayload.Values.SequenceEqual(lastPayload.Values))
+                    {
+                        _lastTelemetrys[deviceName] = newTelemetry;
+                        return true;
+                    }
+                }
                 else
                 {
-                    //变化上传
-                    if (device.CgUpload)
-                    {
-                        //是否超过归档周期
-                        if (sendModel[deviceName][0].TS - _lastTelemetrys[deviceName][0].TS >
-                            device.EnforcePeriod)
-                            canPub = true;
-                        //是否变化 这里不好先用
-                        else
-                        {
-                            if (JsonConvert.SerializeObject(sendModel[deviceName][0].Values) !=
-                                JsonConvert.SerializeObject(_lastTelemetrys[deviceName][0].Values))
-                                canPub = true;
-                        }
-                    }
-                    //非变化上传
-                    else
-                        canPub = true;
+                    _lastTelemetrys[deviceName] = newTelemetry;
+                    return true;
                 }
             }
             catch (Exception e)
             {
-                canPub = true;
-                Console.WriteLine(e);
+                _logger.LogError(e, "Error in CanPubTelemetry");
+                return true;
             }
 
-            if (canPub)
-                _lastTelemetrys[deviceName] = sendModel[deviceName];
-            return canPub;
+            return false;
         }
+
+        public async Task PublishTelemetryAsync(string deviceName, Device device, Dictionary<string, List<PayLoad>> sendModel)
+        {
+            if (CanPubTelemetry(deviceName, device, sendModel))
+            {
+                await _platformHandler.PublishTelemetryAsync(deviceName, device, sendModel).ConfigureAwait(false);
+            }
+        }
+
+        public async Task UploadAttributeAsync(string deviceName, object obj) =>
+            await _platformHandler.UploadAttributeAsync(deviceName, obj).ConfigureAwait(false);
+
+        public async Task DeviceConnected(string deviceName, Device device) =>
+            await _platformHandler.DeviceConnected(deviceName, device).ConfigureAwait(false);
+
+        public async Task DeviceDisconnected(string deviceName, Device device) =>
+            await _platformHandler.DeviceDisconnected(deviceName, device).ConfigureAwait(false);
+
+        public async Task ResponseRpcAsync(RpcResponse rpcResponse) =>
+            await _platformHandler.ResponseRpcAsync(rpcResponse).ConfigureAwait(false);
+
+        public async Task RequestAttributes(string deviceName, bool anySide, params string[] args) =>
+            await _platformHandler.RequestAttributes(deviceName, anySide, args).ConfigureAwait(false);
+
+        public async Task DeviceAdded(Device device) =>
+            await _platformHandler.DeviceAdded(device).ConfigureAwait(false);
+
+        public async Task DeviceDeleted(Device device) =>
+            await _platformHandler.DeviceDeleted(device).ConfigureAwait(false);
     }
 }
