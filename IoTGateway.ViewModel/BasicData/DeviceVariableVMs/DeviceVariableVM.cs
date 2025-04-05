@@ -76,7 +76,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
         private void UpdateVaribale()
         {
             var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
-            UpdateDevices.UpdateVaribale(DC, deviceService, FC);
+            UpdateDevices.UpdateVariable(DC, deviceService, FC);
 
         }
         public override DuplicatedInfo<DeviceVariable> SetDuplicatedCheck()

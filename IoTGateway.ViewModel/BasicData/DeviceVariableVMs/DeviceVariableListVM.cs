@@ -11,6 +11,7 @@ using PluginInterface;
 using Plugin;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
 {
@@ -110,85 +111,84 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
             if (Searcher.DeviceId != null)
                 IoTBackgroundService.VariableSelectDeviceId = Searcher.DeviceId;
 
-
+            // 获取设备服务
             var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
-            //设备线程中的所有设备
-            var threadDeviceIds = deviceService?.DeviceThreads.Select(x => x.Device.ID).Distinct(x => x);
-            //设备线程中的变量
-            var threadVariables =
-                deviceService?.DeviceThreads.Where(x => x.Device.DeviceVariables != null).SelectMany(deviceThread => deviceThread.Device.DeviceVariables);
-            //查找数据库中额外的变量
-            var dcVariables = DC.Set<DeviceVariable>().AsNoTracking().Include(x => x.Device)
-                .Where(x => !threadDeviceIds.Contains((Guid)x.DeviceId)).AsEnumerable();
 
+            // 设备线程中的所有设备ID
+            var threadDeviceIds = deviceService?
+                .DeviceThreads
+                .Select(x => x.Device.ID)
+                .Distinct(x => x);
+
+            // 设备线程中的所有变量
+            var threadVariables = deviceService?
+                .DeviceThreads
+                .Where(x => x.Device.DeviceVariables != null)
+                .SelectMany(x => x.Device.DeviceVariables);
+
+            // 数据库中额外的变量（过滤掉线程中的设备变量）
+            var dcVariables = DC.Set<DeviceVariable>()
+                .AsNoTracking()
+                .Include(x => x.Device)
+                .Where(x => !threadDeviceIds.Contains((Guid)x.DeviceId))
+                .AsEnumerable();
+
+            // 合并两部分变量
             var variables = dcVariables.Union(threadVariables).AsQueryable();
 
+            // 定义从 DeviceVariable 到 DeviceVariable_View 的映射
+            Expression<Func<DeviceVariable, DeviceVariable_View>> projection = x => new DeviceVariable_View
+            {
+                ID = x.ID,
+                DeviceId = x.DeviceId,
+                Name = x.Name,
+                Index = x.Index,
+                Description = x.Description,
+                Method = x.Method,
+                DeviceAddress = x.DeviceAddress,
+                DataType = x.DataType,
+                IsTrigger = x.IsTrigger,
+                EndianType = x.EndianType,
+                Expressions = x.Expressions,
+                IsUpload = x.IsUpload,
+                ProtectType = x.ProtectType,
+                DeviceName_view = x.Device.DeviceName,
+                Alias = x.Alias,
+                Device = x.Device,
+                Value = x.Value,
+                CookedValue = x.CookedValue,
+                StatusType = x.StatusType,
+                Timestamp = x.Timestamp,
+                Message = x.Message,
+            };
+
+            // 根据不同的查询模式添加筛选条件
+            IQueryable<DeviceVariable> query = variables;
             if (SearcherMode == ListVMSearchModeEnum.Batch)
             {
                 var ids = UpdateDevices.FC2Guids(FC);
-
-                return variables.Where(x => ids.Contains(x.ID)).Select(x => new DeviceVariable_View
-                {
-                    ID = x.ID,
-                    DeviceId = x.DeviceId,
-                    Name = x.Name,
-                    Index = x.Index,
-                    Description = x.Description,
-                    Method = x.Method,
-                    DeviceAddress = x.DeviceAddress,
-                    DataType = x.DataType,
-                    IsTrigger = x.IsTrigger,
-                    EndianType = x.EndianType,
-                    Expressions = x.Expressions,
-                    IsUpload = x.IsUpload,
-                    ProtectType = x.ProtectType,
-                    DeviceName_view = x.Device.DeviceName,
-                    Alias = x.Alias,
-                    Device = x.Device,
-                    Value = x.Value,
-                    CookedValue = x.CookedValue,
-                    StatusType = x.StatusType,
-                    Timestamp = x.Timestamp,
-                    Message = x.Message,
-                })
-                    .OrderBy(x => x.Index).ThenBy(x => x.DeviceName_view).ThenBy(x => x.Alias).ThenBy(x => x.Method)
-                    .ThenBy(x => x.DeviceAddress);
+                query = query.Where(x => ids.Contains(x.ID));
+            }
+            else
+            {
+                query = query
+                    .CheckContain(Searcher.Name, x => x.Name)
+                    .CheckContain(Searcher.Alias, x => x.Alias)
+                    .CheckContain(Searcher.Method, x => x.Method)
+                    .CheckContain(Searcher.DeviceAddress, x => x.DeviceAddress)
+                    .CheckEqual(Searcher.DataType, x => x.DataType)
+                    .CheckEqual(Searcher.DeviceId, x => x.DeviceId);
             }
 
-            return variables
-                .CheckContain(Searcher.Name, x => x.Name)
-                .CheckContain(Searcher.Alias, x => x.Alias)
-                .CheckContain(Searcher.Method, x => x.Method)
-                .CheckContain(Searcher.DeviceAddress, x => x.DeviceAddress)
-                .CheckEqual(Searcher.DataType, x => x.DataType)
-                .CheckEqual(Searcher.DeviceId, x => x.DeviceId)
-                .Select(x => new DeviceVariable_View
-                {
-                    ID = x.ID,
-                    DeviceId = x.DeviceId,
-                    Name = x.Name,
-                    Index = x.Index,
-                    Description = x.Description,
-                    Method = x.Method,
-                    DeviceAddress = x.DeviceAddress,
-                    DataType = x.DataType,
-                    IsTrigger = x.IsTrigger,
-                    EndianType = x.EndianType,
-                    Expressions = x.Expressions,
-                    IsUpload = x.IsUpload,
-                    ProtectType = x.ProtectType,
-                    DeviceName_view = x.Device.DeviceName,
-                    Alias = x.Alias,
-                    Device = x.Device,
-                    Value = x.Value,
-                    CookedValue = x.CookedValue,
-                    StatusType = x.StatusType,
-                    Timestamp = x.Timestamp,
-                    Message = x.Message,
-                })
-                .OrderBy(x => x.Index).ThenBy(x => x.DeviceName_view).ThenBy(x => x.Alias).ThenBy(x => x.Method)
-                .ThenBy(x => x.DeviceAddress);
+            // 统一投影和排序
+            return query.Select(projection)
+                        .OrderBy(x => x.Index)
+                        .ThenBy(x => x.DeviceName_view)
+                        .ThenBy(x => x.Alias)
+                        .ThenBy(x => x.Method)
+                        .ThenBy(x => x.DeviceAddress);
         }
+
 
         public override IOrderedQueryable<DeviceVariable_View> GetBatchQuery()
         {

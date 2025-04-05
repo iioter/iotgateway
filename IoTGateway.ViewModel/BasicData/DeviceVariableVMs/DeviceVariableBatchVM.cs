@@ -31,7 +31,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
             {
                 var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
                 
-                UpdateDevices.UpdateVaribale(DC, deviceService, FC);
+                UpdateDevices.UpdateVariable(DC, deviceService, FC);
             }
             return ret;
         }
@@ -42,7 +42,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
             if (ret)
             {
                 var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
-                UpdateDevices.UpdateVaribale(DC, deviceService, FC);
+                UpdateDevices.UpdateVariable(DC, deviceService, FC);
             }
             return ret;
         }

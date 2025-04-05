@@ -20,3 +20,8 @@ bin-release/
 /IoTGateway/wwwroot/3d
 /IoTGateway/iotgateway.db-wal
 /IoTGateway/iotgateway.db-shm
+/IoTGateway/Properties/PublishProfiles/FolderProfile.pubxml
+/IoTGateway/Properties/PublishProfiles/FolderProfile.pubxml.user
+/IoTGateway/IoTGateway.csproj.user
+/IoTGateway/.config
+*.ps1

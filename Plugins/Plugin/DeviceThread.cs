@@ -215,9 +215,22 @@ namespace Plugin
                 if (ret.StatusType == VaribaleStatusTypeEnum.Good && !string.IsNullOrWhiteSpace(item.Expressions?.Trim()))
                 {
                     var expressionText = DealMysqlStr(item.Expressions)
-                        .Replace("raw", item.Values[0] is bool ? $"Convert.ToBoolean(\"{item.Values[0]}\")" : item.Values[0]?.ToString())
-                        .Replace("$ppv", item.Values[2] is bool ? $"Convert.ToBoolean(\"{item.Values[2]}\")" : item.Values[2]?.ToString())
-                        .Replace("$pv", item.Values[1] is bool ? $"Convert.ToBoolean(\"{item.Values[1]}\")" : item.Values[1]?.ToString());
+                        .Replace("raw",
+                            item.Values[0] is bool
+                                ? $"Convert.ToBoolean(\"{item.Values[0]}\")"
+                                : item.Values[0]?.ToString())
+                        .Replace("$v",
+                            item.Values[0] is bool
+                                ? $"Convert.ToBoolean(\"{item.Values[0]}\")"
+                                : item.Values[0]?.ToString())
+                        .Replace("$pv",
+                            item.Values[1] is bool
+                                ? $"Convert.ToBoolean(\"{item.Values[1]}\")"
+                                : item.Values[1]?.ToString())
+                        .Replace("$ppv",
+                            item.Values[2] is bool
+                                ? $"Convert.ToBoolean(\"{item.Values[2]}\")"
+                                : item.Values[2]?.ToString());
 
                     try
                     {

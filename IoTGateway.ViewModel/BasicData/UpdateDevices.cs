@@ -19,93 +19,131 @@ namespace IoTGateway.ViewModel.BasicData
             Config,
             Device
         }
-        internal static void UpdateVaribale(IDataContext DC, DeviceService deviceService, Dictionary<String, Object> FC)
+
+        public static void UpdateVariable(IDataContext DC, DeviceService deviceService, Dictionary<string, object> FC)
         {
-            var devices = GetDevices(DC, deviceService, FromVM.Variable, FC);
+            var devices = GetDevices(DC, FromVM.Variable, FC);
             deviceService.UpdateDevices(devices);
         }
 
-        internal static void UpdateConfig(IDataContext DC, DeviceService deviceService, Dictionary<String, Object> FC)
+        internal static void UpdateConfig(IDataContext DC, DeviceService deviceService, Dictionary<string, object> FC)
         {
-            var devices = GetDevices(DC,deviceService, FromVM.Config,FC); 
+            var devices = GetDevices(DC, FromVM.Config, FC);
             deviceService.UpdateDevices(devices);
         }
 
-        internal static void UpdateDevice(IDataContext DC, DeviceService deviceService, Dictionary<String, Object> FC)
+        internal static void UpdateDevice(IDataContext DC, DeviceService deviceService, Dictionary<string, object> FC)
         {
-            var devices = GetDevices(DC, deviceService, FromVM.Device, FC);
+            var devices = GetDevices(DC, FromVM.Device, FC);
             deviceService.UpdateDevices(devices);
         }
-        
 
-        internal static List<Device> GetDevices(IDataContext DC, DeviceService deviceService, FromVM fromVM, Dictionary<String, Object> FC)
+        /// <summary>
+        /// 获取包含相关导航属性的设备数据
+        /// </summary>
+        private static Device GetDeviceWithIncludes(IDataContext DC, Guid? deviceId)
         {
-            List<Device> devices = new();
-            List<Guid> Ids = FC2Guids(FC);
+            return DC.Set<Device>()
+                     .AsNoTracking()
+                     .Include(x => x.Parent)
+                     .Include(x => x.DeviceVariables)
+                     .Include(x => x.Driver)
+                     .Include(x => x.DeviceConfigs)
+                     .SingleOrDefault(x => x.ID == deviceId);
+        }
 
-            if (FC.ContainsKey("Entity.DeviceId"))
+        internal static List<Device> GetDevices(IDataContext DC, FromVM fromVM, Dictionary<string, object> FC)
+        {
+            var devices = new List<Device>();
+            var deviceIdsAdded = new HashSet<Guid>();
+
+            // 如果 FC 包含 "Entity.DeviceId"，则优先添加该设备
+            if (FC.TryGetValue("Entity.DeviceId", out var entityDeviceObj) && entityDeviceObj is StringValues entityDeviceValues)
             {
-                StringValues id = (StringValues)FC["Entity.DeviceId"];
-                var device = DC.Set<Device>().AsNoTracking().Include(x => x.Parent).Where(x => x.ID == Guid.Parse(id)).Include(x => x.DeviceVariables).Include(x => x.Driver).Include(x => x.DeviceConfigs).SingleOrDefault();
-                if (!devices.Where(x => x.ID == device.ID).Any())
-                    devices.Add(device);
-            }
-            foreach (var varId in Ids)
-            {
-                switch (fromVM)
+                if (entityDeviceValues.Count > 0 && Guid.TryParse(entityDeviceValues[0], out Guid entityDeviceId))
                 {
-                    case FromVM.Variable:
-                        var deviceVariable = DC.Set<DeviceVariable>().Where(x => x.ID == varId).SingleOrDefault();
+                    var device = GetDeviceWithIncludes(DC, entityDeviceId);
+                    if (device != null && deviceIdsAdded.Add(device.ID))
+                    {
+                        devices.Add(device);
+                    }
+                }
+            }
+
+            // 从 FC 中获取 Guid 列表
+            var ids = FC2Guids(FC);
+            switch (fromVM)
+            {
+                case FromVM.Variable:
+                    foreach (var id in ids)
+                    {
+                        var deviceVariable = DC.Set<DeviceVariable>().SingleOrDefault(x => x.ID == id);
                         if (deviceVariable != null)
                         {
-                            var device = DC.Set<Device>().AsNoTracking().Include(x => x.Parent).Where(x => x.ID == deviceVariable.DeviceId).Include(x=>x.DeviceVariables).Include(x => x.Driver).Include(x => x.DeviceConfigs).SingleOrDefault();
-                            if (!devices.Where(x => x.ID == device.ID).Any())
-                                devices.Add(device);
-                        }
-                        break;
-                    case FromVM.Config:
-                        foreach (var deviceConfigId in Ids)
-                        {
-                            var deviceConfig = DC.Set<DeviceConfig>().AsNoTracking().Where(x => x.ID == deviceConfigId).SingleOrDefault();
-                            if (deviceConfig != null)
+                            var device = GetDeviceWithIncludes(DC, deviceVariable.DeviceId);
+                            if (device != null && deviceIdsAdded.Add(device.ID))
                             {
-                                var device = DC.Set<Device>().AsNoTracking().Where(x => x.ID == deviceConfig.DeviceId).Include(x => x.Parent).Include(x => x.DeviceVariables).Include(x => x.Driver).Include(x => x.DeviceConfigs).SingleOrDefault();
-                                if (!devices.Where(x => x.ID == device.ID).Any())
-                                    devices.Add(device);
+                                devices.Add(device);
                             }
                         }
-                        break;
-                    case FromVM.Device:
-                        foreach (var deviceId in Ids)
+                    }
+                    break;
+                case FromVM.Config:
+                    foreach (var id in ids)
+                    {
+                        var deviceConfig = DC.Set<DeviceConfig>().AsNoTracking().SingleOrDefault(x => x.ID == id);
+                        if (deviceConfig != null)
                         {
-                            var device = DC.Set<Device>().AsNoTracking().Include(x => x.Parent).Where(x => x.ID == deviceId).Include(x => x.DeviceVariables).Include(x => x.Driver).Include(x=>x.DeviceConfigs).SingleOrDefault();
-                            if (!devices.Where(x => x.ID == device.ID).Any())
+                            var device = GetDeviceWithIncludes(DC, deviceConfig.DeviceId);
+                            if (device != null && deviceIdsAdded.Add(device.ID))
+                            {
                                 devices.Add(device);
+                            }
                         }
-                        break;
-                    default:
-                        break;
-                }
-                
+                    }
+                    break;
+                case FromVM.Device:
+                    foreach (var id in ids)
+                    {
+                        var device = GetDeviceWithIncludes(DC, id);
+                        if (device != null && deviceIdsAdded.Add(device.ID))
+                        {
+                            devices.Add(device);
+                        }
+                    }
+                    break;
+                default:
+                    break;
             }
             return devices;
         }
 
-        internal static List<Guid> FC2Guids(Dictionary<String, Object> FC)
+        internal static List<Guid> FC2Guids(Dictionary<string, object> FC)
         {
-            List<Guid> Ids = new();
-            StringValues IdsStr = new();
-            if (FC.ContainsKey("Ids"))
-                IdsStr = (StringValues)FC["Ids"];
-            else if (FC.ContainsKey("Ids[]"))
-                IdsStr = (StringValues)FC["Ids[]"];
-            else if (FC.ContainsKey("id"))
-                IdsStr = (StringValues)FC["id"];
-            foreach (var item in IdsStr)
+            var guids = new List<Guid>();
+            StringValues idsStr = default;
+            if (FC.TryGetValue("Ids", out var val) && val is StringValues sv1)
             {
-                Ids.Add(Guid.Parse(item));
+                idsStr = sv1;
             }
-            return Ids;
+            else if (FC.TryGetValue("Ids[]", out var val2) && val2 is StringValues sv2)
+            {
+                idsStr = sv2;
+            }
+            else if (FC.TryGetValue("id", out var val3) && val3 is StringValues sv3)
+            {
+                idsStr = sv3;
+            }
+
+            foreach (var item in idsStr)
+            {
+                if (Guid.TryParse(item, out Guid guid))
+                {
+                    guids.Add(guid);
+                }
+            }
+            return guids;
         }
     }
+
 }
