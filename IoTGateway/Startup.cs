@@ -1,18 +1,16 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using WalkingTec.Mvvm.Core;
-using WalkingTec.Mvvm.Core.Extensions;
 using WalkingTec.Mvvm.Core.Support.FileHandlers;
 using WalkingTec.Mvvm.Mvc;
 using System;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using IoTGateway.MCP;
 using MQTTnet.AspNetCore;
 using Plugin;
 
@@ -32,6 +30,7 @@ namespace IoTGateway
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMcpServer().WithTools<DeviceTool>();
             services.AddWtmWorkflow(ConfigRoot);
             services.AddDistributedMemoryCache();
             services.AddWtmSession(360000, ConfigRoot);
@@ -80,7 +79,6 @@ namespace IoTGateway
         public void Configure(IApplicationBuilder app, IOptionsMonitor<Configs> configs)
         {
             IconFontsHelper.GenerateIconFont();
-
             app.UseExceptionHandler(configs.CurrentValue.ErrorHandler); 
             app.UseStaticFiles(new StaticFileOptions()
             {
@@ -99,6 +97,11 @@ namespace IoTGateway
 
             app.UseEndpoints(endpoints =>
             {
+                //MCP
+                app.UseEndpoints(endpoints =>
+                {
+                    endpoints.MapMcp(); // 
+                });
                 //MqttServer
                 app.UseEndpoints(endpoints =>
                 {
