@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net8.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
@@ -11,7 +11,7 @@
 		<PackageReference Include="Mono.Options" Version="6.12.0.148" />
 		<PackageReference Include="MQTTnet" Version="4.3.7.1207" />
 		<PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.3.7.1207" />
-		<PackageReference Include="OPCFoundation.NetStandard.Opc.Ua.Server" Version="1.4.370.12" />
+		<PackageReference Include="System.IO.Ports" Version="8.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>

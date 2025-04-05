@@ -162,37 +162,45 @@ window.ff = {
             if (para !== undefined) {
                 getpost = "Post";
             }
-            $.ajax({
-                type: getpost,
-                url: url,
-                data: para,
-                success: function (data, textStatus, request) {
-                    if (request.getResponseHeader('IsScript') === 'true') {
-                        eval(data);
-                    }
-                    else {
-                        data = '<div class="layui-card donotuse_pdiv"><div class="layui-card-body donotuse_pdiv" id=\"' + $.cookie("divid") + '\" >' + data + "</div></div>";
-                        var child = window.open("/Home/PIndex#/_framework/redirect");
-                        child.document.close();
-                        $(child.document).ready(function () {
-                            setTimeout(function () {
-                                $('#LAY_app_body', child.document).html(data);
-                                $(child.document).attr("title", title);
-                            }, 500);
-                        });
-                    }
-                    layer.close(index);
-                },
-                error: function (a, b, c) {
-                    layer.close(index);
-                    if (a.responseText !== undefined && a.responseText !== "") {
-                        layer.alert(a.responseText);
-                    }
-                    else {
-                        layer.alert(ff.DONOTUSE_Text_LoadFailed);
-                    }
-                }
+            var child = window.open("/Home/PIndex/#" + url);
+            $(child.document).ready(function() {
+            setTimeout(function() {
+                    $(child.document).attr("title", title);
+                }, 500);
             });
+            layer.close(index);
+        //    $.ajax({
+        //        type: getpost,
+        //        url: url,
+        //        data: para,
+        //        success: function (data, textStatus, request) {
+        //            if (request.getResponseHeader('IsScript') === 'true') {
+        //                eval(data);
+        //            }
+        //            else {
+        //                data = '<div class="layui-card donotuse_pdiv"><div class="layui-card-body donotuse_pdiv" id=\"' + $.cookie("divid") + '\" >' + data + "</div></div>";
+        //                var child = window.open("/Home/PIndex/#/_framework/redirect");
+        //                child.document.close();
+        //                $(child.document).ready(function () {
+        //                    setTimeout(function() {
+        //                        debugger;
+        //                        $('#LAY_app_body', child.document).html(data);
+        //                        $(child.document).attr("title", title);
+        //                    }, 500);
+        //                });
+        //            }
+        //            layer.close(index);
+        //        },
+        //        error: function (a, b, c) {
+        //            layer.close(index);
+        //            if (a.responseText !== undefined && a.responseText !== "") {
+        //                layer.alert(a.responseText);
+        //            }
+        //            else {
+        //                layer.alert(ff.DONOTUSE_Text_LoadFailed);
+        //            }
+        //        }
+        //    });
         }
         else {
             layer.close(index);
@@ -264,7 +272,7 @@ window.ff = {
             url = $("#" + formId).attr("action");
         }
         var d = null;
-        if (searchervm !== undefined && searchervm !== null && searchervm !== "") {
+        if ($("#" + formId).find("a[IsSearchButton]").length>0) {
             d = ff.GetSearchFormData(formId, searchervm);
         }
         else {
@@ -553,7 +561,7 @@ window.ff = {
             this.SetCookie("windowids", wids.join());
         }
         else {
-            if (layui.setter == undefined || layui.setter.pageTabs == undefined) {
+            if (layui.setter == undefined || layui.setter.pageTabs == undefined || window.location.href.toLocaleLowerCase().indexOf("/home/pindex/")>-1) {
                 window.close();
             }
             else if (layui.setter.pageTabs === false || $('.layadmin-tabsbody-item').length === 0) {
@@ -566,7 +574,7 @@ window.ff = {
     },
 
     ResizeChart: function (id) {
-        if (layui == undefined ) {
+        if (layui == undefined || layui.admin == undefined) {
             return;
         }
         if (id === undefined || id === null || id === '') {
@@ -599,7 +607,7 @@ window.ff = {
         }
     },
 
-    ChainChange: function (url, self) {
+    ChainChange: function (url, self, usedefaultvalue) {
         var form = layui.form;
         var linkto = self.attributes["wtm-linkto"];
         if (linkto == undefined) {
@@ -653,7 +661,11 @@ window.ff = {
                     var item = null;
 
                     if (controltype === "tree") {
-                        window[comboid].update({ data: ff.getTreeItems(data.Data) });
+                        var df = [];
+                        if (usedefaultvalue == true) {
+                            df = eval(comboid + "defaultvalues");
+                        }
+                       window[comboid].update({ data: ff.getTreeItems(data.Data,df) });
                     }
                     if (controltype === "transfer") {
                         layui.transfer.reload(targetid, {
@@ -662,16 +674,32 @@ window.ff = {
                     }
 
                     if (controltype === "combo") {
-                        window[comboid].update({ data: ff.getComboItems(data.Data) });
+                        var df = [];
+                        if (usedefaultvalue == true) {
+                            df = eval(comboid + "defaultvalues"); 
+                      }
+                        window[comboid].update({ data: ff.getComboItems(data.Data, df, usedefaultvalue) });
                     }
                     if (controltype === "checkbox") {
                         for (i = 0; i < data.Data.length; i++) {
                             item = data.Data[i];
-                            if (item.Selected === true) {
-                                target.append("<input type='checkbox'  name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "' checked />");
-                            }
+                            if (usedefaultvalue == true) {
+                                var df = [];
+                                df = eval(comboid + "defaultvalues"); 
+                                if (df.indexOf(item.Value) > -1) {
+                                    target.append("<input type='checkbox'  name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "' checked />");
+                                }
+                                else {
+                                    target.append("<input type='checkbox' name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "'  />");
+                                }
+                           }
                             else {
-                                target.append("<input type='checkbox' name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "'  />");
+                                if (item.Selected === true) {
+                                    target.append("<input type='checkbox'  name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "' checked />");
+                                }
+                                else {
+                                    target.append("<input type='checkbox' name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "'  />");
+                                }
                             }
                         }
                         form.render('checkbox', targetfilter);
@@ -679,11 +707,23 @@ window.ff = {
                     if (controltype === "radio") {
                         for (i = 0; i < data.Data.length; i++) {
                             item = data.Data[i];
-                            if (item.Selected === true) {
-                                target.append("<input type='radio'  name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "' checked />");
-                            }
+                            if (usedefaultvalue == true) {
+                                var df = [];
+                                df = eval(comboid + "defaultvalues");
+                                if (df.indexOf(item.Value) > -1) {
+                                    target.append("<input type='radio'  name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "' checked />");
+                                }
+                                else {
+                                    target.append("<input type='radio' name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "'  />");
+                                }
+                           }
                             else {
-                                target.append("<input type='radio' name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "'  />");
+                                if (item.Selected === true) {
+                                    target.append("<input type='radio'  name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "' checked />");
+                                }
+                                else {
+                                    target.append("<input type='radio' name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "'  />");
+                                }
                             }
                         }
                         form.render('radio', targetfilter);
@@ -699,7 +739,7 @@ window.ff = {
         ff.ChainChange("", target[0], "");
     },
 
-    LoadComboItems: function (controltype,url, controlid, targetname,svals, cb) {
+    LoadComboItems: function (controltype,url, controlid, targetname,svals, cb,disabled) {
         var target = $("#" + controlid);
         var targetfilter = target.attr("lay-filter");
         var ismulticombo = target.attr("wtm-combo") != undefined;
@@ -723,18 +763,23 @@ window.ff = {
                    });
                }
                if (controltype === "combo") {
-                   var da = ff.getComboItems(data.Data, svals);
+                   var da = ff.getComboItems(data.Data, svals,undefined,disabled);
                     window[controlid].update({ data: da });
                }
                if (controltype === "checkbox") {
+                   target[0].innerHTML = "";
                    for (i = 0; i < data.Data.length; i++) {
                        item = data.Data[i];
+                       var che = "";
+                       var dis = "";
                        if (item.Selected === true || svals.indexOf(item.Value) > -1) {
-                           target.append("<input type='checkbox'  name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "' checked />");
+                           che = " checked ";
                        }
-                       else {
-                           target.append("<input type='checkbox' name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "'  />");
+                       if (disabled==true) {
+                           dis = " disabled ";
                        }
+                       target.append("<input type='checkbox'  name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "'" + che + dis+"/>");
+
                    }
                    layui.form.render('checkbox', targetfilter + "div");
                }
@@ -787,23 +832,29 @@ window.ff = {
             var tableid = tables[i].id;
             var loaddata = layui.table.cache[tableid];
             if (loaddata == undefined || loaddata.length == 0) {
-                var subpro = tables[i].attributes["subpro"].value;
-                if (subpro != undefined && subpro != "") {
-                    filter[subpro + ".length"] = "0";
+                try {
+                    var subpro = tables[i].attributes["subpro"].value;
+                    if (subpro != undefined && subpro != "") {
+                        filter[subpro + ".length"] = "0";
+                    }
                 }
+                catch { }
             }
         }
 
         var xselect = searchForm.find("div[wtm-ctype='tree'],div[wtm-ctype='combo']");
         layui.each(xselect, function (_, item) {
             var val = window[item.id].getValue('value');
-            if (val.length > 1) {
                 fieldElem = fieldElem.filter(function (index) {
-                    return this.name != item.attributes["wtm-name"].value;
+                   return this.name != item.attributes["wtm-name"].value;
                 })
                 $.each(val, function (i, v) {
                     fieldElem.push({ name: item.attributes["wtm-name"].value, value: v });
                 });
+            if (val.length == 0) {
+                var ismulti = '';
+                try { ismulti = item.attributes["wtm-multi"].value } catch { }
+                fieldElem.push({ name: item.attributes["wtm-name"].value, value: ismulti=='true'?'':null });
             }
         });
 
@@ -820,7 +871,7 @@ window.ff = {
                 return;
             }
             var itemname = item.name;
-            if (/_DONOTUSE_(.*?)\[(\d?)\]\.(.*?)$/.test(itemname)) {
+            if (/_DONOTUSE_(.*?)\[(.*?)\]\.(.*?)$/.test(itemname)) {
                 var name1 = RegExp.$1;
                 var number = RegExp.$2;
                 var name2 = RegExp.$3;
@@ -837,7 +888,7 @@ window.ff = {
                 return;
             }
             var issub = false;
-            if (/(.*?)\[(\-?\d?)\]\.(.*?)$/.test(itemname)) {
+            if (/(.*?)\[(.*?)\]\.(.*?)$/.test(itemname)) {
                 var name1 = RegExp.$1;
                 var number = RegExp.$2;
                 var name2 = RegExp.$3;
@@ -869,7 +920,7 @@ window.ff = {
                 }
                 else {
                     filter[itemname] = item.value;
-                    if (filterback.hasOwnProperty(itemname) == true && item.value != "") {
+                    if (filterback.hasOwnProperty(itemname) == true && item.value != '') {
                         filterback[itemname] = undefined;
                     }
                 }
@@ -886,47 +937,73 @@ window.ff = {
     },
 
     GetSearchFormData: function (formId, listvm) {
-        var data = ff.GetFormData(formId);
+        var data = ff.GetFormData(formId, listvm);
         for (var attr in data) {
             if (attr.startsWith(listvm + ".")) {
                 data[attr.replace(listvm + ".", "")] = data[attr];
                 delete data[attr];
             }
         }
+        var tc = $("#" + formId).closest("div[wtm-ctype='tc']")
+        if (tc.length > 0) {
+            var obj = eval(tc[0].id + "selected");
+            if (obj !== undefined && obj !== null) {
+                for (var item in obj) {
+                    if (listvm == "") {
+                        data["Searcher."+item] = obj[item];
+                    }
+                    else {
+                        data[item] = obj[item];
+                    }
+                }
+            }
+        }
         return data;
     },
 
-    DownloadExcelOrPdf: function (url, formId, defaultcondition, ids) {
-        var formData = ff.GetSearchFormData(formId);
-        if (defaultcondition == null) {
-            defaultcondition = {};
-        }
-        var tempwhere = {};
-        $.extend(tempwhere, defaultcondition);
+DownloadExcelOrPdf: function (url, formId, defaultcondition, ids) {
+    var formData = ff.GetSearchFormData(formId);
+    if (defaultcondition == null) {
+        defaultcondition = {};
+    }
+    var tempwhere = {};
+    for (let item in defaultcondition) {
+        if (formData["Searcher." + item]) {
 
-        $.extend(tempwhere, formData);
-        var form = $('<form method="POST" action="' + url + '">');
-        for (var attr in tempwhere) {
-            if (tempwhere[attr] != null) {
-                if (Array.isArray(tempwhere[attr])) {
-                    for (var i = 0; i < tempwhere[attr].length; i++) {
-                        form.append($('<input type="hidden" name="' + attr + '[' + i + ']" value="' + tempwhere[attr][i] + '">'));
-                    }
-                }
-                else {
-                    form.append($('<input type="hidden" name="' + attr + '" value="' + tempwhere[attr] + '">'));
+        }
+        else {
+            tempwhere[item] = defaultcondition[item]
+        }
+    }
+    $.extend(tempwhere, formData);
+   for (let item in tempwhere) {
+        if (item.startsWith("Searcher.") == false) {
+            tempwhere["Searcher." + item] = tempwhere[item];
+        }
+    }
+
+    var form = $('<form method="POST" action="' + url + '">');
+    for (var attr in tempwhere) {
+        if (tempwhere[attr] != null) {
+            if (Array.isArray(tempwhere[attr])) {
+                for (var i = 0; i < tempwhere[attr].length; i++) {
+                    form.append($('<input type="hidden" name="' + attr + '[' + i + ']" value="' + tempwhere[attr][i] + '">'));
                 }
             }
-        }
-        if (ids !== undefined && ids !== null) {
-            for (var i = 0; i < ids.length; i++) {
-                form.append($('<input type="hidden" name="Ids" value="' + ids[i] + '">'));
+            else {
+                form.append($('<input type="hidden" name="' + attr + '" value="' + tempwhere[attr] + '">'));
             }
         }
-        $('body').append(form);
-        form.submit();
-        form.remove();
-    },
+    }
+    if (ids !== undefined && ids !== null) {
+        for (var i = 0; i < ids.length; i++) {
+            form.append($('<input type="hidden" name="Ids" value="' + ids[i] + '">'));
+        }
+    }
+    $('body').append(form);
+    form.submit();
+    form.remove();
+},
 
     Download: function (url, ids) {
         var form = $('<form method="POST" action="' + url + '">');
@@ -940,12 +1017,17 @@ window.ff = {
         form.remove();
     },
 
-    RefreshChart: function (chartid) {
+    RefreshChart: function (chartid,chartpre) {
         var postdata = '';
 
         var searcher = $('form[chartlink*="' + chartid + '"]');
         if (searcher !== undefined && searcher.length > 0) {
-            postdata = ff.GetFormData(searcher[0].id);
+            if (chartpre) {
+                postdata = ff.GetSearchFormData(searcher[0].id, chartpre);
+            }
+            else {
+                postdata = ff.GetSearchFormData(searcher[0].id, "Searcher");
+            }
         }
             $.ajax({
                 cache: false,
@@ -1009,8 +1091,8 @@ window.ff = {
         var re3 = /(.*?)<input hidden name='(.*?)\.id' .*?\/>(.*?)/ig;
         for (val in data) {
             if (typeof (data[val]) == 'string') {
-                data[val] = data[val].replace(/\[\d?\]/ig, "[" + loaddata.length + "]");
-                data[val] = data[val].replace(/_\d?_/ig, "_" + loaddata.length + "_");
+                data[val] = data[val].replace(/\[\d+\]/ig, "[" + loaddata.length + "]");
+                data[val] = data[val].replace(/_\d+_/ig, "_" + loaddata.length + "_");
                 data[val] = data[val].replace(re, "$1 onchange=\"ff.gridcellchange(this,'" + gridid + "'," + loaddata.length + ",'" + val + "',0)\" />$2");
                 data[val] = data[val].replace(re2, "$1 onchange=\"ff.gridcellchange(this,'" + gridid + "'," + loaddata.length + ",'" + val + "',1)\" >$2");
                 data[val] = data[val].replace(re3, "$1 <input hidden name=\"$2.id\" value='" + data["ID"] + "'/> $3");
@@ -1023,14 +1105,16 @@ window.ff = {
         layui.table.render(option);
     },
 
-    SetGridCellDate: function (id) {
+    SetGridCellDate: function (id,dt) {
         layui.use('laydate', function () {
             var laydate = layui.laydate;
             laydate.render({
                 elem: '#' + id
+                , type: dt
                 , show: true
                 , closeStop: '#' + id
                 , done: function (value, date, endDate) {
+                    document.getElementById(id).value = value;
                     document.getElementById(id).onchange();
                 }
             });
@@ -1064,9 +1148,14 @@ window.ff = {
         for (var i = 0; i < loaddata.length; i++) {
             for (val in loaddata[i]) {
                 if (typeof (loaddata[i][val]) == 'string') {
-                    loaddata[i][val] = loaddata[i][val].replace(/\[\d?\]/ig, "[" + i + "]");
-                    loaddata[i][val] = loaddata[i][val].replace(/_\d?_/ig, "_" + i + "_");
-                    loaddata[i][val] = loaddata[i][val].replace("/onchange=\".*?\"/", "onchange=\"ff.gridcellchange(this,'" + gridid + "'," + i + ",'" + val + "')\"");
+                    loaddata[i][val] = loaddata[i][val].replace(/\[\d+\]/ig, "[" + i + "]");
+                    loaddata[i][val] = loaddata[i][val].replace(/_\d+_/ig, "_" + i + "_");
+                    if (/<input .*?\s*\/>.*?/.test(loaddata[i][val])) {
+                        loaddata[i][val] = loaddata[i][val].replace(/onchange=\".*?\"/ig, "onchange=\"ff.gridcellchange(this,'" + gridid + "'," + i + ",'" + val + "',0)\"");
+                    }
+                    if (/<select .*?\s*>.*?<\/select>/.test(loaddata[i][val])) {
+                        loaddata[i][val] = loaddata[i][val].replace(/onchange=\".*?\"/ig, "onchange=\"ff.gridcellchange(this,'" + gridid + "'," + i + ",'" + val + "',1)\"");
+                    }
                 }
             }
         }
@@ -1175,22 +1264,24 @@ window.ff = {
         return rv;
     },
 
-    getComboItems: function (data, svals) {
+    getComboItems: function (data, svals, useDefaultvalue,disabled) {
         var rv = [];
         if (svals == undefined || svals == null) {
             svals = [];
         }
-        for (var i = 0; i < data.length; i++) {
-            var item = {};
-            item.value = data[i].Value;
-            item.name = data[i].Text;
-            item.disabled = data[i].Disabled;
-            item.selected = data[i].Selected || svals.indexOf(data[i].Value) > -1;
-            item.icon = data[i].Icon;
-            if (data[i].Children != null && data[i].Children.length > 0) {
-                item.children = this.getTreeItems(data[i].Children, svals);
+        if (data != null) {
+            for (var i = 0; i < data.length; i++) {
+                var item = {};
+                item.value = data[i].Value;
+                item.name = data[i].Text;
+                item.disabled = disabled!=undefined?disabled: data[i].Disabled;
+                item.selected = useDefaultvalue == true ? svals.indexOf(data[i].Value) > -1 : (data[i].Selected || svals.indexOf(data[i].Value) > -1);
+                item.icon = data[i].Icon;
+                if (data[i].Children != null && data[i].Children.length > 0) {
+                    item.children = this.getTreeItems(data[i].Children, svals);
+                }
+                rv.push(item);
             }
-            rv.push(item);
         }
         return rv;
     },
@@ -1244,12 +1335,13 @@ window.ff = {
 
         var hidAreas = [' input[wtm-tag=wtmselector]'];
         // 多选下拉框
-        var multiCombos = $('#' + formId + ' select[wtm-combo=MULTI_COMBO]');
+        var multiCombos = $('#' + formId + ' div[wtm-ctype=combo]').add($('#' + formId + ' div[wtm-ctype=tree]'));
         if (multiCombos && multiCombos.length > 0) {
-            for (i = 0; i < multiCombos.length; i++) {
-                var name = multiCombos.attr('lay-filter');
-                hidAreas.push(" input[name='" + name + "']");
+            multiCombos.each(function () {
+                let name = $(this).attr('id');
+                window[name].setValue([]);
             }
+            );
         }
         for (var i = 0; i < hidAreas.length; i++) {
             var hiddenAreas = $('#' + formId + hidAreas[i]);

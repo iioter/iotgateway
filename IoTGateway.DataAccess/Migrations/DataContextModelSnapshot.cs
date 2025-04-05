@@ -15,7 +15,7 @@ namespace IoTGateway.DataAccess.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.10");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.3");
 
             modelBuilder.Entity("IoTGateway.Model.Device", b =>
                 {
@@ -86,9 +86,10 @@ namespace IoTGateway.DataAccess.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("Devices");
-
-                    b.HasComment("设备维护");
+                    b.ToTable("Devices", t =>
+                        {
+                            t.HasComment("设备维护");
+                        });
                 });
 
             modelBuilder.Entity("IoTGateway.Model.DeviceConfig", b =>
@@ -143,9 +144,10 @@ namespace IoTGateway.DataAccess.Migrations
 
                     b.HasIndex("Value");
 
-                    b.ToTable("DeviceConfigs");
-
-                    b.HasComment("通讯配置");
+                    b.ToTable("DeviceConfigs", t =>
+                        {
+                            t.HasComment("通讯配置");
+                        });
                 });
 
             modelBuilder.Entity("IoTGateway.Model.DeviceVariable", b =>
@@ -218,9 +220,10 @@ namespace IoTGateway.DataAccess.Migrations
 
                     b.HasIndex("Name");
 
-                    b.ToTable("DeviceVariables");
-
-                    b.HasComment("变量配置");
+                    b.ToTable("DeviceVariables", t =>
+                        {
+                            t.HasComment("变量配置");
+                        });
                 });
 
             modelBuilder.Entity("IoTGateway.Model.Driver", b =>
@@ -261,9 +264,10 @@ namespace IoTGateway.DataAccess.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("Drivers");
-
-                    b.HasComment("驱动管理");
+                    b.ToTable("Drivers", t =>
+                        {
+                            t.HasComment("驱动管理");
+                        });
                 });
 
             modelBuilder.Entity("IoTGateway.Model.RpcLog", b =>
@@ -308,9 +312,10 @@ namespace IoTGateway.DataAccess.Migrations
 
                     b.HasIndex("DeviceId");
 
-                    b.ToTable("RpcLogs");
-
-                    b.HasComment("RPC日志");
+                    b.ToTable("RpcLogs", t =>
+                        {
+                            t.HasComment("RPC日志");
+                        });
                 });
 
             modelBuilder.Entity("IoTGateway.Model.SystemConfig", b =>
@@ -363,9 +368,10 @@ namespace IoTGateway.DataAccess.Migrations
 
                     b.HasKey("ID");
 
-                    b.ToTable("SystemConfig");
-
-                    b.HasComment("传输配置");
+                    b.ToTable("SystemConfig", t =>
+                        {
+                            t.HasComment("传输配置");
+                        });
                 });
 
             modelBuilder.Entity("WalkingTec.Mvvm.Core.ActionLog", b =>
@@ -413,6 +419,10 @@ namespace IoTGateway.DataAccess.Migrations
                     b.Property<string>("Remark")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("TenantCode")
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("UpdateBy")
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
@@ -449,6 +459,10 @@ namespace IoTGateway.DataAccess.Migrations
 
                     b.Property<string>("TableName")
                         .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TenantCode")
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
@@ -500,6 +514,10 @@ namespace IoTGateway.DataAccess.Migrations
                     b.Property<string>("SaveMode")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("TenantCode")
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("UploadTime")
                         .HasColumnType("TEXT");
 
@@ -514,16 +532,9 @@ namespace IoTGateway.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("CreateBy")
-                        .HasMaxLength(50)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("CreateTime")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("GroupCode")
                         .IsRequired()
-                        .HasMaxLength(100)
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("GroupName")
@@ -534,17 +545,19 @@ namespace IoTGateway.DataAccess.Migrations
                     b.Property<string>("GroupRemark")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("TenantCode")
+                    b.Property<string>("Manager")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("UpdateBy")
+                    b.Property<Guid?>("ParentId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TenantCode")
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("UpdateTime")
-                        .HasColumnType("TEXT");
-
                     b.HasKey("ID");
+
+                    b.HasIndex("ParentId");
 
                     b.ToTable("FrameworkGroups");
                 });
@@ -593,13 +606,16 @@ namespace IoTGateway.DataAccess.Migrations
 
                     b.Property<string>("PageName")
                         .IsRequired()
-                        .HasMaxLength(50)
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<Guid?>("ParentId")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("ShowOnMenu")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool?>("TenantAllowed")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Url")
@@ -627,7 +643,7 @@ namespace IoTGateway.DataAccess.Migrations
 
                     b.Property<string>("RoleCode")
                         .IsRequired()
-                        .HasMaxLength(100)
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("RoleName")
@@ -639,6 +655,7 @@ namespace IoTGateway.DataAccess.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("TenantCode")
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UpdateBy")
@@ -651,6 +668,64 @@ namespace IoTGateway.DataAccess.Migrations
                     b.HasKey("ID");
 
                     b.ToTable("FrameworkRoles");
+                });
+
+            modelBuilder.Entity("WalkingTec.Mvvm.Core.FrameworkTenant", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CreateBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("CreateTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DbContext")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("EnableSub")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("Enabled")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("TCode")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TDb")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("TDbType")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("TDomain")
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TenantCode")
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UpdateBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("UpdateTime")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("FrameworkTenants");
                 });
 
             modelBuilder.Entity("WalkingTec.Mvvm.Core.FrameworkUser", b =>
@@ -706,6 +781,7 @@ namespace IoTGateway.DataAccess.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("TenantCode")
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UpdateBy")
@@ -740,6 +816,11 @@ namespace IoTGateway.DataAccess.Migrations
 
                     b.Property<string>("GroupCode")
                         .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TenantCode")
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UpdateBy")
@@ -751,6 +832,7 @@ namespace IoTGateway.DataAccess.Migrations
 
                     b.Property<string>("UserCode")
                         .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.HasKey("ID");
@@ -773,6 +855,11 @@ namespace IoTGateway.DataAccess.Migrations
 
                     b.Property<string>("RoleCode")
                         .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TenantCode")
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UpdateBy")
@@ -784,11 +871,65 @@ namespace IoTGateway.DataAccess.Migrations
 
                     b.Property<string>("UserCode")
                         .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.HasKey("ID");
 
                     b.ToTable("FrameworkUserRoles");
+                });
+
+            modelBuilder.Entity("WalkingTec.Mvvm.Core.FrameworkWorkflow", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ActivityId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ModelID")
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ModelType")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("StartTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Submitter")
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Tag")
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TenantCode")
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserCode")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("WorkflowId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("WorkflowName")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("FrameworkWorkflows");
                 });
 
             modelBuilder.Entity("WalkingTec.Mvvm.Core.FunctionPrivilege", b =>
@@ -814,6 +955,10 @@ namespace IoTGateway.DataAccess.Migrations
                     b.Property<string>("RoleCode")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("TenantCode")
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("UpdateBy")
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
@@ -823,37 +968,276 @@ namespace IoTGateway.DataAccess.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("MenuItemId");
-
                     b.ToTable("FunctionPrivileges");
                 });
 
-            modelBuilder.Entity("WalkingTec.Mvvm.Core.PersistedGrant", b =>
+            modelBuilder.Entity("WalkingTec.Mvvm.Core.Models.Elsa_Bookmark", b =>
                 {
-                    b.Property<Guid>("ID")
-                        .ValueGeneratedOnAdd()
+                    b.Property<string>("ID")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Id");
+
+                    b.Property<string>("ActivityId")
+                        .IsRequired()
+                        .HasMaxLength(450)
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("CreationTime")
+                    b.Property<string>("ActivityType")
+                        .IsRequired()
+                        .HasMaxLength(450)
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("Expiration")
+                    b.Property<string>("CorrelationId")
+                        .IsRequired()
+                        .HasMaxLength(450)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("RefreshToken")
-                        .HasMaxLength(50)
+                    b.Property<string>("Hash")
+                        .IsRequired()
+                        .HasMaxLength(450)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Type")
-                        .HasMaxLength(50)
+                    b.Property<string>("Model")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("UserCode")
+                    b.Property<string>("ModelType")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("WorkflowInstanceId")
+                        .IsRequired()
+                        .HasMaxLength(450)
                         .HasColumnType("TEXT");
 
                     b.HasKey("ID");
 
-                    b.ToTable("PersistedGrants");
+                    b.ToTable("Bookmarks", "Elsa");
+                });
+
+            modelBuilder.Entity("WalkingTec.Mvvm.Core.Models.Elsa_Trigger", b =>
+                {
+                    b.Property<string>("ID")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Id");
+
+                    b.Property<string>("ActivityId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ActivityType")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Hash")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Model")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ModelType")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("WorkflowDefinitionId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Triggers", "Elsa");
+                });
+
+            modelBuilder.Entity("WalkingTec.Mvvm.Core.Models.Elsa_WorkflowDefinition", b =>
+                {
+                    b.Property<string>("ID")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Data")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DefinitionId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("DeleteCompletedInstances")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DisplayName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsLatest")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsPublished")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("IsSingleton")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("PersistenceBehavior")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Tag")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Version")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("WorkflowDefinitions", "Elsa");
+                });
+
+            modelBuilder.Entity("WalkingTec.Mvvm.Core.Models.Elsa_WorkflowExecutionLogRecord", b =>
+                {
+                    b.Property<string>("ID")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Id");
+
+                    b.Property<string>("ActivityId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ActivityType")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Data")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("EventName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Source")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset>("Timestamp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("WorkflowInstanceId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("WorkflowExecutionLogRecords", "Elsa");
+                });
+
+            modelBuilder.Entity("WalkingTec.Mvvm.Core.Models.Elsa_WorkflowInstance", b =>
+                {
+                    b.Property<string>("ID")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("Id");
+
+                    b.Property<DateTimeOffset?>("CancelledAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ContextId")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ContextType")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CorrelationId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset?>("CreatedAt")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Data")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DefinitionId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("DefinitionVersionId")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset?>("FaultedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset?>("FinishedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastExecutedActivityId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTimeOffset?>("LastExecutedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TenantId")
+                        .HasMaxLength(450)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Version")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("WorkflowStatus")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("WorkflowInstances", "Elsa");
                 });
 
             modelBuilder.Entity("IoTGateway.Model.Device", b =>
@@ -898,6 +1282,15 @@ namespace IoTGateway.DataAccess.Migrations
                     b.Navigation("Device");
                 });
 
+            modelBuilder.Entity("WalkingTec.Mvvm.Core.FrameworkGroup", b =>
+                {
+                    b.HasOne("WalkingTec.Mvvm.Core.FrameworkGroup", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentId");
+
+                    b.Navigation("Parent");
+                });
+
             modelBuilder.Entity("WalkingTec.Mvvm.Core.FrameworkMenu", b =>
                 {
                     b.HasOne("WalkingTec.Mvvm.Core.FrameworkMenu", "Parent")
@@ -917,17 +1310,6 @@ namespace IoTGateway.DataAccess.Migrations
                     b.Navigation("Photo");
                 });
 
-            modelBuilder.Entity("WalkingTec.Mvvm.Core.FunctionPrivilege", b =>
-                {
-                    b.HasOne("WalkingTec.Mvvm.Core.FrameworkMenu", "MenuItem")
-                        .WithMany("Privileges")
-                        .HasForeignKey("MenuItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("MenuItem");
-                });
-
             modelBuilder.Entity("IoTGateway.Model.Device", b =>
                 {
                     b.Navigation("Children");
@@ -937,11 +1319,14 @@ namespace IoTGateway.DataAccess.Migrations
                     b.Navigation("DeviceVariables");
                 });
 
+            modelBuilder.Entity("WalkingTec.Mvvm.Core.FrameworkGroup", b =>
+                {
+                    b.Navigation("Children");
+                });
+
             modelBuilder.Entity("WalkingTec.Mvvm.Core.FrameworkMenu", b =>
                 {
                     b.Navigation("Children");
-
-                    b.Navigation("Privileges");
                 });
 #pragma warning restore 612, 618
         }

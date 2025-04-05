@@ -56,6 +56,13 @@ namespace WalkingTec.Mvvm.Core
             string qs = null;
             switch (standardType)
             {
+                case GridActionStandardTypesEnum.Approve:
+                    iconcls = "layui-icon layui-icon-form";
+                    gridname = CoreProgram._localizer?["Sys.Approve"];
+                    paraType = GridActionParameterTypesEnum.SingleId;
+                    showInRow = true;
+                    hideOnToolBar = true;
+                    break;
                 case GridActionStandardTypesEnum.Create:
                     iconcls = "layui-icon layui-icon-add-1";
                     gridname = CoreProgram._localizer?["Sys.Create"];
@@ -417,6 +424,18 @@ namespace WalkingTec.Mvvm.Core
         public static GridAction SetSubActions(this GridAction self, List<GridAction> subActions)
         {
             self.SubActions = subActions;
+            return self;
+        }
+
+        /// <summary>
+        /// 如果按钮方式是SingleId或SingleIdWithNull，WhereStr里的字段也会被带入到url中传递过去
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static GridAction SetWhereStr(this GridAction self, params string[] str)
+        {
+            self.whereStr = str;
             return self;
         }
         #endregion

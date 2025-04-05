@@ -19,6 +19,7 @@ using WalkingTec.Mvvm.Mvc;
 
 namespace IoTGateway.Controllers
 {
+    [Public]
     public class HomeController : BaseController
     {
         private readonly DeviceService _deviceService;
@@ -46,6 +47,7 @@ namespace IoTGateway.Controllers
             return PartialView();
         }
 
+        [Public]
         public IActionResult GetDeviceChart()
         {
             var data = new List<ChartData>();
@@ -75,6 +77,7 @@ namespace IoTGateway.Controllers
             return Json(rv);
         }
 
+        [Public]
         public IActionResult GetDeviceVariableChart()
         {
             var data = new List<ChartData>();
@@ -94,12 +97,12 @@ namespace IoTGateway.Controllers
                     Series = "Good"
                 });
 
-                
+
             }
-            
+
             var rv = data.ToChartData();
             return Json(rv);
-        }        
+        }
 
         public IActionResult GetActionChart()
         {
@@ -209,6 +212,27 @@ namespace IoTGateway.Controllers
             }
             else
                 return JsonMore("No Data");
+        }
+
+        [AllowAnonymous]
+        [ResponseCache(Duration = 3600)]
+        public github GetGithubInfo()
+        {
+            var rv = Wtm.ReadFromCache<github>("githubinfo", () =>
+            {
+                var s = Wtm.CallAPI<github>("github", "repos/dotnetcore/wtm", 60).Result;
+                return s.Data;
+            }, 1800);
+
+            return rv;
+        }
+
+        public class github
+        {
+            public int stargazers_count { get; set; }
+            public int forks_count { get; set; }
+            public int subscribers_count { get; set; }
+            public int open_issues_count { get; set; }
         }
 
     }

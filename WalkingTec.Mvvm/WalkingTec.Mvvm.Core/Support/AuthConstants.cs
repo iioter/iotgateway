@@ -4,14 +4,14 @@ namespace WalkingTec.Mvvm.Core.Auth
     {
         public const string JwtTokenType = "Bearer";
         public const string AuthenticationType = "WTMAuthentication";
-        public const string CookieAuthName = "WTM.CookieWithJwtAuth";
+        public const string CookieAuthName = "CookieWithJwtAuth";
 
         public static class JwtClaimTypes
         {
             //
             // Summary:
             //     Unique Identifier for the End-User at the Issuer.
-            public const string Subject = "sub";
+            public const string Subject = "itcode";
             //
             // Summary:
             //     The iat (issued at) claim identifies the time at which the JWT was issued, ,
@@ -138,6 +138,7 @@ namespace WalkingTec.Mvvm.Core.Auth
             //     The role
             public const string Role = "role";
             public const string TenantCode = "tenant";
+            public const string RToken = "rtoken";
             //
             // Summary:
             //     JWT ID. A unique identifier for the token, which can be used to prevent reuse

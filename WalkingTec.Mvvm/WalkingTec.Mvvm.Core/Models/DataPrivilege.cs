@@ -9,7 +9,7 @@ namespace WalkingTec.Mvvm.Core
     /// DataPrivilege
     /// </summary>
     [Table("DataPrivileges")]
-    public class DataPrivilege : BasePoco
+    public class DataPrivilege : BasePoco,ITenant
     {
         [Display(Name = "_Admin.User")]
         public string UserCode { get; set; }
@@ -25,6 +25,9 @@ namespace WalkingTec.Mvvm.Core
 
         [Display(Name = "_Admin.Domain")]
         public string Domain { get; set; }
+        [Display(Name = "_Admin.Tenant")]
+        [StringLength(50, ErrorMessage = "Validate.{0}stringmax{1}")]
+        public string TenantCode { get; set; }
 
     }
 }

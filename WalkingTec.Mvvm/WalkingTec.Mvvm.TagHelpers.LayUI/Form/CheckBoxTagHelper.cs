@@ -82,7 +82,17 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
 
             if (string.IsNullOrEmpty(ItemUrl) == false)
             {
-                output.PostElement.AppendHtml($"<script>ff.LoadComboItems('checkbox','{ItemUrl}','{Id}','{Field.Name}',{JsonSerializer.Serialize(values)})</script>");
+                foreach (var item in values)
+                {
+                    listItems.Add(new ComboSelectListItem
+                    {
+                        Text = "",
+                        Value = item?.ToString(),
+                        Selected = true
+                    });
+
+                }
+                output.PostElement.AppendHtml($"<script>ff.LoadComboItems('checkbox','{ItemUrl}','{Id}','{Field.Name}',{JsonSerializer.Serialize(values)},undefined,{Disabled.ToString().ToLower()})</script>");
             }
             else
             {
@@ -127,29 +137,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                             });
                         }
                     }
-                    try
-                    {
-                        List<string> checkvalue = null;
-                        //如果是Entity.xxList[0].xxxid的格式，使用GetPropertySiblingValues方法获取Entity.xxxList.Select(x=>x.xxxid).ToList()的结果
-                        if (Field.Name.Contains("["))
-                        {
-                            //默认多对多不必填
-                            if (Required == null)
-                            {
-                                Required = false;
-                            }
-                        }
-                        else if (Field.Model is IList == false && Field.Model != null)
-                        {
-                            checkvalue = new List<string> { Field.Model.ToString() };
-                        }
-                        else
-                        {
-                        }
-                    }
-                    catch
-                    {
-                    }
                 }
                 SetSelected(listItems, values);
             }
@@ -169,9 +156,14 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 var item = listItems[i];
                 var selected = item.Selected ? " checked" : " ";
                 output.PostContent.AppendHtml($@"
-<input type=""checkbox"" name=""{Field.Name}"" value=""{item.Value}"" title=""{item.Text}"" {selected} {(Disabled ? "disabled=\"\"" : string.Empty)}/>");
+<input type=""checkbox"" name=""{Field.Name}"" value=""{item.Value}"" title=""{item.Text}"" {selected} {(Disabled ? "disabled" : string.Empty)}/>");
             }
-            output.PostElement.AppendHtml($@"<input type=""hidden"" name=""_DONOTUSE_{Field.Name}"" value=""1"" />");
+            output.PostElement.AppendHtml($@"
+<input type=""hidden"" name=""_DONOTUSE_{Field.Name}"" value=""1"" />
+<script>
+ {Id}defaultvalues = {JsonSerializer.Serialize(values)};
+</script>
+");
             base.Process(context, output);
 
         }

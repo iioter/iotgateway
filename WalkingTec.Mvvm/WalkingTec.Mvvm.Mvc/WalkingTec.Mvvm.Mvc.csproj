@@ -1,76 +1,121 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <Description>WalkingTec.Mvvm</Description>
-    <AssemblyName>WalkingTec.Mvvm.Mvc</AssemblyName>
-    <CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>
-    <LangVersion>latest</LangVersion>
-    <Title>$(AssemblyName)</Title>
-    <OutputType>Library</OutputType>
-    <IsPackable>true</IsPackable>
-	  <GenerateDocumentationFile>True</GenerateDocumentationFile>
-  </PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Description>WalkingTec.Mvvm</Description>
+		<AssemblyName>WalkingTec.Mvvm.Mvc</AssemblyName>
+		<CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>
+		<LangVersion>latest</LangVersion>
+		<Title>$(AssemblyName)</Title>
+		<OutputType>Library</OutputType>
+		<IsPackable>true</IsPackable>
+		<Ver>8.1.12</Ver>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="GeneratorFiles\Spa\Vue\**\*.txt" />
-    <EmbeddedResource Include="Views\**\*.cshtml" />
-    <None Remove="GeneratorFiles\Spa\Blazor\Controller.txt" />
-    <None Remove="GeneratorFiles\Spa\Blazor\Create.txt" />
-    <None Remove="GeneratorFiles\Spa\Blazor\Details.txt" />
-    <None Remove="GeneratorFiles\Spa\Blazor\Edit.txt" />
-    <None Remove="GeneratorFiles\Spa\Blazor\Import.txt" />
-    <None Remove="GeneratorFiles\Spa\Blazor\Index.txt" />
-    <EmbeddedResource Include="framework_layui.js" />
-    <EmbeddedResource Include="GeneratorFiles\ApiTest.txt" />
-    <EmbeddedResource Include="GeneratorFiles\ApiTestTopPoco.txt" />
-    <EmbeddedResource Include="GeneratorFiles\BatchVM.txt" />
-    <EmbeddedResource Include="GeneratorFiles\ControllerTest.txt" />
-    <EmbeddedResource Include="GeneratorFiles\ControllerTestTopPoco.txt" />
-    <EmbeddedResource Include="GeneratorFiles\CrudVM.txt" />
-    <EmbeddedResource Include="GeneratorFiles\HeaderFormat.txt" />
-    <EmbeddedResource Include="GeneratorFiles\ImportVM.txt" />
-    <EmbeddedResource Include="GeneratorFiles\ListVM.txt" />
-    <EmbeddedResource Include="GeneratorFiles\Mvc\BatchDeleteView.txt" />
-    <EmbeddedResource Include="GeneratorFiles\Mvc\BatchEditView.txt" />
-    <EmbeddedResource Include="GeneratorFiles\Mvc\Controller.txt" />
-    <EmbeddedResource Include="GeneratorFiles\Mvc\EditView.txt" />
-    <EmbeddedResource Include="GeneratorFiles\Mvc\ImportView.txt" />
-    <EmbeddedResource Include="GeneratorFiles\Mvc\ListView.txt" />
-    <EmbeddedResource Include="GeneratorFiles\Searcher.txt" />
-    <EmbeddedResource Include="GeneratorFiles\Spa\Blazor\Controller.txt" />
-    <EmbeddedResource Include="GeneratorFiles\Spa\Blazor\Details.txt" />
-    <EmbeddedResource Include="GeneratorFiles\Spa\Blazor\Import.txt" />
-    <EmbeddedResource Include="GeneratorFiles\Spa\Blazor\Edit.txt" />
-    <EmbeddedResource Include="GeneratorFiles\Spa\Blazor\Create.txt" />
-    <EmbeddedResource Include="GeneratorFiles\Spa\Blazor\Index.txt" />
-    <EmbeddedResource Include="GeneratorFiles\Spa\Controller.txt" />
-    <EmbeddedResource Include="GeneratorFiles\Spa\React\index.txt" />
-    <EmbeddedResource Include="GeneratorFiles\Spa\React\store\index.txt" />
-    <EmbeddedResource Include="GeneratorFiles\Spa\React\style.txt" />
-    <EmbeddedResource Include="GeneratorFiles\Spa\React\views\action.txt" />
-    <EmbeddedResource Include="GeneratorFiles\Spa\React\views\forms.txt" />
-    <EmbeddedResource Include="GeneratorFiles\Spa\React\views\models.txt" />
-    <EmbeddedResource Include="GeneratorFiles\Spa\React\views\other.txt" />
-    <EmbeddedResource Include="GeneratorFiles\Spa\React\views\search.txt" />
-    <EmbeddedResource Include="GeneratorFiles\Spa\React\views\table.txt" />
-    <EmbeddedResource Include="GeneratorFiles\Mvc\CreateView.txt" />
-    <EmbeddedResource Include="GeneratorFiles\Mvc\DeleteView.txt" />
-    <EmbeddedResource Include="GeneratorFiles\Mvc\DetailsView.txt" />
-  </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="GeneratorFiles\Spa\Vue\**\*.txt" />
+		<EmbeddedResource Include="Views\**\*.cshtml" />
+		<None Remove="fonts\Candara.ttf" />
+		<None Remove="GeneratorFiles\Spa\Blazor\Controller.txt" />
+		<None Remove="GeneratorFiles\Spa\Blazor\Create.txt" />
+		<None Remove="GeneratorFiles\Spa\Blazor\Details.txt" />
+		<None Remove="GeneratorFiles\Spa\Blazor\Edit.txt" />
+		<None Remove="GeneratorFiles\Spa\Blazor\Import.txt" />
+		<None Remove="GeneratorFiles\Spa\Blazor\Index.txt" />
+		<None Remove="GeneratorFiles\Spa\Vue3\Create.txt" />
+		<None Remove="GeneratorFiles\Spa\Vue3\Details.txt" />
+		<None Remove="GeneratorFiles\Spa\Vue3\Edit.txt" />
+		<None Remove="GeneratorFiles\Spa\Vue3\Import.txt" />
+		<None Remove="GeneratorFiles\Spa\Vue3\Index.txt" />
+		<None Remove="GeneratorFiles\Spa\Vue3\indexapi.txt" />
+		<None Remove="GeneratorFiles\Spa\Vue\Create.txt" />
+		<None Remove="GeneratorFiles\Spa\Vue\Details.txt" />
+		<None Remove="GeneratorFiles\Spa\Vue\Edit.txt" />
+		<None Remove="GeneratorFiles\Spa\Vue\Import.txt" />
+		<None Remove="GeneratorFiles\Spa\Vue\index.txt" />
+		<Content Include="fonts\Candara.ttf">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<EmbeddedResource Include="framework_layui.js" />
+		<EmbeddedResource Include="GeneratorFiles\ApiTest.txt" />
+		<EmbeddedResource Include="GeneratorFiles\ApiTestTopPoco.txt" />
+		<EmbeddedResource Include="GeneratorFiles\BatchVM.txt" />
+		<EmbeddedResource Include="GeneratorFiles\ControllerTest.txt" />
+		<EmbeddedResource Include="GeneratorFiles\ControllerTestTopPoco.txt" />
+		<EmbeddedResource Include="GeneratorFiles\CrudVM.txt" />
+		<EmbeddedResource Include="GeneratorFiles\HeaderFormat.txt" />
+		<EmbeddedResource Include="GeneratorFiles\ImportVM.txt" />
+		<EmbeddedResource Include="GeneratorFiles\ListVM.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Mvc\BatchDeleteView.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Mvc\BatchEditView.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Mvc\Controller.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Mvc\EditView.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Mvc\ImportView.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Mvc\ListView.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Searcher.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Spa\Blazor\Controller.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Spa\Blazor\Details.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Spa\Blazor\Import.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Spa\Blazor\Edit.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Spa\Blazor\Create.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Spa\Blazor\Index.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Spa\Controller.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Spa\React\index.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Spa\React\store\index.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Spa\React\style.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Spa\React\views\action.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Spa\React\views\forms.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Spa\React\views\models.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Spa\React\views\other.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Spa\React\views\search.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Spa\React\views\table.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Mvc\CreateView.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Mvc\DeleteView.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Mvc\DetailsView.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Spa\Vue3\Create.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Spa\Vue3\Details.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Spa\Vue3\Edit.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Spa\Vue3\Import.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Spa\Vue3\Index.txt" />
+		<EmbeddedResource Include="GeneratorFiles\Spa\Vue3\indexapi.txt" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.10" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.10" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.10" />
-    <PackageReference Include="SixLabors.ImageSharp" Version="2.1.3" />
-    <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta13" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
-    <PackageReference Include="VueCliMiddleware" Version="6.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="DUWENINK.Captcha" Version="0.7.0" />
+		<PackageReference Include="Elsa.Activities.Email" Version="2.14.1" />
+		<PackageReference Include="Elsa.Activities.Http" Version="2.14.1" />
+		<PackageReference Include="Elsa.Activities.Temporal.Quartz" Version="2.14.1" />
+		<PackageReference Include="Elsa.Persistence.EntityFramework.MySql" Version="2.14.1" />
+		<PackageReference Include="Elsa.Persistence.EntityFramework.Oracle" Version="2.14.1" />
+		<PackageReference Include="Elsa.Persistence.EntityFramework.PostgreSql" Version="2.14.1" />
+		<PackageReference Include="Elsa.Persistence.EntityFramework.Sqlite" Version="2.14.1" />
+		<PackageReference Include="Elsa.Persistence.EntityFramework.SqlServer" Version="2.14.1" />
+		<PackageReference Include="Elsa.Server.Api" Version="2.14.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.3" />
+		<PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="8.0.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.3" />
+		<PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="8.0.3" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.5.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
+		<PackageReference Include="VueCliMiddleware" Version="6.0.0" />
+	</ItemGroup>
 
 
-  <ItemGroup>
-    <ProjectReference Include="..\WalkingTec.Mvvm.TagHelpers.LayUI\WalkingTec.Mvvm.TagHelpers.LayUI.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\WalkingTec.Mvvm.TagHelpers.LayUI\WalkingTec.Mvvm.TagHelpers.LayUI.csproj" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+		<None Update="fonts\impact.ttf">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="fonts\monbaiti.ttf">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="fonts\STCAIYUN.ttf">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
 </Project>

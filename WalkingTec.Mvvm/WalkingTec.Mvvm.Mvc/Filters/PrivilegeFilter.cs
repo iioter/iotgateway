@@ -32,12 +32,12 @@ namespace WalkingTec.Mvvm.Mvc.Filters
                 return;
             }
             context.SetWtmContext();
-
-            if (controller.Wtm.ConfigInfo.IsQuickDebug && controller is BaseApiController)
-            {
-                base.OnActionExecuting(context);
-                return;
-            }
+            _ =controller.Wtm.LoginUserInfo;
+            //if (controller.Wtm.ConfigInfo.IsQuickDebug && controller is BaseApiController)
+            //{
+            //    base.OnActionExecuting(context);
+            //    return;
+            //}
             ControllerActionDescriptor ad = context.ActionDescriptor as ControllerActionDescriptor;
 
             var lg = context.HttpContext.RequestServices.GetRequiredService<LinkGenerator>();
@@ -80,6 +80,7 @@ namespace WalkingTec.Mvvm.Mvc.Filters
 
             var isAllRights = ad.MethodInfo.IsDefined(typeof(AllRightsAttribute), false) || ad.ControllerTypeInfo.IsDefined(typeof(AllRightsAttribute), false);
             var isDebug = ad.MethodInfo.IsDefined(typeof(DebugOnlyAttribute), false) || ad.ControllerTypeInfo.IsDefined(typeof(DebugOnlyAttribute), false);
+            var isHostOnly = ad.MethodInfo.IsDefined(typeof(MainTenantOnlyAttribute), false) || ad.ControllerTypeInfo.IsDefined(typeof(MainTenantOnlyAttribute), false);
             if (controller.Wtm.ConfigInfo.IsFilePublic == true)
             {
                 if (ad.ControllerName == "_Framework" && (ad.MethodInfo.Name == "GetFile" || ad.MethodInfo.Name == "ViewFile"))
@@ -178,11 +179,41 @@ namespace WalkingTec.Mvvm.Mvc.Filters
                             }
                         }
                     }
+                    base.OnActionExecuting(context);
+                    return;
                 }
                 //context.HttpContext.ChallengeAsync().Wait();
             }
-            else
+            else if (isHostOnly)
             {
+                if(controller.Wtm.LoginUserInfo.CurrentTenant != null)
+                {
+                    if (controller is ControllerBase ctrl)
+                    {
+                        if (ctrl.HttpContext.Request.Headers.ContainsKey("Authorization"))
+                        {
+                            context.Result = ctrl.Forbid(JwtBearerDefaults.AuthenticationScheme);
+                        }
+                        else if(controller is BaseApiController bac)
+                        {
+                            context.Result = bac.Forbid();
+                        }
+                        else
+                        {
+                            ContentResult cr = new ContentResult()
+                            {
+                                Content = MvcProgram._localizer["_Admin.TenantNotAllowed"],
+                                ContentType = "text/html",
+                                StatusCode = 200
+                            };
+                            context.Result = cr;
+                        }
+                        base.OnActionExecuting(context);
+                        return;
+                    }
+                }
+            }
+
                 if (isAllRights == false)
                 {
                     bool canAccess = controller.Wtm.IsAccessable(controller.BaseUrl);
@@ -207,13 +238,17 @@ namespace WalkingTec.Mvvm.Mvc.Filters
                                 {
                                     context.Result = ctrl.Forbid(JwtBearerDefaults.AuthenticationScheme);
                                 }
-                                else
-                                {
+                            else if (controller is BaseApiController bac)
+                            {
+                                context.Result = bac.Forbid();
+                            }
+                            else
+                            {
                                     ContentResult cr = new ContentResult()
                                     {
                                         Content = MvcProgram._localizer["Sys.NoPrivilege"],
                                         ContentType = "text/html",
-                                        StatusCode = 403
+                                        StatusCode = 200
                                     };
                                     context.Result = cr;
 
@@ -222,7 +257,7 @@ namespace WalkingTec.Mvvm.Mvc.Filters
                         }
                     }
                 }
-            }
+            
             base.OnActionExecuting(context);
         }
 

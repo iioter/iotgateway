@@ -1,5 +1,4 @@
 using System;
-using WalkingTec.Mvvm.Core.Exceptions;
 
 namespace WalkingTec.Mvvm.Mvc
 {
@@ -77,6 +76,19 @@ namespace WalkingTec.Mvvm.Mvc
             self.ContentBuilder.Append($"layui.index.render();");
             return self;
         }
+
+        /// <summary>
+        /// 跳转浏览器页面
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="url">url</param>
+        /// <returns></returns>
+        public static FResult RedirectUrl(this FResult self, string url)
+        {
+            self.ContentBuilder.Append($"window.location.url='{url}'");
+            return self;
+        }
+
 
         public static FResult AddCustomScript(this FResult self, string script)
         {

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using WalkingTec.Mvvm.Core.Extensions;
+using WalkingTec.Mvvm.Core.Models;
 using WalkingTec.Mvvm.Core.Support.FileHandlers;
 
 namespace WalkingTec.Mvvm.Core
@@ -204,6 +205,20 @@ namespace WalkingTec.Mvvm.Core
                             }
                         }
                         DC.DeleteEntity(Entity);
+
+                        if (typeof(IWorkflow).IsAssignableFrom(typeof(TModel)))
+                        {
+                            var wi = DC.Set<Elsa_WorkflowInstance>().CheckEqual(typeof(TModel).FullName, x => x.ContextType).CheckEqual(Entity.GetID().ToString(), x => x.ContextId).ToList();
+                            if (wi.Count > 0)
+                            {
+                                DC.Set<Elsa_WorkflowInstance>().RemoveRange(wi);
+                                var wl = DC.Set<Elsa_WorkflowExecutionLogRecord>().CheckContain(wi.Select(x => x.ID).ToList(), x => x.WorkflowInstanceId).ToList();
+                                DC.Set<Elsa_WorkflowExecutionLogRecord>().RemoveRange(wl);
+                                var ww = DC.Set<FrameworkWorkflow>().CheckContain(wi.Select(x => x.ID).ToList(), x => x.WorkflowId).ToList();
+                                DC.Set<FrameworkWorkflow>().RemoveRange(ww);
+                            }
+                        }
+
                     }
                 }
                 catch (Exception e)
@@ -284,25 +299,15 @@ namespace WalkingTec.Mvvm.Core
                 vm = vmtype.GetConstructor(System.Type.EmptyTypes).Invoke(null) as IBaseCRUDVM<TModel>;
                 vm.CopyContext(this);
             }
-            var entityList = DC.Set<TModel>().CheckIDs(idsData).ToList();
             //循环所有数据
-            for (int i = 0; i < entityList.Count; i++)
+            for (int i = 0; i < idsData.Count; i++)
             {
                 try
                 {
                     //如果找不到对应数据，则输出错误
-                    TModel entity = entityList[i];
-                    if (vm != null)
-                    {
-                        vm.SetEntity(entity);
-                    }
-                    if (entity == null)
-                    {
-                        ErrorMessage.Add(idsData[i], CoreProgram._localizer?["Sys.DataNotExist"]);
-                        rv = false;
-                        break;
-                    }
-                    //如果能找到，则循环LinkedVM中的属性，给entity中同名属性赋值
+                    TModel entity = new TModel();
+                    entity.SetID(idsData[i]);
+                    //循环LinkedVM中的属性，给entity中同名属性赋值
                     foreach (var pro in pros)
                     {
                         var proToSet = entity.GetType().GetSingleProperty(pro.Name);
@@ -322,6 +327,7 @@ namespace WalkingTec.Mvvm.Core
                             if (hasvalue)
                             {
                                 proToSet.SetValue(entity, valuetoset);
+                                DC.UpdateProperty(entity, proToSet.Name);
                             }
                         }
                     }
@@ -361,13 +367,14 @@ namespace WalkingTec.Mvvm.Core
                         if (ent.UpdateTime == null)
                         {
                             ent.UpdateTime = DateTime.Now;
+                            DC.UpdateProperty(entity, nameof(ent.UpdateTime));
                         }
                         if (string.IsNullOrEmpty(ent.UpdateBy))
                         {
                             ent.UpdateBy = LoginUserInfo?.ITCode;
+                            DC.UpdateProperty(entity, nameof(ent.UpdateBy));
                         }
                     }
-                    DC.UpdateEntity(entity);
                 }
                 catch (Exception e)
                 {

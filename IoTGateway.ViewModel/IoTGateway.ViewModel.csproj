@@ -1,9 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <PreserveCompilationReferences>true</PreserveCompilationReferences>
  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.IO.Ports" Version="8.0.0" />
+  </ItemGroup>
 
 
   <ItemGroup>

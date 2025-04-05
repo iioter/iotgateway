@@ -17,39 +17,28 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         public ModelExpression Items { get; set; }
         public bool ShowLine { get; set; } = true;
         /// <summary>
-        /// 点击事件
-        /// </summary>
-        /// <summary>
-        /// 点击时触发的js函数名，func(data)格式;
-        /// <para>
-        /// data.elem得到当前节点元素;
-        /// </para>
-        /// <para>
-        /// data.data得到当前点击的节点数据
-        /// </para>
-        /// <para>
-        /// data.state得到当前节点的展开状态：open、close、normal
-        /// </para>
-        /// </summary>
-        public string ClickFunc { get; set; }
-        /// <summary>
         /// 勾选事件
         /// </summary>
         /// <summary>
         /// 勾选时触发的js函数名，func(data)格式;
         /// <para>
-        /// data.elem得到当前节点元素;
+        /// data.arr得到当前选中数据数组;
         /// </para>
         /// <para>
-        /// data.data得到当前点击的节点数据
+        /// data.change得到本次操作变化的数据数组
         /// </para>
         /// <para>
-        /// data.checked是否被选中
+        /// data.isadd得到本次操作是增加还是删除
         /// </para>
         /// </summary>
-        public string CheckFunc { get; set; }
+        public string ChangeFunc { get; set; }
         public bool AutoRow { get; set; }
         public bool? EnableSearch { get; set; }
+        public bool? ShowToolbar { get; set; } = true;
+        public ModelExpression LinkField { get; set; }
+
+        public string LinkId { get; set; }
+        public string TriggerUrl { get; set; }
 
         public TreeTagHelper(IOptionsMonitor<Configs> configs)
         {
@@ -77,9 +66,23 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             output.TagMode = TagMode.StartTagAndEndTag;
             output.Attributes.Add("wtm-ctype", "tree");
             output.Attributes.Add("wtm-name", Field.Name);
+            output.Attributes.Add("wtm-multi", MultiSelect.ToString().ToLower());
             Id = string.IsNullOrEmpty(Id) ? Guid.NewGuid().ToNoSplitString() : Id;
+            if (LinkField != null || string.IsNullOrEmpty(LinkId) == false)
+            {
+                var linkto = "";
+                if (string.IsNullOrEmpty(LinkId))
+                {
+                    linkto = Core.Utils.GetIdByName(LinkField.ModelExplorer.Container.ModelType.Name + "." + LinkField.Name);
+                }
+                else
+                {
+                    linkto = LinkId;
+                }
+                output.Attributes.Add("wtm-linkto", $"{linkto}");
+            }
 
-                List<object> vals = new List<object>();
+            List<object> vals = new List<object>();
                 if (Field?.Model != null)
                 {
                     if (MultiSelect == true)
@@ -94,18 +97,47 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                         vals.Add(Field.Model.ToString());
                     }
                 }
-                List<LayuiTreeItem> treeitems = new List<LayuiTreeItem>();
+            if (vals.Count == 0)
+            {
+                if (string.IsNullOrEmpty(DefaultValue) == false)
+                {
+                    vals.AddRange(DefaultValue.Split(','));
+                }
+            }
+
+            List<LayuiTreeItem> treeitems = new List<LayuiTreeItem>();
 
                 if (string.IsNullOrEmpty(ItemUrl) == true && Items?.Model is List<TreeSelectListItem> mm)
                 {
                     treeitems = GetLayuiTree(mm, vals);
                 }
-                var script = $@"
+
+            if (string.IsNullOrEmpty(ItemUrl) == false)
+            {
+                foreach (var item in vals)
+                {
+                    treeitems.Add(new  LayuiTreeItem
+                    {
+                        Title = "",
+                        Id = item?.ToString(),
+                        Checked = true
+                    });
+
+                }
+                output.PostElement.AppendHtml($@"<script>
+ff.LoadComboItems('tree','{ItemUrl}','{Id}','{Field.Name}',{JsonSerializer.Serialize(vals)},function(){{
+}})
+
+</script>");
+            }
+
+            var script = $@"
 <script>
 var {Id} = xmSelect.render({{
     el: '#{Id}',
     name:'{Field.Name}',
     tips:'{EmptyText}',
+    disabled: {Disabled.ToString().ToLower()},
     {(THProgram._localizer["Sys.LayuiDateLan"] == "CN" ? "language:'zn'," : "language:'en',")}
 	autoRow: {AutoRow.ToString().ToLower()},
 	filterable: {EnableSearch.ToString().ToLower()},
@@ -136,7 +168,7 @@ var {Id} = xmSelect.render({{
         }}
     }},
     toolbar: {{
-        show: true,
+        show: {ShowToolbar.Value.ToString().ToLower()},
         list: ['CLEAR']}}," : $@"
         toolbar: {{show: true,list: ['ALL', 'REVERSE', 'CLEAR']}},
         model: {{
@@ -152,8 +184,8 @@ var {Id} = xmSelect.render({{
 				}},
 			}},
 		}}
-	}},
-")}	tree: {{
+	}},")}
+    tree: {{
         strict: false,
 		show: true,
 		showFolderIcon: true,
@@ -161,19 +193,39 @@ var {Id} = xmSelect.render({{
 		indent: 20
 	}},
 	height: '400px',
+    on:function(data){{
+        {((LinkField != null || string.IsNullOrEmpty(LinkId) == false) ? @$"
+            if (eval(""{(string.IsNullOrEmpty(ChangeFunc) ? "1==1" : FormatFuncName(ChangeFunc))}"") != false) {{
+                var u = ""{(TriggerUrl ?? "")}"";
+                if (u.indexOf(""?"") == -1) {{
+                    u += ""?t="" + new Date().getTime();
+                }}
+                for (var i = 0; i < data.arr.length; i++) {{
+                    u += ""&id="" + data.arr[i].value;
+                }}
+                ff.ChainChange(u, $('#{Id}')[0])
+        }}" : FormatFuncName(ChangeFunc))}
+   }},
 	data:  {JsonSerializer.Serialize(treeitems)}
-}})
+}});
+     {Id}defaultvalues = {JsonSerializer.Serialize(vals)};
+        {(vals?.Count > 0 && (LinkField != null || string.IsNullOrEmpty(LinkId) == false) ? @$"
+                var {Id}u = ""{(TriggerUrl ?? "")}"";
+                if ({Id}u.indexOf(""?"") == -1) {{
+                    {Id}u += ""?t="" + new Date().getTime();
+                }}
+                var {Id}data = {JsonSerializer.Serialize(vals)};
+                for (var i = 0; i < {Id}data.length; i++) {{
+                    {Id}u += ""&id="" + {Id}data[i];
+                }};
+                setTimeout(function(){{
+                    ff.ChainChange({Id}u, $('#{Id}')[0], true);
+                }},100);
+        " : "")}
+
 </script>
 ";
                 output.PostElement.AppendHtml(script);
-                if (string.IsNullOrEmpty(ItemUrl) == false)
-                {
-                    output.PostElement.AppendHtml($@"<script>
-ff.LoadComboItems('tree','{ItemUrl}','{Id}','{Field.Name}',{JsonSerializer.Serialize(vals)},function(){{
-}})
-
-</script>");
-                }
                 string hidden = $"<p id='tree{Id}hidden'>";
                 if (Field?.Model != null)
                 {
@@ -193,6 +245,9 @@ ff.LoadComboItems('tree','{ItemUrl}','{Id}','{Field.Name}',{JsonSerializer.Seria
                 }
 
                 output.PostElement.AppendHtml(hidden);
+            output.PostElement.AppendHtml($@"
+<input type=""hidden"" name=""_DONOTUSE_{Field.Name}"" value=""1"" />
+");
 
             base.Process(context, output);
         }

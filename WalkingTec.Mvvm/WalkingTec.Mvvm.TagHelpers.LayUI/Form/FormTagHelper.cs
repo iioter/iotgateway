@@ -128,7 +128,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 //因为框架默认的Batch本身是一个Post方法，无法使用同名方法处理提交后的工作
                 if (Vm.Model is IBaseBatchVM<BaseVM>)
                 {
-                    output.Attributes.SetAttribute("action", baseVM?.CurrentUrl.Replace("/Batch", "/DoBatch") ?? "#");
+                    output.Attributes.SetAttribute("action",Regex.Replace(baseVM?.CurrentUrl,"/Batch", "/DoBatch", RegexOptions.IgnoreCase) ?? "#");
                 }
                 else
                 {
@@ -177,6 +177,15 @@ layui.use(['form'],function(){{
             //如果是 SearchPanel，并且指定了 OldPost，则提交整个表单，而不是只刷新 Grid 数据
             if (OldPost == true && this is SearchPanelTagHelper search)
             {
+//                string addhidden = $"var form = $('#{search.Id}');";
+//                foreach (var item in search.GridId.Split(','))
+//                {
+//                    addhidden += $@"
+//    for(let f in {item}defaultfilter.where){{
+//        form.append(""<input type='hidden' name='Searcher.""+f+""' value='""+{item}defaultfilter.where[f]+""'/>"");
+//    }}
+//";
+//                }
                 output.PostElement.AppendHtml($@"
 $('#{search.SearchBtnId}').on('click', function () {{
     if({BeforeSubmit ?? "true"} == false){{return false;}}
@@ -201,8 +210,9 @@ $('#{search.SearchBtnId}').on('click', function () {{
                         {
                             firstkey = key;
                         }
-                                                output.PostElement.AppendHtml($@"
-$(""#{Id}"").find(""button[type=submit]:first"").parent().prepend(""<div class='layui-input-block' style='text-align:left'><label style='color:red'>{Regex.Replace(error.ErrorMessage,"<script>","", RegexOptions.IgnoreCase)}</label></div>"");
+                        string temperr = error.ErrorMessage.Replace("<", "&lg;").Replace(">", "&rg;");
+                        output.PostElement.AppendHtml($@"
+$(""#{Id}"").find(""button[type=submit]:first"").parent().prepend(""<div class='layui-input-block' style='text-align:left'><label style='color:red'>{temperr}</label></div>"");
 ");
                     }
                     if (haserror == true)

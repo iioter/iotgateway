@@ -181,6 +181,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
                nameof(TopBasePoco.BatchError),
                nameof(TopBasePoco.Checked),
                nameof(TopBasePoco.ExcelIndex),
+               nameof(ITenant.TenantCode)
             };
             if (typeof(IBasePoco).IsAssignableFrom(self))
             {
@@ -318,6 +319,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
                nameof(TopBasePoco.BatchError),
                nameof(TopBasePoco.Checked),
                nameof(TopBasePoco.ExcelIndex),
+               nameof(ITenant.TenantCode)
             };
             if (typeof(IBasePoco).IsAssignableFrom(self))
             {
@@ -486,7 +488,11 @@ namespace WalkingTec.Mvvm.Core.Extensions
             if (_propertyCache.ContainsKey(self.FullName) == false)
             {
                 var properties = self.GetProperties().ToList();
-                _propertyCache = _propertyCache.Add(self.FullName, properties);
+                try
+                {
+                    _propertyCache = _propertyCache.Add(self.FullName, properties);
+                }
+                catch { }
                 return properties.Where(x => x.Name == name).FirstOrDefault();
             }
             else
@@ -500,7 +506,11 @@ namespace WalkingTec.Mvvm.Core.Extensions
             if (_propertyCache.ContainsKey(self.FullName) == false)
             {
                 var properties = self.GetProperties().ToList();
-                _propertyCache = _propertyCache.Add(self.FullName, properties);
+                try
+                {
+                    _propertyCache = _propertyCache.Add(self.FullName, properties);
+                }
+                catch { }
                 return properties.Where(where).FirstOrDefault();
             }
             else
@@ -514,7 +524,17 @@ namespace WalkingTec.Mvvm.Core.Extensions
             if (_propertyCache.ContainsKey(self.FullName) == false)
             {
                 var properties = self.GetProperties().ToList();
-                _propertyCache = _propertyCache.Add(self.FullName, properties);
+                try
+                {
+                    _propertyCache = _propertyCache.Add(self.FullName, properties);
+                }
+                catch
+                {
+                    if (_propertyCache.ContainsKey(self.FullName) == true)
+                    {
+                        return _propertyCache[self.FullName];
+                    }
+                }
                 return properties;
             }
             else
@@ -523,5 +543,21 @@ namespace WalkingTec.Mvvm.Core.Extensions
             }
         }
 
+        public static Type GetParentWorkflowPoco(this Type self)
+        {
+            if(self == typeof(object))
+            {
+                return null;
+            }
+            var ms = Utils.GetAllModels();
+            if (ms.Contains(self))
+            {
+                return self;
+            }
+            else
+            {               
+                return self.BaseType.GetParentWorkflowPoco();
+            }
+        }
     }
 }

@@ -15,11 +15,12 @@ namespace WalkingTec.Mvvm.Core
     /// FrameworkUser
     /// </summary>
     [Table("FrameworkUsers")]
-    public  abstract class FrameworkUserBase : BasePoco
+    public  abstract class FrameworkUserBase : BasePoco,ITenant
     {
         [Display(Name = "_Admin.Account")]
         [Required(ErrorMessage = "Validate.{0}required")]
         [StringLength(50,ErrorMessage = "Validate.{0}stringmax{1}")]
+        [CanNotEdit]
         public string ITCode { get; set; }
 
         [Display(Name = "_Admin.Password")]
@@ -33,7 +34,7 @@ namespace WalkingTec.Mvvm.Core
         public string Name { get; set; }
 
         [Display(Name = "_Admin.IsValid")]
-        public bool IsValid { get; set; }
+        public bool IsValid { get; set; } = true;
 
         [Display(Name = "_Admin.Photo")]
         public Guid? PhotoId { get; set; }
@@ -43,6 +44,7 @@ namespace WalkingTec.Mvvm.Core
         public FileAttachment Photo { get; set; }
 
         [Display(Name = "_Admin.Tenant")]
+        [StringLength(50, ErrorMessage = "Validate.{0}stringmax{1}")]
         public string TenantCode { get; set; }
     }
 }

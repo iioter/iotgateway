@@ -21,7 +21,7 @@ using WalkingTec.Mvvm.Core.Extensions;
 using WalkingTec.Mvvm.Core.Support.Json;
 
 namespace WalkingTec.Mvvm.Mvc
-{
+{    
     public abstract class BaseController : Controller, IBaseController
     {
         [JsonIgnore]
@@ -419,15 +419,15 @@ namespace WalkingTec.Mvvm.Mvc
             };
             try
             {
-                rv.Controller.Response?.Headers?.Add("IsScript", "true");
+                rv.Controller.Response?.Headers?.Append("IsScript", "true");
             }
             catch { }
             return rv;
         }
 
-        protected JsonResult JsonMore(object data, int statusCode = StatusCodes.Status200OK, string msg = "success")
+        protected ActionResult JsonMore(object data, int statusCode = StatusCodes.Status200OK, string msg = "success")
         {
-            return new JsonResult(new JsonResultT<object> { Msg = msg, Code = statusCode, Data = data });
+            return Ok(new { Msg = msg, Code = statusCode, Data = data });
         }
 
     }

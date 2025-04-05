@@ -17,13 +17,13 @@ namespace WalkingTec.Mvvm.Core.Support.FileHandlers
     {
         //private static string _modeName = "oss";
 
-        public WtmOssFileHandler(Configs config, IDataContext dc) : base(config, dc)
+        public WtmOssFileHandler(WTMContext wtm) : base(wtm)
         {
         }
 
         public override Stream GetFileData(IWtmFile file)
         {
-            var ossSettings = _config.FileUploadOptions.Settings.Where(x => x.Key.ToLower() == "oss").Select(x => x.Value).FirstOrDefault();
+            var ossSettings = wtm.ConfigInfo.FileUploadOptions.Settings.Where(x => x.Key.ToLower() == "oss").Select(x => x.Value).FirstOrDefault();
             FileHandlerOptions groupInfo = null;
             if (string.IsNullOrEmpty(file.HandlerInfo))
             {
@@ -60,7 +60,7 @@ namespace WalkingTec.Mvvm.Core.Support.FileHandlers
                 ext = fileName.Substring(dotPos + 1);
             }
 
-            var ossSettings = _config.FileUploadOptions.Settings.Where(x => x.Key.ToLower() == "oss").Select(x => x.Value).FirstOrDefault();
+            var ossSettings = wtm.ConfigInfo.FileUploadOptions.Settings.Where(x => x.Key.ToLower() == "oss").Select(x => x.Value).FirstOrDefault();
             FileHandlerOptions groupInfo = null;
             if (string.IsNullOrEmpty(group))
             {
@@ -95,8 +95,15 @@ namespace WalkingTec.Mvvm.Core.Support.FileHandlers
             }
             var fullPath = Path.Combine(pathHeader, $"{Guid.NewGuid().ToNoSplitString()}.{ext}");
             fullPath = fullPath.Replace("\\", "/");
+            var imagetypes = new string[]{ "jpg","jpeg","bmp","tif","gif","png"};
+            ObjectMetadata md = new ObjectMetadata();
+            ext = ext.ToLower();
+            if (imagetypes.Contains(ext))
+            {
+                md.ContentType = "image/jpg";
+            }
             OssClient client = new OssClient(groupInfo.ServerUrl, groupInfo.Key, groupInfo.Secret);
-            var result = client.PutObject(groupInfo.GroupLocation, fullPath, data);
+            var result = client.PutObject(groupInfo.GroupLocation, fullPath, data,md);
             if (result.HttpStatusCode == System.Net.HttpStatusCode.OK)
             {
                 return (fullPath, groupInfo.GroupName);
@@ -109,7 +116,7 @@ namespace WalkingTec.Mvvm.Core.Support.FileHandlers
 
         public override void DeleteFile(IWtmFile file)
         {
-            var ossSettings = _config.FileUploadOptions.Settings.Where(x => x.Key.ToLower() == "oss").Select(x => x.Value).FirstOrDefault();
+            var ossSettings = wtm.ConfigInfo.FileUploadOptions.Settings.Where(x => x.Key.ToLower() == "oss").Select(x => x.Value).FirstOrDefault();
             FileHandlerOptions groupInfo = null;
             if (string.IsNullOrEmpty(file.HandlerInfo))
             {

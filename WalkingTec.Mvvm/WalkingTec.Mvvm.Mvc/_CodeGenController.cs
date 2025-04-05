@@ -12,6 +12,14 @@ namespace WalkingTec.Mvvm.Mvc
     [DebugOnly]
     public class _CodeGenController : BaseController
     {
+        public IActionResult Inner()
+        {
+            return View();
+
+        }
+
+
+
         [ActionDescription("代码生成器")]
         public IActionResult Index(UIEnum ui)
         {
@@ -101,7 +109,12 @@ namespace WalkingTec.Mvvm.Mvc
                 List<string> apineeded = new List<string>();
                 ViewData["code"] = vm.GenerateVUEView(vm.PreviewFile,apineeded);
             }
-            else if(vm.UI == UIEnum.Blazor)
+            else if (vm.UI == UIEnum.VUE3)
+            {
+                List<string> apineeded = new List<string>();
+                ViewData["code"] = vm.GenerateVue3View(vm.PreviewFile);
+            }
+            else if (vm.UI == UIEnum.Blazor)
             {
                 ViewData["code"] = vm.GenerateBlazorView(vm.PreviewFile);
             }

@@ -17,7 +17,6 @@ namespace IoTGateway.DataAccess
         public DbSet<SystemConfig> SystemConfig { get; set; }
         public DbSet<RpcLog> RpcLogs { get; set; }
 
-
         public DataContext(CS cs)
              : base(cs)
         {
@@ -52,7 +51,7 @@ namespace IoTGateway.DataAccess
                 var user = new FrameworkUser
                 {
                     ITCode = "admin",
-                    Password = Utils.GetMD5String("000000"),
+                    Password = Utils.GetMD5String("iotgateway.net"),
                     IsValid = true,
                     Name = "Admin"
                 };

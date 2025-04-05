@@ -12,6 +12,7 @@ using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using MySqlConnector;
 using Npgsql;
 using NpgsqlTypes;
@@ -59,7 +60,6 @@ namespace WalkingTec.Mvvm.Core
         }
 
         private int? _childrenDepth;
-
 
         /// <summary>
         /// 多级表头深度  默认 1级
@@ -148,24 +148,83 @@ namespace WalkingTec.Mvvm.Core
             //去掉ID列和Action列
             RemoveActionAndIdColumn();
 
-            //如果没有数据源，进行查询
-            if (IsSearched == false)
-            {
-                DoSearch();
-            }
+            var query = SearcherMode== ListVMSearchModeEnum.CheckExport? GetCheckedExportQuery() : GetExportQuery();
+            int listcount = query.Count();
 
             //获取分成Excel的个数
             ExportMaxCount = ExportMaxCount == 0 ? 1000000 : (ExportMaxCount > 1000000 ? 1000000 : ExportMaxCount);
-            ExportExcelCount = EntityList.Count < ExportMaxCount ? 1 : ((EntityList.Count % ExportMaxCount) == 0 ? (EntityList.Count / ExportMaxCount) : (EntityList.Count / ExportMaxCount + 1));
+            ExportExcelCount = listcount < ExportMaxCount ? 1 : ((listcount % ExportMaxCount) == 0 ? (listcount / ExportMaxCount) : (listcount / ExportMaxCount + 1));
 
             //如果是1，直接下载Excel，如果是多个，下载ZIP包
             if (ExportExcelCount == 1)
             {
-                return DownLoadExcel();
+                var data = query.ToList();
+                return DownLoadExcel(data);
             }
             else
             {
-                return DownLoadZipPackage(typeof(TModel).Name + "_" + DateTime.Now.ToString("yyyyMMddHHmmssffff"));
+                Guid g = Guid.NewGuid();
+                var FileName = typeof(TModel).Name + "_" + DateTime.Now.ToString("yyyyMMddHHmmssffff");
+                //文件根目录            
+                string RootPath = $"{Wtm.ConfigInfo.HostRoot}\\export{g}";
+
+                //文件夹目录
+                string FilePath = $"{RootPath}//FileFolder";
+
+                //压缩包目录
+                string ZipPath = $"{RootPath}//{g}.zip";
+
+                //打开文件夹
+                DirectoryInfo FileFolder = new DirectoryInfo(FilePath);
+                if (!FileFolder.Exists)
+                {
+                    //创建文件夹
+                    FileFolder.Create();
+                }
+                else
+                {
+                    //清空文件夹
+                    FileSystemInfo[] Files = FileFolder.GetFileSystemInfos();
+                    foreach (var item in Files)
+                    {
+                        if (item is DirectoryInfo)
+                        {
+                            DirectoryInfo Directory = new DirectoryInfo(item.FullName);
+                            Directory.Delete(true);
+                        }
+                        else
+                        {
+                            File.Delete(item.FullName);
+                        }
+                    }
+                }
+                for (int i = 0; i < ExportExcelCount; i++)
+                {
+                    var data = query.Skip(i * ExportMaxCount).Take(ExportMaxCount).ToList();
+                    var WorkBook = GenerateWorkBook(data);
+                    string SavePath = $"{FilePath}/{FileName}_{i + 1}.xlsx";
+                    using (FileStream FS = new FileStream(SavePath, FileMode.CreateNew))
+                    {
+                        WorkBook.Write(FS);
+                    }
+                }
+
+                //生成压缩包
+                ZipFile.CreateFromDirectory(FilePath, ZipPath);
+
+                //读取压缩包
+                FileStream ZipFS = new FileStream(ZipPath, FileMode.Open, FileAccess.Read);
+                byte[] bt = new byte[ZipFS.Length];
+                ZipFS.Read(bt, 0, bt.Length);
+                ZipFS.Close();
+
+                //删除根目录文件夹
+                DirectoryInfo RootFolder = new DirectoryInfo(RootPath);
+                if (RootFolder.Exists)
+                {
+                    RootFolder.Delete(true);
+                }
+                return bt;
             }
         }
 
@@ -242,15 +301,16 @@ namespace WalkingTec.Mvvm.Core
                         }
 
                         //建立excel单元格
-                        ICell cell;
+                        ICell cell=null;
                         if (col.FieldType?.IsNumber() == true)
                         {
+                            double trydouble = 0;
                             cell = DR.CreateCell(ColIndex, CellType.Numeric);
-                            try
+                            if (double.TryParse(text, out trydouble))
                             {
-                                cell.SetCellValue(Convert.ToDouble(text));
+                                cell.SetCellValue(trydouble);
                             }
-                            catch { }
+
                         }
                         else
                         {
@@ -265,9 +325,9 @@ namespace WalkingTec.Mvvm.Core
             return book;
         }
 
-        private byte[] DownLoadExcel()
+        private byte[] DownLoadExcel(List<TModel> data)
         {
-            var book = GenerateWorkBook(EntityList);
+            var book = GenerateWorkBook(data);
             byte[] rv = new byte[] { };
             using (MemoryStream ms = new MemoryStream())
             {
@@ -275,73 +335,6 @@ namespace WalkingTec.Mvvm.Core
                 rv = ms.ToArray();
             }
             return rv;
-        }
-
-        private byte[] DownLoadZipPackage(string FileName)
-        {
-            //文件根目录            
-            string RootPath = $"{Directory.GetCurrentDirectory()}\\{FileName}";
-
-            //文件夹目录
-            string FilePath = $"{RootPath}//FileFolder";
-
-            //压缩包目录
-            string ZipPath = $"{RootPath}//{FileName}.zip";
-
-            //打开文件夹
-            DirectoryInfo FileFolder = new DirectoryInfo(FilePath);
-            if (!FileFolder.Exists)
-            {
-                //创建文件夹
-                FileFolder.Create();
-            }
-            else
-            {
-                //清空文件夹
-                FileSystemInfo[] Files = FileFolder.GetFileSystemInfos();
-                foreach (var item in Files)
-                {
-                    if (item is DirectoryInfo)
-                    {
-                        DirectoryInfo Directory = new DirectoryInfo(item.FullName);
-                        Directory.Delete(true);
-                    }
-                    else
-                    {
-                        File.Delete(item.FullName);
-                    }
-                }
-            }
-
-            //放入数据
-            for (int i = 0; i < ExportExcelCount; i++)
-            {
-                var List = EntityList.Skip(i * ExportMaxCount).Take(ExportMaxCount).ToList();
-                var WorkBook = GenerateWorkBook(List);
-                string SavePath = $"{FilePath}/{FileName}_{i + 1}.xlsx";
-                using (FileStream FS = new FileStream(SavePath, FileMode.CreateNew))
-                {
-                    WorkBook.Write(FS);
-                }
-            }
-
-            //生成压缩包
-            ZipFile.CreateFromDirectory(FilePath, ZipPath);
-
-            //读取压缩包
-            FileStream ZipFS = new FileStream(ZipPath, FileMode.Open, FileAccess.Read);
-            byte[] bt = new byte[ZipFS.Length];
-            ZipFS.Read(bt, 0, bt.Length);
-            ZipFS.Close();
-
-            //删除根目录文件夹
-            DirectoryInfo RootFolder = new DirectoryInfo(RootPath);
-            if (RootFolder.Exists)
-            {
-                RootFolder.Delete(true);
-            }
-
-            return bt;
         }
 
         /// <summary>
@@ -616,7 +609,13 @@ namespace WalkingTec.Mvvm.Core
             var baseQuery = GetSearchQuery();
             if (ReplaceWhere == null)
             {
-                var mod = new WhereReplaceModifier<TModel>(Ids.GetContainIdExpression<TModel>());
+                Expression peid = null;
+                if (string.IsNullOrEmpty(SelectorValueField) == false && SelectorValueField.ToLower() != "id")
+                {
+                    var pe = Expression.Parameter(typeof(TModel));
+                    peid = Expression.Property(pe, typeof(TModel).GetSingleProperty(SelectorValueField));
+                }
+                var mod = new WhereReplaceModifier<TModel>(Ids.GetContainIdExpression<TModel>(peid));
                 var newExp = mod.Modify(baseQuery.Expression);
                 var newQuery = baseQuery.Provider.CreateQuery<TModel>(newExp) as IOrderedQueryable<TModel>;
                 return newQuery;
@@ -670,66 +669,68 @@ namespace WalkingTec.Mvvm.Core
                         query = GetSearchQuery();
                         break;
                 }
-
-                //如果设定了替换条件，则使用替换条件替换Query中的Where语句
-                if (ReplaceWhere != null)
+                if (query != null)
                 {
-                    var mod = new WhereReplaceModifier<TModel>(ReplaceWhere as Expression<Func<TModel,bool>>);
-                    var newExp = mod.Modify(query.Expression);
-                    query = query.Provider.CreateQuery<TModel>(newExp) as IOrderedQueryable<TModel>;
-                }
-                if (Searcher.SortInfo != null)
-                {
-                    var mod = new OrderReplaceModifier(Searcher.SortInfo);
-                    var newExp = mod.Modify(query.Expression);
-                    query = query.Provider.CreateQuery<TModel>(newExp) as IOrderedQueryable<TModel>;
-                }
-                if (typeof(IPersistPoco).IsAssignableFrom( typeof(TModel)))
-                {
-                    var mod = new IsValidModifier();
-                    var newExp = mod.Modify(query.Expression);
-                    query = query.Provider.CreateQuery<TModel>(newExp) as IOrderedQueryable<TModel>;
-                }
-                if (PassSearch == false)
-                {
-                    //如果需要分页，则添加分页语句
-                    if (NeedPage && Searcher.Limit != -1)
+                    //如果设定了替换条件，则使用替换条件替换Query中的Where语句
+                    if (ReplaceWhere != null)
                     {
-                        //获取返回数据的数量
-                        var count = query.Count();
-                        if (count < 0)
+                        var mod = new WhereReplaceModifier<TModel>(ReplaceWhere as Expression<Func<TModel, bool>>);
+                        var newExp = mod.Modify(query.Expression);
+                        query = query.Provider.CreateQuery<TModel>(newExp) as IOrderedQueryable<TModel>;
+                    }
+                    if (Searcher.SortInfo != null)
+                    {
+                        var mod = new OrderReplaceModifier(Searcher.SortInfo);
+                        var newExp = mod.Modify(query.Expression);
+                        query = query.Provider.CreateQuery<TModel>(newExp) as IOrderedQueryable<TModel>;
+                    }
+                    //if (typeof(IPersistPoco).IsAssignableFrom( typeof(TModel)))
+                    //{
+                    //    var mod = new IsValidModifier();
+                    //    var newExp = mod.Modify(query.Expression);
+                    //    query = query.Provider.CreateQuery<TModel>(newExp) as IOrderedQueryable<TModel>;
+                    //}
+                    if (PassSearch == false)
+                    {
+                        //如果需要分页，则添加分页语句
+                        if (NeedPage && Searcher.Limit != -1)
                         {
-                            count = 0;
+                            //获取返回数据的数量
+                            var count = query.Count();
+                            if (count < 0)
+                            {
+                                count = 0;
+                            }
+                            if (Searcher.Limit == 0)
+                            {
+                                Searcher.Limit = ConfigInfo?.UIOptions.DataTable.RPP ?? 20;
+                            }
+                            //根据返回数据的数量，以及预先设定的每页行数来设定数据量和总页数
+                            Searcher.Count = count;
+                            Searcher.PageCount = (int)Math.Ceiling((1.0 * Searcher.Count / Searcher.Limit));
+                            if (Searcher.Page <= 0)
+                            {
+                                Searcher.Page = 1;
+                            }
+                            if (Searcher.PageCount > 0 && Searcher.Page > Searcher.PageCount)
+                            {
+                                Searcher.Page = Searcher.PageCount;
+                            }
+                            EntityList = query.Skip((Searcher.Page - 1) * Searcher.Limit).Take(Searcher.Limit).AsNoTracking().ToList();
                         }
-                        if (Searcher.Limit == 0)
+                        else //如果不需要分页则直接获取数据
                         {
-                            Searcher.Limit = ConfigInfo?.UIOptions.DataTable.RPP ?? 20;
-                        }
-                        //根据返回数据的数量，以及预先设定的每页行数来设定数据量和总页数
-                        Searcher.Count = count;
-                        Searcher.PageCount = (int)Math.Ceiling((1.0 * Searcher.Count / Searcher.Limit));
-                        if (Searcher.Page <= 0)
-                        {
+                            EntityList = query.AsNoTracking().ToList();
+                            Searcher.Count = EntityList.Count();
+                            Searcher.Limit = EntityList.Count();
+                            Searcher.PageCount = 1;
                             Searcher.Page = 1;
                         }
-                        if (Searcher.PageCount > 0 && Searcher.Page > Searcher.PageCount)
-                        {
-                            Searcher.Page = Searcher.PageCount;
-                        }
-                        EntityList = query.Skip((Searcher.Page - 1) * Searcher.Limit).Take(Searcher.Limit).AsNoTracking().ToList();
                     }
-                    else //如果不需要分页则直接获取数据
+                    else
                     {
                         EntityList = query.AsNoTracking().ToList();
-                        Searcher.Count = EntityList.Count();
-                        Searcher.Limit = EntityList.Count();
-                        Searcher.PageCount = 1;
-                        Searcher.Page = 1;
                     }
-                }
-                else
-                {
-                    EntityList = query.AsNoTracking().ToList();
                 }
             }
             else
@@ -1222,6 +1223,29 @@ namespace WalkingTec.Mvvm.Core
                 }
 
                 DC.SaveChanges();
+            }
+        }
+
+        public List<FrameworkWorkflow> GetMyApproves(string flowname = null)
+        {
+            var mt = ModelType.GetParentWorkflowPoco();
+            if (mt != null)
+            {
+                var roleids = Wtm.LoginUserInfo.Roles?.Select(x => "r:" + x.ID).ToList();
+                var groupids = Wtm.LoginUserInfo.Groups?.Select(x => "g:" + x.ID).ToList();
+
+                var ids = DC.Set<FrameworkWorkflow>()
+                     .CheckEqual(flowname, x => x.WorkflowName)
+                     .CheckEqual(mt.FullName, x => x.ModelType)
+                     .Where(x => x.UserCode == Wtm.LoginUserInfo.ITCode
+                        || roleids.Contains(x.UserCode)
+                        || groupids.Contains(x.UserCode))
+                     .Where(x => x.TenantCode == Wtm.LoginUserInfo.CurrentTenant).ToList();
+                return ids;
+            }
+            else
+            {
+                return new List<FrameworkWorkflow>();
             }
         }
     }

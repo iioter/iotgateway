@@ -60,7 +60,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
             }
 
             SelectedRolesIds.AddRange(DC.Set<FunctionPrivilege>().Where(x => x.MenuItemId == Entity.ID && x.RoleCode != null && x.Allowed == true).Select(x => x.RoleCode).ToList());
-
+            SelectedRolesIds = SelectedRolesIds.Distinct().ToList();
             var data = DC.Set<FrameworkMenu>().AsNoTracking().ToList();
             var topMenu = data.Where(x => x.ParentId == null).ToList().FlatTree(x => x.DisplayOrder);
             var pids = Entity.GetAllChildrenIDs(DC);
@@ -76,8 +76,45 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
 
             var modules = Wtm.GlobaInfo.AllModule;
             var m = Utils.ResetModule(modules);
-
-            AllModules = m.ToListItems(y => y.ModuleName, y => y.FullName);
+            var ms = m.Select(x => new {
+                x.Area,
+                x.IsApi,
+                x.NameSpace,
+                x.ModuleName,
+                x.FullName,
+                IsFront = x.NameSpace.Contains("._Front.") || x.ClassName.EndsWith("_Uni")
+            }).GroupBy(x => new { x.Area?.AreaName, x.IsApi, x.IsFront }).SelectMany(x => x).OrderBy(x=>x.IsApi).ToList();
+            string area = "";
+            bool? isapi = null;
+            bool? isfront = null;
+            for (int i = 0; i < ms.Count; i++)
+            {
+                if (area != ms[i].Area?.AreaName || isapi != ms[i].IsApi || isfront != ms[i].IsFront)
+                {
+                    area = ms[i].Area?.AreaName;
+                    isapi = ms[i].IsApi;
+                    isfront = ms[i].IsFront;
+                    var mm = "-----" + (ms[i].Area?.AreaName ?? "Default") + (ms[i].IsFront ? "UniApp" : "") + (ms[i].IsApi == true ? "(api)" : "") + "-----";
+                    ms.Insert(i, new
+                    {
+                        Area = new SimpleArea(),
+                        IsApi = false,
+                        NameSpace = "",
+                        ModuleName = mm,
+                        FullName = "",
+                        IsFront = false
+                    });
+                    i++;
+                }
+            }
+            AllModules = ms.ToListItems(y => y.ModuleName, y => y.FullName);
+            foreach (var item in AllModules)
+            {
+                if (item.Value.ToString() == ",")
+                {
+                    item.Disabled = true;
+                }
+            }
             if (string.IsNullOrEmpty(SelectedModule) == false || (string.IsNullOrEmpty(Entity.Url) == false && Entity.IsInside == true))
             {
                 if (string.IsNullOrEmpty(SelectedModule))
@@ -189,7 +226,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
                             menu.Parent = Entity;
                             menu.ShowOnMenu = false;
                             menu.DisplayOrder = order++;
-                            menu.Privileges = new List<FunctionPrivilege>();
                             menu.IsInside = true;
                             menu.Domain = Entity.Domain;
                             menu.PageName = action.ActionDes?.Description ?? action.ActionName;
@@ -299,7 +335,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
                             menu.Parent = Entity;
                             menu.ShowOnMenu = false;
                             menu.DisplayOrder = order++;
-                            menu.Privileges = new List<FunctionPrivilege>();
                             menu.IsInside = true;
                             menu.Domain = Entity.Domain;
                             menu.PageName = action.ActionDes?.Description ?? action.ActionName;
@@ -337,6 +372,9 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
             {
                 SelectedRolesIds.Add(admin.RoleCode);
             }
+            var toremove = DC.Set<FunctionPrivilege>().Where(x => SelectedRolesIds.Contains(x.RoleCode) && menuids.Contains(x.MenuItemId)).ToList();
+            toremove.ForEach(x => DC.DeleteEntity(x));
+
             foreach (var menuid in menuids)
             {
 
@@ -348,12 +386,13 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
                         fp.MenuItemId = menuid;
                         fp.RoleCode = code;
                         fp.Allowed = true;
+                        fp.TenantCode = LoginUserInfo?.CurrentTenant;
                         DC.Set<FunctionPrivilege>().Add(fp);
                     }
                 }
             }
-
             DC.SaveChanges();
+            Wtm.RemoveUserCacheByRole(SelectedRolesIds.ToArray()).Wait();
         }
 
 

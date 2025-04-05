@@ -2,8 +2,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
-		<OutputPath>../../../IoTGateway/bin/Debug/net6.0/drivers</OutputPath>
+		<TargetFramework>net8.0</TargetFramework>
+		<OutputPath>../../../IoTGateway/bin/Debug/net8.0/drivers</OutputPath>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
@@ -12,7 +12,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\PluginInterface\PluginInterface.csproj" />
 		<PackageReference Include="SimpleTCP.Core" Version="1.0.4" />
-		<PackageReference Include="System.IO.Ports" Version="6.0.0" />
+		<PackageReference Include="System.IO.Ports" Version="8.0.0" />
 	</ItemGroup>
 
 </Project>

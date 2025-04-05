@@ -285,17 +285,17 @@ namespace WalkingTec.Mvvm.Core.Extensions
                         switch (col.EditType)
                         {
                             case EditTypeEnum.TextBox:
-                                html = (self as BaseVM).UIService.MakeTextBox(name, val);
+                                html = (self as BaseVM).UIService.MakeTextBox(name, val,null,col.IsReadOnly);
                                 break;
                             case EditTypeEnum.CheckBox:
                                 _ = bool.TryParse(val, out bool nb);
-                                html = (self as BaseVM).UIService.MakeCheckBox(nb, null, name, "true");
+                                html = (self as BaseVM).UIService.MakeCheckBox(nb, null, name, "true",col.IsReadOnly);
                                 break;
                             case EditTypeEnum.ComboBox:
-                                html = (self as BaseVM).UIService.MakeCombo(name, col.ListItems, val);
+                                html = (self as BaseVM).UIService.MakeCombo(name, col.ListItems, val,null,col.IsReadOnly);
                                 break;
                             case EditTypeEnum.Datetime:
-                                html = (self as BaseVM).UIService.MakeDateTime(name, val);
+                                html = (self as BaseVM).UIService.MakeDateTime(name, val,null, col.IsReadOnly,col.DateType);
                                 break;
                             default:
                                 break;
@@ -308,7 +308,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
                     }
                     if (inner == false)
                     {
-                        html = "\"" + html.Replace(Environment.NewLine, "").Replace("\t", string.Empty).Replace("\n", string.Empty).Replace("\r", string.Empty).Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
+                        html = "\"" + html.RemoveSpecialChar().Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
                     }
                     sb.Append($"\"{col.Field}\":");
                     sb.Append(html);
@@ -355,28 +355,36 @@ namespace WalkingTec.Mvvm.Core.Extensions
         /// <param name="self">a listvm</param>
         /// <param name="PlainText">true to return plain text, false to return formated html, such as checkbox,buttons ...</param>
         /// <param name="enumToString">use enum display name</param>
-        /// <param name="func">无参有返回委托，返回一个字典</param>
+        /// <param name="func">other key,value needed to be returned</param>
         /// <returns>json string</returns>
         public static string GetJson<T>(this IBasePagedListVM<T, BaseSearcher> self, bool PlainText = true, bool enumToString = true, Func<Dictionary<string, object>> func = null) where T : TopBasePoco, new()
         {
+            if(self.Searcher.IsPlainText != null)
+            {
+                PlainText = self.Searcher.IsPlainText.Value;
+            }
+            if (self.Searcher.IsEnumToString != null)
+            {
+                enumToString = self.Searcher.IsEnumToString.Value;
+            }
             if (!self.IsSearched) self.DoSearch();
 
-			StringBuilder builder = new("{", capacity: 1024);
-			var dic = func?.Invoke();
+            StringBuilder builder = new("{", capacity: 1024);
+            var dic = func?.Invoke();
 
-			// 如果用户的附加字典不为空，则添加用户自定义的信息
-			if (dic != null) foreach (var item in dic) builder.Append($"\"{item.Key}\":\"{item.Value}\",");
+            // 如果用户的附加字典不为空，则添加用户自定义的信息
+            if (dic != null) foreach (var item in dic) builder.Append($"\"{item.Key}\":\"{item.Value}\",");
 
-			// 设置wtm必要的数据
-			builder
-				.Append($"\"Code\":200,")
-				.Append($"\"Count\":{self.Searcher.Count},")
-				.Append($"\"Data\":{self.GetDataJson(PlainText, enumToString)},")
-				.Append($"\"Msg\":\"success\",")
-				.Append($"\"Page\":{self.Searcher.Page},")
-				.Append($"\"PageCount\":{self.Searcher.PageCount}")
-				.Append('}');
-			return builder.ToString();
+            // 设置wtm必要的数据
+            builder
+                .Append($"\"Code\":200,")
+                .Append($"\"Count\":{self.Searcher.Count},")
+                .Append($"\"Data\":{self.GetDataJson(PlainText, enumToString)},")
+                .Append($"\"Msg\":\"success\",")
+                .Append($"\"Page\":{self.Searcher.Page},")
+                .Append($"\"PageCount\":{self.Searcher.PageCount}")
+                .Append('}');
+            return builder.ToString();
         }
 
         public static object GetJsonForApi<T>(this IBasePagedListVM<T, BaseSearcher> self, bool PlainText = true) where T : TopBasePoco, new()

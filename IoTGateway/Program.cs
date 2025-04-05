@@ -7,9 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using MQTTnet.AspNetCore;
-using WalkingTec.Mvvm.Core;
-using NLog;
 using NLog.Web;
+using WalkingTec.Mvvm.Core;
 
 namespace IoTGateway
 {
@@ -42,7 +41,7 @@ namespace IoTGateway
                      logging.AddConsole();
                      logging.AddWTMLogger();
                  })
-                .ConfigureWebHostDefaults(webBuilder =>
+                  .ConfigureWebHostDefaults(webBuilder =>
                  {
                      webBuilder.UseStartup<Startup>();
                      webBuilder.UseKestrel(option =>
@@ -51,7 +50,7 @@ namespace IoTGateway
                          option.ListenAnyIP(518);
                      });
                  })
-                  .UseNLog();
+                 .UseNLog();
         }
     }
 }

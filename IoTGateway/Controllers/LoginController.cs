@@ -10,6 +10,7 @@ using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 using WalkingTec.Mvvm.Mvc;
 using WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkUserVms;
+using System.Collections.Generic;
 using IoTGateway.ViewModel.HomeVMs;
 
 namespace IoTGateway.Controllers
@@ -17,7 +18,6 @@ namespace IoTGateway.Controllers
     [AllRights]
     public class LoginController : BaseController
     {
-
         [Public]
         [ActionDescription("Login")]
         public IActionResult Login()
@@ -27,7 +27,7 @@ namespace IoTGateway.Controllers
             if (Wtm.ConfigInfo.IsQuickDebug == true)
             {
                 vm.ITCode = "admin";
-                vm.Password = "000000";
+                vm.Password = "iotgateway.net";
             }
             return View(vm);
         }
@@ -36,7 +36,7 @@ namespace IoTGateway.Controllers
         [HttpPost]
         public async Task<ActionResult> Login(LoginVM vm)
         {
-            if (false)//Wtm.ConfigInfo.IsQuickDebug == false
+            if (Wtm.ConfigInfo.IsQuickDebug == false)
             {
                 var verifyCode = HttpContext.Session.Get<string>("verify_code");
                 if (string.IsNullOrEmpty(verifyCode) || verifyCode.ToLower() != vm.VerifyCode.ToLower())
@@ -45,14 +45,15 @@ namespace IoTGateway.Controllers
                     return View(vm);
                 }
             }
-
-            var user = await vm.DoLoginAsync();
+            var user = Wtm.DoLogin(vm.ITCode, vm.Password, vm.Tenant);
             if (user == null)
             {
+                vm.MSD.AddModelError("", Localizer["Sys.LoginFailed"]);
                 return View(vm);
             }
             else
             {
+                //�������Կ���ͨ��user.Attributes["aaa"] = "bbb"��ʽ��ֵ
                 Wtm.LoginUserInfo = user;
                 string url = string.Empty;
                 if (!string.IsNullOrEmpty(vm.Redirect))
@@ -73,7 +74,6 @@ namespace IoTGateway.Controllers
                         ExpiresUtc = DateTimeOffset.UtcNow.Add(TimeSpan.FromDays(30))
                     };
                 }
-
                 var principal = user.CreatePrincipal();
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, properties);
                 return Redirect(HttpUtility.UrlDecode(url));
@@ -83,6 +83,11 @@ namespace IoTGateway.Controllers
         [Public]
         public IActionResult Reg()
         {
+            if (ConfigInfo.HasMainHost)
+            {
+                
+                return Content(Localizer["_Admin.HasMainHost"]);
+            }
             var vm = Wtm.CreateVM<RegVM>();
             return PartialView(vm);
         }
@@ -113,10 +118,17 @@ namespace IoTGateway.Controllers
         [ActionDescription("Logout")]
         public async Task Logout()
         {
-            await Wtm.RemoveUserCache(Wtm.LoginUserInfo.ITCode);
             HttpContext.Session.Clear();
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            HttpContext.Response.Redirect("/");
+            if (ConfigInfo.HasMainHost == false || Wtm.LoginUserInfo?.CurrentTenant != null)
+            {
+                HttpContext.Response.Redirect("/");
+            }
+            else
+            {
+                Wtm.CallAPI<string>("mainhost", "/api/_account/logout", HttpMethodEnum.GET, new { }, 10).Wait();
+                HttpContext.Response.Redirect(ConfigInfo.MainHost);
+            }
         }
 
         [AllRights]
@@ -133,16 +145,45 @@ namespace IoTGateway.Controllers
         [ActionDescription("ChangePassword")]
         public ActionResult ChangePassword(ChangePasswordVM vm)
         {
-            if (!ModelState.IsValid)
+            if (ConfigInfo.HasMainHost && Wtm.LoginUserInfo?.CurrentTenant == null)
             {
-                return PartialView(vm);
+                var result = Wtm.CallAPI<string>("mainhost", "/api/_account/ChangePassword", HttpMethodEnum.POST, vm, 10).Result;
+                if (result.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    return FFResult().CloseDialog().Alert(Localizer["Login.ChangePasswordSuccess"]);
+                }
+                else if (result.StatusCode == System.Net.HttpStatusCode.BadRequest)
+                {
+                    ModelState.Clear();
+                    foreach (var item in result.Errors.Form)
+                    {
+                        ModelState.AddModelError(item.Key, item.Value);
+                    }
+                    foreach (var item in result.Errors.Message)
+                    {
+                        ModelState.AddModelError(" ", item);
+                    }
+                    return PartialView(vm);
+                }
+                else
+                {
+                    return FFResult().CloseDialog().Alert(Localizer["Sys.Error"]);
+                }
             }
             else
             {
-                vm.DoChange();
-                return FFResult().CloseDialog().Alert(Localizer["Login.ChangePasswordSuccess"]);
+                if (!ModelState.IsValid)
+                {
+                    return PartialView(vm);
+                }
+                else
+                {
+                    vm.DoChange();
+                    return FFResult().CloseDialog().Alert(Localizer["Login.ChangePasswordSuccess"]);
+                }
             }
         }
 
     }
+
 }

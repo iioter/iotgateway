@@ -13,7 +13,7 @@ namespace WalkingTec.Mvvm.Core
         /// <summary>
         /// The value to be submitted
         /// </summary>
-        public object Value { get; set; }
+        public string Value { get; set; }
 
     }
 
@@ -62,6 +62,7 @@ namespace WalkingTec.Mvvm.Core
         public bool Expended { get; set; }
         public string Url { get; set; }
         public string Tag { get; set; }
+        public string Id { get; set; }
         public bool Leaf => Children == null || Children.Count() == 0;
         public List<TreeSelectListItem> Children { get; set; }
     }

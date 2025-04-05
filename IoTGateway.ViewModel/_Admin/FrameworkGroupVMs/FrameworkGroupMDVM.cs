@@ -1,6 +1,7 @@
 // WTM默认页面 Wtm buidin page
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
@@ -12,6 +13,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkGroupVMs
     public class FrameworkGroupMDVM : BaseVM
     {
 
+        [Display(Name = "_Admin.GroupCode")]
         public string GroupCode { get; set; }
         public List<GroupDp> DpLists { get; set; }
 
@@ -67,6 +69,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkGroupVMs
                     dp.RelateId = null;
                     dp.GroupCode = GroupCode;
                     dp.TableName = item.List.Searcher.TableName;
+                    dp.TenantCode = LoginUserInfo.CurrentTenant;
                     DC.Set<DataPrivilege>().Add(dp);
                 }
                 if (item.IsAll == false && item.SelectedIds != null)
@@ -77,12 +80,14 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkGroupVMs
                         dp.RelateId = id;
                         dp.GroupCode = GroupCode;
                         dp.TableName = item.List.Searcher.TableName;
+                        dp.TenantCode = LoginUserInfo.CurrentTenant;
                         DC.Set<DataPrivilege>().Add(dp);
                     }
 
                 }
             }
             DC.SaveChanges();
+            Wtm.RemoveUserCacheByGroup(GroupCode).Wait();
             return true;
         }
 

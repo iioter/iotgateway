@@ -68,6 +68,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             output.TagMode = TagMode.StartTagAndEndTag;
             Id = string.IsNullOrEmpty(Id) ? Guid.NewGuid().ToNoSplitString() : Id;
             output.Attributes.Add("id", "top" + Id);
+            output.Attributes.Add("wtm-ctype", "tc");
             output.Attributes.Add("class", "layui-row donotuse_fill");
             if (Items.Model is List<TreeSelectListItem> mm)
             {
@@ -77,32 +78,47 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 }
                 var inside = await output.GetChildContentAsync();
                 var insideContent = inside.GetContent();
-                string cusmtomclick = "";
+                var idfieldname = IdField?.Name ?? "notsetid";
+                idfieldname = Regex.Replace(idfieldname, ".*?Searcher\\.", "");
+                var levelfieldname = LevelField?.Name ?? "notsetlevel";
+                levelfieldname = Regex.Replace(levelfieldname, ".*?Searcher\\.", "");
+
+                string cusmtomclick = $"top{Id}selected.{idfieldname}=data.data.id;top{Id}selected.{levelfieldname}=data.data.level;";
                 if (string.IsNullOrEmpty(ClickFunc))
                 {
-                    Regex r = new Regex("(.*?)option = {");
-                    var m = r.Match(insideContent);
-                    if (m.Success)
+                    Regex r3 = new Regex("id=\"(.*?)\" IsSearchButton");
+                    var m3 = r3.Match(insideContent);
+                    if (m3.Success)
                     {
-                        var gridid = m.Groups[1].Value.Trim();
-                        Regex r2 = new Regex($"(.*?) = table.render\\({gridid}option\\);");
-                        var m2 = r2.Match(insideContent);
-                        if (m2.Success)
+                        cusmtomclick += $@"
+    $('#{m3.Groups[1].Value.Trim()}').click();
+";
+                    }
+                    else
+                    {
+                        Regex r = new Regex("(.*?)option = {");
+                        var m = r.Match(insideContent);
+                        if (m.Success)
                         {
-                            var gridvar = m2.Groups[1].Value.Trim();
-                            var idfieldname = IdField?.Name ?? "notsetid";
-                            idfieldname = Regex.Replace(idfieldname, ".*?Searcher\\.","");
-                            var levelfieldname = LevelField?.Name ?? "notsetlevel";
-                            levelfieldname = Regex.Replace(levelfieldname, ".*?Searcher\\.", "");
-                            cusmtomclick = $@"
+                            var gridid = m.Groups[1].Value.Trim();
+                            Regex r2 = new Regex($"(.*?) = table.render\\({gridid}option\\);");
+                            var m2 = r2.Match(insideContent);
+                            if (m2.Success)
+                            {
+                                var gridvar = m2.Groups[1].Value.Trim();
+                                cusmtomclick = $@"
     $.extend({gridid}defaultfilter.where,{{'{idfieldname}':data.data.id, '{levelfieldname}':data.data.level }});
+";
+                            }
+                            cusmtomclick += $@"
     layui.table.reload('{gridid}',{{url:{gridid}url, where: {gridid}defaultfilter.where}});
 ";
+
                         }
-                    }
-                    else if (string.IsNullOrEmpty(insideContent))
-                    {
-                        cusmtomclick = $"if(data.data.href!=null && data.data.href!=''){{ff.LoadPage1(data.data.href,'div_{Id}');}}";
+                        else if (string.IsNullOrEmpty(insideContent))
+                        {
+                            cusmtomclick = $"if(data.data.href!=null && data.data.href!=''){{ff.LoadPage1(data.data.href,'div_{Id}');}}";
+                        }
                     }
                 }
                 else
@@ -132,6 +148,27 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                         last{Id} = ele;
                     }}
                     {cusmtomclick}
+                  }}
+                ,setSelected: function(data){{
+                    var ele = null;
+                    if(data.elem != undefined){{
+                        ele = data.elem.find('.layui-tree-main:first');
+                    }}
+                    else{{
+                        ele = $('#div{Id}').find(""div[data-id='""+data.data.id+""']"").find('.layui-tree-main:first');
+                    }}
+                    if(last{Id} != null){{
+                        last{Id}.css('background-color','');
+                        last{Id}.find('.layui-tree-txt').css('color','');
+                    }}
+                    if(last{Id} === ele){{
+                        last{Id} = null;
+                    }}
+                    else{{
+                        ele.css('background-color','#5fb878');
+                        ele.find('.layui-tree-txt').css('color','#fff');
+                        last{Id} = ele;
+                    }}
                   }}";
 
                 var selecteditem = GetSelectedItem(treeitems);
@@ -144,6 +181,13 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
 </div>
 <div id=""div_{Id}"" style=""box-sizing:border-box"" class=""layui-col-md10 donotuse_pdiv"">{insideContent}</div>
 <script>
+var top{Id}selected = {{}};
+{
+    (selecteditem==null?"": @$"
+    top{Id}selected.{idfieldname} = '{selecteditem.Id}';
+    top{Id}selected.{levelfieldname} = {selecteditem.Level};
+")
+}
 layui.use(['tree'],function(){{
   var last{Id} = null;
   var treecontainer{Id} = layui.tree.render({{
@@ -151,7 +195,7 @@ layui.use(['tree'],function(){{
     {onclick}
     ,data: {JsonSerializer.Serialize(treeitems)}
   }});
-  {(selecteditem == null ? string.Empty : $@"treecontainer{Id}.config.click({{
+  {(selecteditem == null ? string.Empty : $@"treecontainer{Id}.config.setSelected({{
      data: {JsonSerializer.Serialize(selecteditem)}
     }});")}
   {(string.IsNullOrEmpty(AutoLoadUrl) || selecteditem != null ? string.Empty : $"ff.LoadPage1('{AutoLoadUrl}','div_{Id}');")}
@@ -200,7 +244,7 @@ layui.use(['tree'],function(){{
         {
             foreach (var item in tree)
             {
-                if (item.Checked == true)
+                if (item.Id == IdField?.Model?.ToString())
                 {
                     return item;
                 }

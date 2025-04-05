@@ -847,7 +847,7 @@
     <value>文本长度不符合要求</value>
   </data>
   <data name="Sys.WtmDoc" xml:space="preserve">
-    <value>WTM文档</value>
+    <value>文档</value>
   </data>
   <data name="Sys.Yes" xml:space="preserve">
     <value>是</value>

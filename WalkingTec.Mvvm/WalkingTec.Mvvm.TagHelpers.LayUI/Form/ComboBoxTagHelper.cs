@@ -95,6 +95,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                     MultiSelect = true;
                 }
             }
+            output.Attributes.Add("wtm-multi", MultiSelect.ToString().ToLower());
             if (string.IsNullOrEmpty(ChangeFunc) == false)
             {
                 output.Attributes.Add("wtm-cf", FormatFuncName(ChangeFunc, false));
@@ -140,12 +141,12 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 {
                     foreach (var item in Field.Model as dynamic)
                     {
-                        selectVal.Add(item.ToString().ToLower());
+                        selectVal.Add(item.ToString());
                     }
                 }
                 else
                 {
-                    selectVal.Add(Field.Model.ToString().ToLower());
+                    selectVal.Add(Field.Model.ToString());
                 }
             }
 
@@ -153,16 +154,26 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             {
                 if (string.IsNullOrEmpty(DefaultValue) == false)
                 {
-                    selectVal.AddRange(DefaultValue.Split(',').Select(x => x.ToLower()));
+                    selectVal.AddRange(DefaultValue.Split(','));
                 }
             }
 
 
             if (string.IsNullOrEmpty(ItemUrl) == false)
             {
-                if (_wtm.HttpContext?.Request?.Host != null)
+                //if (_wtm.HttpContext?.Request?.Host != null)
+                //{
+                //    ItemUrl = _wtm.HttpContext.Request.IsHttps ? "https://" : "http://" + _wtm.HttpContext?.Request?.Host.ToString() + ItemUrl;
+                //}
+                foreach (var item in selectVal)
                 {
-                    ItemUrl = _wtm.HttpContext.Request.IsHttps ? "https://" : "http://" + _wtm.HttpContext?.Request?.Host.ToString() + ItemUrl;
+                    listItems.Add(new ComboSelectListItem
+                    {
+                        Text = "",
+                        Value = item?.ToString(),
+                        Selected = true
+                    });
+
                 }
                 output.PostElement.AppendHtml($"<script>ff.LoadComboItems('combo','{ItemUrl}','{Id}','{Field.Name}',{JsonSerializer.Serialize(selectVal)})</script>");
             }
@@ -179,7 +190,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
 
                     if (checktype.IsEnumOrNullableEnum())
                     {
-                        listItems = checktype.ToListItems(DefaultValue ?? Field.Model);
+                        listItems = checktype.ToListItems(Field.Model?? DefaultValue);
                     }
                     else if (checktype == typeof(bool) || checktype == typeof(bool?))
                     {
@@ -188,7 +199,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                         {
                             df = test;
                         }
-                        listItems = Utils.GetBoolCombo(BoolComboTypes.Custom, df ?? (bool?)Field.Model, YesText, NoText);
+                        listItems = Utils.GetBoolCombo(BoolComboTypes.Custom, (bool?)Field.Model??df, YesText, NoText);
                     }
                 }
                 else // 添加用户设置的设置源
@@ -205,7 +216,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                         }
                         foreach (var item in listItems)
                         {
-                            if (selectVal.Contains(item.Value?.ToString().ToLower()))
+                            if (selectVal.Contains(item.Value?.ToString()))
                             {
                                 item.Selected = true;
                             }
@@ -224,7 +235,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                             {
                                 Text = item?.ToString(),
                                 Value = item?.ToString(),
-                                Selected = selectVal.Contains(item?.ToString().ToLower())
+                                Selected = selectVal.Contains(item?.ToString())
                             });
                         }
                     }
@@ -288,7 +299,6 @@ var {Id} = xmSelect.render({{
 ")}
 	height: '400px',
     on:function(data){{
-debugger;
         {((LinkField != null || string.IsNullOrEmpty(LinkId) == false)?@$"
             if (eval(""{(string.IsNullOrEmpty(ChangeFunc)?"1==1":FormatFuncName(ChangeFunc))}"") != false) {{
                 var u = ""{(TriggerUrl??"")}"";
@@ -302,7 +312,21 @@ debugger;
         }}" : FormatFuncName(ChangeFunc))}
    }},
 	data:  {JsonSerializer.Serialize(GetLayuiTree(listItems,selectVal))}
-}})
+}});
+     {Id}defaultvalues = {JsonSerializer.Serialize(selectVal)};
+        {(selectVal?.Count>0 && (LinkField != null || string.IsNullOrEmpty(LinkId) == false) ? @$"
+                var {Id}u = ""{(TriggerUrl ?? "")}"";
+                if ({Id}u.indexOf(""?"") == -1) {{
+                    {Id}u += ""?t="" + new Date().getTime();
+                }}
+                var {Id}data = {JsonSerializer.Serialize(selectVal)};
+                for (var i = 0; i < {Id}data.length; i++) {{
+                    {Id}u += ""&id="" + {Id}data[i];
+                }};
+                setTimeout(function(){{
+                    ff.ChainChange({Id}u, $('#{Id}')[0], true);
+                }},100);
+        " : "")}
 </script>
 ";
             output.PostElement.AppendHtml(script);
@@ -325,7 +349,7 @@ debugger;
                     Checked = s.Selected,
                     Icon = s.Icon
                 };
-                if (values.Contains(s.Value.ToString().ToLower()))
+                if (values.Contains(s.Value.ToString()))
                 {
                     news.Checked = true;
                 }

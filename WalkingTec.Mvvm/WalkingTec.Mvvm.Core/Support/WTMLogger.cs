@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
@@ -8,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.AspNetCore.Http;
 
 namespace WalkingTec.Mvvm.Core
 {
@@ -22,6 +22,7 @@ namespace WalkingTec.Mvvm.Core
         }
     }
 
+    [ProviderAlias("WTM")]
     public class WTMLoggerProvider : ILoggerProvider
     {
         private IServiceProvider sp = null;
@@ -128,18 +129,23 @@ namespace WalkingTec.Mvvm.Core
                 }
                 if (wtm != null)
                 {
-                    using (var dc = wtm.CreateDC(true))
+                    try
                     {
-                        if (dc != null)
+                        using (var dc = wtm.CreateDC(true,logerror:false))
                         {
-                            try
+                            if (dc != null)
                             {
-                                dc.AddEntity<ActionLog>(log);
-                                dc.SaveChanges();
+                                try
+                                {
+                                    log.TenantCode = wtm.LoginUserInfo?.CurrentTenant;
+                                    dc.AddEntity<ActionLog>(log);
+                                    dc.SaveChanges();
+                                }
+                                catch { }
                             }
-                            catch { }
                         }
                     }
+                    catch { }
                 }
             }
         }

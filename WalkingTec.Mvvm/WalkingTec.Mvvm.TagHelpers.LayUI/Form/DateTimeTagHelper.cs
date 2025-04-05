@@ -4,6 +4,7 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Options;
 using WalkingTec.Mvvm.Core;
+using WalkingTec.Mvvm.Core.Extensions;
 
 namespace WalkingTec.Mvvm.TagHelpers.LayUI
 {
@@ -17,34 +18,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         /// 即英文版
         /// </summary>
         EN
-    }
-    public enum DateTimeTypeEnum
-    {
-        /// <summary>
-        /// 日期选择器
-        /// 可选择：年、月、日
-        /// </summary>
-        Date,
-        /// <summary>
-        /// 日期时间选择器
-        /// 可选择：年、月、日、时、分、秒
-        /// </summary>
-        DateTime,
-        /// <summary>
-        /// 年选择器
-        /// 只提供年列表选择
-        /// </summary>
-        Year,
-        /// <summary>
-        /// 年月选择器
-        /// 只提供年、月选择
-        /// </summary>
-        Month,
-        /// <summary>
-        /// 时间选择器
-        /// 只提供时、分、秒选择
-        /// </summary>
-        Time
     }
 
     [HtmlTargetElement("wt:datetime", Attributes = REQUIRED_ATTR_NAME, TagStructure = TagStructure.WithoutEndTag)]
@@ -187,7 +160,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 RangeSplit = "~";
             }
 
-            if (Field.ModelExplorer.ModelType == typeof(string))
+            if (Field.ModelExplorer.ModelType == typeof(string) || Field.ModelExplorer.ModelType.IsNumber())
             {
                 Value = Field.Model?.ToString() ?? Value;
             }

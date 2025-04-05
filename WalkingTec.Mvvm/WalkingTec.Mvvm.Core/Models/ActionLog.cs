@@ -21,7 +21,7 @@ namespace WalkingTec.Mvvm.Core
     /// ActionLog
     /// </summary>
     [Table("ActionLogs")]
-    public class ActionLog : BasePoco, ICloneable
+    public class ActionLog : BasePoco,ITenant, ICloneable
     {
         [Display(Name = "_Admin.Module")]
         [StringLength(255, ErrorMessage = "Validate.{0}stringmax{1}")]
@@ -54,6 +54,9 @@ namespace WalkingTec.Mvvm.Core
 
         [Display(Name = "_Admin.LogType")]
         public ActionLogTypesEnum LogType { get; set; }
+        [Display(Name = "_Admin.Tenant")]
+        [StringLength(50, ErrorMessage = "Validate.{0}stringmax{1}")]
+        public string TenantCode { get; set; }
 
         public object Clone()
         {

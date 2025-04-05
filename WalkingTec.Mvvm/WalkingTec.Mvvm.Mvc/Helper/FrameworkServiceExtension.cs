@@ -46,6 +46,22 @@ using WalkingTec.Mvvm.TagHelpers.LayUI;
 using Microsoft.AspNetCore.SpaServices.Extensions;
 using Microsoft.Extensions.FileProviders;
 using WalkingTec.Mvvm.Core.Support.Quartz;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
+using Elsa.Persistence.EntityFramework.Core.Extensions;
+using WalkingTec.Mvvm.Core.WorkFlow;
+using Elsa;
+using Elsa.Providers.WorkflowContexts;
+using Elsa.Options;
+using Elsa.Persistence.EntityFramework.PostgreSql;
+using Elsa.Server.Api.Mapping;
+using Elsa.Server.Api.Services;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using System.Threading.Tasks;
+using DUWENINK.Captcha.DI;
+using Elsa.Activities.Http;
+using Elsa.Activities.Http.Services;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace WalkingTec.Mvvm.Mvc
 {
@@ -76,12 +92,12 @@ namespace WalkingTec.Mvvm.Mvc
             return gd;
         }
 
-        private static List<SimpleMenu> GetAllMenus(List<SimpleModule> allModule, Configs ConfigInfo)
+        private static List<SimpleMenu> GetAllMenus(List<SimpleModule> allModule, bool isQuickdebug, List<CS> connections)
         {
             var localizer = new ResourceManagerStringLocalizerFactory(Options.Create<LocalizationOptions>(new LocalizationOptions { ResourcesPath = "Resources" }), new Microsoft.Extensions.Logging.LoggerFactory()).Create(typeof(WalkingTec.Mvvm.Core.CoreProgram));
             var menus = new List<SimpleMenu>();
 
-            if (ConfigInfo.IsQuickDebug)
+            if (isQuickdebug)
             {
                 menus = new List<SimpleMenu>();
                 var areas = allModule.Where(x => x.NameSpace != "WalkingTec.Mvvm.Admin.Api").Select(x => x.Area?.AreaName).Distinct().ToList();
@@ -90,7 +106,8 @@ namespace WalkingTec.Mvvm.Mvc
                     var modelmenu = new SimpleMenu
                     {
                         ID = Guid.NewGuid(),
-                        PageName = area ?? localizer["Sys.DefaultArea"]
+                        PageName = area ?? localizer["Sys.DefaultArea"],
+                        TenantAllowed = true,
                     };
                     menus.Add(modelmenu);
                     var cModules = allModule.Where(x => x.NameSpace != "WalkingTec.Mvvm.Admin.Api" && x.Area?.AreaName == area).ToList();
@@ -105,19 +122,18 @@ namespace WalkingTec.Mvvm.Mvc
                                 ID = Guid.NewGuid(),
                                 ParentId = modelmenu.ID,
                                 PageName = item.ActionDes == null ? item.ModuleName : item.ActionDes.Description,
-                                Url = url                               
+                                Url = url,
+                                TenantAllowed = true
                             });
                         }
                     }
-
-
                 }
             }
             else
             {
                 try
                 {
-                    using (var dc = ConfigInfo.Connections.Where(x => x.Key.ToLower() == "default").FirstOrDefault().CreateDC())
+                    using (var dc = connections.Where(x => x.Key.ToLower() == "default").FirstOrDefault().CreateDC())
                     {
                         menus.AddRange(dc?.Set<FrameworkMenu>()
                                 .OrderBy(x => x.DisplayOrder)
@@ -130,7 +146,11 @@ namespace WalkingTec.Mvvm.Mvc
                                     DisplayOrder = x.DisplayOrder,
                                     ShowOnMenu = x.ShowOnMenu,
                                     Icon = x.Icon,
-                                    IsPublic = x.IsPublic
+                                    IsPublic = x.IsPublic,
+                                    FolderOnly = x.FolderOnly,
+                                    MethodName = x.MethodName,
+                                    IsInside = x.IsInside,
+                                    TenantAllowed = x.TenantAllowed
                                 })
                                 .ToList());
                     }
@@ -156,6 +176,7 @@ namespace WalkingTec.Mvvm.Mvc
                 var rightattr = ctrl.GetCustomAttributes(typeof(AllRightsAttribute), false);
                 var debugattr = ctrl.GetCustomAttributes(typeof(DebugOnlyAttribute), false);
                 var areaattr = ctrl.GetCustomAttributes(typeof(AreaAttribute), false);
+                var mainhostonlyattr = ctrl.GetCustomAttributes(typeof(MainTenantOnlyAttribute), false);
                 var model = new SimpleModule
                 {
                     ClassName = ctrl.Name.Replace("Controller", string.Empty)
@@ -171,6 +192,10 @@ namespace WalkingTec.Mvvm.Mvc
                 if (pubattr1.Length > 0 || pubattr12.Length > 0 || rightattr.Length > 0 || debugattr.Length > 0)
                 {
                     model.IgnorePrivillege = true;
+                }
+                if (mainhostonlyattr.Length > 0)
+                {
+                    model.MainHostOnly = true;
                 }
                 if (typeof(BaseApiController).IsAssignableFrom(ctrl))
                 {
@@ -211,6 +236,7 @@ namespace WalkingTec.Mvvm.Mvc
                     var arattr2 = method.GetCustomAttributes(typeof(AllRightsAttribute), false);
                     var debugattr2 = method.GetCustomAttributes(typeof(DebugOnlyAttribute), false);
                     var postAttr = method.GetCustomAttributes(typeof(HttpPostAttribute), false);
+                    var mainhostonlyattr2 = method.GetCustomAttributes(typeof(MainTenantOnlyAttribute), false);
                     //如果不是post的方法，则添加到controller的action列表里
                     if (postAttr.Length == 0)
                     {
@@ -218,13 +244,17 @@ namespace WalkingTec.Mvvm.Mvc
                         {
                             Module = model,
                             MethodName = method.Name,
-                            IgnorePrivillege = model.IgnorePrivillege
+                            IgnorePrivillege = model.IgnorePrivillege,
+                            MainHostOnly = model.MainHostOnly
                         };
                         if (pubattr2.Length > 0 || pubattr22.Length > 0 || arattr2.Length > 0 || debugattr2.Length > 0)
                         {
                             action.IgnorePrivillege = true;
                         }
-
+                        if (mainhostonlyattr2.Length > 0)
+                        {
+                            action.MainHostOnly = true;
+                        }
                         var attrs2 = method.GetCustomAttributes(typeof(ActionDescriptionAttribute), false);
                         if (attrs2.Length > 0)
                         {
@@ -255,6 +285,7 @@ namespace WalkingTec.Mvvm.Mvc
                     var pubattr22 = method.GetCustomAttributes(typeof(AllowAnonymousAttribute), false);
                     var arattr2 = method.GetCustomAttributes(typeof(AllRightsAttribute), false);
                     var debugattr2 = method.GetCustomAttributes(typeof(DebugOnlyAttribute), false);
+                    var mainhostonlyattr2 = method.GetCustomAttributes(typeof(MainTenantOnlyAttribute), false);
 
                     var postAttr = method.GetCustomAttributes(typeof(HttpPostAttribute), false);
                     //找到post的方法且没有同名的非post的方法，添加到controller的action列表里
@@ -271,12 +302,18 @@ namespace WalkingTec.Mvvm.Mvc
                         {
                             Module = model,
                             MethodName = method.Name,
-                            IgnorePrivillege = model.IgnorePrivillege
+                            IgnorePrivillege = model.IgnorePrivillege,
+                            MainHostOnly = model.MainHostOnly
                         };
                         if (pubattr2.Length > 0 || pubattr22.Length > 0 || arattr2.Length > 0 || debugattr2.Length > 0)
                         {
                             action.IgnorePrivillege = true;
                         }
+                        if (mainhostonlyattr2.Length > 0)
+                        {
+                            action.MainHostOnly = true;
+                        }
+
                         var attrs2 = method.GetCustomAttributes(typeof(ActionDescriptionAttribute), false);
                         if (attrs2.Length > 0)
                         {
@@ -482,6 +519,7 @@ namespace WalkingTec.Mvvm.Mvc
 
         public static IServiceCollection AddWtmContext(this IServiceCollection services, IConfiguration config, Action<WtmContextOption> options = null)
         {
+            services.AddDUWENINKCaptcha();//使用验证码
             var conf = config.Get<Configs>();
             WtmContextOption op = new WtmContextOption();
             options?.Invoke(op);
@@ -503,9 +541,154 @@ namespace WalkingTec.Mvvm.Mvc
                 y.ValueLengthLimit = int.MaxValue - 20480;
                 y.MultipartBodyLengthLimit = conf.FileUploadOptions.UploadLimit;
             });
-            services.AddHostedService<QuartzHostService>();
+            //services.AddHostedService<QuartzHostService>();
+            var cs = conf.Connections;
+            foreach (var item in cs)
+            {
+                var dc = item.CreateDC();
+                dc.EnsureCreate();
+            }
+            services.AddVersionedApiExplorer(o=>
+            {
+                o.GroupNameFormat = "'v'VVV";
+                o.SubstituteApiVersionInUrl = true;
+            });
+            services.AddApiVersioning(
+             options =>
+             {
+                 options.ReportApiVersions = true;
+                 options.DefaultApiVersion = ApiVersion.Default;
+                 options.AssumeDefaultVersionWhenUnspecified = true;
+             });
+
             return services;
         }
+
+        public static IServiceCollection AddWtmWorkflow(this IServiceCollection services, IConfiguration config,string csName="default",Action<ElsaOptionsBuilder> options=null)
+        {
+            var elsaSection = config.GetSection("Workflow");
+            var conf = config.Get<Configs>();
+            services.AddSingleton<AuthenticationBasedHttpEndpointAuthorizationHandler>();
+
+            services
+                .AddElsa(elsa => {
+                    var cs = conf.Connections.Where(x => x.Key == csName).FirstOrDefault();
+                    switch (cs.DbType)
+                    {
+                        case DBTypeEnum.SqlServer:
+                            var ver = 120;
+                            if (string.IsNullOrEmpty(cs.Version) == false)
+                            {
+                                int.TryParse(cs.Version, out ver);
+                            }
+                            elsa.UseNonPooledEntityFrameworkPersistence(ef => ef.UseSqlServer(cs.Value, o => o.UseCompatibilityLevel(ver)));
+                            break;
+                        case DBTypeEnum.MySql:
+                            ServerVersion sv = null;
+                            if (string.IsNullOrEmpty(cs.Version) == false)
+                            {
+                                ServerVersion.TryParse(cs.Version, out sv);
+                            }
+                            if (sv == null)
+                            {
+                                sv = ServerVersion.AutoDetect(cs.Value);
+                            }
+                            elsa.UseNonPooledEntityFrameworkPersistence(ef => ef.UseMySql(cs.Value, sv));
+                            break;
+                        case DBTypeEnum.PgSql:
+                            elsa.UseNonPooledEntityFrameworkPersistence(ef => ef.UsePostgreSql(cs.Value));
+                            break;
+                        case DBTypeEnum.Memory:
+                            elsa.UseNonPooledEntityFrameworkPersistence(ef => ef.UseInMemoryDatabase(cs.Value));
+                            break;
+                        case DBTypeEnum.SQLite:
+                            elsa.UseNonPooledEntityFrameworkPersistence(ef => ef.UseSqlite(cs.Value));
+                            break;
+                        case DBTypeEnum.Oracle:
+                            elsa.UseNonPooledEntityFrameworkPersistence<WtmElsaContext>(ef => ef.UseOracle(cs.Value, op =>
+                            {
+                                switch (cs.Version)
+                                {
+                                    case "19":
+                                        op.UseOracleSQLCompatibility(OracleSQLCompatibility.DatabaseVersion19);
+                                        break;
+                                    case "21":
+                                        op.UseOracleSQLCompatibility(OracleSQLCompatibility.DatabaseVersion21);
+                                        break;
+                                    case "23":
+                                        op.UseOracleSQLCompatibility(OracleSQLCompatibility.DatabaseVersion23);
+                                        break;
+                                    default:
+                                        op.UseOracleSQLCompatibility(OracleSQLCompatibility.DatabaseVersion19);
+                                        break;
+                                }
+                            }));
+                            break;
+                        case DBTypeEnum.DaMeng:
+                            break;
+                        case null:
+                            break;
+                        default:
+                            break;
+                    }
+
+                    elsa
+                    .AddConsoleActivities()
+                    .AddActivity<WtmApproveActivity>()
+                    .AddJavaScriptActivities()
+                    .AddHttpActivities(x=> {
+                        if (conf.Domains.ContainsKey("server")) {
+                            x.BaseUrl = new Uri(conf.Domains["server"].Address);
+                        }
+                        x.HttpEndpointAuthorizationHandlerFactory = sp => sp.GetRequiredService<AuthenticationBasedHttpEndpointAuthorizationHandler>();
+                    })
+                    .AddEmailActivities(elsaSection.GetSection("Smtp").Bind)
+                    .AddQuartzTemporalActivities()
+                    .AddCustomTenantAccessor<ElsaTenantAccessor>();
+
+                    options?.Invoke(elsa);
+                }
+                );
+            services.AddElsaApiEndpoints();
+            if (conf.Domains.ContainsKey("server"))
+            {
+                services.AddHttpClient(nameof(SendHttpRequest)).ConfigureHttpClient((s,x) =>
+                {
+                    x.BaseAddress = new Uri(conf.Domains["server"].Address);
+                    var ss = s.CreateScope();
+                    var _wtm = ss.ServiceProvider.GetRequiredService<WTMContext>();
+                    x.DefaultRequestHeaders.Add("Authorization", "Bearer " + _wtm.LoginUserInfo?.RemoteToken);
+                });
+            }
+
+
+            //        services
+            //.AddSingleton<ConnectionConverter>()
+            //.AddSingleton<ActivityBlueprintConverter>()
+            //.AddScoped<IWorkflowBlueprintMapper, WorkflowBlueprintMapper>()
+            //.AddSingleton<IEndpointContentSerializerSettingsProvider, EndpointContentSerializerSettingsProvider>()
+            //.AddAutoMapperProfile<AutoMapperProfile>()
+            //.AddSignalR();
+            services.AddMvc(options =>
+            {
+                options.Conventions.Add(new MyNewtonsoftJsonConvention(null));
+            });
+
+            var allTypes = Utils.GetAllModels();
+
+            foreach (var item in allTypes)
+            {
+                if (typeof(IWorkflow).IsAssignableFrom(item))
+                {
+                    var type = typeof(WorkflowRefresher<>).MakeGenericType(item);
+                    services.AddTransient(typeof(IWorkflowContextProvider), type);
+                }
+            }
+            services.AddBookmarkProvider<WtmApproveBookmarkProvider>();
+
+            return services;
+        }
+
         public static IServiceCollection AddWtmCrossDomain(this IServiceCollection services, IConfiguration config)
         {
             var conf = config.Get<Configs>();
@@ -578,13 +761,43 @@ namespace WalkingTec.Mvvm.Mvc
 
                              ValidateIssuerSigningKey = true,
                              IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecurityKey)),
-
+                             LifetimeValidator = (DateTime? notBefore, DateTime? expires, SecurityToken securityToken, TokenValidationParameters validationParameters) =>
+                             {
+                                 if (expires == null)
+                                 {
+                                     return true;
+                                 }
+                                 else
+                                 {
+                                     return expires.Value > DateTime.UtcNow;
+                                 }
+                             },
                              ValidateLifetime = true
                          };
+                         options.Events = new JwtBearerEvents
+                         {
+                             OnMessageReceived = context =>
+                             {
+                                 var accessToken = context.Request.Query["access_token"];
+
+                                 // If the request is for our hub...
+                                 var path = context.HttpContext.Request.Path;
+                                 if (!string.IsNullOrEmpty(accessToken))
+                                 {
+                                     // Read the token out of the query string
+                                     context.Token = accessToken;
+                                 }
+                                 return Task.CompletedTask;
+                             },
+                             OnTokenValidated = (context) => {
+                                 JsonWebToken token = context.SecurityToken as JsonWebToken;
+                                 return Task.FromResult(token);
+                             }
+                            };
                      })
                    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
                     {
-                        options.Cookie.Name = CookieAuthenticationDefaults.CookiePrefix + AuthConstants.CookieAuthName;
+                        options.Cookie.Name = CookieAuthenticationDefaults.CookiePrefix + conf.CookiePre + "." + AuthConstants.CookieAuthName;
                         options.Cookie.HttpOnly = true;
                         options.Cookie.SameSite = SameSiteMode.Strict;
                         options.Cookie.Domain = string.IsNullOrEmpty(cookieOptions.Domain) ? null : cookieOptions.Domain;
@@ -620,11 +833,11 @@ namespace WalkingTec.Mvvm.Mvc
             return services;
         }
 
-        public static IServiceCollection AddWtmSwagger(this IServiceCollection services, bool useFullName=false)
+        public static IServiceCollection AddWtmSwagger(this IServiceCollection services, bool useFullName = false)
         {
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "IoTGateway API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
                 var bearer = new OpenApiSecurityScheme()
                 {
                     Description = "JWT Bearer",
@@ -645,11 +858,10 @@ namespace WalkingTec.Mvvm.Mvc
                 }, new string[] { });
                 c.AddSecurityRequirement(sr);
                 c.SchemaFilter<SwaggerFilter>();
-                //Locate the XML file being generated by ASP.NET...
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                //... and tell Swagger to use those XML comments.
-                c.IncludeXmlComments(xmlPath, true);
+                if (useFullName == true)
+                {
+                    c.CustomSchemaIds(i => i.FullName);
+                }
             });
             return services;
         }
@@ -700,6 +912,7 @@ namespace WalkingTec.Mvvm.Mvc
             var gd = app.ApplicationServices.GetRequiredService<GlobalData>();
             var localfactory = app.ApplicationServices.GetRequiredService<IStringLocalizerFactory>();
             var lop = app.ApplicationServices.GetService<WtmLocalizationOption>();
+
             //获取所有程序集
             //var mvc = GetRuntimeAssembly("WalkingTec.Mvvm.Mvc");
             //if (mvc != null && gd.AllAssembly.Contains(mvc) == false)
@@ -731,19 +944,20 @@ namespace WalkingTec.Mvvm.Mvc
             Core.CoreProgram._localizer = programLocalizer;
 
             var controllers = gd.GetTypesAssignableFrom<IBaseController>();
+            var test = app.ApplicationServices.GetService<ISpaStaticFileProvider>();
+            gd.IsSpa = isspa == true || test != null;
             gd.AllModule = GetAllModules(controllers);
             var modules = Utils.ResetModule(gd.AllModule, false);
-            gd.AllAccessUrls = GetAllAccessUrls(controllers);
-            gd.CustomUserType = gd.GetTypesAssignableFrom<FrameworkUserBase>().Where(x => x.Name.ToLower() == "frameworkuser").FirstOrDefault();
+            gd.CustomUserType = gd.GetPocoTypesAssignableFrom<FrameworkUserBase>().Where(x => x.Name.ToLower() == "frameworkuser").FirstOrDefault();
             gd.SetMenuGetFunc(() =>
             {
                 var menus = new List<SimpleMenu>();
                 var cache = app.ApplicationServices.GetRequiredService<IDistributedCache>();
-                var menuCacheKey = "FFMenus";
+                var menuCacheKey = nameof(GlobalData.AllMenus);
                 if (cache.TryGetValue(menuCacheKey, out List<SimpleMenu> rv) == false)
                 {
 
-                    var data = GetAllMenus(modules, configs);
+                    var data = GetAllMenus(modules, configs.IsQuickDebug, configs.Connections);
                     cache.Add(menuCacheKey, data, new DistributedCacheEntryOptions() { AbsoluteExpirationRelativeToNow = new TimeSpan(1, 0, 0) });
                     menus = data;
                 }
@@ -754,8 +968,83 @@ namespace WalkingTec.Mvvm.Mvc
 
                 return menus;
             });
+            gd.SetTenantGetFunc(() =>
+            {
+                var tenants = new List<FrameworkTenant>();
+                var cache = app.ApplicationServices.GetRequiredService<IDistributedCache>();
+                var tenantsCacheKey = nameof(GlobalData.AllTenant);
+                if (cache.TryGetValue(tenantsCacheKey, out tenants) == false)
+                {
+                    tenants = new List<FrameworkTenant>();
+                    if (configs?.EnableTenant == true)
+                    {
+                        using (var dc = configs.Connections.Where(x => x.Key.ToLower() == "default").FirstOrDefault().CreateDC())
+                        {
+                            var cusTenantType = gd.GetPocoTypesAssignableFrom<FrameworkTenant>().FirstOrDefault();
+                            if (cusTenantType != null)
+                            {
+                                var set = dc.GetType().GetMethod("Set", Type.EmptyTypes).MakeGenericMethod(cusTenantType);
+                                var q = set.Invoke(dc, null) as IQueryable<FrameworkTenant>;
+                                tenants = q.IgnoreQueryFilters().Where(x => x.Enabled).ToList();
+                            }
+                            var _all = dc.Set<FrameworkTenant>().IgnoreQueryFilters().Where(x => x.Enabled).ToList();
+                            foreach (var item in _all)
+                            {
+                                if(tenants.Any(x=>x.ID == item.ID) == false)
+                                {
+                                    tenants.Add(item);
+                                }
+                            }
+                            tenants = tenants.OrderBy(x => x.CreateTime).ToList();
+                            foreach (var item in tenants)
+                            {
+                                if (string.IsNullOrEmpty(item.TDomain) == false)
+                                {
+                                    Regex r = new Regex("(http://|https://)?(.+?)(/)?$");
+                                    var m = r.Match(item.TDomain);
+                                    if (m.Success)
+                                    {
+                                        item.TDomain = m.Groups[2].Value;
+                                    }
+                                }
+                                item.Attributes = new Dictionary<string, object>();
+                                if (cusTenantType != null)
+                                {
+                                    var cuspros = cusTenantType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).Where(x => x.PropertyType.IsListOf<TopBasePoco>() == false && typeof(TopBasePoco).IsAssignableFrom(x.PropertyType) == false).ToList();
+                                    foreach (var pro in cuspros)
+                                    {
+                                        if (item.Attributes.ContainsKey(pro.Name) == false)
+                                        {
+                                            try
+                                            {
+                                                item.Attributes.Add(pro.Name, pro.GetValue(item));
+                                            }
+                                            catch { }
+                                        }
+                                    }
+
+                                }
+
+                            }
+                        }
+                    }
+                    if (tenants == null)
+                    {
+                        tenants = new List<FrameworkTenant>();
+                    }
+                    cache.Add(tenantsCacheKey, tenants, new DistributedCacheEntryOptions() { AbsoluteExpirationRelativeToNow = new TimeSpan(1, 0, 0) });
+                }
+                return tenants;
+            });
             foreach (var m in gd.AllModule)
             {
+                if (isspa == false && m.IsApi == true)
+                {
+                    if (m.ModuleName.ToLower().EndsWith("api") == false)
+                    {
+                        m.ModuleName += "Api";
+                    }
+                }
                 foreach (var a in m.Actions)
                 {
                     string u = null;
@@ -787,7 +1076,9 @@ namespace WalkingTec.Mvvm.Mvc
                     a.Url = u;
                 }
             }
-            var test = app.ApplicationServices.GetService<ISpaStaticFileProvider>();
+
+            gd.AllAccessUrls = gd.AllModule.SelectMany(x => x.Actions).Where(x => x.IgnorePrivillege == true || x.Module.IgnorePrivillege == true).Select(x => x.Url).ToList();
+            gd.AllMainTenantOnlyUrls = gd.AllModule.SelectMany(x => x.Actions).Where(x => x.MainHostOnly == true || x.Module.MainHostOnly == true).Select(x => x.Url).ToList();
             WtmFileProvider.Init(configs, gd);
             using (var scope = app.ApplicationServices.CreateScope())
             {
@@ -858,12 +1149,12 @@ namespace WalkingTec.Mvvm.Mvc
         public static IApplicationBuilder UseWtmSwagger(this IApplicationBuilder app, bool showInDebugOnly = true)
         {
             var configs = app.ApplicationServices.GetRequiredService<IOptions<Configs>>().Value;
-            if (true)//configs.IsQuickDebug == true || showInDebugOnly == false
+            if (configs.IsQuickDebug == true || showInDebugOnly == false)
             {
-                app.UseSwagger();          
+                app.UseSwagger();
                 app.UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "IoTGateway API V1");
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
                 });
             }
             return app;

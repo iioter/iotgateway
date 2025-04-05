@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using NPOI.HSSF.Util;
 using System;
@@ -21,7 +22,7 @@ namespace WalkingTec.Mvvm.Core
     {
 
         private static List<Assembly> _allAssemblies;
-
+        private static List<Type> _allModels;
         public static string GetCurrentComma()
         {
             if (CultureInfo.CurrentUICulture.Name == "zh-cn")
@@ -94,6 +95,65 @@ namespace WalkingTec.Mvvm.Core
                 _allAssemblies.AddRange(dlllist);
             }
             return _allAssemblies;
+        }
+
+        public static List<Type> GetAllModels()
+        {
+            if (_allModels == null)
+            {
+                var modelAsms = Utils.GetAllAssembly();
+                var allTypes = new List<Type>();// 所有 DbSet<> 的泛型类型
+                                                // 获取所有 DbSet<T> 的泛型类型 T
+                foreach (var asm in modelAsms)
+                {
+                    try
+                    {
+                        var dcModule = asm.GetExportedTypes().Where(x => typeof(DbContext).IsAssignableFrom(x)).ToList();
+                        if (dcModule != null && dcModule.Count > 0)
+                        {
+                            foreach (var module in dcModule)
+                            {
+                                foreach (var pro in module.GetProperties())
+                                {
+                                    if (pro.PropertyType.IsGeneric(typeof(DbSet<>)))
+                                    {
+                                        if (!allTypes.Contains(pro.PropertyType.GenericTypeArguments[0], new TypeComparer()))
+                                        {
+                                            allTypes.Add(pro.PropertyType.GenericTypeArguments[0]);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch { }
+                }
+                _allModels = allTypes;
+            }
+            return _allModels;
+        }
+
+        private static List<Type> _allVMs;
+        public static List<Type> GetAllVms()
+        {
+            if (_allVMs == null)
+            {
+                var modelAsms = Utils.GetAllAssembly();
+                var allTypes = new List<Type>();// 所有 DbSet<> 的泛型类型
+                                                // 获取所有 DbSet<T> 的泛型类型 T
+                foreach (var asm in modelAsms)
+                {
+                    try
+                    {
+                        var dcModule = asm.GetExportedTypes().Where(x => typeof(BaseVM).IsAssignableFrom(x)).ToList();
+                        allTypes.AddRange(dcModule);
+                    }
+                    catch { }
+                }
+                _allVMs = allTypes;
+            }
+            return _allVMs;
+
         }
 
         public static SimpleMenu FindMenu(string url, List<SimpleMenu> menus)
@@ -546,7 +606,12 @@ namespace WalkingTec.Mvvm.Core
 
         public static string GetCS(string cs, string mode, Configs config)
         {
-            if (string.IsNullOrEmpty(cs) || config.Connections.Any(x => x.Key.ToLower() == cs.ToLower()) == false)
+            if(cs == null)
+            {
+                return null;
+            }
+
+            if (config.Connections.Any(x => x.Key.ToLower() == cs.ToLower()) == false)
             {
                 cs = "default";
             }
@@ -691,6 +756,10 @@ namespace WalkingTec.Mvvm.Core
         /// <returns>返回大写32位MD5值</returns>
         public static string GetMD5String(string str)
         {
+            if(str == null)
+            {
+                return "";
+            }
             byte[] buffer = Encoding.UTF8.GetBytes(str);
 
             return MD5String(buffer);
@@ -806,7 +875,7 @@ namespace WalkingTec.Mvvm.Core
                                 {
                                     ModuleName = pages[j].ActionDes._localizer[pages[j].ActionDes.Description],
                                     NameSpace = m[i].NameSpace,
-                                    ClassName = pages[j].MethodName,
+                                    ClassName = pages[j].Module.ClassName + pages[j].MethodName,
                                     Actions = submit ? new List<SimpleAction>() : new List<SimpleAction>() { pages[j] },
                                     Area = m[i].Area
                                 });

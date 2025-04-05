@@ -22,7 +22,7 @@ namespace WalkingTec.Mvvm.Core
         bool IsFake { get; set; }
 
         bool IsDebug { get; set; }
-
+        string TenantCode { get; }
         DBTypeEnum DBType { get; set; }
         /// <summary>
         /// AddEntity
@@ -114,8 +114,9 @@ namespace WalkingTec.Mvvm.Core
         /// <returns>返回true即数据新建完成，进入初始化操作，返回false即数据库已经存在</returns>
         Task<bool> DataInit(object AllModel, bool IsSpa);
 
+        void EnsureCreate();
         IDataContext CreateNew();
-        IDataContext ReCreate();
+        IDataContext ReCreate(ILoggerFactory _logger = null);
 
         /// <summary>
         /// 执行存储过程，返回datatable
@@ -139,5 +140,6 @@ namespace WalkingTec.Mvvm.Core
         object CreateCommandParameter(string name, object value, ParameterDirection dir);
 
         void SetLoggerFactory(ILoggerFactory factory);
+        void SetTenantCode(string tc);
     }
 }

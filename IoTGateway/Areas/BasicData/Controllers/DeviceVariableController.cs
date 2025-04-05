@@ -5,7 +5,6 @@ using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Mvc;
 using WalkingTec.Mvvm.Core.Extensions;
 using IoTGateway.ViewModel.BasicData.DeviceVariableVMs;
-using Opc.Ua.Security.Certificates;
 
 namespace IoTGateway.Controllers
 {

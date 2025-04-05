@@ -1,22 +1,19 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
-using MQTTnet.AspNetCore;
-using Plugin;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 using WalkingTec.Mvvm.Core.Support.FileHandlers;
 using WalkingTec.Mvvm.Mvc;
+using System;
+using MQTTnet.AspNetCore;
+using Plugin;
 
 namespace IoTGateway
 {
@@ -26,6 +23,7 @@ namespace IoTGateway
 
         public Startup(IWebHostEnvironment env, IConfiguration config)
         {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             ConfigRoot = config;
         }
 
@@ -33,8 +31,9 @@ namespace IoTGateway
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddWtmWorkflow(ConfigRoot);
             services.AddDistributedMemoryCache();
-            services.AddWtmSession(360000, ConfigRoot);
+            services.AddWtmSession(3600, ConfigRoot);
             services.AddWtmCrossDomain(ConfigRoot);
             services.AddWtmAuthentication(ConfigRoot);
             services.AddWtmHttpClient(ConfigRoot);
@@ -45,20 +44,18 @@ namespace IoTGateway
             {
                 options.UseWtmMvcOptions();
             })
-            .AddJsonOptions(options =>
-            {
+            .AddJsonOptions(options => {
                 options.UseWtmJsonOptions();
             })
-
+            
             .ConfigureApiBehaviorOptions(options =>
             {
                 options.UseWtmApiOptions();
             })
             .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
             .AddWtmDataAnnotationsLocalization(typeof(Program));
-
-            services.AddWtmContext(ConfigRoot, (options) =>
-            {
+            
+            services.AddWtmContext(ConfigRoot, (options)=> {
                 options.DataPrivileges = DataPrivilegeSettings();
                 options.CsSelector = CSSelector;
                 options.FileSubDirSelector = SubDirSelector;
@@ -83,11 +80,9 @@ namespace IoTGateway
         public void Configure(IApplicationBuilder app, IOptionsMonitor<Configs> configs)
         {
             IconFontsHelper.GenerateIconFont();
-            app.UseExceptionHandler(configs.CurrentValue.ErrorHandler); 
-            app.UseStaticFiles(new StaticFileOptions()
-            {
-                ServeUnknownFileTypes = true
-            });
+
+            app.UseExceptionHandler(configs.CurrentValue.ErrorHandler);
+            app.UseStaticFiles();
             app.UseWtmStaticFiles();
             app.UseRouting();
             app.UseWtmMultiLanguages();
@@ -97,6 +92,7 @@ namespace IoTGateway
             app.UseSession();
             app.UseWtmSwagger();
             app.UseWtm();
+            app.UseHttpActivities();
 
             app.UseEndpoints(endpoints =>
             {
@@ -120,8 +116,6 @@ namespace IoTGateway
             });
 
             app.UseWtmContext();
-
-
         }
 
         /// <summary>
