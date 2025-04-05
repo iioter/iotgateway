@@ -13,6 +13,7 @@
 		<Nullable>disable</Nullable>
 
 		<CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>
+		<!--<PlatformTarget>x86</PlatformTarget>-->
 	</PropertyGroup>
 
 
@@ -37,7 +38,22 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="data\" />
+		<Folder Include="data\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Update="appsettings.json">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	  <Content Update="nlog.config">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="data\iotgateway.db">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 </Project>
 

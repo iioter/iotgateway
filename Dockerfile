@@ -1,37 +1,15 @@
-#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
+# 将同级目录下的 app 文件夹拷贝到镜像内的 /app 目录
+COPY app /app
+# 暴露需要的端口
 EXPOSE 518
 EXPOSE 1888
 EXPOSE 503
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
-
-COPY ["IoTGateway/IoTGateway.csproj", "IoTGateway/"]
-COPY ["IoTGateway.ViewModel/IoTGateway.ViewModel.csproj", "IoTGateway.ViewModel/"]
-COPY ["Plugins/Plugin/Plugin.csproj", "Plugins/Plugin/"]
-COPY ["IoTGateway.Model/IoTGateway.Model.csproj", "IoTGateway.Model/"]
-COPY ["WalkingTec.Mvvm/WalkingTec.Mvvm.Core/WalkingTec.Mvvm.Core.csproj", "WalkingTec.Mvvm/WalkingTec.Mvvm.Core/"]
-COPY ["Plugins/PluginInterface/PluginInterface.csproj", "Plugins/PluginInterface/"]
-COPY ["IoTGateway.DataAccess/IoTGateway.DataAccess.csproj", "IoTGateway.DataAccess/"]
-COPY ["WalkingTec.Mvvm/WalkingTec.Mvvm.TagHelpers.LayUI/WalkingTec.Mvvm.TagHelpers.LayUI.csproj", "WalkingTec.Mvvm/WalkingTec.Mvvm.TagHelpers.LayUI/"]
-COPY ["WalkingTec.Mvvm/WalkingTec.Mvvm.Mvc/WalkingTec.Mvvm.Mvc.csproj", "WalkingTec.Mvvm/WalkingTec.Mvvm.Mvc/"]
-
-RUN dotnet restore "IoTGateway/IoTGateway.csproj"
-COPY . .
-WORKDIR "/src/IoTGateway"
-RUN dotnet build "IoTGateway.csproj" -c Release -o /app/build
-
-FROM build AS publish
-RUN dotnet publish "IoTGateway.csproj" -c Release -o /app/publish
-
+# 以 base 为基础构建最终镜像
 FROM base AS final
-WORKDIR /app
-COPY drivers /app/drivers/
-COPY 3d /app/wwwroot/3d/
-COPY --from=publish /app/publish .
-
+# 设置时区为上海
 ENV TZ=Asia/Shanghai
+# 设置容器启动命令，启动 IoTGateway.dll
 ENTRYPOINT ["dotnet", "IoTGateway.dll"]

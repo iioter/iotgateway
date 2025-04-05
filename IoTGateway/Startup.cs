@@ -12,6 +12,7 @@ using WalkingTec.Mvvm.Core.Extensions;
 using WalkingTec.Mvvm.Core.Support.FileHandlers;
 using WalkingTec.Mvvm.Mvc;
 using System;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using MQTTnet.AspNetCore;
 using Plugin;
 
@@ -33,7 +34,7 @@ namespace IoTGateway
         {
             services.AddWtmWorkflow(ConfigRoot);
             services.AddDistributedMemoryCache();
-            services.AddWtmSession(3600, ConfigRoot);
+            services.AddWtmSession(360000, ConfigRoot);
             services.AddWtmCrossDomain(ConfigRoot);
             services.AddWtmAuthentication(ConfigRoot);
             services.AddWtmHttpClient(ConfigRoot);
@@ -54,7 +55,6 @@ namespace IoTGateway
             })
             .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
             .AddWtmDataAnnotationsLocalization(typeof(Program));
-            
             services.AddWtmContext(ConfigRoot, (options)=> {
                 options.DataPrivileges = DataPrivilegeSettings();
                 options.CsSelector = CSSelector;
@@ -81,8 +81,11 @@ namespace IoTGateway
         {
             IconFontsHelper.GenerateIconFont();
 
-            app.UseExceptionHandler(configs.CurrentValue.ErrorHandler);
-            app.UseStaticFiles();
+            app.UseExceptionHandler(configs.CurrentValue.ErrorHandler); 
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                ServeUnknownFileTypes = true
+            });
             app.UseWtmStaticFiles();
             app.UseRouting();
             app.UseWtmMultiLanguages();
