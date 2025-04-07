@@ -31,7 +31,6 @@ namespace IoTGateway
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMcpServer().WithTools<DeviceTool>();
-            services.AddWtmWorkflow(ConfigRoot);
             services.AddDistributedMemoryCache();
             services.AddWtmSession(360000, ConfigRoot);
             services.AddWtmCrossDomain(ConfigRoot);
@@ -93,7 +92,6 @@ namespace IoTGateway
             app.UseSession();
             app.UseWtmSwagger();
             app.UseWtm();
-            app.UseHttpActivities();
 
             app.UseEndpoints(endpoints =>
             {

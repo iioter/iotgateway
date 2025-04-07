@@ -19,7 +19,6 @@
 
 
 	<ItemGroup>
-		<PackageReference Include="Elsa.Designer.Components.Web" Version="2.14.1" />
 		<PackageReference Include="System.IO.Ports" Version="8.0.0" />
 		<PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.1" />
 		<PackageReference Include="MQTTnet" Version="4.3.7.1207" />

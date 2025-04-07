@@ -45,22 +45,17 @@ using WalkingTec.Mvvm.Mvc.Helper;
 using WalkingTec.Mvvm.TagHelpers.LayUI;
 using Microsoft.AspNetCore.SpaServices.Extensions;
 using Microsoft.Extensions.FileProviders;
-using WalkingTec.Mvvm.Core.Support.Quartz;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
-using Elsa.Persistence.EntityFramework.Core.Extensions;
 using WalkingTec.Mvvm.Core.WorkFlow;
 using Elsa;
 using Elsa.Providers.WorkflowContexts;
 using Elsa.Options;
-using Elsa.Persistence.EntityFramework.PostgreSql;
 using Elsa.Server.Api.Mapping;
 using Elsa.Server.Api.Services;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using System.Threading.Tasks;
 using DUWENINK.Captcha.DI;
-using Elsa.Activities.Http;
-using Elsa.Activities.Http.Services;
 using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace WalkingTec.Mvvm.Mvc
@@ -560,131 +555,6 @@ namespace WalkingTec.Mvvm.Mvc
                  options.DefaultApiVersion = ApiVersion.Default;
                  options.AssumeDefaultVersionWhenUnspecified = true;
              });
-
-            return services;
-        }
-
-        public static IServiceCollection AddWtmWorkflow(this IServiceCollection services, IConfiguration config,string csName="default",Action<ElsaOptionsBuilder> options=null)
-        {
-            var elsaSection = config.GetSection("Workflow");
-            var conf = config.Get<Configs>();
-            services.AddSingleton<AuthenticationBasedHttpEndpointAuthorizationHandler>();
-
-            services
-                .AddElsa(elsa => {
-                    var cs = conf.Connections.Where(x => x.Key == csName).FirstOrDefault();
-                    switch (cs.DbType)
-                    {
-                        case DBTypeEnum.SqlServer:
-                            var ver = 120;
-                            if (string.IsNullOrEmpty(cs.Version) == false)
-                            {
-                                int.TryParse(cs.Version, out ver);
-                            }
-                            elsa.UseNonPooledEntityFrameworkPersistence(ef => ef.UseSqlServer(cs.Value, o => o.UseCompatibilityLevel(ver)));
-                            break;
-                        case DBTypeEnum.MySql:
-                            ServerVersion sv = null;
-                            if (string.IsNullOrEmpty(cs.Version) == false)
-                            {
-                                ServerVersion.TryParse(cs.Version, out sv);
-                            }
-                            if (sv == null)
-                            {
-                                sv = ServerVersion.AutoDetect(cs.Value);
-                            }
-                            elsa.UseNonPooledEntityFrameworkPersistence(ef => ef.UseMySql(cs.Value, sv));
-                            break;
-                        case DBTypeEnum.PgSql:
-                            elsa.UseNonPooledEntityFrameworkPersistence(ef => ef.UsePostgreSql(cs.Value));
-                            break;
-                        case DBTypeEnum.Memory:
-                            elsa.UseNonPooledEntityFrameworkPersistence(ef => ef.UseInMemoryDatabase(cs.Value));
-                            break;
-                        case DBTypeEnum.SQLite:
-                            elsa.UseNonPooledEntityFrameworkPersistence(ef => ef.UseSqlite(cs.Value));
-                            break;
-                        case DBTypeEnum.Oracle:
-                            elsa.UseNonPooledEntityFrameworkPersistence<WtmElsaContext>(ef => ef.UseOracle(cs.Value, op =>
-                            {
-                                switch (cs.Version)
-                                {
-                                    case "19":
-                                        op.UseOracleSQLCompatibility(OracleSQLCompatibility.DatabaseVersion19);
-                                        break;
-                                    case "21":
-                                        op.UseOracleSQLCompatibility(OracleSQLCompatibility.DatabaseVersion21);
-                                        break;
-                                    case "23":
-                                        op.UseOracleSQLCompatibility(OracleSQLCompatibility.DatabaseVersion23);
-                                        break;
-                                    default:
-                                        op.UseOracleSQLCompatibility(OracleSQLCompatibility.DatabaseVersion19);
-                                        break;
-                                }
-                            }));
-                            break;
-                        case DBTypeEnum.DaMeng:
-                            break;
-                        case null:
-                            break;
-                        default:
-                            break;
-                    }
-
-                    elsa
-                    .AddConsoleActivities()
-                    .AddActivity<WtmApproveActivity>()
-                    .AddJavaScriptActivities()
-                    .AddHttpActivities(x=> {
-                        if (conf.Domains.ContainsKey("server")) {
-                            x.BaseUrl = new Uri(conf.Domains["server"].Address);
-                        }
-                        x.HttpEndpointAuthorizationHandlerFactory = sp => sp.GetRequiredService<AuthenticationBasedHttpEndpointAuthorizationHandler>();
-                    })
-                    .AddEmailActivities(elsaSection.GetSection("Smtp").Bind)
-                    .AddQuartzTemporalActivities()
-                    .AddCustomTenantAccessor<ElsaTenantAccessor>();
-
-                    options?.Invoke(elsa);
-                }
-                );
-            services.AddElsaApiEndpoints();
-            if (conf.Domains.ContainsKey("server"))
-            {
-                services.AddHttpClient(nameof(SendHttpRequest)).ConfigureHttpClient((s,x) =>
-                {
-                    x.BaseAddress = new Uri(conf.Domains["server"].Address);
-                    var ss = s.CreateScope();
-                    var _wtm = ss.ServiceProvider.GetRequiredService<WTMContext>();
-                    x.DefaultRequestHeaders.Add("Authorization", "Bearer " + _wtm.LoginUserInfo?.RemoteToken);
-                });
-            }
-
-
-            //        services
-            //.AddSingleton<ConnectionConverter>()
-            //.AddSingleton<ActivityBlueprintConverter>()
-            //.AddScoped<IWorkflowBlueprintMapper, WorkflowBlueprintMapper>()
-            //.AddSingleton<IEndpointContentSerializerSettingsProvider, EndpointContentSerializerSettingsProvider>()
-            //.AddAutoMapperProfile<AutoMapperProfile>()
-            //.AddSignalR();
-            services.AddMvc(options =>
-            {
-                options.Conventions.Add(new MyNewtonsoftJsonConvention(null));
-            });
-
-            var allTypes = Utils.GetAllModels();
-
-            foreach (var item in allTypes)
-            {
-                if (typeof(IWorkflow).IsAssignableFrom(item))
-                {
-                    var type = typeof(WorkflowRefresher<>).MakeGenericType(item);
-                    services.AddTransient(typeof(IWorkflowContextProvider), type);
-                }
-            }
-            services.AddBookmarkProvider<WtmApproveBookmarkProvider>();
 
             return services;
         }

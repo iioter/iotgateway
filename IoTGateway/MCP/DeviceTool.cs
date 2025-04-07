@@ -44,7 +44,6 @@ namespace IoTGateway.MCP
         /// <param name="message"></param>
         /// <returns></returns>
         [McpServerTool, Description("Get sub-device variables.")]
-        [CanBeNull]
         public Dictionary<string, object> GetDeviceVariables(
             [Description("name of device")] string deviceName
             )
