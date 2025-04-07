@@ -1,16 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
 
 namespace IoTGateway.Model
 {
     [Comment("RPC日志")]
-    public class RpcLog:TopBasePoco
+    public class RpcLog : TopBasePoco
     {
         [Comment("发起方")]
         [Display(Name = "RpcSide")]
@@ -50,8 +46,9 @@ namespace IoTGateway.Model
     public enum RpcSide
     {
         [Display(Name = "ServerSide")]
-        ServerSide=1,
+        ServerSide = 1,
+
         [Display(Name = "ClientSide")]
-        ClientSide =1
+        ClientSide = 1
     }
 }

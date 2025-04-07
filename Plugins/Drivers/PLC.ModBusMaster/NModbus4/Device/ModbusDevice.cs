@@ -1,9 +1,7 @@
 ﻿namespace Modbus.Device
 {
-    using System;
-
     using IO;
-
+    using System;
     using Unme.Common;
 
     /// <summary>

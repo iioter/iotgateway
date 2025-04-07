@@ -1,9 +1,9 @@
 ﻿namespace Modbus.Serial
 {
+    using global::Modbus.IO;
     using System;
     using System.Diagnostics;
     using System.IO.Ports;
-    using global::Modbus.IO;
 
     /// <summary>
     ///     Concrete Implementor - http://en.wikipedia.org/wiki/Bridge_Pattern

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 
 namespace S7.Net
 {
@@ -59,18 +58,22 @@ namespace S7.Net
                             x = 7;
                             longValue = (long)((byte)value);
                             break;
+
                         case "Int16":
                             x = 15;
                             longValue = (long)((Int16)value);
                             break;
+
                         case "Int32":
                             x = 31;
                             longValue = (long)((Int32)value);
                             break;
+
                         case "Int64":
                             x = 63;
                             longValue = (long)((Int64)value);
                             break;
+
                         default:
                             throw new Exception();
                     }
@@ -97,6 +100,7 @@ namespace S7.Net
                                     if ((ByteArr[cnt2] & (byte)Math.Pow(2, cnt)) > 0) txt += "1"; else txt += "0";
                             }
                             break;
+
                         case "Int16[]":
                             x = 15;
                             Int16[] Int16Arr = (Int16[])value;
@@ -106,6 +110,7 @@ namespace S7.Net
                                     if ((Int16Arr[cnt2] & (byte)Math.Pow(2, cnt)) > 0) txt += "1"; else txt += "0";
                             }
                             break;
+
                         case "Int32[]":
                             x = 31;
                             Int32[] Int32Arr = (Int32[])value;
@@ -115,6 +120,7 @@ namespace S7.Net
                                     if ((Int32Arr[cnt2] & (byte)Math.Pow(2, cnt)) > 0) txt += "1"; else txt += "0";
                             }
                             break;
+
                         case "Int64[]":
                             x = 63;
                             byte[] Int64Arr = (byte[])value;
@@ -124,6 +130,7 @@ namespace S7.Net
                                     if ((Int64Arr[cnt2] & (byte)Math.Pow(2, cnt)) > 0) txt += "1"; else txt += "0";
                             }
                             break;
+
                         default:
                             throw new Exception();
                     }
@@ -138,7 +145,7 @@ namespace S7.Net
 
         /// <summary>
         /// Helper to get a bit value given a byte and the bit index.
-        /// Example: DB1.DBX0.5 -> var bytes = ReadBytes(DB1.DBW0); bool bit = bytes[0].SelectBit(5); 
+        /// Example: DB1.DBX0.5 -> var bytes = ReadBytes(DB1.DBW0); bool bit = bytes[0].SelectBit(5);
         /// </summary>
         /// <param name="data"></param>
         /// <param name="bitPosition"></param>

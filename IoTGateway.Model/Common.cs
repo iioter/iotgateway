@@ -10,10 +10,12 @@ namespace IoTGateway.Model
         [Display(Name = "Device")]
         Device = 1
     }
+
     public enum AccessEnum
     {
         [Display(Name = "ReadOnly")]
         ReadOnly = 0,
+
         [Display(Name = "ReadWrite")]
         ReadAndWrite = 1
     }
@@ -21,9 +23,10 @@ namespace IoTGateway.Model
     public enum DataSide
     {
         [Display(Name = "AnySide")]
-        AnySide=0,
+        AnySide = 0,
+
         //ServerSide=1,
         [Display(Name = "ClientSide")]
-        ClientSide =2,
+        ClientSide = 2,
     }
 }

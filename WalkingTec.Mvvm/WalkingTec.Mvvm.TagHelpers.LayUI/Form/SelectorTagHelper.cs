@@ -1,14 +1,13 @@
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using System.Text.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
-using System.Linq.Expressions;
 
 namespace WalkingTec.Mvvm.TagHelpers.LayUI.Form
 {
@@ -35,6 +34,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI.Form
         /// 选择按钮宽度，默认50
         /// </summary>
         public int? SelectButtonWidth { get; set; }
+
         /// <summary>
         /// 标题
         /// </summary>
@@ -87,7 +87,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI.Form
         /// 弹出窗口之前运行的js函数
         /// </summary>
         public string BeforeOnpenDialogFunc { get; set; }
-
 
         /// <summary>
         /// 排除的搜索条件
@@ -199,7 +198,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI.Form
                 }
             }
 
-            #endregion
+            #endregion Display Value
 
             if (Display)
             {
@@ -225,7 +224,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI.Form
             }
             else
             {
-
                 var windowid = Guid.NewGuid().ToString();
                 if (MultiSelect == null)
                 {
@@ -263,7 +261,8 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI.Form
                 content = regStart.Replace(content, string.Empty);
                 content = regEnd.Replace(content, string.Empty);
 
-                #endregion
+                #endregion 移除因 RowTagHelper 生成的外层 div 即 <div class="layui-col-xs6"></div>
+
                 var reg = new Regex("(name=\")(_DONOTUSE_)?([0-9a-zA-z]{0,}[.]?)(Searcher[.]?[0-9a-zA-z]{0,}\")", RegexOptions.Multiline | RegexOptions.IgnoreCase);
                 content = reg.Replace(content, "$1$2$4");
                 //reg = new Regex("(name=\")([0-9a-zA-z]{0,}[.]?)(Searcher[.]?[0-9a-zA-z]{0,}\")", RegexOptions.Multiline | RegexOptions.IgnoreCase);
@@ -342,7 +341,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI.Form
                                 Filter.Add(s[0], s[1]);
                             }
                         }
-
                     }
                 }
                 var hiddenStr = string.Empty;

@@ -10,5 +10,4 @@ namespace WalkingTec.Mvvm.Mvc
             AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme;
         }
     }
-
 }

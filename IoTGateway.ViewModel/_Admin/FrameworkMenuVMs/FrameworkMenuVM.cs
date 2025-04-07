@@ -22,8 +22,10 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
 
         [JsonIgnore]
         public List<ComboSelectListItem> AllParents { get; set; }
+
         [JsonIgnore]
         public List<ComboSelectListItem> AllModules { get; set; }
+
         [JsonIgnore]
         public List<ComboSelectListItem> AllActions { get; set; }
 
@@ -76,14 +78,15 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
 
             var modules = Wtm.GlobaInfo.AllModule;
             var m = Utils.ResetModule(modules);
-            var ms = m.Select(x => new {
+            var ms = m.Select(x => new
+            {
                 x.Area,
                 x.IsApi,
                 x.NameSpace,
                 x.ModuleName,
                 x.FullName,
                 IsFront = x.NameSpace.Contains("._Front.") || x.ClassName.EndsWith("_Uni")
-            }).GroupBy(x => new { x.Area?.AreaName, x.IsApi, x.IsFront }).SelectMany(x => x).OrderBy(x=>x.IsApi).ToList();
+            }).GroupBy(x => new { x.Area?.AreaName, x.IsApi, x.IsFront }).SelectMany(x => x).OrderBy(x => x.IsApi).ToList();
             string area = "";
             bool? isapi = null;
             bool? isfront = null;
@@ -130,8 +133,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
             }
         }
 
-
-
         public override void Validate()
         {
             if (Entity.IsInside == true && Entity.FolderOnly == false)
@@ -146,7 +147,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
                 {
                     MSD.AddModelError(" error", Localizer["_Admin.ModuleHasSet"]);
                 }
-
             }
             base.Validate();
         }
@@ -164,7 +164,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
                         Entity.Url = "http://" + Entity.Url;
                     }
                 }
-                if(Entity.Url != null)
+                if (Entity.Url != null)
                 {
                     Entity.Url = Entity.Url.TrimEnd('/');
                 }
@@ -184,7 +184,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
                         return;
                     }
                     List<SimpleAction> otherActions = null;
-                 
+
                     var mainModule = m.Where(x => x.FullName == this.SelectedModule).FirstOrDefault();
                     if (actionPage == null)
                     {
@@ -282,18 +282,17 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
                         Entity.Url = "http://" + Entity.Url;
                     }
                 }
-                if(Entity.Url != null)
+                if (Entity.Url != null)
                 {
                     Entity.Url = Entity.Url.TrimEnd('/');
                 }
             }
             else
             {
-
                 if (string.IsNullOrEmpty(SelectedModule) == false && Entity.FolderOnly == false)
                 {
                     var modules = Wtm.GlobaInfo.AllModule;
-                    
+
                     var m = Utils.ResetModule(modules, false);
                     var actionPage = m.Where(x => x.FullName == this.SelectedModule)
                        .SelectMany(x => x.Actions).Where(x => x.MethodName == "Index" || x.ActionDes?.IsPage == true)
@@ -305,7 +304,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
                     }
                     List<SimpleAction> otherActions = null;
                     var mainModule = m.Where(x => x.FullName == this.SelectedModule).FirstOrDefault();
-                    if(actionPage == null)
+                    if (actionPage == null)
                     {
                         actionPage = new SimpleAction
                         {
@@ -347,13 +346,11 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
                         }
                     }
                 }
-
                 else
                 {
                     Entity.Children = null;
                     Entity.Url = null;
                 }
-
             }
             base.DoAdd();
             List<Guid> guids = new List<Guid>();
@@ -377,7 +374,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
 
             foreach (var menuid in menuids)
             {
-
                 if (SelectedRolesIds != null)
                 {
                     foreach (var code in SelectedRolesIds)
@@ -394,7 +390,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
             DC.SaveChanges();
             Wtm.RemoveUserCacheByRole(SelectedRolesIds.ToArray()).Wait();
         }
-
 
         public override void DoDelete()
         {

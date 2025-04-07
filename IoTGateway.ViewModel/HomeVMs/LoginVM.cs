@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
 using WalkingTec.Mvvm.Core;
 
 namespace IoTGateway.ViewModel.HomeVMs
@@ -24,6 +22,7 @@ namespace IoTGateway.ViewModel.HomeVMs
         public bool RememberLogin { get; set; }
 
         private string _redirect;
+
         public string Redirect
         {
             get
@@ -35,7 +34,7 @@ namespace IoTGateway.ViewModel.HomeVMs
                     {
                         rv = "/#" + rv;
                     }
-                    if(rv.Split("#/").Length > 2)
+                    if (rv.Split("#/").Length > 2)
                     {
                         int index = rv.LastIndexOf("#/");
                         rv = rv.Substring(0, index);
@@ -48,7 +47,5 @@ namespace IoTGateway.ViewModel.HomeVMs
 
         [Display(Name = "Login.InputValidation")]
         public string VerifyCode { get; set; }
-
     }
-
 }

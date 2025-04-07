@@ -2,13 +2,12 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Linq;
-using WalkingTec.Mvvm.Core;
-using WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkUserVms;
-using WalkingTec.Mvvm.Core.Extensions;
-using System.Threading.Tasks;
 using System.Collections.Generic;
-using Microsoft.Extensions.DependencyInjection;
+using System.Linq;
+using System.Threading.Tasks;
+using WalkingTec.Mvvm.Core;
+using WalkingTec.Mvvm.Core.Extensions;
+using WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkUserVms;
 
 namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
 {
@@ -24,7 +23,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
                 return Content(Localizer["_Admin.HasMainHost"]);
             }
             var vm = Wtm.CreateVM<FrameworkUserListVM>();
-           // vm.Searcher.IsValid = true;
+            // vm.Searcher.IsValid = true;
             return PartialView(vm);
         }
 
@@ -47,7 +46,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
                 return vm.GetError();
             }
         }
-
 
         [ActionDescription("Sys.Create")]
         public ActionResult Create()
@@ -352,7 +350,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
                 users = c;
             }
             return JsonMore(users);
-
         }
 
         [ActionDescription("Sys.Export")]
@@ -401,7 +398,5 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
             }
             return JsonMore(users);
         }
-
-
     }
 }

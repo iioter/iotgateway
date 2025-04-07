@@ -1,5 +1,5 @@
-﻿using PluginInterface;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using PluginInterface;
 
 namespace CNC.Fanuc
 {
@@ -21,9 +21,10 @@ namespace CNC.Fanuc
         [ConfigParameter("设备Ip")] public string DeviceIp { get; set; } = "127.0.0.1";
         [ConfigParameter("设备Port")] public int DevicePort { get; set; } = 8193;
 
-        #endregion
+        #endregion 配置参数
 
         #region 生命周期
+
         public DeviceFanuc(string device, ILogger logger)
         {
             _device = device;
@@ -89,10 +90,10 @@ namespace CNC.Fanuc
             // Suppress finalization.
             GC.SuppressFinalize(this);
         }
-        #endregion
+
+        #endregion 生命周期
 
         #region 读写方法
-
 
         [Method("Fanuc", description: "读Fanuc设备类型")]
         public DriverReturnValueModel ReadDeviceType(DriverAddressIoArgModel ioarg)
@@ -155,41 +156,55 @@ namespace CNC.Fanuc
                                     case 0:
                                         strRet = "STOP";
                                         break;
+
                                     case 1:
                                         strRet = "HOLD";
                                         break;
+
                                     case 2:
                                         strRet = "START";
                                         break;
+
                                     case 3:
                                         strRet = "MSTR(jog mdi)";
                                         break;
+
                                     case 4:
                                         strRet = "ReSTART(not blinking)";
                                         break;
+
                                     case 5:
                                         strRet = "PRSR(program restart)";
                                         break;
+
                                     case 6:
                                         strRet = "NSRC(sequence number search)";
                                         break;
+
                                     case 7:
                                         strRet = "ReSTART(blinking)";
                                         break;
+
                                     case 8:
                                         strRet = "ReSET";
                                         break;
+
                                     case 9:
                                         break;
+
                                     case 10:
                                         break;
+
                                     case 11:
                                         break;
+
                                     case 12:
                                         break;
+
                                     case 13:
                                         strRet = "HPCC(during RISC operation)";
                                         break;
+
                                     default:
                                         break;
                                 }
@@ -201,18 +216,23 @@ namespace CNC.Fanuc
                                     case 0:
                                         strRet = "NOT READY";
                                         break;
+
                                     case 1:
                                         strRet = "M-READY";
                                         break;
+
                                     case 2:
                                         strRet = "C-START";
                                         break;
+
                                     case 3:
                                         strRet = "F-HOLD";
                                         break;
+
                                     case 4:
                                         strRet = "B-STOP";
                                         break;
+
                                     default:
                                         break;
                                 }
@@ -224,24 +244,28 @@ namespace CNC.Fanuc
                                     case 0:
                                         strRet = "****(reset)";
                                         break;
+
                                     case 1:
                                         strRet = "STOP";
                                         break;
+
                                     case 2:
                                         strRet = "HOLD";
                                         break;
+
                                     case 3:
                                         strRet = "STaRT";
                                         break;
+
                                     case 4:
                                         strRet =
                                             "MSTR(during retraction and re-positioning of tool retraction and recovery, and operation of JOG MDI)";
                                         break;
+
                                     default:
                                         break;
                                 }
                             }
-
 
                             ret.Value = strRet;
                         }
@@ -291,41 +315,55 @@ namespace CNC.Fanuc
                                     case 0:
                                         strRet = "STOP";
                                         break;
+
                                     case 1:
                                         strRet = "HOLD";
                                         break;
+
                                     case 2:
                                         strRet = "STaRT";
                                         break;
+
                                     case 3:
                                         strRet = "MSTR(jog mdi)";
                                         break;
+
                                     case 4:
                                         strRet = "ReSTaRt(not blinking)";
                                         break;
+
                                     case 5:
                                         strRet = "PRSR(program restart)";
                                         break;
+
                                     case 6:
                                         strRet = "NSRC(sequence number search)";
                                         break;
+
                                     case 7:
                                         strRet = "ReSTaRt(blinking)";
                                         break;
+
                                     case 8:
                                         strRet = "ReSET";
                                         break;
+
                                     case 9:
                                         break;
+
                                     case 10:
                                         break;
+
                                     case 11:
                                         break;
+
                                     case 12:
                                         break;
+
                                     case 13:
                                         strRet = "HPCC(during RISC operation)";
                                         break;
+
                                     default:
                                         break;
                                 }
@@ -337,18 +375,23 @@ namespace CNC.Fanuc
                                     case 0:
                                         strRet = "NOT READY";
                                         break;
+
                                     case 1:
                                         strRet = "M-READY";
                                         break;
+
                                     case 2:
                                         strRet = "C-START";
                                         break;
+
                                     case 3:
                                         strRet = "F-HOLD";
                                         break;
+
                                     case 4:
                                         strRet = "B-STOP";
                                         break;
+
                                     default:
                                         strRet = runRet.ToString();
                                         break;
@@ -361,25 +404,29 @@ namespace CNC.Fanuc
                                     case 0:
                                         strRet = "****(reset)";
                                         break;
+
                                     case 1:
                                         strRet = "STOP";
                                         break;
+
                                     case 2:
                                         strRet = "HOLD";
                                         break;
+
                                     case 3:
                                         strRet = "STaRT";
                                         break;
+
                                     case 4:
                                         strRet =
                                             "MSTR(during retraction and re-positioning of tool retraction and recovery, and operation of JOG MDI)";
                                         break;
+
                                     default:
                                         strRet = runRet.ToString();
                                         break;
                                 }
                             }
-
 
                             ret.Value = strRet;
                         }
@@ -400,7 +447,7 @@ namespace CNC.Fanuc
             return ret;
         }
 
-        //操作模式      cnc_statinfo    manual              
+        //操作模式      cnc_statinfo    manual
         //存在问题，未找到manual
         [Method("Fanuc", description: "读Fanuc设备操作模式")]
         public DriverReturnValueModel ReadDeviceModel(DriverAddressIoArgModel ioarg)
@@ -421,7 +468,6 @@ namespace CNC.Fanuc
                         ret.Value = manualRet;
                     }
                 }
-
                 catch (Exception ex)
                 {
                     ret.StatusType = VaribaleStatusTypeEnum.Bad;
@@ -454,7 +500,6 @@ namespace CNC.Fanuc
                         ret.Value = a.data;
                     }
                 }
-
                 catch (Exception ex)
                 {
                     ret.StatusType = VaribaleStatusTypeEnum.Bad;
@@ -487,7 +532,6 @@ namespace CNC.Fanuc
                         ret.Value = a.data;
                     }
                 }
-
                 catch (Exception ex)
                 {
                     ret.StatusType = VaribaleStatusTypeEnum.Bad;
@@ -650,63 +694,83 @@ namespace CNC.Fanuc
                             case 0:
                                 alarmStrType = "Parameter switch on";
                                 break;
+
                             case 1:
                                 alarmStrType = "Power off parameter set";
                                 break;
+
                             case 2:
                                 alarmStrType = "I/O error";
                                 break;
+
                             case 3:
                                 alarmStrType = "Foreground P/S";
                                 break;
+
                             case 4:
                                 alarmStrType = "Overtravel,External data";
                                 break;
+
                             case 5:
                                 alarmStrType = "Overheat alarm";
                                 break;
+
                             case 6:
                                 alarmStrType = "Servo alarm";
                                 break;
+
                             case 7:
                                 alarmStrType = "Data I/O error";
                                 break;
+
                             case 8:
                                 alarmStrType = "Macro alarm";
                                 break;
+
                             case 9:
                                 alarmStrType = "Macro alarm";
                                 break;
+
                             case 10:
                                 alarmStrType = "Other alarm(DS)";
                                 break;
+
                             case 11:
                                 alarmStrType = "Alarm concerning Malfunction prevent functions (IE) ";
                                 break;
+
                             case 12:
                                 alarmStrType = "Background P/S (BG) ";
                                 break;
+
                             case 13:
                                 alarmStrType = "Syncronized error (SN) ";
                                 break;
+
                             case 14:
                                 alarmStrType = "(reserved)";
                                 break;
+
                             case 15:
                                 alarmStrType = "External alarm message (EX) ";
                                 break;
+
                             case 16:
                                 alarmStrType = "(reserved)";
                                 break;
+
                             case 17:
                                 alarmStrType = "(reserved)";
                                 break;
+
                             case 18:
                                 alarmStrType = "(reserved)";
                                 break;
+
                             case 19:
                                 alarmStrType = "PMC error (PC) ";
                                 break;
+
                             case -1:
                                 alarmStrType = "All type";
                                 break;
@@ -983,7 +1047,6 @@ namespace CNC.Fanuc
             return ret;
         }
 
-
         /// <summary>
         /// 无用方法
         /// </summary>
@@ -1008,7 +1071,7 @@ namespace CNC.Fanuc
             await Task.CompletedTask;
             return rpcResponse;
         }
-        #endregion
 
+        #endregion 读写方法
     }
 }

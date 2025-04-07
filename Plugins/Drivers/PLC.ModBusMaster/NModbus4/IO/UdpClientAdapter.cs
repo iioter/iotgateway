@@ -15,6 +15,7 @@
     {
         // strategy for cross platform r/w
         private const int MaxBufferSize = ushort.MaxValue;
+
         private UdpClient _udpClient;
         private readonly byte[] _buffer = new byte[MaxBufferSize];
         private int _bufferOffset;
@@ -113,28 +114,28 @@
             if (offset < 0)
             {
                 throw new ArgumentOutOfRangeException(
-                    nameof(offset), 
+                    nameof(offset),
                     "Argument offset must be greater than or equal to 0.");
             }
 
             if (offset > buffer.Length)
             {
                 throw new ArgumentOutOfRangeException(
-                    nameof(offset), 
+                    nameof(offset),
                     "Argument offset cannot be greater than the length of buffer.");
             }
 
             if (count < 0)
             {
                 throw new ArgumentOutOfRangeException(
-                    nameof(count), 
+                    nameof(count),
                     "Argument count must be greater than or equal to 0.");
             }
 
             if (count > buffer.Length - offset)
             {
                 throw new ArgumentOutOfRangeException(
-                    nameof(count), 
+                    nameof(count),
                     "Argument count cannot be greater than the length of buffer minus offset.");
             }
 

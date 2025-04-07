@@ -1,14 +1,12 @@
 ﻿namespace Modbus.Device
 {
-    using System;
-    using System.Diagnostics;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Linq;
-    using System.Threading.Tasks;
-
     using Data;
     using IO;
     using Message;
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
+    using System.Threading.Tasks;
 
     /// <summary>
     ///     Modbus slave device.
@@ -189,27 +187,32 @@
                             DataStore,
                             DataStore.CoilDiscretes);
                         break;
+
                     case Modbus.ReadInputs:
                         response = ReadDiscretes(
                             (ReadCoilsInputsRequest)request,
                             DataStore,
                             DataStore.InputDiscretes);
                         break;
+
                     case Modbus.ReadHoldingRegisters:
                         response = ReadRegisters(
                             (ReadHoldingInputRegistersRequest)request,
                             DataStore,
                             DataStore.HoldingRegisters);
                         break;
+
                     case Modbus.ReadInputRegisters:
                         response = ReadRegisters(
                             (ReadHoldingInputRegistersRequest)request,
                             DataStore,
                             DataStore.InputRegisters);
                         break;
+
                     case Modbus.Diagnostics:
                         response = request;
                         break;
+
                     case Modbus.WriteSingleCoil:
                         response = WriteSingleCoil(
                             (WriteSingleCoilRequestResponse)request,
@@ -217,6 +220,7 @@
                             DataStore.CoilDiscretes);
                         WriteComplete?.Invoke(this, eventArgs);
                         break;
+
                     case Modbus.WriteSingleRegister:
                         response = WriteSingleRegister(
                             (WriteSingleRegisterRequestResponse)request,
@@ -224,6 +228,7 @@
                             DataStore.HoldingRegisters);
                         WriteComplete?.Invoke(this, eventArgs);
                         break;
+
                     case Modbus.WriteMultipleCoils:
                         response = WriteMultipleCoils(
                             (WriteMultipleCoilsRequest)request,
@@ -231,6 +236,7 @@
                             DataStore.CoilDiscretes);
                         WriteComplete?.Invoke(this, eventArgs);
                         break;
+
                     case Modbus.WriteMultipleRegisters:
                         response = WriteMultipleRegisters(
                             (WriteMultipleRegistersRequest)request,
@@ -238,6 +244,7 @@
                             DataStore.HoldingRegisters);
                         WriteComplete?.Invoke(this, eventArgs);
                         break;
+
                     case Modbus.ReadWriteMultipleRegisters:
                         ReadWriteMultipleRegistersRequest readWriteRequest = (ReadWriteMultipleRegistersRequest)request;
                         WriteMultipleRegisters(
@@ -250,6 +257,7 @@
                             DataStore,
                             DataStore.HoldingRegisters);
                         break;
+
                     default:
                         string msg = $"Unsupported function code {request.FunctionCode}.";
                         //Debug.WriteLine(msg);

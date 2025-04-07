@@ -1,28 +1,23 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
-using System.Text;
 using WalkingTec.Mvvm.Core.Extensions;
 using WalkingTec.Mvvm.Core.Models;
 
 namespace WalkingTec.Mvvm.Core.Support.FileHandlers
 {
-
     [Display(Name = "local")]
     public class WtmLocalFileHandler : WtmFileHandlerBase
     {
-
         public WtmLocalFileHandler(WTMContext wtm) : base(wtm)
         {
         }
 
         public override Stream GetFileData(IWtmFile file)
         {
-            return File.OpenRead(GetFullPath(file.Path));          
+            return File.OpenRead(GetFullPath(file.Path));
         }
-
 
         public override (string path, string handlerInfo) Upload(string fileName, long fileLength, Stream data, string group = null, string subdir = null, string extra = null)
         {
@@ -33,8 +28,9 @@ namespace WalkingTec.Mvvm.Core.Support.FileHandlers
             {
                 groupdir = localSettings?.FirstOrDefault().GroupLocation;
             }
-            else {
-               groupdir = localSettings?.Where(x => x.GroupName.ToLower() == group.ToLower()).FirstOrDefault().GroupLocation;
+            else
+            {
+                groupdir = localSettings?.Where(x => x.GroupName.ToLower() == group.ToLower()).FirstOrDefault().GroupLocation;
             }
             if (string.IsNullOrEmpty(groupdir))
             {
@@ -48,7 +44,7 @@ namespace WalkingTec.Mvvm.Core.Support.FileHandlers
             else
             {
                 var sub = WtmFileProvider._subDirFunc?.Invoke(this);
-                if(string.IsNullOrEmpty(sub)== false)
+                if (string.IsNullOrEmpty(sub) == false)
                 {
                     pathHeader = Path.Combine(pathHeader, sub);
                 }
@@ -71,7 +67,7 @@ namespace WalkingTec.Mvvm.Core.Support.FileHandlers
                 data.CopyTo(fileStream);
             }
             data.Dispose();
-            return (Path.Combine(pathHeader, filename),"");
+            return (Path.Combine(pathHeader, filename), "");
         }
 
         public override void DeleteFile(IWtmFile file)
@@ -98,8 +94,7 @@ namespace WalkingTec.Mvvm.Core.Support.FileHandlers
                 rv = path;
             }
             rv = Path.GetFullPath(rv);
-            return rv ;
+            return rv;
         }
     }
-
 }

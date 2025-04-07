@@ -9,6 +9,5 @@ namespace WalkingTec.Mvvm.Core.Support.Json
         public string RoleCode { get; set; }
         public string RoleName { get; set; }
         public string Tenant { get; set; }
-
     }
 }

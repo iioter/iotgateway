@@ -1,19 +1,17 @@
-﻿using Plugin;
+﻿using IoTGateway.Model;
+using Microsoft.EntityFrameworkCore;
+using Plugin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
-using IoTGateway.Model;
-using Microsoft.EntityFrameworkCore;
 
 namespace IoTGateway.ViewModel.BasicData.DeviceVMs
 {
-    static class DeleteDevices
+    internal static class DeleteDevices
     {
-        public static DeleteRet doDelete(DeviceService pluginManager,IDataContext DC,List<Guid> Ids)
+        public static DeleteRet doDelete(DeviceService pluginManager, IDataContext DC, List<Guid> Ids)
         {
             DeleteRet deleteRet = new() { IsSuccess = false };
             using (var transaction = DC.BeginTransaction())
@@ -48,7 +46,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                     DC.Set<Device>().RemoveRange(daps);
                     DC.SaveChanges();
                     transaction.Commit();
-                    deleteRet.IsSuccess=true;                    
+                    deleteRet.IsSuccess = true;
                 }
                 catch (Exception ex)
                 {
@@ -57,7 +55,6 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                     deleteRet.Message = $"其他错误,{ex}";
                 }
             }
-
 
             return deleteRet;
         }

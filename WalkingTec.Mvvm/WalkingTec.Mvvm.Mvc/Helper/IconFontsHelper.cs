@@ -9,6 +9,7 @@ namespace WalkingTec.Mvvm.Mvc
     public static class IconFontsHelper
     {
         private static List<ComboSelectListItem> _iconFontItems;
+
         public static List<ComboSelectListItem> IconFontItems
         {
             get
@@ -25,7 +26,7 @@ namespace WalkingTec.Mvvm.Mvc
         public static void GenerateIconFont(params string[] dirs)
         {
             var baseDirs = new string[] { "wwwroot/font", "wwwroot/layui" };
-            if(dirs.Length > 0)
+            if (dirs.Length > 0)
             {
                 baseDirs = dirs;
             }

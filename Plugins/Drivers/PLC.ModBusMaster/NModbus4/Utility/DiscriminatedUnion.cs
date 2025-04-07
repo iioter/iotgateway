@@ -111,6 +111,7 @@
                 case DiscriminatedUnionOption.A:
                     value = A.ToString();
                     break;
+
                 case DiscriminatedUnionOption.B:
                     value = B.ToString();
                     break;

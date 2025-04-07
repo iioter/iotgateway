@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Collections.Generic;
 using WalkingTec.Mvvm.Core;
 
 namespace WalkingTec.Mvvm.Mvc.Filters
@@ -15,7 +10,7 @@ namespace WalkingTec.Mvvm.Mvc.Filters
         public void Apply(OpenApiSchema schema, SchemaFilterContext context)
         {
             var type = context.Type;
-            if(type == typeof(List<ComboSelectListItem>))
+            if (type == typeof(List<ComboSelectListItem>))
             {
                 schema = null;
             }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace PluginInterface
+﻿namespace PluginInterface
 {
     public class DriverAddressIoArgModel
     {
@@ -13,6 +7,7 @@ namespace PluginInterface
         public object Value { get; set; }
         public DataTypeEnum ValueType { get; set; }
         public EndianEnum EndianType { get; set; }
+
         public override string ToString()
         {
             return $"变量ID:{ID},Address:{Address},Value:{Value},ValueType:{ValueType},Endian:{EndianType}";

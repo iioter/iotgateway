@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
-using WalkingTec.Mvvm.Core;
-using WalkingTec.Mvvm.Core.Extensions;
-using IoTGateway.Model;
-using Plugin;
-using System.Text.Json;
+﻿using IoTGateway.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
+using Plugin;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
+using WalkingTec.Mvvm.Core;
+using WalkingTec.Mvvm.Core.Extensions;
 
 namespace IoTGateway.ViewModel.BasicData.DeviceConfigVMs
 {
@@ -79,7 +76,6 @@ namespace IoTGateway.ViewModel.BasicData.DeviceConfigVMs
         {
             var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
             UpdateDevices.UpdateConfig(DC, deviceService, FC);
-
         }
 
         public override DuplicatedInfo<DeviceConfig> SetDuplicatedCheck()

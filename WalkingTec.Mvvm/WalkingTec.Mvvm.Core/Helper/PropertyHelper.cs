@@ -17,7 +17,6 @@ namespace WalkingTec.Mvvm.Core
     /// </summary>
     public static class PropertyHelper
     {
-
         public static object GetExpressionRootObj(Expression expression)
         {
             if (expression == null)
@@ -73,7 +72,7 @@ namespace WalkingTec.Mvvm.Core
                     break;
                 }
             }
-            if(me.NodeType == ExpressionType.Constant)
+            if (me.NodeType == ExpressionType.Constant)
             {
                 return (me as ConstantExpression)?.Value;
             }
@@ -131,7 +130,7 @@ namespace WalkingTec.Mvvm.Core
                 {
                     me = (le.Body as UnaryExpression).Operand as MemberExpression;
                 }
-                else if(le.Body is MethodCallExpression mexp && mexp.Method.Name == "get_Item")
+                else if (le.Body is MethodCallExpression mexp && mexp.Method.Name == "get_Item")
                 {
                     object index = 0;
                     me = mexp.Object as MemberExpression;
@@ -192,7 +191,6 @@ namespace WalkingTec.Mvvm.Core
             }
             return rv;
         }
-
 
         /// <summary>
         /// 获取属性名的Id形式，将属性名中的.转换为_，适合作为HTML中的Id使用
@@ -271,7 +269,6 @@ namespace WalkingTec.Mvvm.Core
             return GetPropertyDisplayName(expression.GetPropertyInfo(), local);
         }
 
-
         /// <summary>
         /// 获取枚举显示名称
         /// </summary>
@@ -349,10 +346,9 @@ namespace WalkingTec.Mvvm.Core
             }
         }
 
-
         public static List<string> GetPropertySiblingValues(this object obj, string propertyName)
         {
-            if(obj == null)
+            if (obj == null)
             {
                 return new List<string>();
             }
@@ -383,7 +379,6 @@ namespace WalkingTec.Mvvm.Core
                                new Type[] { pe2.Type, typeof(string) },
                                cast,
                                Expression.Lambda(selectexp, pe2));
-
 
                 var lambda = Expression.Lambda(select, pe);
                 var rv = new List<string>();
@@ -479,7 +474,6 @@ namespace WalkingTec.Mvvm.Core
                             temp = newInstance;
                         }
                         tempType = member.GetMemberType();
-
                     }
                 }
 
@@ -680,7 +674,6 @@ namespace WalkingTec.Mvvm.Core
 
             if (field != null)
             {
-
                 var attribs = field.GetCustomAttributes(typeof(DisplayAttribute), true).ToList();
                 if (attribs.Count > 0)
                 {
@@ -717,7 +710,6 @@ namespace WalkingTec.Mvvm.Core
 
             if (field != null)
             {
-
                 var attribs = field.GetCustomAttributes(typeof(DisplayAttribute), true).ToList();
                 if (attribs.Count > 0)
                 {
@@ -747,7 +739,7 @@ namespace WalkingTec.Mvvm.Core
             if (propertyType.IsGeneric(typeof(Nullable<>)) == true)
             {
                 var gs = propertyType.GenericTypeArguments;
-                if(value == null)
+                if (value == null)
                 {
                     return null;
                 }

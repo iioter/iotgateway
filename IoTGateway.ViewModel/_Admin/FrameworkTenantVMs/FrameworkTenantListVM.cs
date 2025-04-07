@@ -1,12 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-
 
 namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkTenantVMs
 {
@@ -27,7 +22,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkTenantVMs
             };
         }
 
-
         protected override IEnumerable<IGridColumn<FrameworkTenant_View>> InitGridHeader()
         {
             return new List<GridColumn<FrameworkTenant_View>>{
@@ -46,12 +40,12 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkTenantVMs
         public override IOrderedQueryable<FrameworkTenant_View> GetSearchQuery()
         {
             var query = DC.Set<FrameworkTenant>()
-                .CheckContain(Searcher.TCode, x=>x.TCode)
-                .CheckContain(Searcher.TName, x=>x.TName)
-                .CheckContain(Searcher.TDomain, x=>x.TDomain)
+                .CheckContain(Searcher.TCode, x => x.TCode)
+                .CheckContain(Searcher.TName, x => x.TName)
+                .CheckContain(Searcher.TDomain, x => x.TDomain)
                 .Select(x => new FrameworkTenant_View
                 {
-				    ID = x.ID,
+                    ID = x.ID,
                     TCode = x.TCode,
                     TName = x.TName,
                     TDb = x.TDb,
@@ -64,10 +58,9 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkTenantVMs
                 .OrderBy(x => x.ID);
             return query;
         }
-
     }
 
-    public class FrameworkTenant_View : FrameworkTenant{
-
+    public class FrameworkTenant_View : FrameworkTenant
+    {
     }
 }

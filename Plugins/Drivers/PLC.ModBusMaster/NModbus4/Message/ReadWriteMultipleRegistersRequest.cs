@@ -1,9 +1,8 @@
 ﻿namespace Modbus.Message
 {
+    using Data;
     using System;
     using System.IO;
-
-    using Data;
 
     public class ReadWriteMultipleRegistersRequest : AbstractModbusMessage, IModbusRequest
     {

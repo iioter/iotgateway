@@ -1,10 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Linq.Expressions;
@@ -14,9 +11,6 @@ using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core.Extensions;
 using WalkingTec.Mvvm.Core.Models;
 using WalkingTec.Mvvm.Core.Support.FileHandlers;
-using WalkingTec.Mvvm.Core.WorkFlow;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace WalkingTec.Mvvm.Core
 {
@@ -27,6 +21,7 @@ namespace WalkingTec.Mvvm.Core
     public interface IBaseCRUDVM<out T> where T : TopBasePoco, new()
     {
         T Entity { get; }
+
         /// <summary>
         /// 根据主键Id获取Entity
         /// </summary>
@@ -50,17 +45,21 @@ namespace WalkingTec.Mvvm.Core
         /// 修改
         /// </summary>
         void DoEdit(bool updateAllFields);
+
         Task DoEditAsync(bool updateAllFields);
 
         /// <summary>
         /// 删除，对于TopBasePoco进行物理删除，对于PersistPoco把IsValid修改为false
         /// </summary>
         void DoDelete();
+
         Task DoDeleteAsync();
+
         /// <summary>
         /// 彻底删除，对PersistPoco进行物理删除
         /// </summary>
         void DoRealDelete();
+
         Task DoRealDeleteAsync();
 
         /// <summary>
@@ -75,6 +74,7 @@ namespace WalkingTec.Mvvm.Core
         bool ByPassBaseValidation { get; set; }
 
         void Validate();
+
         IModelStateService MSD { get; }
     }
 
@@ -85,6 +85,7 @@ namespace WalkingTec.Mvvm.Core
     public class BaseCRUDVM<TModel> : BaseVM, IBaseCRUDVM<TModel> where TModel : TopBasePoco, new()
     {
         internal static readonly MethodInfo IncludeMethodInfo = typeof(EntityFrameworkQueryableExtensions).GetTypeInfo().GetDeclaredMethods("Include").Single((MethodInfo mi) => mi.GetGenericArguments().Count() == 2 && mi.GetParameters().Any((ParameterInfo pi) => pi.Name == "navigationPropertyPath" && pi.ParameterType != typeof(string)));
+
         internal static readonly MethodInfo ThenIncludeAfterEnumerableMethodInfo = (from mi in typeof(EntityFrameworkQueryableExtensions).GetTypeInfo().GetDeclaredMethods("ThenInclude")
                                                                                     where mi.GetGenericArguments().Count() == 3
                                                                                     select mi).Single(delegate (MethodInfo mi)
@@ -95,6 +96,7 @@ namespace WalkingTec.Mvvm.Core
 
         internal static readonly MethodInfo ThenIncludeAfterReferenceMethodInfo = typeof(EntityFrameworkQueryableExtensions).GetTypeInfo().GetDeclaredMethods("ThenInclude").Single((MethodInfo mi) => mi.GetGenericArguments().Count() == 3 && mi.GetParameters()[0].ParameterType.GenericTypeArguments[1].IsGenericParameter);
         public TModel Entity { get; set; }
+
         [JsonIgnore]
         public bool ByPassBaseValidation { get; set; }
 
@@ -123,6 +125,7 @@ namespace WalkingTec.Mvvm.Core
         {
             return DC.Set<TModel>();
         }
+
         /// <summary>
         /// 设定添加和修改时对于重复数据的判断，子类进行相关操作时应重载这个函数
         /// </summary>
@@ -288,7 +291,7 @@ namespace WalkingTec.Mvvm.Core
                     }
                     if (pro.GetCustomAttribute<NotMappedAttribute>() == null)
                     {
-                        if ((pro.PropertyType.IsList() == false && typeof(TopBasePoco).IsAssignableFrom(pro.PropertyType) == false) || includeInfo.Any(x=>x.t == pro.PropertyType))
+                        if ((pro.PropertyType.IsList() == false && typeof(TopBasePoco).IsAssignableFrom(pro.PropertyType) == false) || includeInfo.Any(x => x.t == pro.PropertyType))
                         {
                             var right = Expression.MakeMemberAccess(pe, pro);
                             if (right != null)
@@ -422,6 +425,7 @@ namespace WalkingTec.Mvvm.Core
             }
 
             #region 更新子表
+
             foreach (var pro in pros)
             {
                 //找到类型为List<xxx>的字段
@@ -506,12 +510,11 @@ namespace WalkingTec.Mvvm.Core
                     }
                 }
             }
-            #endregion
 
+            #endregion 更新子表
 
             //添加数据
             DC.Set<TModel>().Add(Entity);
-
         }
 
         /// <summary>
@@ -540,7 +543,6 @@ namespace WalkingTec.Mvvm.Core
                     fp.DeleteFile(item.ToString(), DC.ReCreate());
                 }
             }
-
         }
 
         public virtual async Task DoEditAsync(bool updateAllFields = false)
@@ -595,7 +597,9 @@ namespace WalkingTec.Mvvm.Core
                     }
                 }
             }
+
             #region 更新子表
+
             foreach (var pro in pros)
             {
                 //找到类型为List<xxx>的字段
@@ -832,8 +836,8 @@ namespace WalkingTec.Mvvm.Core
                     }
                 }
             }
-            #endregion
 
+            #endregion 更新子表
 
             if (updateAllFields == false)
             {
@@ -1049,7 +1053,6 @@ namespace WalkingTec.Mvvm.Core
                 MSD.AddModelError("", CoreProgram._localizer?["Sys.DeleteFailed"]);
             }
         }
-
 
         public virtual async Task DoRealDeleteAsync()
         {
@@ -1334,7 +1337,6 @@ namespace WalkingTec.Mvvm.Core
             return count;
         }
 
-
         /// <summary>
         /// 根据属性信息获取验证字段名
         /// </summary>
@@ -1344,12 +1346,9 @@ namespace WalkingTec.Mvvm.Core
         {
             return new[] { "Entity." + pi.Name };
         }
-
-       
-
     }
 
-    class IncludeInfo
+    internal class IncludeInfo
     {
         public MemberInfo mi { get; set; }
         public Type t { get; set; }
@@ -1357,6 +1356,7 @@ namespace WalkingTec.Mvvm.Core
         public IncludeInfo Pre { get; set; }
 
         private bool? _isnotmapped;
+
         public bool IsNotMapped
         {
             get
@@ -1387,6 +1387,7 @@ namespace WalkingTec.Mvvm.Core
         }
 
         private string _softkey;
+
         public string SoftKey
         {
             get
@@ -1394,13 +1395,13 @@ namespace WalkingTec.Mvvm.Core
                 if (_softkey == null)
                 {
                     _softkey = InnerType.GetCustomAttribute<SoftKeyAttribute>()?.PropertyName ?? "";
-
                 }
                 return _softkey;
             }
         }
 
         private string _softfk;
+
         public string SoftFK
         {
             get
@@ -1408,13 +1409,13 @@ namespace WalkingTec.Mvvm.Core
                 if (_softfk == null)
                 {
                     _softfk = mi.GetCustomAttribute<SoftFKAttribute>()?.PropertyName ?? "";
-
                 }
                 return _softfk;
             }
         }
 
         private Type _innerType;
+
         public Type InnerType
         {
             get

@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
+﻿using IoTGateway.Model;
 using WalkingTec.Mvvm.Core;
-using WalkingTec.Mvvm.Core.Extensions;
-using IoTGateway.Model;
-
 
 namespace IoTGateway.ViewModel.BasicData.DeviceVMs
 {
     public partial class DeviceApiVM : BaseCRUDVM<Device>
     {
-
         public DeviceApiVM()
         {
             SetInclude(x => x.Driver);
@@ -24,7 +16,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
         }
 
         public override void DoAdd()
-        {           
+        {
             base.DoAdd();
         }
 

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace S7.Net.Types
 {
@@ -22,7 +19,6 @@ namespace S7.Net.Types
                     BindingFlags.Instance)
                 .Where(p => p.GetSetMethod() != null);
 #endif
-
         }
 
         private static double GetIncreasedNumberOfBytes(double numBytes, Type type)
@@ -32,10 +28,12 @@ namespace S7.Net.Types
                 case "Boolean":
                     numBytes += 0.125;
                     break;
+
                 case "Byte":
                     numBytes = Math.Ceiling(numBytes);
                     numBytes++;
                     break;
+
                 case "Int16":
                 case "UInt16":
                     numBytes = Math.Ceiling(numBytes);
@@ -43,6 +41,7 @@ namespace S7.Net.Types
                         numBytes++;
                     numBytes += 2;
                     break;
+
                 case "Int32":
                 case "UInt32":
                     numBytes = Math.Ceiling(numBytes);
@@ -50,18 +49,21 @@ namespace S7.Net.Types
                         numBytes++;
                     numBytes += 4;
                     break;
+
                 case "Single":
                     numBytes = Math.Ceiling(numBytes);
                     if ((numBytes / 2 - Math.Floor(numBytes / 2.0)) > 0)
                         numBytes++;
                     numBytes += 4;
                     break;
+
                 case "Double":
                     numBytes = Math.Ceiling(numBytes);
                     if ((numBytes / 2 - Math.Floor(numBytes / 2.0)) > 0)
                         numBytes++;
                     numBytes += 8;
                     break;
+
                 default:
                     var propertyClass = Activator.CreateInstance(type);
                     numBytes = GetClassSize(propertyClass, numBytes, true);
@@ -127,11 +129,13 @@ namespace S7.Net.Types
                         value = false;
                     numBytes += 0.125;
                     break;
+
                 case "Byte":
                     numBytes = Math.Ceiling(numBytes);
                     value = (byte)(bytes[(int)numBytes]);
                     numBytes++;
                     break;
+
                 case "Int16":
                     numBytes = Math.Ceiling(numBytes);
                     if ((numBytes / 2 - Math.Floor(numBytes / 2.0)) > 0)
@@ -141,6 +145,7 @@ namespace S7.Net.Types
                     value = source.ConvertToShort();
                     numBytes += 2;
                     break;
+
                 case "UInt16":
                     numBytes = Math.Ceiling(numBytes);
                     if ((numBytes / 2 - Math.Floor(numBytes / 2.0)) > 0)
@@ -149,6 +154,7 @@ namespace S7.Net.Types
                     value = Word.FromBytes(bytes[(int)numBytes + 1], bytes[(int)numBytes]);
                     numBytes += 2;
                     break;
+
                 case "Int32":
                     numBytes = Math.Ceiling(numBytes);
                     if ((numBytes / 2 - Math.Floor(numBytes / 2.0)) > 0)
@@ -161,6 +167,7 @@ namespace S7.Net.Types
                     value = sourceUInt.ConvertToInt();
                     numBytes += 4;
                     break;
+
                 case "UInt32":
                     numBytes = Math.Ceiling(numBytes);
                     if ((numBytes / 2 - Math.Floor(numBytes / 2.0)) > 0)
@@ -173,6 +180,7 @@ namespace S7.Net.Types
                         bytes[(int)numBytes + 3]);
                     numBytes += 4;
                     break;
+
                 case "Single":
                     numBytes = Math.Ceiling(numBytes);
                     if ((numBytes / 2 - Math.Floor(numBytes / 2.0)) > 0)
@@ -186,6 +194,7 @@ namespace S7.Net.Types
                             bytes[(int)numBytes + 3] });
                     numBytes += 4;
                     break;
+
                 case "Double":
                     numBytes = Math.Ceiling(numBytes);
                     if ((numBytes / 2 - Math.Floor(numBytes / 2.0)) > 0)
@@ -196,6 +205,7 @@ namespace S7.Net.Types
                     value = LReal.FromByteArray(buffer);
                     numBytes += 8;
                     break;
+
                 default:
                     var propClass = Activator.CreateInstance(propertyType);
                     numBytes = FromBytes(propClass, bytes, numBytes);
@@ -261,30 +271,38 @@ namespace S7.Net.Types
                         bytes[bytePos] &= (byte)(~(byte)Math.Pow(2, bitPos));   // is false
                     numBytes += 0.125;
                     break;
+
                 case "Byte":
                     numBytes = (int)Math.Ceiling(numBytes);
                     bytePos = (int)numBytes;
                     bytes[bytePos] = (byte)propertyValue;
                     numBytes++;
                     break;
+
                 case "Int16":
                     bytes2 = Int.ToByteArray((Int16)propertyValue);
                     break;
+
                 case "UInt16":
                     bytes2 = Word.ToByteArray((UInt16)propertyValue);
                     break;
+
                 case "Int32":
                     bytes2 = DInt.ToByteArray((Int32)propertyValue);
                     break;
+
                 case "UInt32":
                     bytes2 = DWord.ToByteArray((UInt32)propertyValue);
                     break;
+
                 case "Single":
                     bytes2 = Real.ToByteArray((float)propertyValue);
                     break;
+
                 case "Double":
                     bytes2 = LReal.ToByteArray((double)propertyValue);
                     break;
+
                 default:
                     numBytes = ToBytes(propertyValue, bytes, numBytes);
                     break;

@@ -65,18 +65,22 @@
                         case "DBB":
                             varType = VarType.Byte;
                             return;
+
                         case "DBW":
                             varType = VarType.Word;
                             return;
+
                         case "DBD":
                             varType = VarType.DWord;
                             return;
+
                         case "DBX":
                             bitNumber = int.Parse(strings[2]);
                             if (bitNumber > 7)
                                 throw new InvalidAddressException("Bit can only be 0-7");
                             varType = VarType.Bit;
                             return;
+
                         default:
                             throw new InvalidAddressException();
                     }
@@ -88,6 +92,7 @@
                     address = int.Parse(input.Substring(2));
                     varType = VarType.Byte;
                     return;
+
                 case "IW":
                 case "EW":
                     // Input word
@@ -96,6 +101,7 @@
                     address = int.Parse(input.Substring(2));
                     varType = VarType.Word;
                     return;
+
                 case "ID":
                 case "ED":
                     // Input double-word
@@ -104,6 +110,7 @@
                     address = int.Parse(input.Substring(2));
                     varType = VarType.DWord;
                     return;
+
                 case "QB":
                 case "AB":
                 case "OB":
@@ -113,6 +120,7 @@
                     address = int.Parse(input.Substring(2));
                     varType = VarType.Byte;
                     return;
+
                 case "QW":
                 case "AW":
                 case "OW":
@@ -122,6 +130,7 @@
                     address = int.Parse(input.Substring(2));
                     varType = VarType.Word;
                     return;
+
                 case "QD":
                 case "AD":
                 case "OD":
@@ -131,6 +140,7 @@
                     address = int.Parse(input.Substring(2));
                     varType = VarType.DWord;
                     return;
+
                 case "MB":
                     // Memory byte
                     dataType = DataType.Memory;
@@ -138,6 +148,7 @@
                     address = int.Parse(input.Substring(2));
                     varType = VarType.Byte;
                     return;
+
                 case "MW":
                     // Memory word
                     dataType = DataType.Memory;
@@ -145,6 +156,7 @@
                     address = int.Parse(input.Substring(2));
                     varType = VarType.Word;
                     return;
+
                 case "MD":
                     // Memory double-word
                     dataType = DataType.Memory;
@@ -152,6 +164,7 @@
                     address = int.Parse(input.Substring(2));
                     varType = VarType.DWord;
                     return;
+
                 default:
                     switch (input.Substring(0, 1))
                     {
@@ -161,6 +174,7 @@
                             dataType = DataType.Input;
                             varType = VarType.Bit;
                             break;
+
                         case "Q":
                         case "A":
                         case "O":
@@ -168,11 +182,13 @@
                             dataType = DataType.Output;
                             varType = VarType.Bit;
                             break;
+
                         case "M":
                             // Memory
                             dataType = DataType.Memory;
                             varType = VarType.Bit;
                             break;
+
                         case "T":
                             // Timer
                             dataType = DataType.Timer;
@@ -180,6 +196,7 @@
                             address = int.Parse(input.Substring(1));
                             varType = VarType.Timer;
                             return;
+
                         case "Z":
                         case "C":
                             // Counter
@@ -188,6 +205,7 @@
                             address = int.Parse(input.Substring(1));
                             varType = VarType.Counter;
                             return;
+
                         default:
                             throw new InvalidAddressException(string.Format("{0} is not a valid address", input.Substring(0, 1)));
                     }

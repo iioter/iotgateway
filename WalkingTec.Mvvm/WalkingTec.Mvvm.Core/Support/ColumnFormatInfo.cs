@@ -2,7 +2,6 @@ using System;
 
 namespace WalkingTec.Mvvm.Core
 {
-
     public class ColumnFormatInfo
     {
         public ColumnFormatTypeEnum FormatType { get; set; }
@@ -38,7 +37,8 @@ namespace WalkingTec.Mvvm.Core
         public RedirectTypesEnum RType { get; set; }
 
         public string Style { get; set; }
-        public static ColumnFormatInfo MakeDialogButton(ButtonTypesEnum buttonType, string url, string buttonText, int? width, int? height,  string title = null, string buttonID = null, bool showDialog = true, bool resizable = true, bool maxed = false,string buttonclass = null, string style=null)
+
+        public static ColumnFormatInfo MakeDialogButton(ButtonTypesEnum buttonType, string url, string buttonText, int? width, int? height, string title = null, string buttonID = null, bool showDialog = true, bool resizable = true, bool maxed = false, string buttonclass = null, string style = null)
         {
             ColumnFormatInfo rv = new ColumnFormatInfo();
             rv.FormatType = ColumnFormatTypeEnum.Dialog;
@@ -96,7 +96,7 @@ namespace WalkingTec.Mvvm.Core
             rv.FormatType = ColumnFormatTypeEnum.Download;
             rv.ButtonType = buttonType;
             rv.FileID = fileID;
-            rv.Text = buttonText?? CoreProgram._localizer?["Sys.Download"];
+            rv.Text = buttonText ?? CoreProgram._localizer?["Sys.Download"];
             rv.ButtonClass = buttonclass;
             rv.Style = style;
             return rv;

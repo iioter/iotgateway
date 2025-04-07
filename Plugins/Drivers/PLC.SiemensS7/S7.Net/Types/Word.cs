@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace S7.Net.Types
+﻿namespace S7.Net.Types
 {
     /// <summary>
     /// Contains the conversion methods to convert Words from S7 plc to C#.
@@ -20,7 +18,6 @@ namespace S7.Net.Types
             return (UInt16)((bytes[0] << 8) | bytes[1]);
         }
 
-
         /// <summary>
         /// Converts 2 bytes to ushort (UInt16)
         /// </summary>
@@ -28,7 +25,6 @@ namespace S7.Net.Types
         {
             return (UInt16)((b2 << 8) | b1);
         }
-
 
         /// <summary>
         /// Converts a ushort (UInt16) to word (2 bytes)
@@ -38,7 +34,7 @@ namespace S7.Net.Types
             byte[] bytes = new byte[2];
 
             bytes[1] = (byte)(value & 0xFF);
-            bytes[0] = (byte)((value>>8) & 0xFF);
+            bytes[0] = (byte)((value >> 8) & 0xFF);
 
             return bytes;
         }
@@ -59,11 +55,11 @@ namespace S7.Net.Types
         /// </summary>
         public static UInt16[] ToArray(byte[] bytes)
         {
-            UInt16[] values = new UInt16[bytes.Length/2];
+            UInt16[] values = new UInt16[bytes.Length / 2];
 
             int counter = 0;
-            for (int cnt = 0; cnt < bytes.Length/2; cnt++)
-                values[cnt] = FromByteArray(new byte[] {bytes[counter++], bytes[counter++]});
+            for (int cnt = 0; cnt < bytes.Length / 2; cnt++)
+                values[cnt] = FromByteArray(new byte[] { bytes[counter++], bytes[counter++] });
 
             return values;
         }

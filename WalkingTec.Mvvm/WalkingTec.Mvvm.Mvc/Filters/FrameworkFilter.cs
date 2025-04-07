@@ -1,24 +1,22 @@
-using System;
-using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
-using WalkingTec.Mvvm.Core;
-using System.Collections.Generic;
-using System.Reflection;
-using WalkingTec.Mvvm.Core.Implement;
-using System.IO;
-using System.Text.RegularExpressions;
-using System.Text;
-using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
-using WalkingTec.Mvvm.Core.Support.Json;
-using System.Text.Json;
-using WalkingTec.Mvvm.Core.Json;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
+using WalkingTec.Mvvm.Core.Json;
+using WalkingTec.Mvvm.Core.Support.Json;
 
 namespace WalkingTec.Mvvm.Mvc.Filters
 {
@@ -100,7 +98,6 @@ namespace WalkingTec.Mvvm.Mvc.Filters
                                 var obj = JsonSerializer.Deserialize<PostedBody>(body, joption);
                                 foreach (var field in obj.ProNames)
                                 {
-
                                     model.FC.Add(field, "");
                                 }
                             }
@@ -229,7 +226,7 @@ namespace WalkingTec.Mvvm.Mvc.Filters
                 {
                     subins = prop.PropertyType.GetConstructor(Type.EmptyTypes).Invoke(null) as BaseVM;
                 }
-                if(subins != null)
+                if (subins != null)
                 {
                     subins.CopyContext(vm);
                     subins.ParentVM = vm;
@@ -241,7 +238,6 @@ namespace WalkingTec.Mvvm.Mvc.Filters
                     SetSubVm(subins);
                 }
             }
-
         }
 
         public override void OnActionExecuted(ActionExecutedContext context)
@@ -421,6 +417,5 @@ namespace WalkingTec.Mvvm.Mvc.Filters
             }
             base.OnResultExecuted(context);
         }
-
     }
 }

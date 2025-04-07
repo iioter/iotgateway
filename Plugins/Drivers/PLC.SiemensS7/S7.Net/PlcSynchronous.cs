@@ -1,9 +1,6 @@
-﻿using S7.Net.Types;
-using System;
-using System.IO;
-using System.Collections.Generic;
+﻿using S7.Net.Helper;
 using S7.Net.Protocol;
-using S7.Net.Helper;
+using S7.Net.Types;
 
 //Implement synchronous methods here
 namespace S7.Net
@@ -25,7 +22,6 @@ namespace S7.Net
                     $"Couldn't establish the connection to {IP}.\nMessage: {exc.Message}", exc);
             }
         }
-
 
         /// <summary>
         /// Reads a number of bytes from a DB starting from a specified index. This handles more than 200 bytes with multiple requests.
@@ -110,7 +106,6 @@ namespace S7.Net
         {
             return ReadStruct(typeof(T), db, startByteAdr) as T?;
         }
-
 
         /// <summary>
         /// Reads all the bytes needed to fill a class in C#, starting from a certain address, and set all the properties values to the value that are read from the PLC.
@@ -326,7 +321,6 @@ namespace S7.Net
         {
             AssertPduSizeForWrite(dataItems);
 
-
             var message = new ByteArray();
             var length = S7WriteMultiple.CreateRequest(message, dataItems);
             var response = RequestTsdu(message.Array, 0, length);
@@ -411,7 +405,6 @@ namespace S7.Net
 
             return package.ToArray();
         }
-
 
         private void WriteBitWithASingleRequest(DataType dataType, int db, int startByteAdr, int bitAdr, bool bitValue)
         {

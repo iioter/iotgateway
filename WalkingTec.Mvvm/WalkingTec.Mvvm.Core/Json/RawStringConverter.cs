@@ -1,11 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text.Unicode;
-using NPOI.SS.Formula.Functions;
-using WalkingTec.Mvvm.Core.Extensions;
 
 namespace WalkingTec.Mvvm.Core.Json
 {
@@ -39,11 +35,10 @@ namespace WalkingTec.Mvvm.Core.Json
                 writer.WriteNullValue();
             }
             else
-            {                
+            {
                 var txt = JsonEncodedText.Encode($"_raw_{value}_raw_", JavaScriptEncoder.UnsafeRelaxedJsonEscaping);
                 writer.WriteStringValue(txt);
             }
         }
     }
-
 }

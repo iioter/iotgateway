@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Support.Json;
 
 namespace WalkingTec.Mvvm.Core

@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
@@ -17,6 +16,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
     public class FrameworkGroupController : BaseController
     {
         #region 查询
+
         [ActionDescription("Sys.Search")]
         public ActionResult Index()
         {
@@ -44,7 +44,8 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
                 return Content(vm.GetError());
             }
         }
-        #endregion
+
+        #endregion 查询
 
         [ActionDescription("Sys.Create")]
         public ActionResult Create()
@@ -160,7 +161,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
             }
             List<string> GroupCode = DC.Set<FrameworkGroup>().CheckIDs(new List<string>(vm.Ids)).Select(x => x.GroupCode).ToList();
             if (!ModelState.IsValid || !vm.DoBatchDelete())
-            {                
+            {
                 return PartialView("BatchDelete", vm);
             }
             else
@@ -208,7 +209,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
         [ActionDescription("_Admin.DataPrivilege")]
         public PartialViewResult DataFunction(string groupcode)
         {
-            var role = Wtm.CreateVM<FrameworkGroupMDVM>(values: x=>x.GroupCode == groupcode);
+            var role = Wtm.CreateVM<FrameworkGroupMDVM>(values: x => x.GroupCode == groupcode);
             return PartialView(role);
         }
 
@@ -248,7 +249,5 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
             }
             return JsonMore(users);
         }
-
     }
-
 }

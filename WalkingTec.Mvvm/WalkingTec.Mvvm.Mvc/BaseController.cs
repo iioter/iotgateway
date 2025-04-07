@@ -1,33 +1,22 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text.Json.Serialization;
 using WalkingTec.Mvvm.Core;
-using WalkingTec.Mvvm.Core.Auth;
 using WalkingTec.Mvvm.Core.Extensions;
-using WalkingTec.Mvvm.Core.Support.Json;
 
 namespace WalkingTec.Mvvm.Mvc
-{    
+{
     public abstract class BaseController : Controller, IBaseController
     {
         [JsonIgnore]
         [BindNever]
         public WTMContext Wtm { get; set; }
-
 
         [JsonIgnore]
         [BindNever]
@@ -71,18 +60,19 @@ namespace WalkingTec.Mvvm.Mvc
         [BindNever]
         public IDataContext DC { get => Wtm?.DC; }
 
-        #endregion
+        #endregion DataContext
 
         #region URL
+
         [JsonIgnore]
         [BindNever]
         public string BaseUrl { get => Wtm?.BaseUrl; }
-        #endregion
+
+        #endregion URL
 
         [JsonIgnore]
         [BindNever]
         public IStringLocalizer Localizer { get => Wtm?.Localizer; }
-
 
         //-------------------------------------------方法------------------------------------//
 
@@ -269,7 +259,6 @@ namespace WalkingTec.Mvvm.Mvc
         //    return CreateVM(typeof(T), null, Ids, dir, passInit) as T;
         //}
 
-
         ///// <summary>
         ///// Create a ViewModel, and pass Session,cache,dc...etc to the viewmodel
         ///// </summary>
@@ -344,6 +333,7 @@ namespace WalkingTec.Mvvm.Mvc
         //#endregion
 
         #region ReInit model
+
         private void SetReInit(ModelStateDictionary msd, BaseVM model)
         {
             var reinit = model.GetType().GetTypeInfo().GetCustomAttributes(typeof(ReInitAttribute), false).Cast<ReInitAttribute>().SingleOrDefault();
@@ -363,9 +353,11 @@ namespace WalkingTec.Mvvm.Mvc
                 }
             }
         }
-        #endregion
+
+        #endregion ReInit model
 
         #region Validate model
+
         [NonAction]
         public Dictionary<string, string> RedoValidation(object item)
         {
@@ -382,9 +374,11 @@ namespace WalkingTec.Mvvm.Mvc
 
             return rv;
         }
-        #endregion
+
+        #endregion Validate model
 
         #region update viewmodel
+
         /// <summary>
         /// Set viewmodel's properties to the matching items posted by user
         /// </summary>
@@ -408,7 +402,8 @@ namespace WalkingTec.Mvvm.Mvc
                 return false;
             }
         }
-        #endregion
+
+        #endregion update viewmodel
 
         [NonAction]
         public FResult FFResult()
@@ -429,7 +424,5 @@ namespace WalkingTec.Mvvm.Mvc
         {
             return Ok(new { Msg = msg, Code = statusCode, Data = data });
         }
-
     }
-
 }

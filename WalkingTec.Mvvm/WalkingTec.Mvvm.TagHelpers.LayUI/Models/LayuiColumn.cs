@@ -1,4 +1,3 @@
-using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Json;
@@ -15,14 +14,17 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         /// 常规列，无需设定
         /// </summary>
         Normal = 0,
+
         /// <summary>
         /// 复选框列
         /// </summary>
         Checkbox,
+
         /// <summary>
         /// 空列
         /// </summary>
         Space,
+
         /// <summary>
         /// 序号列
         /// </summary>
@@ -54,7 +56,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         [JsonPropertyName("toolbar")]
         public string Toolbar { get; set; }
 
-        #endregion
+        #endregion Special
 
         /// <summary>
         /// 设定列类型。
@@ -87,11 +89,13 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         /// </summary>
         [JsonPropertyName("width")]
         public int? Width { get; set; }
+
         /// <summary>
         /// //监听单元格事件
         /// </summary>
         [JsonPropertyName("event")]
         public string Event { get; set; }
+
         /// <summary>
         /// 即横跨的单元格数，这种情况下不用设置field和width
         /// </summary>
@@ -161,6 +165,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
 
         [JsonPropertyName("totalRowText")]
         public string TotalRowText { get; set; }
-        #endregion
+
+        #endregion Interface Property
     }
 }

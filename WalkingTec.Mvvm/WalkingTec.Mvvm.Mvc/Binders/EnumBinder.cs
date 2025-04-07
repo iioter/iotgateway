@@ -1,7 +1,5 @@
-using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace WalkingTec.Mvvm.Mvc.Binders
@@ -47,7 +45,7 @@ namespace WalkingTec.Mvvm.Mvc.Binders
             }
             else
             {
-                bindingContext.Result = ModelBindingResult.Success(Enum.Parse(bindingContext.ModelType,value));
+                bindingContext.Result = ModelBindingResult.Success(Enum.Parse(bindingContext.ModelType, value));
             }
             return Task.CompletedTask;
         }

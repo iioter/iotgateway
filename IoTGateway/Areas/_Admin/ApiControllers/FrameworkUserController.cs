@@ -1,10 +1,10 @@
 // WTM默认页面 Wtm buidin page
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 using WalkingTec.Mvvm.Mvc;
@@ -70,7 +70,6 @@ namespace WalkingTec.Mvvm.Admin.Api
                     return Ok(vm.Entity);
                 }
             }
-
         }
 
         [ActionDescription("Sys.Edit")]
@@ -204,7 +203,6 @@ namespace WalkingTec.Mvvm.Admin.Api
         [HttpPost("[action]")]
         public ActionResult Import(FrameworkUserImportVM vm)
         {
-
             if (ConfigInfo.HasMainHost && Wtm.LoginUserInfo?.CurrentTenant == null)
             {
                 return Content(Localizer["_Admin.HasMainHost"]);
@@ -255,7 +253,6 @@ namespace WalkingTec.Mvvm.Admin.Api
             return Ok(DC.Set<FrameworkGroup>().GetTreeSelectListItems(Wtm, x => x.GroupName, x => x.GroupCode));
         }
 
-
         [HttpGet("GetUserById")]
         [AllRights]
         public IActionResult GetUserById(string keywords)
@@ -276,7 +273,7 @@ namespace WalkingTec.Mvvm.Admin.Api
             {
                 return Request.RedirectCall(Wtm, "/api/_frameworkuser/GetUserByGroup").Result;
             }
-            var users = DC.Set<FrameworkUserGroup>().Where(x => x.GroupCode == keywords).Select(x=>x.UserCode).ToList();
+            var users = DC.Set<FrameworkUserGroup>().Where(x => x.GroupCode == keywords).Select(x => x.UserCode).ToList();
             return Ok(users);
         }
 

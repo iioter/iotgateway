@@ -1,11 +1,10 @@
 // WTM默认页面 Wtm buidin page
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 
@@ -15,9 +14,9 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkUserVms
     {
         [Display(Name = "_Admin.Role")]
         public List<string> SelectedRolesCodes { get; set; }
+
         [Display(Name = "_Admin.Group")]
         public List<string> SelectedGroupCodes { get; set; }
-
 
         public FrameworkUserVM()
         {

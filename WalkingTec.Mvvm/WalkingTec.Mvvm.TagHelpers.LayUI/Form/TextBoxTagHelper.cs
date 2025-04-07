@@ -1,6 +1,6 @@
-using System.Net;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using System.Net;
 
 namespace WalkingTec.Mvvm.TagHelpers.LayUI
 {
@@ -15,7 +15,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         public string LinkId { get; set; }
         public string TriggerUrl { get; set; }
 
-
         /// <summary>
         /// 文本时触发的js函数，func(data)格式;
         /// <para>
@@ -23,6 +22,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         /// </para>
         /// </summary>
         public string ChangeFunc { get; set; }
+
         /// <summary>
         /// 文本修改后焦点离开时触发的js函数，func(data)格式;
         /// <para>
@@ -31,18 +31,18 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         /// </summary>
         public string DoneFunc { get; set; }
 
-
         public bool IsPassword { get; set; }
+
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             string placeHolder = EmptyText ?? "";
-            string type = IsPassword ? "password":"text";
+            string type = IsPassword ? "password" : "text";
             output.TagName = "input";
             output.TagMode = TagMode.StartTagOnly;
             output.Attributes.Add("type", type);
             output.Attributes.Add("name", Field.Name);
             output.Attributes.Add("wtm-name", Field.Name);
-            if(string.IsNullOrEmpty(ChangeFunc) == false)
+            if (string.IsNullOrEmpty(ChangeFunc) == false)
             {
                 output.Attributes.Add("oninput", $"{FormatFuncName(ChangeFunc, false)}(this.value)");
             }
@@ -86,5 +86,4 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             base.Process(context, output);
         }
     }
-
 }

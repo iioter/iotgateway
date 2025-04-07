@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace S7.Net.Types
+﻿namespace S7.Net.Types
 {
     /// <summary>
     /// Contains the conversion methods to convert DInt from S7 plc to C# int (Int32).
@@ -18,7 +16,6 @@ namespace S7.Net.Types
             }
             return bytes[0] << 24 | bytes[1] << 16 | bytes[2] << 8 | bytes[3];
         }
-
 
         /// <summary>
         /// Converts a int (Int32) to S7 DInt (4 bytes)
@@ -59,7 +56,5 @@ namespace S7.Net.Types
 
             return values;
         }
-        
-
     }
 }

@@ -1,5 +1,4 @@
 // WTM默认页面 Wtm buidin page
-using System.Collections.Generic;
 using WalkingTec.Mvvm.Core;
 
 namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkUserVms
@@ -18,7 +17,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkUserVms
         protected override void InitVM()
         {
         }
-
     }
 
     public class FrameworkUserImportVM : BaseImportVM<FrameworkUserTemplateVM, FrameworkUser>
@@ -34,5 +32,4 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkUserVms
             return base.BatchSaveData();
         }
     }
-
 }

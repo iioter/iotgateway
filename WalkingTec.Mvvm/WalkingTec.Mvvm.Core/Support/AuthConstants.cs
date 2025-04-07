@@ -12,22 +12,26 @@ namespace WalkingTec.Mvvm.Core.Auth
             // Summary:
             //     Unique Identifier for the End-User at the Issuer.
             public const string Subject = "itcode";
+
             //
             // Summary:
             //     The iat (issued at) claim identifies the time at which the JWT was issued, ,
             //     specified as the number of seconds from 1970-01-01T0:0:0Z
             public const string IssuedAt = "iat";
+
             //
             // Summary:
             //     Authentication Methods References. JSON array of strings that are identifiers
             //     for authentication methods used in the authentication.
             public const string AuthenticationMethod = "amr";
+
             //
             // Summary:
             //     Session identifier. This represents a Session of an OP at an RP to a User Agent
             //     or device for a logged-in End-User. Its contents are unique to the OP and opaque
             //     to the RP.
             public const string SessionId = "sid";
+
             //
             // Summary:
             //     Authentication Context Class Reference. String specifying an Authentication Context
@@ -43,6 +47,7 @@ namespace WalkingTec.Mvvm.Core.Auth
             //     agree upon the meanings of the values used, which may be context-specific. The
             //     acr value is a case sensitive string.
             public const string AuthenticationContextClassReference = "acr";
+
             //
             // Summary:
             //     Time when the End-User authentication occurred. Its value is a JSON number representing
@@ -50,6 +55,7 @@ namespace WalkingTec.Mvvm.Core.Auth
             //     When a max_age request is made or when auth_time is requested as an Essential
             //     Claim, then this Claim is REQUIRED; otherwise, its inclusion is OPTIONAL.
             public const string AuthenticationTime = "auth_time";
+
             //
             // Summary:
             //     The party to which the ID Token was issued. If present, it MUST contain the OAuth
@@ -58,6 +64,7 @@ namespace WalkingTec.Mvvm.Core.Auth
             //     It MAY be included even when the authorized party is the same as the sole audience.
             //     The azp value is a case sensitive string containing a StringOrURI value.
             public const string AuthorizedParty = "azp";
+
             //
             // Summary:
             //     Access Token hash value. Its value is the base64url encoding of the left-most
@@ -67,6 +74,7 @@ namespace WalkingTec.Mvvm.Core.Auth
             //     the access_token value with SHA-256, then take the left-most 128 bits and base64url
             //     encode them. The at_hash value is a case sensitive string.
             public const string AccessTokenHash = "at_hash";
+
             //
             // Summary:
             //     Code hash value. Its value is the base64url encoding of the left-most half of
@@ -76,12 +84,14 @@ namespace WalkingTec.Mvvm.Core.Auth
             //     value with SHA-512, then take the left-most 256 bits and base64url encode them.
             //     The c_hash value is a case sensitive string.
             public const string AuthorizationCodeHash = "c_hash";
+
             //
             // Summary:
             //     Time the End-User's information was last updated. Its value is a JSON number
             //     representing the number of seconds from 1970-01-01T0:0:0Z as measured in UTC
             //     until the date/time.
             public const string UpdatedAt = "updated_at";
+
             //
             // Summary:
             //     String value used to associate a Client session with an ID Token, and to mitigate
@@ -94,15 +104,18 @@ namespace WalkingTec.Mvvm.Core.Auth
             //     perform no other processing on nonce values used. The nonce value is a case sensitive
             //     string.
             public const string Nonce = "nonce";
+
             //
             // Summary:
             //     Defines a set of event statements that each may add additional claims to fully
             //     describe a single logical event that has occurred.
             public const string Events = "events";
+
             //
             // Summary:
             //     OAuth 2.0 Client Identifier valid at the Authorization Server.
             public const string ClientId = "client_id";
+
             //
             // Summary:
             //     OpenID Connect requests MUST contain the "openid" scope value. If the openid
@@ -110,6 +123,7 @@ namespace WalkingTec.Mvvm.Core.Auth
             //     values MAY be present. Scope values used that are not understood by an implementation
             //     SHOULD be ignored.
             public const string Scope = "scope";
+
             //
             // Summary:
             //     The "act" (actor) claim provides a means within a JWT to express that delegation
@@ -118,6 +132,7 @@ namespace WalkingTec.Mvvm.Core.Auth
             //     that identify the actor. The claims that make up the "act" claim identify and
             //     possibly provide additional information about the actor.
             public const string Actor = "act";
+
             //
             // Summary:
             //     The "may_act" claim makes a statement that one party is authorized to become
@@ -125,20 +140,25 @@ namespace WalkingTec.Mvvm.Core.Auth
             //     and members in the JSON object are claims that identify the party that is asserted
             //     as being eligible to act for the party identified by the JWT containing the claim.
             public const string MayAct = "may_act";
+
             //
             // Summary:
             //     an identifier
             public const string Id = "id";
+
             //
             // Summary:
             //     The identity provider
             public const string IdentityProvider = "idp";
+
             //
             // Summary:
             //     The role
             public const string Role = "role";
+
             public const string TenantCode = "tenant";
             public const string RToken = "rtoken";
+
             //
             // Summary:
             //     JWT ID. A unique identifier for the token, which can be used to prevent reuse
@@ -146,52 +166,61 @@ namespace WalkingTec.Mvvm.Core.Auth
             //     were negotiated between the parties; any such negotiation is beyond the scope
             //     of this specification.
             public const string JwtId = "jti";
+
             //
             // Summary:
             //     The exp (expiration time) claim identifies the expiration time on or after which
             //     the token MUST NOT be accepted for processing, specified as the number of seconds
             //     from 1970-01-01T0:0:0Z
             public const string Expiration = "exp";
+
             //
             // Summary:
             //     The time before which the JWT MUST NOT be accepted for processing, specified
             //     as the number of seconds from 1970-01-01T0:0:0Z
             public const string NotBefore = "nbf";
+
             //
             // Summary:
             //     Issuer Identifier for the Issuer of the response. The iss value is a case sensitive
             //     URL using the https scheme that contains scheme, host, and optionally, port number
             //     and path components and no query or fragment components.
             public const string Issuer = "iss";
+
             //
             // Summary:
             //     End-User's full name in displayable form including all name parts, possibly including
             //     titles and suffixes, ordered according to the End-User's locale and preferences.
             public const string Name = "name";
+
             //
             // Summary:
             //     Given name(s) or first name(s) of the End-User. Note that in some cultures, people
             //     can have multiple given names; all can be present, with the names being separated
             //     by space characters.
             public const string GivenName = "given_name";
+
             //
             // Summary:
             //     Surname(s) or last name(s) of the End-User. Note that in some cultures, people
             //     can have multiple family names or no family name; all can be present, with the
             //     names being separated by space characters.
             public const string FamilyName = "family_name";
+
             //
             // Summary:
             //     Middle name(s) of the End-User. Note that in some cultures, people can have multiple
             //     middle names; all can be present, with the names being separated by space characters.
             //     Also note that in some cultures, middle names are not used.
             public const string MiddleName = "middle_name";
+
             //
             // Summary:
             //     Casual name of the End-User that may or may not be the same as the given_name.
             //     For instance, a nickname value of Mike might be returned alongside a given_name
             //     value of Michael.
             public const string NickName = "nickname";
+
             //
             // Summary:
             //     Shorthand name by which the End-User wishes to be referred to at the RP, such
@@ -202,11 +231,13 @@ namespace WalkingTec.Mvvm.Core.Auth
             // Remarks:
             //     The RP MUST NOT rely upon this value being unique, as discussed in http://openid.net/specs/openid-connect-basic-1_0-32.html#ClaimStability
             public const string PreferredUserName = "preferred_username";
+
             //
             // Summary:
             //     URL of the End-User's profile page. The contents of this Web page SHOULD be about
             //     the End-User.
             public const string Profile = "profile";
+
             //
             // Summary:
             //     URL of the End-User's profile picture. This URL MUST refer to an image file (for
@@ -218,17 +249,20 @@ namespace WalkingTec.Mvvm.Core.Auth
             //     suitable for displaying when describing the End-User, rather than an arbitrary
             //     photo taken by the End-User.
             public const string Picture = "picture";
+
             //
             // Summary:
             //     URL of the End-User's Web page or blog. This Web page SHOULD contain information
             //     published by the End-User or an organization that the End-User is affiliated
             //     with.
             public const string WebSite = "website";
+
             //
             // Summary:
             //     End-User's preferred e-mail address. Its value MUST conform to the RFC 5322 [RFC5322]
             //     addr-spec syntax. The relying party MUST NOT rely upon this value being unique
             public const string Email = "email";
+
             //
             // Summary:
             //     "true" if the End-User's e-mail address has been verified; otherwise "false".
@@ -240,11 +274,13 @@ namespace WalkingTec.Mvvm.Core.Auth
             //     is context-specific, and dependent upon the trust framework or contractual agreements
             //     within which the parties are operating.
             public const string EmailVerified = "email_verified";
+
             //
             // Summary:
             //     End-User's gender. Values defined by this specification are "female" and "male".
             //     Other values MAY be used when neither of the defined values are applicable.
             public const string Gender = "gender";
+
             //
             // Summary:
             //     End-User's birthday, represented as an ISO 8601:2004 [ISO8601‑2004] YYYY-MM-DD
@@ -254,11 +290,13 @@ namespace WalkingTec.Mvvm.Core.Auth
             //     so the implementers need to take this factor into account to correctly process
             //     the dates.
             public const string BirthDate = "birthdate";
+
             //
             // Summary:
             //     String from the time zone database (http://www.twinsun.com/tz/tz-link.htm) representing
             //     the End-User's time zone. For example, Europe/Paris or America/Los_Angeles.
             public const string ZoneInfo = "zoneinfo";
+
             //
             // Summary:
             //     End-User's locale, represented as a BCP47 [RFC5646] language tag. This is typically
@@ -268,6 +306,7 @@ namespace WalkingTec.Mvvm.Core.Auth
             //     as the separator rather than a dash, for example, en_US; Relying Parties MAY
             //     choose to accept this locale syntax as well.
             public const string Locale = "locale";
+
             //
             // Summary:
             //     End-User's preferred telephone number. E.164 (https://www.itu.int/rec/T-REC-E.164/e)
@@ -276,6 +315,7 @@ namespace WalkingTec.Mvvm.Core.Auth
             //     that the extension be represented using the RFC 3966 [RFC3966] extension syntax,
             //     for example, +1 (604) 555-1234;ext=5678.
             public const string PhoneNumber = "phone_number";
+
             //
             // Summary:
             //     True if the End-User's phone number has been verified; otherwise false. When
@@ -289,11 +329,13 @@ namespace WalkingTec.Mvvm.Core.Auth
             //     operating. When true, the phone_number Claim MUST be in E.164 format and any
             //     extensions MUST be represented in RFC 3966 format.
             public const string PhoneNumberVerified = "phone_number_verified";
+
             //
             // Summary:
             //     End-User's preferred postal address. The value of the address member is a JSON
             //     structure containing some or all of the members defined in http://openid.net/specs/openid-connect-basic-1_0-32.html#AddressClaim
             public const string Address = "address";
+
             //
             // Summary:
             //     Audience(s) that this ID Token is intended for. It MUST contain the OAuth 2.0
@@ -302,10 +344,12 @@ namespace WalkingTec.Mvvm.Core.Auth
             //     strings. In the common special case when there is one audience, the aud value
             //     MAY be a single case sensitive string.
             public const string Audience = "aud";
+
             //
             // Summary:
             //     The reference token identifier
             public const string ReferenceTokenId = "reference_token_id";
+
             //
             // Summary:
             //     The confirmation

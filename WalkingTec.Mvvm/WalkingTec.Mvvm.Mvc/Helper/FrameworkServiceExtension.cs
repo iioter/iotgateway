@@ -1,14 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Globalization;
-using System.IdentityModel.Tokens.Jwt;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Reflection;
-using System.Runtime.Loader;
-using System.Text;
+using DUWENINK.Captcha.DI;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -29,11 +19,24 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.DependencyModel.Resolution;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.IdentityModel.Tokens.Jwt;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Loader;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Auth;
 using WalkingTec.Mvvm.Core.Extensions;
@@ -43,21 +46,11 @@ using WalkingTec.Mvvm.Mvc.Auth;
 using WalkingTec.Mvvm.Mvc.Filters;
 using WalkingTec.Mvvm.Mvc.Helper;
 using WalkingTec.Mvvm.TagHelpers.LayUI;
-using Microsoft.AspNetCore.SpaServices.Extensions;
-using Microsoft.Extensions.FileProviders;
-using System.Text.RegularExpressions;
-using System.Xml.Linq;
-using WalkingTec.Mvvm.Core.WorkFlow;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
-using System.Threading.Tasks;
-using DUWENINK.Captcha.DI;
-using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace WalkingTec.Mvvm.Mvc
 {
     public static class FrameworkServiceExtension
     {
-
         //private static Configs _wtmconfigs;
         //private static Configs WtmConfigs
         //{
@@ -71,9 +64,6 @@ namespace WalkingTec.Mvvm.Mvc
         //        return _wtmconfigs;
         //    }
         //}
-
-
-
 
         private static GlobalData GetGlobalData()
         {
@@ -538,7 +528,7 @@ namespace WalkingTec.Mvvm.Mvc
                 var dc = item.CreateDC();
                 dc.EnsureCreate();
             }
-            services.AddVersionedApiExplorer(o=>
+            services.AddVersionedApiExplorer(o =>
             {
                 o.GroupNameFormat = "'v'VVV";
                 o.SubstituteApiVersionInUrl = true;
@@ -590,6 +580,7 @@ namespace WalkingTec.Mvvm.Mvc
             });
             return services;
         }
+
         public static IServiceCollection AddWtmSession(this IServiceCollection services, int timeout, IConfiguration config)
         {
             var conf = config.Get<Configs>();
@@ -600,6 +591,7 @@ namespace WalkingTec.Mvvm.Mvc
             });
             return services;
         }
+
         public static IServiceCollection AddWtmAuthentication(this IServiceCollection services, IConfiguration config)
         {
             var conf = config.Get<Configs>();
@@ -654,11 +646,12 @@ namespace WalkingTec.Mvvm.Mvc
                                  }
                                  return Task.CompletedTask;
                              },
-                             OnTokenValidated = (context) => {
+                             OnTokenValidated = (context) =>
+                             {
                                  JsonWebToken token = context.SecurityToken as JsonWebToken;
                                  return Task.FromResult(token);
                              }
-                            };
+                         };
                      })
                    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
                     {
@@ -709,7 +702,6 @@ namespace WalkingTec.Mvvm.Mvc
                     Name = "Authorization",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.ApiKey
-
                 };
                 c.AddSecurityDefinition("Bearer", bearer);
                 var sr = new OpenApiSecurityRequirement();
@@ -821,7 +813,6 @@ namespace WalkingTec.Mvvm.Mvc
                 var menuCacheKey = nameof(GlobalData.AllMenus);
                 if (cache.TryGetValue(menuCacheKey, out List<SimpleMenu> rv) == false)
                 {
-
                     var data = GetAllMenus(modules, configs.IsQuickDebug, configs.Connections);
                     cache.Add(menuCacheKey, data, new DistributedCacheEntryOptions() { AbsoluteExpirationRelativeToNow = new TimeSpan(1, 0, 0) });
                     menus = data;
@@ -855,7 +846,7 @@ namespace WalkingTec.Mvvm.Mvc
                             var _all = dc.Set<FrameworkTenant>().IgnoreQueryFilters().Where(x => x.Enabled).ToList();
                             foreach (var item in _all)
                             {
-                                if(tenants.Any(x=>x.ID == item.ID) == false)
+                                if (tenants.Any(x => x.ID == item.ID) == false)
                                 {
                                     tenants.Add(item);
                                 }
@@ -887,9 +878,7 @@ namespace WalkingTec.Mvvm.Mvc
                                             catch { }
                                         }
                                     }
-
                                 }
-
                             }
                         }
                     }
@@ -961,10 +950,10 @@ namespace WalkingTec.Mvvm.Mvc
                 {
                     fixdc.DataInit(gd.AllModule, isspa == true || test != null).Wait();
                 }
-
             }
             return app;
         }
+
         public static IApplicationBuilder UseWtmMultiLanguages(this IApplicationBuilder app)
         {
             var configs = app.ApplicationServices.GetRequiredService<IOptionsMonitor<Configs>>().CurrentValue;
@@ -981,6 +970,7 @@ namespace WalkingTec.Mvvm.Mvc
             }
             return app;
         }
+
         public static IApplicationBuilder UseWtmCrossDomain(this IApplicationBuilder app)
         {
             var configs = app.ApplicationServices.GetRequiredService<IOptionsMonitor<Configs>>().CurrentValue;
@@ -1009,7 +999,6 @@ namespace WalkingTec.Mvvm.Mvc
             });
             return app;
         }
-
 
         public static IApplicationBuilder UseWtmSwagger(this IApplicationBuilder app, bool showInDebugOnly = true)
         {
@@ -1040,8 +1029,5 @@ namespace WalkingTec.Mvvm.Mvc
 
             return app;
         }
-
     }
-
-
 }

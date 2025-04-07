@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
@@ -8,12 +7,11 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
     [HtmlTargetElement("wt:image", TagStructure = TagStructure.WithoutEndTag)]
     public class ImageTagHelper : BaseFieldTag
     {
-
         public string Url { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            if(HideLabel == null)
+            if (HideLabel == null)
             {
                 HideLabel = true;
             }
@@ -42,6 +40,5 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 output.Attributes.Add("src", Url);
             base.Process(context, output);
         }
-
     }
 }

@@ -1,6 +1,6 @@
-﻿using PluginInterface;
-using IoTClient.Clients.PLC;
+﻿using IoTClient.Clients.PLC;
 using Microsoft.Extensions.Logging;
+using PluginInterface;
 
 namespace PLC.OmronFins
 {
@@ -24,7 +24,7 @@ namespace PLC.OmronFins
 
         [ConfigParameter("最小通讯周期ms")] public uint MinPeriod { get; set; } = 3000;
 
-        #endregion
+        #endregion 配置参数
 
         #region 生命周期
 
@@ -58,7 +58,6 @@ namespace PLC.OmronFins
 
                 _plc = new OmronFinsClient(IpAddress, Port);
                 _plc.Open();
-
             }
             catch (Exception ex)
             {
@@ -67,7 +66,6 @@ namespace PLC.OmronFins
             }
             return IsConnected;
         }
-
 
         /// <summary>
         /// 断开
@@ -101,14 +99,14 @@ namespace PLC.OmronFins
 
                 // Suppress finalization.
                 GC.SuppressFinalize(this);
-
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Device:[{_device}],Dispose(),Error");
             }
         }
-        #endregion
+
+        #endregion 生命周期
 
         #region 读写方法
 
@@ -131,45 +129,59 @@ namespace PLC.OmronFins
                         case DataTypeEnum.Bit:
                             ret.Value = _plc.ReadBoolean(ioArg.Address).Value == true ? 1 : 0;
                             break;
+
                         case DataTypeEnum.Bool:
                             ret.Value = _plc.ReadBoolean(ioArg.Address).Value;
                             break;
+
                         case DataTypeEnum.UByte:
                             ret.Value = _plc.ReadByte(ioArg.Address).Value;
                             break;
+
                         case DataTypeEnum.Byte:
                             ret.Value = (sbyte)_plc.ReadByte(ioArg.Address).Value;
                             break;
+
                         case DataTypeEnum.Uint16:
                             ret.Value = _plc.ReadUInt16(ioArg.Address).Value;
                             break;
+
                         case DataTypeEnum.Int16:
                             ret.Value = _plc.ReadInt16(ioArg.Address).Value;
                             break;
+
                         case DataTypeEnum.Uint32:
                             ret.Value = _plc.ReadUInt32(ioArg.Address).Value;
                             break;
+
                         case DataTypeEnum.Int32:
                             ret.Value = _plc.ReadInt32(ioArg.Address).Value;
                             break;
+
                         case DataTypeEnum.Float:
                             ret.Value = _plc.ReadFloat(ioArg.Address).Value;
                             break;
+
                         case DataTypeEnum.Double:
                             ret.Value = _plc.ReadDouble(ioArg.Address).Value;
                             break;
+
                         case DataTypeEnum.Uint64:
                             ret.Value = _plc.ReadUInt64(ioArg.Address).Value;
                             break;
+
                         case DataTypeEnum.Int64:
                             ret.Value = _plc.ReadInt64(ioArg.Address).Value;
                             break;
+
                         case DataTypeEnum.AsciiString:
                             ret.Value = _plc.ReadString(ioArg.Address);
                             break;
+
                         case DataTypeEnum.Utf8String:
                             ret.Value = _plc.ReadString(ioArg.Address);
                             break;
+
                         default:
                             ret.StatusType = VaribaleStatusTypeEnum.Bad;
                             ret.Message = $"读取失败,不支持的类型:{ioArg.ValueType}";
@@ -204,7 +216,7 @@ namespace PLC.OmronFins
             await Task.CompletedTask;
             return rpcResponse;
         }
-        #endregion
 
+        #endregion 读写方法
     }
 }

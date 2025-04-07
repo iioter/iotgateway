@@ -1,8 +1,8 @@
 // WTM默认页面 Wtm buidin page
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 using WalkingTec.Mvvm.Mvc;
@@ -22,7 +22,7 @@ namespace WalkingTec.Mvvm.Admin.Api
         {
             if (ModelState.IsValid)
             {
-                var vm = Wtm.CreateVM<ActionLogListVM>(passInit:true);
+                var vm = Wtm.CreateVM<ActionLogListVM>(passInit: true);
                 vm.Searcher = searcher;
                 return Content(vm.GetJson());
             }
@@ -62,7 +62,6 @@ namespace WalkingTec.Mvvm.Admin.Api
                 return Ok(ids.Count());
             }
         }
-
 
         [ActionDescription("Sys.Export")]
         [HttpPost("[action]")]

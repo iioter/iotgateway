@@ -1,7 +1,4 @@
 // WTM默认页面 Wtm buidin page
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WalkingTec.Mvvm.Core;
@@ -25,7 +22,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
         [HttpPost]
         public string Search(ActionLogSearcher searcher)
         {
-            var vm = Wtm.CreateVM<ActionLogListVM>(passInit:true);
+            var vm = Wtm.CreateVM<ActionLogListVM>(passInit: true);
             if (ModelState.IsValid)
             {
                 vm.Searcher = searcher;
@@ -36,7 +33,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
                 return vm.GetError();
             }
         }
-
 
         [HttpGet]
         [ActionDescription("Sys.Details")]
@@ -74,6 +70,5 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
                 return FFResult().CloseDialog().RefreshGrid().Alert(Localizer["Sys.BatchDeleteSuccess", vm.Ids.Length]);
             }
         }
-
     }
 }

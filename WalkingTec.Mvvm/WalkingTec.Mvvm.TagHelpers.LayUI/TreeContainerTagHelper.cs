@@ -16,6 +16,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
     {
         protected const string REQUIRED_ATTR_NAME = "items";
         public ModelExpression Items { get; set; }
+
         /// <summary>
         /// 加载页面之前执行
         /// </summary>
@@ -30,6 +31,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         /// 默认加载的页面
         /// </summary>
         public string AutoLoadUrl { get; set; }
+
         /// <summary>
         /// 加载页面之后执行
         /// </summary>
@@ -41,9 +43,9 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
 
         //当嵌套Grid时使用，树会把点击节点的ID传递给绑定的IdField，比如Searcher.xxxId
         public ModelExpression IdField { get; set; }
+
         //当嵌套Grid时使用，树会把点击节点的层级（从0开始的整形）传递给绑定的LevelField，比如Searcher.level
         public ModelExpression LevelField { get; set; }
-
 
         private string GetFirstNodeUrl(IEnumerable<TreeSelectListItem> nodes)
         {
@@ -62,6 +64,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 return node.Url;
             }
         }
+
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "div";
@@ -113,7 +116,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                             cusmtomclick += $@"
     layui.table.reload('{gridid}',{{url:{gridid}url, where: {gridid}defaultfilter.where}});
 ";
-
                         }
                         else if (string.IsNullOrEmpty(insideContent))
                         {
@@ -173,7 +175,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
 
                 var selecteditem = GetSelectedItem(treeitems);
 
-
                 var script = $@"
 <div id=""div{Id}outer"" class=""layui-col-md2 donotuse_pdiv"" style=""padding-right:10px;border-right:solid 1px #aaa;"">
 <div id=""div{Id}"" class=""donotuse_fill"" style=""overflow:auto;height:10px;"">
@@ -182,12 +183,10 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
 <div id=""div_{Id}"" style=""box-sizing:border-box"" class=""layui-col-md10 donotuse_pdiv"">{insideContent}</div>
 <script>
 var top{Id}selected = {{}};
-{
-    (selecteditem==null?"": @$"
+{(selecteditem == null ? "" : @$"
     top{Id}selected.{idfieldname} = '{selecteditem.Id}';
     top{Id}selected.{levelfieldname} = {selecteditem.Level};
-")
-}
+")}
 layui.use(['tree'],function(){{
   var last{Id} = null;
   var treecontainer{Id} = layui.tree.render({{
@@ -262,6 +261,5 @@ layui.use(['tree'],function(){{
             }
             return null;
         }
-
     }
 }

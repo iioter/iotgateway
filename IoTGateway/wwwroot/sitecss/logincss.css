@@ -57,16 +57,16 @@ input:-webkit-autofill {
     transition: all .2s;
 }
 
-.login-form h1 {
-    font-size: 50px;
-    text-align: center;
-    margin-bottom: 20px;
-    margin: 0;
-    padding: 0;
-    font-family: "PingFangSC-Regular";
-    list-style: none;
-    text-decoration: none;
-}
+    .login-form h1 {
+        font-size: 50px;
+        text-align: center;
+        margin-bottom: 20px;
+        margin: 0;
+        padding: 0;
+        font-family: "PingFangSC-Regular";
+        list-style: none;
+        text-decoration: none;
+    }
 
 @media (max-width: 644px) {
     .login-form {
@@ -177,4 +177,3 @@ li i.login-code {
     background-attachment: fixed;
     background-size: cover;
 }
-

@@ -29,15 +29,19 @@ namespace Plugin
                 case "oracle":
                     DbType = DBTypeEnum.Oracle;
                     break;
+
                 case "mysql":
                     DbType = DBTypeEnum.MySql;
                     break;
+
                 case "pgsql":
                     DbType = DBTypeEnum.PgSql;
                     break;
+
                 case "sqlite":
                     DbType = DBTypeEnum.SQLite;
                     break;
+
                 case "memory":
                     DbType = DBTypeEnum.Memory;
                     break;
@@ -51,13 +55,13 @@ namespace Plugin
                     dc.Database.Migrate();
                 }
             }
-
-
         }
+
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
             return Task.CompletedTask;
         }
+
         public override Task StartAsync(CancellationToken cancellationToken)
         {
             _appLifeTime.ApplicationStarted.Register(OnStarted);
@@ -68,6 +72,7 @@ namespace Plugin
         {
             return Task.CompletedTask;
         }
+
         private void OnStarted()
         {
             _ = _serviceProvider.GetRequiredService<DeviceService>();

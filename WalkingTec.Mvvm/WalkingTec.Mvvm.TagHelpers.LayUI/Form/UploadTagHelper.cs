@@ -1,13 +1,12 @@
-using System;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using System;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 
 namespace WalkingTec.Mvvm.TagHelpers.LayUI
 {
-    public enum UploadTypeEnum { AllFiles, ImageFile, ZipFile, ExcelFile, WordFile, PDFFile, TextFile }
+    public enum UploadTypeEnum
+    { AllFiles, ImageFile, ZipFile, ExcelFile, WordFile, PDFFile, TextFile }
 
     [HtmlTargetElement("wt:upload", Attributes = REQUIRED_ATTR_NAME, TagStructure = TagStructure.WithoutEndTag)]
     public class UploadTagHelper : BaseFieldTag
@@ -21,7 +20,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         /// 上传文件类别
         /// </summary>
         public UploadTypeEnum UploadType { get; set; }
-        
+
         /// <summary>
         /// 是否显示进度条，默认为false
         /// </summary>
@@ -91,21 +90,27 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                     case UploadTypeEnum.AllFiles:
                         ext = "";
                         break;
+
                     case UploadTypeEnum.ImageFile:
                         ext = "jpg|jpeg|gif|bmp|png|tif";
                         break;
+
                     case UploadTypeEnum.ZipFile:
                         ext = "zip";
                         break;
+
                     case UploadTypeEnum.ExcelFile:
                         ext = "xls|xlsx";
                         break;
+
                     case UploadTypeEnum.PDFFile:
                         ext = "pdf";
                         break;
+
                     case UploadTypeEnum.WordFile:
                         ext = "doc|docx";
                         break;
+
                     case UploadTypeEnum.TextFile:
                         ext = "txt";
                         break;
@@ -169,7 +174,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
 
             output.PostElement.SetHtmlContent($@"
 <input type='hidden' id='{Id}' name='{Field.Name}' value='{Field.Model}' {requiredtext} />
-");    
+");
             if (ShowProgress != null)
             {
                 if (ShowProgress == true)
@@ -294,12 +299,12 @@ $.ajax({{
   url: '{geturl}',
   async: true,
   success: function(data) {{
-    {(ShowPreview == true ? $@"{(Disabled == true?$@"
+    {(ShowPreview == true ? $@"{(Disabled == true ? $@"
       $('#{Id}label').append('<img src=""{picurl}"" alt=""'+ data +'"" class=""layui-upload-img"" width={PreviewWidth ?? 64} height={PreviewHeight ?? 64}  id=""{Id}preview"" style=""cursor:pointer""/>');
             $('#{Id}preview').on('click',function(){{
               {Id}DoPreview('{Field.Model}');
             }});
-" :$@"
+" : $@"
       $('#{Id}label').append('<img src=""{picurl}"" alt=""'+ data +'"" class=""layui-upload-img"" width={PreviewWidth ?? 64} height={PreviewHeight ?? 64}  id=""{Id}preview"" style=""cursor:pointer""/>');
       $('#{Id}label').append('<i class=""layui-icon layui-icon-close"" style=""font-size: 20px;position:absolute;left:{(PreviewWidth ?? 64) - 10}px;top:-10px;color: #ff0000;"" id=""{Id}del""></i> ');
             $('#{Id}preview').on('click',function(){{
@@ -309,9 +314,9 @@ $.ajax({{
         {Id}DoDelete('{Field.Model}');
       }});
 ")}
-    " : $@"{(Disabled == true? $@"
+    " : $@"{(Disabled == true ? $@"
         $('#{Id}label').append(""<a class='layui-btn layui-btn-primary layui-btn-xs' style='margin:9px 0;width:unset width:300px;' href='{downloadurl}'>""+data+""</a>"");
-" :$@"
+" : $@"
         $('#{Id}label').append(""<button class='layui-btn layui-btn-sm layui-btn-danger' type='button' id='{Id}del' style='color:white'>""+data+""  {THProgram._localizer["Sys.Delete"]}</button>"");
         $('#{Id}del').on('click',function(){{
           {Id}DoDelete('{Field.Model}');
@@ -324,7 +329,6 @@ $.ajax({{
 ");
             }
             base.Process(context, output);
-
         }
     }
 }

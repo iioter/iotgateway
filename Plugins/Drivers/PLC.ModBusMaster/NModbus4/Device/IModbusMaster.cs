@@ -1,9 +1,8 @@
 ﻿namespace Modbus.Device
 {
+    using IO;
     using System;
     using System.Threading.Tasks;
-
-    using IO;
 
     /// <summary>
     ///     Modbus master device.

@@ -17,7 +17,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkRoleVMs
 
         public FrameworkRoleMDVM2()
         {
-
         }
 
         protected override FrameworkRole GetById(object Id)
@@ -132,21 +131,23 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkRoleVMs
             await Wtm.RemoveUserCacheByRole(Entity.RoleCode);
             return true;
         }
-
     }
 
     public class Page_View : TopBasePoco
     {
         [Display(Name = "_Admin.PageName")]
         public string Name { get; set; }
+
         [Display(Name = "_Admin.PageFunction")]
         public List<Guid> Actions { get; set; }
+
         [Display(Name = "_Admin.PageFunction")]
         public List<ComboSelectListItem> AllActions { get; set; }
 
         public List<Page_View> Children { get; set; }
 
         public bool IsFolder { get; set; }
+
         [JsonIgnore]
         public int ExtraOrder { get; set; }
 
@@ -156,7 +157,5 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkRoleVMs
         public Page_View Parent { get; set; }
 
         public int Level { get; set; }
-
     }
-
 }

@@ -1,8 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 
 namespace WalkingTec.Mvvm.Core
 {
@@ -12,7 +9,6 @@ namespace WalkingTec.Mvvm.Core
     [Table("FrameworkMenus")]
     public class FrameworkMenu : TreePoco<FrameworkMenu>
     {
-
         [Display(Name = "_Admin.PageName")]
         [StringLength(100, ErrorMessage = "Validate.{0}stringmax{1}")]
         [Required(ErrorMessage = "Validate.{0}required")]
@@ -65,7 +61,6 @@ namespace WalkingTec.Mvvm.Core
 
         [Display(Name = "_Admin.TenantAllowed")]
         public bool? TenantAllowed { get; set; }
-
 
         /// <summary>
         /// Url

@@ -1,15 +1,10 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WalkingTec.Mvvm.Core.Models
 {
     [Table("Triggers", Schema = "Elsa")]
-    public class Elsa_Trigger:TopBasePoco
+    public class Elsa_Trigger : TopBasePoco
     {
         [Key]
         [Column("Id")]
@@ -40,6 +35,5 @@ namespace WalkingTec.Mvvm.Core.Models
         [StringLength(450)]
         [Required]
         public string WorkflowDefinitionId { get; set; }
-
     }
 }

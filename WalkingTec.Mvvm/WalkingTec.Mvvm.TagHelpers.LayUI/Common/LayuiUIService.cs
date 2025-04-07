@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 
@@ -8,7 +7,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI.Common
 {
     public class LayuiUIService : IUIService
     {
-        public string MakeDialogButton(ButtonTypesEnum buttonType, string url, string buttonText, int? width, int? height, string title = null, string buttonID = null, bool showDialog = true, bool resizable = true, bool max = false, string buttonClass = null,string style=null)
+        public string MakeDialogButton(ButtonTypesEnum buttonType, string url, string buttonText, int? width, int? height, string title = null, string buttonID = null, bool showDialog = true, bool resizable = true, bool max = false, string buttonClass = null, string style = null)
         {
             if (buttonID == null)
             {
@@ -84,7 +83,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI.Common
                     {
                         rv += $@"
 <option value='{item.Value}' selected>{item.Text}</option>";
-
                     }
                     else
                     {
@@ -113,7 +111,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI.Common
             {
                 DateTime p = DateTime.MinValue;
                 DateTime.TryParse(value, out p);
-                if(p == DateTime.MinValue)
+                if (p == DateTime.MinValue)
                 {
                     value = "";
                 }
@@ -121,8 +119,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI.Common
             return $@"<input class='layui-input' style='height:28px'  name='{name ?? ""}' id='{id}' value='{value ?? ""}' {disable}  onclick='ff.SetGridCellDate(""{id}"",""{dateType.ToString().ToLower()}"")'/>";
         }
 
-
-        public string MakeButton(ButtonTypesEnum buttonType, string url, string buttonText, int? width, int? height, string title = null, string buttonID = null, bool resizable = true, bool max = false, string currentdivid = "", string buttonClass = null, string style = null, RedirectTypesEnum rtype= RedirectTypesEnum.Layer)
+        public string MakeButton(ButtonTypesEnum buttonType, string url, string buttonText, int? width, int? height, string title = null, string buttonID = null, bool resizable = true, bool max = false, string currentdivid = "", string buttonClass = null, string style = null, RedirectTypesEnum rtype = RedirectTypesEnum.Layer)
         {
             if (buttonID == null)
             {
@@ -136,15 +133,19 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI.Common
                 case RedirectTypesEnum.Layer:
                     innerClick = $"ff.OpenDialog('{url}','{Guid.NewGuid().ToNoSplitString()}','{title ?? ""}',{width?.ToString() ?? "null"},{height?.ToString() ?? "null"},undefined,{max.ToString().ToLower()});";
                     break;
+
                 case RedirectTypesEnum.Self:
                     innerClick = $"ff.BgRequest('{url}',undefined,'{currentdivid}');";
                     break;
+
                 case RedirectTypesEnum.NewWindow:
                     innerClick = $"ff.LoadPage('{url}',true,'{title ?? ""}');";
                     break;
+
                 case RedirectTypesEnum.NewTab:
                     innerClick = $"ff.LoadPage('{url}',false,'{title ?? ""}');";
                     break;
+
                 default:
                     break;
             }
@@ -165,7 +166,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI.Common
 
         public string MakeViewButton(ButtonTypesEnum buttonType, Guid fileID, string buttonText = null, int? width = null, int? height = null, string title = null, bool resizable = true, string _DONOT_USE_CS = "default", bool maxed = false, string buttonClass = null, string style = null)
         {
-            var  buttonID = Guid.NewGuid().ToString();
+            var buttonID = Guid.NewGuid().ToString();
             var innerClick = "";
             string windowid = Guid.NewGuid().ToString();
             var url = $"/_Framework/GetFile/{fileID}?_DONOT_USE_CS={_DONOT_USE_CS}";
@@ -186,12 +187,15 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI.Common
                 case ButtonTypesEnum.Button:
                     rv = $"<a id='{buttonID}' onclick='{funcname}()' style='{style ?? ""}' class='layui-btn {(string.IsNullOrEmpty(buttonClass) ? "layui-btn-primary layui-btn-xs" : $"{buttonClass}")}'>{buttonText}</a>";
                     break;
+
                 case ButtonTypesEnum.Link:
                     rv = $"<a id='{buttonID}' onclick='{funcname}()' style='{style ?? "color:blue;cursor:pointer"}' class='{buttonClass ?? ""}'>{buttonText}</a>";
                     break;
+
                 case ButtonTypesEnum.Img:
-                    rv = $"<img src='{url}&width={width??50}&height={height??50}' id='{buttonID}' onclick='{funcname}()' style='{style ?? "color:blue;cursor:pointer"}' class='{buttonClass ?? ""}'/>";
+                    rv = $"<img src='{url}&width={width ?? 50}&height={height ?? 50}' id='{buttonID}' onclick='{funcname}()' style='{style ?? "color:blue;cursor:pointer"}' class='{buttonClass ?? ""}'/>";
                     break;
+
                 default:
                     break;
             }
@@ -199,7 +203,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI.Common
             return rv;
         }
 
-        public string MakeScriptButton(ButtonTypesEnum buttonType, string buttonText, string script = "", string buttonID = null, string url = null, string buttonClass = null, string style=null)
+        public string MakeScriptButton(ButtonTypesEnum buttonType, string buttonText, string script = "", string buttonID = null, string url = null, string buttonClass = null, string style = null)
         {
             if (buttonID == null)
             {

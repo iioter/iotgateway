@@ -9,6 +9,7 @@
         /// 小尺寸
         /// </summary>
         SM = 0,
+
         /// <summary>
         /// 大尺寸
         /// </summary>

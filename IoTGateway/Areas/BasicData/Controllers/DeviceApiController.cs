@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using IoTGateway.Model;
+using IoTGateway.ViewModel.BasicData.DeviceVMs;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 using WalkingTec.Mvvm.Mvc;
-using IoTGateway.ViewModel.BasicData.DeviceVMs;
-using IoTGateway.Model;
-
 
 namespace IoTGateway.Controllers
 {
@@ -16,11 +15,11 @@ namespace IoTGateway.Controllers
     [ActionDescription("设备维护Api")]
     [ApiController]
     [Route("api/Device")]
-	public partial class DeviceApiController : BaseApiController
+    public partial class DeviceApiController : BaseApiController
     {
         [ActionDescription("Sys.Search")]
         [HttpPost("Search")]
-		public IActionResult Search(DeviceApiSearcher searcher)
+        public IActionResult Search(DeviceApiSearcher searcher)
         {
             if (ModelState.IsValid)
             {
@@ -62,7 +61,6 @@ namespace IoTGateway.Controllers
                     return Ok(vm.Entity);
                 }
             }
-
         }
 
         [ActionDescription("Sys.Edit")]
@@ -87,7 +85,7 @@ namespace IoTGateway.Controllers
             }
         }
 
-		[HttpPost("BatchDelete")]
+        [HttpPost("BatchDelete")]
         [ActionDescription("Sys.Delete")]
         public IActionResult BatchDelete(string[] ids)
         {
@@ -109,7 +107,6 @@ namespace IoTGateway.Controllers
                 return Ok(ids.Count());
             }
         }
-
 
         [ActionDescription("Sys.Export")]
         [HttpPost("ExportExcel")]
@@ -153,7 +150,7 @@ namespace IoTGateway.Controllers
         [HttpPost("Import")]
         public ActionResult Import(DeviceApiImportVM vm)
         {
-            if (vm!=null && (vm.ErrorListVM.EntityList.Count > 0 || !vm.BatchSaveData()))
+            if (vm != null && (vm.ErrorListVM.EntityList.Count > 0 || !vm.BatchSaveData()))
             {
                 return BadRequest(vm.GetErrorJson());
             }
@@ -162,7 +159,6 @@ namespace IoTGateway.Controllers
                 return Ok(vm?.EntityList?.Count ?? 0);
             }
         }
-
 
         [HttpGet("GetDrivers")]
         public ActionResult GetDrivers()
@@ -175,6 +171,5 @@ namespace IoTGateway.Controllers
         {
             return Ok(DC.Set<Device>().GetSelectListItems(Wtm, x => x.DeviceName));
         }
-
     }
 }

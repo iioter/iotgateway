@@ -1,6 +1,6 @@
-﻿using PluginInterface;
-using Automation.OPCClient;
+﻿using Automation.OPCClient;
 using Microsoft.Extensions.Logging;
+using PluginInterface;
 
 namespace OPC.DaClient
 {
@@ -25,7 +25,7 @@ namespace OPC.DaClient
 
         [ConfigParameter("最小通讯周期ms")] public uint MinPeriod { get; set; } = 3000;
 
-        #endregion
+        #endregion 配置参数
 
         #region 生命周期
 
@@ -109,10 +109,9 @@ namespace OPC.DaClient
             }
         }
 
-        #endregion
+        #endregion 生命周期
 
         #region 读写方法
-
 
         [Method("读OPCDa", description: "读OPCDa节点")]
         public DriverReturnValueModel ReadNode(DriverAddressIoArgModel ioArg)
@@ -129,38 +128,49 @@ namespace OPC.DaClient
                         case DataTypeEnum.Bit:
                             ret.Value = dataValue == "On" ? 1 : 0;
                             break;
+
                         case DataTypeEnum.Bool:
                             ret.Value = dataValue == "On";
                             break;
+
                         case DataTypeEnum.Byte:
                             if (dataValue != null) ret.Value = byte.Parse(dataValue);
                             break;
+
                         case DataTypeEnum.UByte:
                             if (dataValue != null) ret.Value = sbyte.Parse(dataValue);
                             break;
+
                         case DataTypeEnum.Int16:
                             if (dataValue != null) ret.Value = short.Parse(dataValue);
                             break;
+
                         case DataTypeEnum.Uint16:
                             if (dataValue != null) ret.Value = ushort.Parse(dataValue);
                             break;
+
                         case DataTypeEnum.Int32:
                             if (dataValue != null) ret.Value = int.Parse(dataValue);
                             break;
+
                         case DataTypeEnum.Uint32:
                             if (dataValue != null) ret.Value = uint.Parse(dataValue);
                             break;
+
                         case DataTypeEnum.Float:
                             if (dataValue != null) ret.Value = float.Parse(dataValue);
                             break;
+
                         case DataTypeEnum.Double:
                             if (dataValue != null) ret.Value = double.Parse(dataValue);
                             break;
+
                         case DataTypeEnum.AsciiString:
                         case DataTypeEnum.Utf8String:
                         case DataTypeEnum.Any:
                             ret.Value = dataValue;
                             break;
+
                         default:
                             ret.StatusType = VaribaleStatusTypeEnum.Bad;
                             ret.Message = $"读取失败,不支持的类型:{ioArg.ValueType}";
@@ -205,7 +215,6 @@ namespace OPC.DaClient
             return rpcResponse;
         }
 
-        #endregion
-
+        #endregion 读写方法
     }
 }

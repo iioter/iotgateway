@@ -49,28 +49,36 @@
                 case Modbus.ReadInputs:
                     request = CreateModbusMessage<ReadCoilsInputsRequest>(frame);
                     break;
+
                 case Modbus.ReadHoldingRegisters:
                 case Modbus.ReadInputRegisters:
                     request = CreateModbusMessage<ReadHoldingInputRegistersRequest>(frame);
                     break;
+
                 case Modbus.WriteSingleCoil:
                     request = CreateModbusMessage<WriteSingleCoilRequestResponse>(frame);
                     break;
+
                 case Modbus.WriteSingleRegister:
                     request = CreateModbusMessage<WriteSingleRegisterRequestResponse>(frame);
                     break;
+
                 case Modbus.Diagnostics:
                     request = CreateModbusMessage<DiagnosticsRequestResponse>(frame);
                     break;
+
                 case Modbus.WriteMultipleCoils:
                     request = CreateModbusMessage<WriteMultipleCoilsRequest>(frame);
                     break;
+
                 case Modbus.WriteMultipleRegisters:
                     request = CreateModbusMessage<WriteMultipleRegistersRequest>(frame);
                     break;
+
                 case Modbus.ReadWriteMultipleRegisters:
                     request = CreateModbusMessage<ReadWriteMultipleRegistersRequest>(frame);
                     break;
+
                 default:
                     string msg = $"Unsupported function code {functionCode}";
                     throw new ArgumentException(msg, nameof(frame));

@@ -1,17 +1,16 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace WalkingTec.Mvvm.Core.Support.Json
 {
-    public class SimpleModule 
+    public class SimpleModule
     {
         public Guid ID { get; set; }
 
         public ActionDescriptionAttribute ActionDes { get; set; }
 
         public string _name;
+
         public string ModuleName
         {
             get
@@ -20,11 +19,11 @@ namespace WalkingTec.Mvvm.Core.Support.Json
                 {
                     if (ActionDes?._localizer != null && string.IsNullOrEmpty(ActionDes?.Description) == false)
                     {
-                        _name= ActionDes._localizer[ActionDes.Description];
+                        _name = ActionDes._localizer[ActionDes.Description];
                     }
                     else
                     {
-                        _name= _name ?? "";
+                        _name = _name ?? "";
                     }
                 }
                 return _name;

@@ -1,12 +1,11 @@
 ﻿namespace Modbus.Message
 {
+    using Data;
     using System;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Net;
-
-    using Data;
 
     public class WriteSingleRegisterRequestResponse : AbstractModbusMessageWithData<RegisterCollection>, IModbusRequest
     {

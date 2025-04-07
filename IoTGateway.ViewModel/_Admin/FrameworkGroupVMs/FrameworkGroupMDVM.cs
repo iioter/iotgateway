@@ -3,18 +3,16 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs;
-using WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs;
 
 namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkGroupVMs
 {
     public class FrameworkGroupMDVM : BaseVM
     {
-
         [Display(Name = "_Admin.GroupCode")]
         public string GroupCode { get; set; }
+
         public List<GroupDp> DpLists { get; set; }
 
         public FrameworkGroupMDVM()
@@ -35,7 +33,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkGroupVMs
             foreach (var item in DpLists)
             {
                 var select = alldp.Where(x => x.TableName == item.List.Searcher.TableName).Select(x => x.RelateId).ToList();
-                if(select.Count == 0)
+                if (select.Count == 0)
                 {
                     item.IsAll = null;
                 }
@@ -53,8 +51,8 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkGroupVMs
 
         public bool DoChange()
         {
-            List<Guid> oldIDs =  DC.Set<DataPrivilege>().Where(x => x.GroupCode == GroupCode).Select(x => x.ID).ToList();
-            
+            List<Guid> oldIDs = DC.Set<DataPrivilege>().Where(x => x.GroupCode == GroupCode).Select(x => x.ID).ToList();
+
             foreach (var oldid in oldIDs)
             {
                 DataPrivilege dp = new DataPrivilege { ID = oldid };
@@ -63,7 +61,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkGroupVMs
             }
             foreach (var item in DpLists)
             {
-                if(item.IsAll == true)
+                if (item.IsAll == true)
                 {
                     DataPrivilege dp = new DataPrivilege();
                     dp.RelateId = null;
@@ -83,14 +81,12 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkGroupVMs
                         dp.TenantCode = LoginUserInfo.CurrentTenant;
                         DC.Set<DataPrivilege>().Add(dp);
                     }
-
                 }
             }
             DC.SaveChanges();
             Wtm.RemoveUserCacheByGroup(GroupCode).Wait();
             return true;
         }
-
     }
 
     public class GroupDp

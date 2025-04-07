@@ -1,8 +1,8 @@
-﻿using SimpleTCP;
-using System.Text;
-using System.IO.Ports;
+﻿using Microsoft.Extensions.Logging;
 using PluginInterface;
-using Microsoft.Extensions.Logging;
+using SimpleTCP;
+using System.IO.Ports;
+using System.Text;
 
 namespace Other.Toledo
 {
@@ -14,6 +14,7 @@ namespace Other.Toledo
         /// tcp客户端
         /// </summary>
         private SimpleTcpClient? client;
+
         /// <summary>
         /// 缓存最新的服务器返回的原始数据
         /// </summary>
@@ -24,6 +25,7 @@ namespace Other.Toledo
 
         public ILogger _logger { get; set; }
         private readonly string _device;
+
         #region 配置参数
 
         [ConfigParameter("设备Id")] public string DeviceId { get; set; }
@@ -55,7 +57,7 @@ namespace Other.Toledo
         [ConfigParameter("最小通讯周期ms")]
         public uint MinPeriod { get; set; } = 3000;
 
-        #endregion
+        #endregion 配置参数
 
         #region 生命周期
 
@@ -71,7 +73,6 @@ namespace Other.Toledo
 
             _logger.LogInformation($"Device:[{_device}],Create()");
         }
-
 
         /// <summary>
         /// 判断连接状态
@@ -105,7 +106,6 @@ namespace Other.Toledo
             }
             return IsConnected;
         }
-
 
         /// <summary>
         /// 断开连接
@@ -147,13 +147,13 @@ namespace Other.Toledo
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Device:[{_device}],Dispose()");
-
             }
         }
 
-        #endregion
+        #endregion 生命周期
 
         #region 读写方法
+
         /// <summary>
         /// 解析并返回
         /// </summary>
@@ -172,8 +172,6 @@ namespace Other.Toledo
                     ushort address, count;
                     ret = AnalyseAddress(ioArg, out address, out count);
 
-
-
                     if (
                         (latestRcvData == null) ||
                         (DateTime.Now.Subtract(latestDate).TotalSeconds > 10)
@@ -191,7 +189,6 @@ namespace Other.Toledo
                     }
                     else
                     {
-
                         //解析数据，并返回
                         switch (ioArg.ValueType)
                         {
@@ -200,11 +197,13 @@ namespace Other.Toledo
                             case DataTypeEnum.Byte:
                                 ret.Value = latestRcvData[address];
                                 break;
+
                             case DataTypeEnum.Int16:
                                 ret.Value = (short)latestRcvData[address];
                                 //var buffer16 = latestRcvData.Skip(address).Take(count).ToArray();
                                 //ret.Value = BitConverter.ToInt16(buffer16[0], 0);
                                 break;
+
                             case DataTypeEnum.Int32:
                                 //拿到有用的数据
                                 var bufferCustome1 = latestRcvData.Skip(address).Take(count).ToArray();
@@ -216,16 +215,17 @@ namespace Other.Toledo
                                 ret.Value = strCustome1 == "" ? 0 : int.Parse(strCustome1);
 
                                 break;
+
                             case DataTypeEnum.Float:
                                 //拿到有用的数据
                                 var buffer32 = latestRcvData.Skip(address).Take(count).ToArray();
                                 //大小端转换一下
                                 ret.Value = BitConverter.ToSingle(buffer32, 0);
                                 break;
+
                             case DataTypeEnum.AsciiString:
                                 //拿到有用的数据
                                 var bufferAscii = latestRcvData.Skip(address).Take(count).ToArray();
-
 
                                 var str = Encoding.ASCII.GetString(bufferAscii);
                                 if (str.Contains("\0"))
@@ -233,18 +233,18 @@ namespace Other.Toledo
 
                                 ret.Value = str;
                                 break;
+
                             case DataTypeEnum.Custome1:
                                 ret.Value = latestDate;
                                 break;
+
                             default:
                                 break;
                         }
                     }
-
                 }
                 catch (Exception ex)
                 {
-
                     ret.StatusType = VaribaleStatusTypeEnum.Bad;
                     ret.Message = $"读取失败,{ex.Message}";
                 }
@@ -257,14 +257,14 @@ namespace Other.Toledo
             return ret;
         }
 
-
         public async Task<RpcResponse> WriteAsync(string requestId, string method, DriverAddressIoArgModel ioArg)
         {
             RpcResponse rpcResponse = new() { IsSuccess = false, Description = "设备驱动内未实现写入功能" };
             await Task.CompletedTask;
             return rpcResponse;
         }
-        #endregion
+
+        #endregion 读写方法
 
         #region 私有方法
 
@@ -293,7 +293,6 @@ namespace Other.Toledo
 
             latestDate = DateTime.Now;
 
-
             //合并TempRcvData, e.Data
             byte[] RcvData = addBytes(TempRcvData, e.Data);
 
@@ -318,13 +317,11 @@ namespace Other.Toledo
                             latestRcvData = new byte[DataBits];
                             Array.Copy(RcvData, index - DataBits + 1, latestRcvData, 0, DataBits);
 
-
                             if (RcvData.Length - index > 1)
                             {
                                 TempRcvData = new byte[RcvData.Length - index];
                                 Array.Copy(RcvData, index + 1, TempRcvData, 0, RcvData.Length - index - 1);
                             }
-
 
                             return;
                         }
@@ -346,7 +343,6 @@ namespace Other.Toledo
                 TempRcvData = RcvData;
             }
         }
-
 
         /// <summary>
         /// 分析地址的开始地址和总位数
@@ -371,7 +367,6 @@ namespace Other.Toledo
                     ReadCount = 1;
                 }
                 return ret;
-
             }
             catch (Exception ex)
             {
@@ -383,7 +378,7 @@ namespace Other.Toledo
             }
         }
 
-        #endregion
+        #endregion 私有方法
     }
 
     public enum ConnectionType

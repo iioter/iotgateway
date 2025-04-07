@@ -1,6 +1,7 @@
 ﻿namespace Modbus
 {
     using System;
+
 #if NET46
     using System.Runtime.Serialization;
 #endif
@@ -10,6 +11,7 @@
 #if NET46
     [Serializable]
 #endif
+
     public class InvalidModbusRequestException : Exception
     {
         private readonly byte _exceptionCode;

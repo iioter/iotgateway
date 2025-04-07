@@ -1,11 +1,5 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PluginInterface
 {
@@ -21,10 +15,11 @@ namespace PluginInterface
             this.Timestamp = DateTime.Now; ;
             StatusType = status;
         }
-        public DriverReturnValueModel(VaribaleStatusTypeEnum status,string message)
+
+        public DriverReturnValueModel(VaribaleStatusTypeEnum status, string message)
         {
             this.Timestamp = DateTime.Now;
-            StatusType= status;
+            StatusType = status;
             this.Message = message;
         }
 
@@ -32,8 +27,10 @@ namespace PluginInterface
         public object CookedValue { get; set; }
         public string Message { get; set; }
         public DateTime Timestamp { get; set; }
+
         [JsonConverter(typeof(StringEnumConverter))]
         public VaribaleStatusTypeEnum StatusType { get; set; } = VaribaleStatusTypeEnum.UnKnow;
+
         public Guid VarId { get; set; }
     }
 }

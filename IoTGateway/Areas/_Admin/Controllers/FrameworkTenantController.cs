@@ -1,11 +1,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
+using System.Linq;
 using WalkingTec.Mvvm.Core;
-using WalkingTec.Mvvm.Mvc;
 using WalkingTec.Mvvm.Core.Extensions;
 using WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkTenantVMs;
-using System.Linq;
 
 namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
 {
@@ -15,10 +13,11 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
     public partial class FrameworkTenantController : BaseController
     {
         #region Search
+
         [ActionDescription("Sys.Search")]
         public ActionResult Index()
         {
-            if(CanUseTenant() == false)
+            if (CanUseTenant() == false)
             {
                 return Content(Localizer["_Admin.TenantNotAllowed"]);
             }
@@ -46,9 +45,10 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
             }
         }
 
-        #endregion
+        #endregion Search
 
         #region Create
+
         [ActionDescription("Sys.Create")]
         public ActionResult Create()
         {
@@ -86,9 +86,11 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
                 }
             }
         }
-        #endregion
+
+        #endregion Create
 
         #region Edit
+
         [ActionDescription("Sys.Edit")]
         public ActionResult Edit(string id)
         {
@@ -127,9 +129,11 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
                 }
             }
         }
-        #endregion
+
+        #endregion Edit
 
         #region Delete
+
         [ActionDescription("Sys.Delete")]
         public ActionResult Delete(string id)
         {
@@ -160,9 +164,11 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
                 return FFResult().CloseDialog().RefreshGrid();
             }
         }
-        #endregion
+
+        #endregion Delete
 
         #region Details
+
         [ActionDescription("Sys.Details")]
         public ActionResult Details(string id)
         {
@@ -173,9 +179,11 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
             var vm = Wtm.CreateVM<FrameworkTenantVM>(id);
             return PartialView(vm);
         }
-        #endregion
+
+        #endregion Details
 
         #region BatchEdit
+
         [HttpPost]
         [ActionDescription("Sys.BatchEdit")]
         public ActionResult BatchEdit(string[] IDs)
@@ -198,16 +206,18 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
             }
             if (!ModelState.IsValid || !vm.DoBatchEdit())
             {
-                return PartialView("BatchEdit",vm);
+                return PartialView("BatchEdit", vm);
             }
             else
             {
                 return FFResult().CloseDialog().RefreshGrid().Alert(Localizer["Sys.BatchEditSuccess", vm.Ids.Length]);
             }
         }
-        #endregion
+
+        #endregion BatchEdit
 
         #region BatchDelete
+
         [HttpPost]
         [ActionDescription("Sys.BatchDelete")]
         public ActionResult BatchDelete(string[] IDs)
@@ -230,7 +240,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
             }
             if (!ModelState.IsValid || !vm.DoBatchDelete())
             {
-                return PartialView("BatchDelete",vm);
+                return PartialView("BatchDelete", vm);
             }
             else
             {
@@ -238,10 +248,12 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
                 return FFResult().CloseDialog().RefreshGrid().Alert(Localizer["Sys.BatchDeleteSuccess", vm.Ids.Length]);
             }
         }
-        #endregion
+
+        #endregion BatchDelete
 
         #region Import
-		[ActionDescription("Sys.Import")]
+
+        [ActionDescription("Sys.Import")]
         public ActionResult Import()
         {
             if (CanUseTenant() == false)
@@ -269,7 +281,8 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
                 return FFResult().CloseDialog().RefreshGrid().Alert(Localizer["Sys.ImportSuccess", vm.EntityList.Count.ToString()]);
             }
         }
-        #endregion
+
+        #endregion Import
 
         [ActionDescription("Sys.Export")]
         [HttpPost]
@@ -284,7 +297,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
 
         private bool CanUseTenant()
         {
-            if(Wtm.LoginUserInfo != null && (Wtm.LoginUserInfo.CurrentTenant == null || Wtm.GlobaInfo.AllTenant.Any(x=>x.TCode == Wtm.LoginUserInfo.CurrentTenant && x.Enabled==true && x.EnableSub == true)))
+            if (Wtm.LoginUserInfo != null && (Wtm.LoginUserInfo.CurrentTenant == null || Wtm.GlobaInfo.AllTenant.Any(x => x.TCode == Wtm.LoginUserInfo.CurrentTenant && x.Enabled == true && x.EnableSub == true)))
             {
                 return true;
             }

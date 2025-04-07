@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Razor.TagHelpers;
+using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace WalkingTec.Mvvm.TagHelpers.LayUI
 {
-    public enum PanelType { Collapse, Card}
+    public enum PanelType
+    { Collapse, Card }
 
     [HtmlTargetElement("wt:panel", TagStructure = TagStructure.NormalOrSelfClosing)]
     public class PanelTagHelper : BaseElementTag
@@ -37,7 +38,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
 </div>
 ");
             }
-            if(PanelType == PanelType.Card)
+            if (PanelType == PanelType.Card)
             {
                 output.Attributes.SetAttribute("class", "layui-card");
                 var inside = await output.GetChildContentAsync();
@@ -47,7 +48,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
     {inside.GetContent()}
 </div>
 ");
-
             }
             output.PostElement.AppendHtml($@"
 <script>

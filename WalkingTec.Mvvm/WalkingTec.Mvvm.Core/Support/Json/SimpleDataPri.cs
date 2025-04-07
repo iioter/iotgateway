@@ -13,7 +13,5 @@ namespace WalkingTec.Mvvm.Core.Support.Json
         public string TableName { get; set; }
 
         public string RelateId { get; set; }
-
-
     }
 }

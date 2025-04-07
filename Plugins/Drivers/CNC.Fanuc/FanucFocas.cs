@@ -1,6 +1,5 @@
 ﻿namespace CNC.Fanuc
 {
-
     public class FanucFocas : Focas1
     {
         public static ushort h;
@@ -11,22 +10,26 @@
         {
             return FanucFocas.cnc_dwnstart3(handle, type);
         }
+
         //结束
         private static short dwnend(ushort handle)
         {
             return FanucFocas.cnc_dwnend3(handle);
         }
+
         //下载
         private static short dwnload(ushort handle, ref int datalength, string data)
         {
             //开始下载程序  datalength将会被返回，实际的输出的字符数量
             return FanucFocas.cnc_download3(handle, ref datalength, data);
         }
+
         //获取详细的错误信息
         private static short getdtailerr(ushort handle, FanucFocas.ODBERR odberr)
         {
             return FanucFocas.cnc_getdtailerr(handle, odberr);
         }
+
         //下载程序的入口点
         /// <summary>
         /// 向CNC下载指定类型的程序
@@ -97,6 +100,7 @@
                 return ret;
             }
         }
+
         //下载程序  5-27
 
         //上传程序 5-28
@@ -105,16 +109,19 @@
         {
             return cnc_upstart3(handle, type, startno, endno);
         }
+
         //上传
         private static short uplod(ushort handle, int length, char[] databuf)
         {
             return cnc_upload3(handle, ref length, databuf);
         }
+
         //结束
         private static short upend(ushort handle)
         {
             return cnc_upend3(handle);
         }
+
         //上传程序的入口
         /// <summary>
         /// 根据程序号读取指定程序
@@ -185,6 +192,7 @@
                 return ret;
             }
         }
+
         //上传程序 5-28
 
         //根据alm_grp 编号 返回 提示内容 简
@@ -196,60 +204,78 @@
                 case 0:
                     ret = "SW";
                     break;
+
                 case 1:
                     ret = "PW";
                     break;
+
                 case 2:
                     ret = "IO";
                     break;
+
                 case 3:
                     ret = "PS";
                     break;
+
                 case 4:
                     ret = "OT";
                     break;
+
                 case 5:
                     ret = "OH";
                     break;
+
                 case 6:
                     ret = "SV";
                     break;
+
                 case 7:
                     ret = "SR";
                     break;
+
                 case 8:
                     ret = "MC";
                     break;
+
                 case 9:
                     ret = "SP";
                     break;
+
                 case 10:
                     ret = "DS";
                     break;
+
                 case 11:
                     ret = "IE";
                     break;
+
                 case 12:
                     ret = "BG";
                     break;
+
                 case 13:
                     ret = "SN";
                     break;
+
                 case 14:
                     ret = "reserved";
                     break;
+
                 case 15:
                     ret = "EX";
                     break;
+
                 case 19:
                     ret = "PC";
                     break;
+
                 default:
                     ret = "Not used";
                     break;
             }
             return ret;
         }
+
         //根据alm_grp 编号 返回 提示内容 简
 
         //2016-6-2 根据地址码和地址号，返回完整的显示信息
@@ -261,33 +287,43 @@
                 case 0:
                     tempa = "G";
                     break;
+
                 case 1:
                     tempa = "F";
                     break;
+
                 case 2:
                     tempa = "Y";
                     break;
+
                 case 3:
                     tempa = "X";
                     break;
+
                 case 4:
                     tempa = "A";
                     break;
+
                 case 5:
                     tempa = "R";
                     break;
+
                 case 6:
                     tempa = "T";
                     break;
+
                 case 7:
                     tempa = "K";
                     break;
+
                 case 8:
                     tempa = "C";
                     break;
+
                 case 9:
                     tempa = "D";
                     break;
+
                 default:
                     tempa = "n";
                     break;
@@ -295,9 +331,7 @@
             string tempb = b.ToString().PadLeft(4, '0');
             return tempa + tempb;
         }
+
         //2016-6-2 根据地址码和地址号，返回完整的显示信息
-
-
-
     }
 }

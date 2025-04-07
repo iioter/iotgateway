@@ -1,8 +1,8 @@
+using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
-using Microsoft.AspNetCore.Razor.TagHelpers;
-using Microsoft.Extensions.Options;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 
@@ -14,6 +14,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         /// 中文版，默认
         /// </summary>
         CN = 0,
+
         /// <summary>
         /// 即英文版
         /// </summary>
@@ -84,7 +85,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         /// 是否显示底部栏
         /// </summary>
         public bool? ShowBottom { get; set; }
-
 
         /// <summary>
         /// 只出现确定按钮
@@ -194,7 +194,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                     Value = df?.ToString(Format) ?? Value;
             }
 
-
             if (string.IsNullOrEmpty(Value))
             {
                 if (DefaultValue != null)
@@ -202,7 +201,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                     Value = DefaultValue;
                 }
             }
-
 
             output.Attributes.Add("value", Value);
             output.Attributes.Add("class", "layui-input");

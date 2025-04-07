@@ -2,9 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using WalkingTec.Mvvm.Core;
 
 namespace WalkingTec.Mvvm.Mvc.Filters
@@ -15,7 +13,6 @@ namespace WalkingTec.Mvvm.Mvc.Filters
 
         public DataContextFilter()
         {
-
         }
 
         public override void OnActionExecuting(ActionExecutingContext context)
@@ -46,9 +43,11 @@ namespace WalkingTec.Mvvm.Mvc.Filters
                         case DBOperationEnum.Read:
                             mode = "Read";
                             break;
+
                         case DBOperationEnum.Write:
                             mode = "Write";
                             break;
+
                         default:
                             break;
                     }
@@ -61,7 +60,7 @@ namespace WalkingTec.Mvvm.Mvc.Filters
                 cs = _csfunc?.Invoke(context);
                 if (string.IsNullOrEmpty(cs))
                 {
-                    if(ispost != null)
+                    if (ispost != null)
                     {
                         mode = "Write";
                     }

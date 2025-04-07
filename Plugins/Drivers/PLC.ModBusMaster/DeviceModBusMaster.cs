@@ -1,10 +1,10 @@
-﻿using System.Text;
+﻿using Microsoft.Extensions.Logging;
 using Modbus.Device;
 using Modbus.Serial;
 using PluginInterface;
 using System.IO.Ports;
 using System.Net.Sockets;
-using Microsoft.Extensions.Logging;
+using System.Text;
 
 namespace PLC.ModBusMaster
 {
@@ -54,7 +54,7 @@ namespace PLC.ModBusMaster
 
         [ConfigParameter("最小通讯周期ms")] public uint MinPeriod { get; set; } = 3000;
 
-        #endregion
+        #endregion 配置参数
 
         #region 生命周期
 
@@ -84,13 +84,16 @@ namespace PLC.ModBusMaster
                     case MasterType.RtuOnTcp:
                     case MasterType.AsciiOnTcp:
                         return _tcpClient != null && _master != null && _tcpClient.Connected;
+
                     case MasterType.Udp:
                     case MasterType.RtuOnUdp:
                     case MasterType.AsciiOnUdp:
                         return _udpClient != null && _master != null && _udpClient.Client.Connected;
+
                     case MasterType.Rtu:
                     case MasterType.Ascii:
                         return _serialPort != null && _master != null && _serialPort.IsOpen;
+
                     default:
                         return false;
                 }
@@ -114,12 +117,14 @@ namespace PLC.ModBusMaster
                         _tcpClient.SendTimeout = Timeout;
                         _master = ModbusIpMaster.CreateIp(_tcpClient);
                         break;
+
                     case MasterType.Udp:
                         _udpClient = new UdpClient(IpAddress, Port);
                         _udpClient.Client.ReceiveTimeout = Timeout;
                         _udpClient.Client.SendTimeout = Timeout;
                         _master = ModbusIpMaster.CreateIp(_udpClient);
                         break;
+
                     case MasterType.Rtu:
                         _serialPort = new SerialPort(PortName, BaudRate, Parity, DataBits, StopBits);
                         _serialPort.ReadTimeout = Timeout;
@@ -128,18 +133,21 @@ namespace PLC.ModBusMaster
                         _adapter = new SerialPortAdapter(_serialPort);
                         _master = ModbusSerialMaster.CreateRtu(_adapter);
                         break;
+
                     case MasterType.RtuOnTcp:
                         _tcpClient = new TcpClient(IpAddress, Port);
                         _tcpClient.ReceiveTimeout = Timeout;
                         _tcpClient.SendTimeout = Timeout;
                         _master = ModbusSerialMaster.CreateRtu(_tcpClient);
                         break;
+
                     case MasterType.RtuOnUdp:
                         _udpClient = new UdpClient(IpAddress, Port);
                         _udpClient.Client.ReceiveTimeout = Timeout;
                         _udpClient.Client.SendTimeout = Timeout;
                         _master = ModbusSerialMaster.CreateRtu(_udpClient);
                         break;
+
                     case MasterType.Ascii:
                         _serialPort = new SerialPort(PortName, BaudRate, Parity, DataBits, StopBits);
                         _serialPort.ReadTimeout = Timeout;
@@ -148,12 +156,14 @@ namespace PLC.ModBusMaster
                         _adapter = new SerialPortAdapter(_serialPort);
                         _master = ModbusSerialMaster.CreateAscii(_adapter);
                         break;
+
                     case MasterType.AsciiOnTcp:
                         _tcpClient = new TcpClient(IpAddress, Port);
                         _tcpClient.ReceiveTimeout = Timeout;
                         _tcpClient.SendTimeout = Timeout;
                         _master = ModbusSerialMaster.CreateAscii(_tcpClient);
                         break;
+
                     case MasterType.AsciiOnUdp:
                         _udpClient = new UdpClient(IpAddress, Port);
                         _udpClient.Client.ReceiveTimeout = Timeout;
@@ -218,7 +228,7 @@ namespace PLC.ModBusMaster
             }
         }
 
-        #endregion
+        #endregion 生命周期
 
         #region 读写方法
 
@@ -226,8 +236,10 @@ namespace PLC.ModBusMaster
         /// 批量读后缓存
         /// </summary>
         private Dictionary<string, object> _cache = new();
+
         private Dictionary<string, string> _cacheType = new();
         private Dictionary<string, ushort> _cacheStart = new();
+
         [Method("多地址读取", description: "多地址读取缓存")]
         public DriverReturnValueModel ReadMultiple(DriverAddressIoArgModel ioArg)
         {
@@ -245,7 +257,6 @@ namespace PLC.ModBusMaster
             _cacheStart[cacheKey] = startAddress;
             try
             {
-
                 switch (func)
                 {
                     case "1":
@@ -253,16 +264,19 @@ namespace PLC.ModBusMaster
                         _cache[cacheKey] = coils;
                         _cacheType[cacheKey] = "bool";
                         break;
+
                     case "2":
                         var inputs = _master.ReadInputs(slaveId, startAddress, length);
                         _cache[cacheKey] = inputs;
                         _cacheType[cacheKey] = "bool";
                         break;
+
                     case "3":
                         var holdingRs = _master.ReadHoldingRegisters(slaveId, startAddress, length);
                         _cache[cacheKey] = holdingRs;
                         _cacheType[cacheKey] = "ushort";
                         break;
+
                     case "4":
                         var inputRs = _master.ReadInputRegisters(slaveId, startAddress, length);
                         _cache[cacheKey] = inputRs;
@@ -286,7 +300,6 @@ namespace PLC.ModBusMaster
                     StatusType = VaribaleStatusTypeEnum.Bad
                 };
             }
-
         }
 
         /// <summary>
@@ -313,7 +326,6 @@ namespace PLC.ModBusMaster
                     startIndex = ushort.Parse(ioArg.Address) - _cacheStart[cacheName];
                 }
 
-
                 if (_cache.ContainsKey(cacheName) && _cache[cacheName] != null)
                 {
                     if (_cacheType[cacheName] == "ushort")
@@ -322,11 +334,9 @@ namespace PLC.ModBusMaster
                         var wordLen = GetModbusReadCount(0, ioArg.ValueType);
                         var rawBuffers = cacheBuffers.Skip(startIndex).Take(wordLen).ToArray();
 
-
                         var retBuffers = ChangeBuffersOrder(rawBuffers, ioArg.EndianType);
                         if (ioArg.ValueType == DataTypeEnum.AsciiString)
                             retBuffers = rawBuffers;
-
 
                         ret.StatusType = VaribaleStatusTypeEnum.Good;
                         if (ioArg.ValueType == DataTypeEnum.Uint16)
@@ -413,8 +423,6 @@ namespace PLC.ModBusMaster
                             ret.Value = boolValue ? 1 : 0;
                         }
                     }
-
-
                 }
                 else
                 {
@@ -574,7 +582,6 @@ namespace PLC.ModBusMaster
             return ret;
         }
 
-
         [Method("Read方法样例", description: "Read方法样例描述")]
         public DriverReturnValueModel Read(DriverAddressIoArgModel ioArg)
         {
@@ -586,8 +593,6 @@ namespace PLC.ModBusMaster
             };
             return ret;
         }
-
-
 
         /// <summary>
         /// 写入
@@ -629,6 +634,7 @@ namespace PLC.ModBusMaster
                                 ModBusDataConvert.SetString(shortArray, 0, ioArg.Value.ToString());
                                 await _master.WriteMultipleRegistersAsync(slaveAddress, address, shortArray);
                                 break;
+
                             case DataTypeEnum.Float:
                                 var f = float.Parse(ioArg.Value.ToString());
                                 var fValue = BitConverter.SingleToUInt32Bits(f);
@@ -637,16 +643,19 @@ namespace PLC.ModBusMaster
                                 toWriteArray = ChangeBuffersOrder(shortArray, ioArg.EndianType);
                                 await _master.WriteMultipleRegistersAsync(slaveAddress, address, toWriteArray);
                                 break;
+
                             case DataTypeEnum.Int16:
                                 shortArray[0] = (ushort)short.Parse(ioArg.Value.ToString());
                                 toWriteArray = ChangeBuffersOrder(shortArray, ioArg.EndianType);
                                 await _master.WriteSingleRegisterAsync(slaveAddress, address, toWriteArray[0]);
                                 break;
+
                             case DataTypeEnum.Uint16:
                                 shortArray[0] = ushort.Parse(ioArg.Value.ToString());
                                 toWriteArray = ChangeBuffersOrder(shortArray, ioArg.EndianType);
                                 await _master.WriteSingleRegisterAsync(slaveAddress, address, toWriteArray[0]);
                                 break;
+
                             case DataTypeEnum.Int32:
                                 var int32Value = int.Parse(ioArg.Value.ToString());
                                 shortArray[1] = (ushort)(int32Value & 0xffff);
@@ -654,6 +663,7 @@ namespace PLC.ModBusMaster
                                 toWriteArray = ChangeBuffersOrder(shortArray, ioArg.EndianType);
                                 await _master.WriteMultipleRegistersAsync(slaveAddress, address, toWriteArray);
                                 break;
+
                             case DataTypeEnum.Uint32:
                                 var uInt32Value = uint.Parse(ioArg.Value.ToString());
                                 shortArray[1] = (ushort)(uInt32Value & 0xffff);
@@ -661,6 +671,7 @@ namespace PLC.ModBusMaster
                                 toWriteArray = ChangeBuffersOrder(shortArray, ioArg.EndianType);
                                 await _master.WriteMultipleRegistersAsync(slaveAddress, address, toWriteArray);
                                 break;
+
                             case DataTypeEnum.Int64:
                                 var int64Value = long.Parse(ioArg.Value.ToString());
                                 shortArray[3] = (ushort)(int64Value & 0xffff);
@@ -670,6 +681,7 @@ namespace PLC.ModBusMaster
                                 toWriteArray = ChangeBuffersOrder(shortArray, ioArg.EndianType);
                                 await _master.WriteMultipleRegistersAsync(slaveAddress, address, shortArray);
                                 break;
+
                             case DataTypeEnum.Uint64:
                                 var uInt64Value = ulong.Parse(ioArg.Value.ToString());
                                 shortArray[3] = (ushort)(uInt64Value & 0xffff);
@@ -679,6 +691,7 @@ namespace PLC.ModBusMaster
                                 toWriteArray = ChangeBuffersOrder(shortArray, ioArg.EndianType);
                                 await _master.WriteMultipleRegistersAsync(slaveAddress, address, shortArray);
                                 break;
+
                             case DataTypeEnum.Double:
                                 double d = double.Parse(ioArg.Value.ToString());
                                 var ulongValue = BitConverter.DoubleToUInt64Bits(d);
@@ -689,6 +702,7 @@ namespace PLC.ModBusMaster
                                 toWriteArray = ChangeBuffersOrder(shortArray, ioArg.EndianType);
                                 await _master.WriteMultipleRegistersAsync(slaveAddress, address, toWriteArray.ToArray());
                                 break;
+
                             default:
                                 throw new ArgumentException("数据类型未实现写入");
                         }
@@ -709,7 +723,7 @@ namespace PLC.ModBusMaster
             return rpcResponse;
         }
 
-        #endregion
+        #endregion 读写方法
 
         #region 私有方法
 
@@ -823,12 +837,11 @@ namespace PLC.ModBusMaster
                 }
             }
 
-
             return ret;
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="functionCode"></param>
         /// <param name="dataType"></param>
@@ -858,7 +871,6 @@ namespace PLC.ModBusMaster
             }
             else
             {
-
                 if (datalen == 1)//16位
                 {
                     switch (dataType)
@@ -867,13 +879,14 @@ namespace PLC.ModBusMaster
                             var ab = BitConverter.GetBytes(buffers[0]);
                             newBuffers[0] = BitConverter.ToUInt16(new byte[] { ab[1], ab[0] });
                             break;
+
                         case EndianEnum.BigEndian://AB
                         default:
                             newBuffers[0] = buffers[0];
                             break;
                     }
                 }
-                else if (datalen == 2)//32位 
+                else if (datalen == 2)//32位
                 {
                     newBuffers = new ushort[2];
                     var ab = BitConverter.GetBytes(buffers[0]);
@@ -886,24 +899,28 @@ namespace PLC.ModBusMaster
                             _ab = ab;
                             _cd = cd;
                             break;
+
                         case EndianEnum.LittleEndian://DCBA
                             _ab[0] = cd[1];
                             _ab[1] = cd[0];
                             _cd[0] = ab[1];
                             _cd[1] = ab[0];
                             break;
+
                         case EndianEnum.BigEndianSwap://BADC
                             _ab[0] = ab[1];
                             _ab[1] = ab[0];
                             _cd[0] = cd[1];
                             _cd[1] = cd[0];
                             break;
+
                         case EndianEnum.LittleEndianSwap://CDAB
                             _ab[0] = cd[0];
                             _ab[1] = cd[1];
                             _cd[0] = ab[0];
                             _cd[1] = ab[1];
                             break;
+
                         default:
                             break;
                     }
@@ -929,6 +946,7 @@ namespace PLC.ModBusMaster
                             _ef = ef;
                             _gh = gh;
                             break;
+
                         case EndianEnum.LittleEndian://HG FE DC BA
                             _ab[0] = gh[1];
                             _ab[1] = gh[0];
@@ -940,6 +958,7 @@ namespace PLC.ModBusMaster
                             _gh[0] = ab[1];
                             _gh[1] = ab[0];
                             break;
+
                         case EndianEnum.BigEndianSwap://BA DC FE HG
                             _ab[0] = ab[1];
                             _ab[1] = ab[0];
@@ -951,6 +970,7 @@ namespace PLC.ModBusMaster
                             _gh[0] = gh[1];
                             _gh[1] = gh[0];
                             break;
+
                         case EndianEnum.LittleEndianSwap://GH EF CD AB
                             _ab[0] = gh[0];
                             _ab[1] = gh[1];
@@ -962,6 +982,7 @@ namespace PLC.ModBusMaster
                             _gh[0] = ab[0];
                             _gh[1] = ab[1];
                             break;
+
                         default:
                             break;
                     }
@@ -1049,7 +1070,6 @@ namespace PLC.ModBusMaster
                     slaveAddress = byte.Parse(ioArg.Address.Split('|')[0]);
                     ioAddress = ioArg.Address.Split('|')[1];
                 }
-
             }
             catch (Exception e)
             {
@@ -1058,7 +1078,7 @@ namespace PLC.ModBusMaster
 
             return (slaveAddress, ioAddress);
         }
-        #endregion
 
+        #endregion 私有方法
     }
 }

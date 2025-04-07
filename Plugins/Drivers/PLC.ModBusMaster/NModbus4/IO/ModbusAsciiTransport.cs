@@ -1,10 +1,9 @@
 ﻿namespace Modbus.IO
 {
+    using Message;
     using System.Diagnostics;
     using System.IO;
     using System.Text;
-
-    using Message;
     using Utility;
 
     /// <summary>

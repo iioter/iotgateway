@@ -3,10 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using WalkingTec.Mvvm.Core;
-using WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkGroupVMs;
-using WalkingTec.Mvvm.Core.Extensions;
 using System.Threading.Tasks;
+using WalkingTec.Mvvm.Core;
+using WalkingTec.Mvvm.Core.Extensions;
 
 namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs
 {
@@ -14,6 +13,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs
     {
         public List<ComboSelectListItem> TableNames { get; set; }
         public List<ComboSelectListItem> AllItems { get; set; }
+
         [Display(Name = "_Admin.AllowedDp")]
         public List<string> SelectedItemsID { get; set; }
 
@@ -21,8 +21,10 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs
         public DpTypeEnum DpType { get; set; }
 
         public DpListVM DpList { get; set; }
+
         [Display(Name = "_Admin.AllDp")]
         public bool? IsAll { get; set; }
+
         public DataPrivilegeVM()
         {
             DpList = new DpListVM();
@@ -54,7 +56,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs
             {
                 SelectedItemsID.AddRange(rids.Select(x => x));
             }
-
         }
 
         protected override void ReInitVM()
@@ -85,7 +86,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs
                     }
                     else
                     {
-                        user = DC.Set<FrameworkUser>().Where(x => x.ITCode == Entity.UserCode).Select(x=>x.ITCode).FirstOrDefault();
+                        user = DC.Set<FrameworkUser>().Where(x => x.ITCode == Entity.UserCode).Select(x => x.ITCode).FirstOrDefault();
                     }
                     if (user == null)
                     {
@@ -95,7 +96,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs
             }
             else
             {
-                if(string.IsNullOrEmpty(Entity.GroupCode))
+                if (string.IsNullOrEmpty(Entity.GroupCode))
                 {
                     MSD.AddModelError("Entity.GroupId", Localizer["Validate.{0}required", Localizer["_Admin.Group"]]);
                 }
@@ -136,7 +137,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs
                     dp.TableName = this.Entity.TableName;
                     dp.TenantCode = LoginUserInfo.CurrentTenant;
                     DC.Set<DataPrivilege>().Add(dp);
-
                 }
                 else
                 {
@@ -184,7 +184,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs
             {
                 await Wtm.RemoveUserCacheByGroup(Entity.GroupCode);
             }
-
         }
 
         public override async Task DoEditAsync(bool updateAllFields = false)
@@ -205,7 +204,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs
                 DC.Set<DataPrivilege>().Attach(dp);
                 DC.DeleteEntity(dp);
             }
-            if(IsAll == true)
+            if (IsAll == true)
             {
                 if (DpType == DpTypeEnum.User)
                 {
@@ -215,7 +214,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs
                     dp.TableName = this.Entity.TableName;
                     dp.TenantCode = LoginUserInfo.CurrentTenant;
                     DC.Set<DataPrivilege>().Add(dp);
-
                 }
                 else
                 {
@@ -227,7 +225,8 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs
                     DC.Set<DataPrivilege>().Add(dp);
                 }
             }
-            else {
+            else
+            {
                 if (SelectedItemsID != null)
                 {
                     if (DpType == DpTypeEnum.User)
@@ -241,7 +240,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs
                             dp.TenantCode = LoginUserInfo.CurrentTenant;
                             DC.Set<DataPrivilege>().Add(dp);
                         }
-
                     }
                     else
                     {
@@ -268,7 +266,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs
             }
         }
 
-        public override async Task  DoDeleteAsync()
+        public override async Task DoDeleteAsync()
         {
             List<Guid> oldIDs = null;
 

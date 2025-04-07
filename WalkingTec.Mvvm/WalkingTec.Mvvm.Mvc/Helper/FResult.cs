@@ -1,6 +1,6 @@
-﻿using System.Text;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 
 namespace WalkingTec.Mvvm.Mvc
 {
@@ -9,7 +9,9 @@ namespace WalkingTec.Mvvm.Mvc
         public StringBuilder ContentBuilder { get; set; }
         public BaseController Controller { get; set; }
 
-        public FResult() : this(string.Empty) { }
+        public FResult() : this(string.Empty)
+        {
+        }
 
         public FResult(string content)
         {

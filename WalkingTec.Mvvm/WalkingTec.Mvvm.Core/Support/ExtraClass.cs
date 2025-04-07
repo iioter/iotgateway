@@ -9,7 +9,6 @@ namespace WalkingTec.Mvvm.Core
     /// </summary>
     public class SimpleTreeTextAndValue
     {
-
         public object Id { get; set; }
         public object Text { get; set; }
         public object ParentId { get; set; }
@@ -53,16 +52,15 @@ namespace WalkingTec.Mvvm.Core
 
         public string GetFirstError()
         {
-            if(Message != null && Message.Any())
+            if (Message != null && Message.Any())
             {
                 return Message.First();
             }
-            if(Form != null && Form.Any())
+            if (Form != null && Form.Any())
             {
                 return Form.First().Value;
             }
             return "";
         }
     }
-
 }

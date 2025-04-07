@@ -1,13 +1,7 @@
-using S7.Net.Types;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Sockets;
-using System.Threading.Tasks;
 using S7.Net.Protocol;
-using System.Threading;
 using S7.Net.Protocol.S7;
+using S7.Net.Types;
+using System.Net.Sockets;
 
 namespace S7.Net
 {
@@ -80,7 +74,7 @@ namespace S7.Net
                 throw new WrongNumberOfBytesException("Not enough data received in response to Communication Setup");
 
             //Check for S7 Ack Data
-            if (s7data[1] != 0x03&& s7data[1] != 0x01)
+            if (s7data[1] != 0x03 && s7data[1] != 0x01)
                 throw new InvalidDataException("Error reading Communication Setup response", s7data, 1, 0x03);
 
             if (s7data.Length < 20)
@@ -89,7 +83,6 @@ namespace S7.Net
             // TODO: check if this should not rather be UInt16.
             MaxPDUSize = s7data[18] * 256 + s7data[19];
         }
-
 
         /// <summary>
         /// Reads a number of bytes from a DB starting from a specified index. This handles more than 200 bytes with multiple requests.
@@ -289,7 +282,6 @@ namespace S7.Net
             }
             return dataItems;
         }
-
 
         /// <summary>
         /// Write a number of bytes from a DB starting from a specified index. This handles more than 200 bytes with multiple requests.

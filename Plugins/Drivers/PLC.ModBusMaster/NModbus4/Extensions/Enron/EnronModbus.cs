@@ -1,11 +1,9 @@
 ﻿namespace Modbus.Extensions.Enron
 {
+    using Device;
     using System;
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Linq;
-
-    using Device;
     using Utility;
 
     /// <summary>

@@ -1,14 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using WalkingTec.Mvvm.Core.Support.Json;
 
 namespace WalkingTec.Mvvm.Core
 {
@@ -69,7 +62,6 @@ namespace WalkingTec.Mvvm.Core
 
         [NotMapped]
         public Dictionary<string, object> Attributes { get; set; }
-
 
         public IDataContext CreateDC(WTMContext wtm)
         {

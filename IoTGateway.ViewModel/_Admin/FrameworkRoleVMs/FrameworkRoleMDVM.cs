@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
-using WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs;
 using WalkingTec.Mvvm.Core.Extensions;
+using WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs;
 
 namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkRoleVMs
 {
@@ -17,6 +17,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkRoleVMs
         {
             ListVM = new FrameworkMenuListVM();
         }
+
         protected override FrameworkRole GetById(object Id)
         {
             if (ConfigInfo.HasMainHost && Wtm.LoginUserInfo?.CurrentTenant == null)
@@ -61,6 +62,5 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkRoleVMs
             await Wtm.RemoveUserCacheByRole(Entity.RoleCode);
             return true;
         }
-
     }
 }

@@ -11,8 +11,8 @@ namespace WalkingTec.Mvvm.Core.Extensions
 
         public static int WeekOfYear(this DateTime self)
         {
-            var startDayOfYear  = new DateTime(self.Year,1,1);
-            var weekOffset = 7 - ( startDayOfYear.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)startDayOfYear.DayOfWeek) + 1;
+            var startDayOfYear = new DateTime(self.Year, 1, 1);
+            var weekOffset = 7 - (startDayOfYear.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)startDayOfYear.DayOfWeek) + 1;
             var weekOfYear = (int)Math.Ceiling((self.DayOfYear - weekOffset) / 7.0 + (weekOffset == 0 ? 0 : 1));
 
             return weekOfYear;
@@ -27,18 +27,18 @@ namespace WalkingTec.Mvvm.Core.Extensions
         /// <param name="endDay">指定周结束时间</param>
         public static void WeekDays(int yearNum, int weekOfYear, out DateTime startDay, out DateTime endDay)
         {
-            var startDayOfYear  = new DateTime(yearNum,1,1,0,0,0);
+            var startDayOfYear = new DateTime(yearNum, 1, 1, 0, 0, 0);
 
-            var weekOffset = 7 - ( startDayOfYear.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)startDayOfYear.DayOfWeek) + 1;
+            var weekOffset = 7 - (startDayOfYear.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)startDayOfYear.DayOfWeek) + 1;
             startDay = startDayOfYear.AddDays(7 * (weekOfYear - (weekOffset == 0 ? 0 : 1)) + weekOffset - 7);
             endDay = startDay.AddDays(7);
         }
 
-        #endregion
+        #endregion DateTime Helper
 
         #region DateTime Extensions
 
-        private static readonly DateTime _jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0,DateTimeKind.Utc);
+        private static readonly DateTime _jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         /// <summary>
         /// UTC 1970/01/01 00:00:00
@@ -76,6 +76,6 @@ namespace WalkingTec.Mvvm.Core.Extensions
             WeekDays(self.Year, self.WeekOfYear(), out startDay, out endDay);
         }
 
-        #endregion
+        #endregion DateTime Extensions
     }
 }

@@ -1,9 +1,8 @@
 ﻿using ModelContextProtocol.Server;
 using Plugin;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Collections.Generic;
-using JetBrains.Annotations;
 
 namespace IoTGateway.MCP
 {
@@ -11,10 +10,12 @@ namespace IoTGateway.MCP
     public sealed class DeviceTool
     {
         private readonly DeviceService _deviceService;
+
         public DeviceTool(DeviceService deviceService)
         {
             _deviceService = deviceService;
         }
+
         /// <summary>
         /// Get the list of sub-devices.
         /// </summary>
@@ -67,5 +68,4 @@ namespace IoTGateway.MCP
                 .DeviceVariables.FirstOrDefault(x => x.Name == variableName)?.CookedValue;
         }
     }
-
 }

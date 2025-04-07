@@ -1,16 +1,15 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Binders;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
 using System.Buffers;
-using Microsoft.Extensions.DependencyInjection;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace WalkingTec.Mvvm.Mvc.Binders
 {
@@ -33,7 +32,6 @@ namespace WalkingTec.Mvvm.Mvc.Binders
                 p.BindingInfo.BinderType = typeof(NewtonsoftJsonBodyModelBinder);
             }
         }
-
     }
 
     public class NewtonsoftJsonBodyModelBinder : BodyModelBinder

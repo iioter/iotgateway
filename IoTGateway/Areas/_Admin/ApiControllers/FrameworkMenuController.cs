@@ -1,9 +1,8 @@
 // WTM默认页面 Wtm buidin page
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 using WalkingTec.Mvvm.Core.Support.Json;
@@ -63,7 +62,6 @@ namespace WalkingTec.Mvvm.Admin.Api
                     return Ok(vm.Entity);
                 }
             }
-
         }
 
         [ActionDescription("Sys.Edit")]
@@ -200,7 +198,5 @@ namespace WalkingTec.Mvvm.Admin.Api
         {
             return IconFontsHelper.IconFontDicItems[key];
         }
-
     }
-
 }

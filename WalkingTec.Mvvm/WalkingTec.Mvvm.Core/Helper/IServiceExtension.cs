@@ -1,9 +1,8 @@
-using System;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using System;
 using WalkingTec.Mvvm.Core.Extensions;
 using WalkingTec.Mvvm.Core.Support.FileHandlers;
 
@@ -14,7 +13,7 @@ namespace WalkingTec.Mvvm.Core
         public static IServiceCollection AddWtmContextForConsole(this IServiceCollection services, string jsonFileDir = null, string jsonFileName = null, Func<IWtmFileHandler, string> fileSubDirSelector = null)
         {
             var configBuilder = new ConfigurationBuilder();
-            IConfigurationRoot ConfigRoot = configBuilder.WTMConfig(null,jsonFileDir,jsonFileName).Build();
+            IConfigurationRoot ConfigRoot = configBuilder.WTMConfig(null, jsonFileDir, jsonFileName).Build();
             var WtmConfigs = ConfigRoot.Get<Configs>();
             services.Configure<Configs>(ConfigRoot);
             services.AddLogging(builder =>
