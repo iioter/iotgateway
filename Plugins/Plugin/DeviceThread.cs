@@ -27,6 +27,10 @@ namespace Plugin
         private readonly CancellationTokenSource _tokenSource = new CancellationTokenSource();
         private readonly ManualResetEventSlim _resetEvent = new ManualResetEventSlim(true);
 
+        //增加时间容忍断开连接
+        private DateTime _lastGoodTime = DateTime.UtcNow;
+        private readonly TimeSpan _maxFailureDuration = TimeSpan.FromSeconds(60);
+
         public DeviceThread(Device device, IDriver driver, string projectId, MessageService messageService,
             MqttServer mqttServer, ILogger logger)
         {
@@ -140,11 +144,22 @@ namespace Plugin
                             }
 
                             // 若所有变量状态异常且连接仍正常，则关闭连接
-                            if (Device.DeviceVariables.All(x => x.StatusType != VaribaleStatusTypeEnum.Good) && Driver.IsConnected)
+                            if (Device.DeviceVariables.All(x => x.StatusType != VaribaleStatusTypeEnum.Good))
                             {
-                                Driver.Close();
-                                Driver.Dispose();
+                                // 超过设定时间未有任何一次读取成功，则认为死连接
+                                if (DateTime.UtcNow - _lastGoodTime > _maxFailureDuration && Driver.IsConnected)
+                                {
+                                    _logger.LogWarning($"{Device.DeviceName} 读取变量连续失败超过 {_maxFailureDuration.TotalSeconds} 秒，主动断开连接重连");
+                                    Driver.Close();
+                                    Driver.Dispose();
+                                }
                             }
+                            else
+                            {
+                                // 至少有一个变量读取成功，刷新最后成功时间
+                                _lastGoodTime = DateTime.UtcNow;
+                            }
+
                         }
                         else
                         {
