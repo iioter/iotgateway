@@ -2,11 +2,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 using WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs;
@@ -188,7 +186,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
                 return JsonMore(new List<ComboSelectListItem>());
             }
             var modules = Wtm.GlobaInfo.AllModule;
-            var m =Utils.ResetModule(modules);
+            var m = Utils.ResetModule(modules);
 
             List<ComboSelectListItem> AllActions = new List<ComboSelectListItem>();
             var action = m.Where(x => x.FullName == Id)?.FirstOrDefault().Actions;
@@ -212,7 +210,5 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
             else
                 return JsonMore(null);
         }
-
     }
-
 }

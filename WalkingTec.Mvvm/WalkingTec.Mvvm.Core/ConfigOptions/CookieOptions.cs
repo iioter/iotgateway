@@ -1,4 +1,3 @@
-
 namespace WalkingTec.Mvvm.Core
 {
     public class CookieOption

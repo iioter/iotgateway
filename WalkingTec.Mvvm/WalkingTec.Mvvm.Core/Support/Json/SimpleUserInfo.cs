@@ -6,6 +6,7 @@ namespace WalkingTec.Mvvm.Core.Support.Json
     public class SimpleUserInfo
     {
         public Guid Id { get; set; }
+
         /// <summary>
         /// 登录用户
         /// </summary>
@@ -16,6 +17,7 @@ namespace WalkingTec.Mvvm.Core.Support.Json
         public string Memo { get; set; }
 
         public List<SimpleRole> Roles { get; set; }
+
         /// <summary>
         /// 用户的页面权限列表
         /// </summary>

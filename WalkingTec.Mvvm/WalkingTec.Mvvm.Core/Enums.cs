@@ -10,7 +10,6 @@ namespace WalkingTec.Mvvm.Core
         DELETE
     }
 
-
     /// <summary>
     /// 列表操作列类型
     /// </summary>
@@ -24,23 +23,26 @@ namespace WalkingTec.Mvvm.Core
         Html
     }
 
-
     /// <summary>
     /// 数据库类型
     /// </summary>
-    public enum DBTypeEnum { SqlServer, MySql, PgSql, Memory, SQLite, Oracle,DaMeng }
+    public enum DBTypeEnum
+    { SqlServer, MySql, PgSql, Memory, SQLite, Oracle, DaMeng }
 
     /// <summary>
     /// 页面显示方式
     /// </summary>
-    public enum PageModeEnum { Single, Tab }
+    public enum PageModeEnum
+    { Single, Tab }
 
     /// <summary>
     /// Tab页的显示方式
     /// </summary>
-    public enum TabModeEnum { Default, Simple }
+    public enum TabModeEnum
+    { Default, Simple }
 
-    public enum BlazorModeEnum { Server, Wasm}
+    public enum BlazorModeEnum
+    { Server, Wasm }
 
     /// <summary>
     /// 按钮
@@ -73,21 +75,25 @@ namespace WalkingTec.Mvvm.Core
         /// 可选择：年、月、日
         /// </summary>
         Date,
+
         /// <summary>
         /// 日期时间选择器
         /// 可选择：年、月、日、时、分、秒
         /// </summary>
         DateTime,
+
         /// <summary>
         /// 年选择器
         /// 只提供年列表选择
         /// </summary>
         Year,
+
         /// <summary>
         /// 年月选择器
         /// 只提供年、月选择
         /// </summary>
         Month,
+
         /// <summary>
         /// 时间选择器
         /// 只提供时、分、秒选择
@@ -117,6 +123,7 @@ namespace WalkingTec.Mvvm.Core
         sumpct,
         countpct
     }
+
     /// <summary>
     /// 图形统计分区类型
     /// </summary>
@@ -131,13 +138,13 @@ namespace WalkingTec.Mvvm.Core
     }
 
     public enum UIEnum
-    { LayUI, React, VUE,Blazor,VUE3 }
+    { LayUI, React, VUE, Blazor, VUE3 }
 
+    public enum BoolComboTypes
+    { YesNo, ValidInvalid, MaleFemale, HaveNotHave, Custom }
 
-
-    public enum BoolComboTypes { YesNo, ValidInvalid, MaleFemale, HaveNotHave, Custom }
-
-    public enum SortDir { Asc, Desc }
+    public enum SortDir
+    { Asc, Desc }
 
     public enum BackgroudColorEnum
     {
@@ -150,8 +157,8 @@ namespace WalkingTec.Mvvm.Core
     {
         [Display(Name = "Sys.Male")]
         Male = 0,
+
         [Display(Name = "Sys.Female")]
         Female = 1
     }
-
 }

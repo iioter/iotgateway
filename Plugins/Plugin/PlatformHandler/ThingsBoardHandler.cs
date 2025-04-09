@@ -1,11 +1,11 @@
-﻿using MQTTnet.Extensions.ManagedClient;
-using IoTGateway.Model;
-using PluginInterface;
-using MQTTnet.Protocol;
-using MQTTnet.Client;
+﻿using IoTGateway.Model;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
+using MQTTnet.Client;
+using MQTTnet.Extensions.ManagedClient;
+using MQTTnet.Protocol;
 using Newtonsoft.Json;
+using PluginInterface;
 using PluginInterface.ThingsBoard;
 
 namespace Plugin.PlatformHandler
@@ -16,6 +16,7 @@ namespace Plugin.PlatformHandler
 
         public IManagedMqttClient MqttClient { get; }
         public ILogger<MessageService> Logger { get; }
+
         public event EventHandler<RpcRequest> OnExcRpc;
 
         public ThingsBoardHandler(IManagedMqttClient mqttClient, ILogger<MessageService> logger, EventHandler<RpcRequest> onExcRpc)

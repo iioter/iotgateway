@@ -1,8 +1,7 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.CompilerServices;
-using Microsoft.EntityFrameworkCore;
 using WalkingTec.Mvvm.Core;
 
 namespace IoTGateway.Model
@@ -26,6 +25,7 @@ namespace IoTGateway.Model
         public string Description { get; set; }
 
         public Driver Driver { get; set; }
+
         [Comment("驱动")]
         [Display(Name = "Driver")]
         public Guid? DriverId { get; set; }
@@ -52,10 +52,13 @@ namespace IoTGateway.Model
 
         [Display(Name = "CreateTime")]
         public DateTime? CreateTime { get; set; }
+
         [Display(Name = "CreateBy")]
         public string CreateBy { get; set; }
+
         [Display(Name = "UpdateTime")]
         public DateTime? UpdateTime { get; set; }
+
         [Display(Name = "UpdateBy")]
         public string UpdateBy { get; set; }
 

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using OPCAutomation;
+﻿using OPCAutomation;
 
 namespace Automation.OPCClient
 {
     public class OPCClientWrapper
     {
-
         private OPCAutomation.OPCServer opcServer;
         private OPCGroups opcGroups;
         private OPCGroup opcAGroup;
@@ -23,7 +20,9 @@ namespace Automation.OPCClient
 
         private List<string> clientNameList = new List<string>();
         private object lockObj = new object();
+
         public event OPCDataChangedHandler OpcDataChangedEvent;
+
         /// <summary>
         /// OPCServer object
         /// </summary>
@@ -32,6 +31,7 @@ namespace Automation.OPCClient
             get { return opcServer; }
             set { opcServer = value; }
         }
+
         /// <summary>
         /// OPCGroups object
         /// </summary>
@@ -46,6 +46,7 @@ namespace Automation.OPCClient
             get { return opcAGroup; }
             set { opcAGroup = value; }
         }
+
         /// <summary>
         /// ServerIP
         /// </summary>
@@ -54,6 +55,7 @@ namespace Automation.OPCClient
             get { return serverIP; }
             set { serverIP = value; }
         }
+
         /// <summary>
         /// OPCServerName
         /// </summary>
@@ -71,6 +73,7 @@ namespace Automation.OPCClient
             get { return isDefaultGroupActive; }
             set { isDefaultGroupActive = value; }
         }
+
         /// <summary>
         /// OPCGroup object 默认更新频率
         /// </summary>
@@ -84,7 +87,6 @@ namespace Automation.OPCClient
         {
             get { return defaultGroupDeadband; }
             set { defaultGroupDeadband = value; }
-
         }
 
         public OPCClientWrapper()
@@ -102,7 +104,7 @@ namespace Automation.OPCClient
         {
             try
             {
-                this.opcServer.Connect( opcServerName, serverIP );
+                this.opcServer.Connect(opcServerName, serverIP);
                 this.opcServer.ServerShutDown += new DIOPCServerEvent_ServerShutDownEventHandler(opcServer_ServerShutDown);
             }
             catch (Exception ex)
@@ -113,15 +115,16 @@ namespace Automation.OPCClient
             return true;
         }
 
-        void opcServer_ServerShutDown(string Reason)
+        private void opcServer_ServerShutDown(string Reason)
         {
             throw new NotImplementedException();
         }
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns></returns>
-        public void Init(string serverIP, string opcServerName )
+        public void Init(string serverIP, string opcServerName)
         {
             this.opcServerName = opcServerName;
             this.serverIP = serverIP;
@@ -140,14 +143,13 @@ namespace Automation.OPCClient
             }
             catch (Exception ex)
             {
-
             }
         }
 
         /// <summary>
         /// 当监视的标签发生改变时激活
-        /// </summary>  
-        private void OnGroup_DataChange( int TransactionID, int NumItems, ref Array ClientHandles, ref Array ItemValues, ref Array Qualities, ref Array TimeStamps )
+        /// </summary>
+        private void OnGroup_DataChange(int TransactionID, int NumItems, ref Array ClientHandles, ref Array ItemValues, ref Array Qualities, ref Array TimeStamps)
         {
             lock (lockObj)
             {
@@ -198,7 +200,7 @@ namespace Automation.OPCClient
         {
             TagTreeNode subNode = null;
             opcBrowser.ShowBranches();
-            
+
             foreach (var branch in opcBrowser)
             {
                 if (node == null)
@@ -292,7 +294,7 @@ namespace Automation.OPCClient
                     //{
                     //    Console.WriteLine(branch.ToString());
                     //}
-                    
+
                     var index = this.clientNameList.Count;
                     OPCAutomation.OPCItem tempItem = opcAGroup.OPCItems.AddItem(itemName, index);
                     TagItem item = new TagItem()
@@ -304,12 +306,11 @@ namespace Automation.OPCClient
                     this.clientNameList.Add(itemName);
                     this.clientHandleDict.Add(itemName, item);
                     object value, timeStamp, quality;
-                    tempItem.Read(1, out  value, out quality, out timeStamp);
+                    tempItem.Read(1, out value, out quality, out timeStamp);
                 }
             }
             catch
             {
-                
             }
         }
 
@@ -318,16 +319,16 @@ namespace Automation.OPCClient
             if (this.clientHandleDict.ContainsKey(name))
             {
                 OPCAutomation.OPCItem item = opcAGroup.OPCItems.GetOPCItem(this.clientHandleDict[name].ServerHandler);
-                object value,quality,timestamp;
+                object value, quality, timestamp;
                 item.Read(2, out value, out quality, out timestamp);
-                
+
                 return new OPCChangeModel()
                 {
-                     Name = name,
-                     Quality = (TagQuality)((short)quality),
-                     Value = item.Value,
-                     TimeStamp = (DateTime)timestamp,
-                };  
+                    Name = name,
+                    Quality = (TagQuality)((short)quality),
+                    Value = item.Value,
+                    TimeStamp = (DateTime)timestamp,
+                };
             }
             return null;
         }

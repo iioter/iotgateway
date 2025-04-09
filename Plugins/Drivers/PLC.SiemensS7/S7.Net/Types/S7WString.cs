@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 
 namespace S7.Net.Types
 {
@@ -39,7 +38,6 @@ namespace S7.Net.Types
                     $"Failed to parse {VarType.S7WString} from data. Following fields were read: size: '{size}', actual length: '{length}', total number of bytes (including header): '{bytes.Length}'.",
                     e);
             }
-            
         }
 
         /// <summary>
@@ -56,7 +54,7 @@ namespace S7.Net.Types
             }
 
             if (reservedLength > 16382) throw new ArgumentException("The maximum string length supported is 16382.");
-            
+
             var buffer = new byte[4 + reservedLength * 2];
             buffer[0] = (byte)((reservedLength >> 8) & 0xFF);
             buffer[1] = (byte)(reservedLength & 0xFF);

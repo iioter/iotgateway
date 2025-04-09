@@ -9,10 +9,10 @@ namespace WalkingTec.Mvvm.Core
     public class SoftFKAttribute : Attribute
     {
         public string PropertyName { get; set; }
+
         public SoftFKAttribute(string proName)
         {
             this.PropertyName = proName;
         }
-
     }
 }

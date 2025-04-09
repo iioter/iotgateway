@@ -1,7 +1,4 @@
-using System.Linq;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using WalkingTec.Mvvm.Core.Extensions;
 
 namespace WalkingTec.Mvvm.TagHelpers.LayUI
 {
@@ -22,6 +19,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
 
         public string PredefinedColors { get; set; }
         public bool IsPassword { get; set; }
+
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "div";
@@ -40,7 +38,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                     }
                 }
             }
-            if(prec.Length > 0)
+            if (prec.Length > 0)
             {
                 prec = prec.Substring(0, prec.Length - 1);
             }
@@ -74,9 +72,9 @@ layui.use('colorpicker', function(){{
     elem: '#cp_{Id}'
     ,color:'{val}'
     ,alpha : {EnableAlpha.ToString().ToLower()}
-    ,format: '{(EnableAlpha==true? "rgb":"hex")}'
+    ,format: '{(EnableAlpha == true ? "rgb" : "hex")}'
     ,predefine: {(PredefinedColors == null ? "false" : "true")}
-    {(prec == "" ?"":$",colors: [{prec}]")}
+    {(prec == "" ? "" : $",colors: [{prec}]")}
     ,done: function(data){{
       $('#{Id}').val(data);
         {FormatFuncName(ChangeFunc)};
@@ -89,5 +87,4 @@ layui.use('colorpicker', function(){{
             base.Process(context, output);
         }
     }
-
 }

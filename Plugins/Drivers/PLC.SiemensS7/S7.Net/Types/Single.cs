@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace S7.Net.Types
+﻿namespace S7.Net.Types
 {
     /// <summary>
     /// Contains the conversion methods to convert Real from S7 plc to C# float.
@@ -33,14 +31,13 @@ namespace S7.Net.Types
             return d;
         }
 
-
         /// <summary>
         /// Converts a double to S7 Real (4 bytes)
         /// </summary>
         public static byte[] ToByteArray(float value) => Real.ToByteArray(value);
 
         /// <summary>
-        /// Converts an array of float to an array of bytes 
+        /// Converts an array of float to an array of bytes
         /// </summary>
         public static byte[] ToByteArray(float[] value)
         {
@@ -63,6 +60,5 @@ namespace S7.Net.Types
 
             return values;
         }
-        
     }
 }

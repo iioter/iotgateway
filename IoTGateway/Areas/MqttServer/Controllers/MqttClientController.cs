@@ -1,12 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using IoTGateway.ViewModel.MqttClient.MqttServerVMs;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using WalkingTec.Mvvm.Core;
-using WalkingTec.Mvvm.Mvc;
 using WalkingTec.Mvvm.Core.Extensions;
-using IoTGateway.ViewModel.BasicData.DeviceVMs;
-using MQTTnet.Server;
-using IoTGateway.ViewModel.MqttClient.MqttServerVMs;
+using WalkingTec.Mvvm.Mvc;
 
 namespace IoTGateway.Controllers
 {
@@ -14,8 +10,8 @@ namespace IoTGateway.Controllers
     [ActionDescription("客户端状态")]
     public partial class MqttClientController : BaseController
     {
-
         #region Search
+
         [ActionDescription("Sys.Search")]
         public ActionResult Index()
         {
@@ -38,9 +34,7 @@ namespace IoTGateway.Controllers
                 return vm.GetError();
             }
         }
-        #endregion
 
-
-
+        #endregion Search
     }
 }

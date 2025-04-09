@@ -52,7 +52,7 @@ namespace WalkingTec.Mvvm.Mvc.Binders
                 .Where(x => x.AttributeType == typeof(StringNeedLTGTAttribute)).Count();
             var count2 = (bindingContext.ModelMetadata as DefaultModelMetadata)?.Attributes?.PropertyAttributes?
                 .Where(x => x.GetType() == typeof(JsonConverterAttribute)).Count();
-            if (count == 0 && (count2==null || count2 == 0))
+            if (count == 0 && (count2 == null || count2 == 0))
             {
                 value = HttpUtility.HtmlEncode(value);
             }

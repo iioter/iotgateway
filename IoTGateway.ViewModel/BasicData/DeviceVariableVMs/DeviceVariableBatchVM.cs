@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using IoTGateway.Model;
+using Microsoft.Extensions.Primitives;
+using Plugin;
+using PluginInterface;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
-using WalkingTec.Mvvm.Core.Extensions;
-using IoTGateway.Model;
-using PluginInterface;
-using Plugin;
-using Microsoft.Extensions.Primitives;
 
 namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
 {
@@ -30,7 +27,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
             if (ret)
             {
                 var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
-                
+
                 UpdateDevices.UpdateVariable(DC, deviceService, FC);
             }
             return ret;
@@ -48,30 +45,34 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
         }
     }
 
-	/// <summary>
+    /// <summary>
     /// Class to define batch edit fields
     /// </summary>
     public class DeviceVariable_BatchEdit : BaseVM
     {
         [Display(Name = "变量名")]
         public String Name { get; set; }
+
         [Display(Name = "地址")]
         public String DeviceAddress { get; set; }
+
         [Display(Name = "数据类型")]
         public DataTypeEnum? DataType { get; set; }
+
         [Display(Name = "大小端")]
         public EndianEnum? EndianType { get; set; }
+
         [Display(Name = "表达式")]
         public string Expressions { get; set; }
+
         [Display(Name = "权限")]
         public ProtectTypeEnum? ProtectType { get; set; }
+
         [Display(Name = "设备别名")]
         public String Alias { get; set; }
 
         protected override void InitVM()
         {
         }
-
     }
-
 }

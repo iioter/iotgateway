@@ -1,22 +1,15 @@
-﻿using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace S7.Net
+﻿namespace S7.Net
 {
-
     /// <summary>
     /// Describes a TPKT Packet
     /// </summary>
     internal class TPKT
     {
-
-
         public byte Version;
         public byte Reserved1;
         public int Length;
         public byte[] Data;
+
         private TPKT(byte version, byte reserved1, int length, byte[] data)
         {
             Version = version;

@@ -48,7 +48,6 @@ namespace IoTGateway.ViewModel.HomeVMs
                 return false;
             }
 
-
             //检查itcode是否重复
             var exist = DC.Set<FrameworkUser>().Any(x => x.ITCode.ToLower() == ITCode.ToLower());
 

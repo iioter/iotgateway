@@ -1,13 +1,7 @@
-﻿using System;
+﻿using IoTGateway.Model;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
-using WalkingTec.Mvvm.Core.Extensions;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using IoTGateway.Model;
-
 
 namespace IoTGateway.ViewModel.Config.SystemConfigVMs
 {
@@ -28,7 +22,6 @@ namespace IoTGateway.ViewModel.Config.SystemConfigVMs
             };
         }
 
-
         protected override IEnumerable<IGridColumn<SystemConfig_View>> InitGridHeader()
         {
             return new List<GridColumn<SystemConfig_View>>{
@@ -48,7 +41,7 @@ namespace IoTGateway.ViewModel.Config.SystemConfigVMs
             var query = DC.Set<SystemConfig>()
                 .Select(x => new SystemConfig_View
                 {
-				    ID = x.ID,
+                    ID = x.ID,
                     GatewayName = x.GatewayName,
                     ClientId = x.ClientId,
                     MqttIp = x.MqttIp,
@@ -60,10 +53,9 @@ namespace IoTGateway.ViewModel.Config.SystemConfigVMs
                 .OrderBy(x => x.ID);
             return query;
         }
-
     }
 
-    public class SystemConfig_View : SystemConfig{
-
+    public class SystemConfig_View : SystemConfig
+    {
     }
 }

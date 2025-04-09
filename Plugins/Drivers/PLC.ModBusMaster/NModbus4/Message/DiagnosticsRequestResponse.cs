@@ -1,13 +1,11 @@
 ﻿namespace Modbus.Message
 {
+    using Data;
     using System;
     using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Net;
-
-    using Data;
-
     using Unme.Common;
 
     internal class DiagnosticsRequestResponse : AbstractModbusMessageWithData<RegisterCollection>, IModbusMessage
@@ -41,7 +39,7 @@
                 SubFunctionCode == Modbus.DiagnosticsReturnQueryData,
                 "Need to add support for additional sub-function.");
 
-            return $"Diagnostics message, sub-function return query data - {Data}.";            
+            return $"Diagnostics message, sub-function return query data - {Data}.";
         }
 
         protected override void InitializeUnique(byte[] frame)

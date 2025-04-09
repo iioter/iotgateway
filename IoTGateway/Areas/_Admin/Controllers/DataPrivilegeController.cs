@@ -1,12 +1,11 @@
 // WTM默认页面 Wtm buidin page
-using System;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using WalkingTec.Mvvm.Core;
-using WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs;
-using WalkingTec.Mvvm.Core.Extensions;
 using System.Threading.Tasks;
+using WalkingTec.Mvvm.Core;
+using WalkingTec.Mvvm.Core.Extensions;
+using WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs;
 
 namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
 {
@@ -29,7 +28,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
             return PartialView(vm);
         }
 
-
         [ActionDescription("Sys.Search")]
         [HttpPost]
         public string Search(DataPrivilegeSearcher searcher)
@@ -49,7 +47,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
         [ActionDescription("Sys.Create")]
         public ActionResult Create(DpTypeEnum Type)
         {
-            var vm = Wtm.CreateVM<DataPrivilegeVM>(values:x=>x.DpType == Type);
+            var vm = Wtm.CreateVM<DataPrivilegeVM>(values: x => x.DpType == Type);
             return PartialView(vm);
         }
 
@@ -132,6 +130,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
         {
             return vm.GetExportData();
         }
+
         [AllRights]
         public IActionResult GetUserGroups()
         {
@@ -149,6 +148,5 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
             }
             return JsonMore(users);
         }
-
     }
 }

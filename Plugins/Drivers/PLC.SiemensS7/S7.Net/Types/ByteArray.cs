@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-
-namespace S7.Net.Types
+﻿namespace S7.Net.Types
 {
-    class ByteArray
+    internal class ByteArray
     {
-        List<byte> list = new List<byte>();
+        private List<byte> list = new List<byte>();
 
         public byte this[int index]
         {
@@ -28,7 +26,7 @@ namespace S7.Net.Types
         {
             list = new List<byte>(size);
         }
-        
+
         public void Clear()
         {
             list = new List<byte>();
@@ -41,8 +39,8 @@ namespace S7.Net.Types
 
         public void AddWord(ushort value)
         {
-            list.Add((byte) (value >> 8));
-            list.Add((byte) value);
+            list.Add((byte)(value >> 8));
+            list.Add((byte)value);
         }
 
         public void Add(byte[] items)

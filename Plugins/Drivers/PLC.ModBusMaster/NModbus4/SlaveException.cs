@@ -2,10 +2,12 @@
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
+
 #if NET46
     using System.Runtime.Serialization;
     using System.Security.Permissions;
 #endif
+
     using Message;
 
     /// <summary>
@@ -14,6 +16,7 @@
 #if NET46
     [Serializable]
 #endif
+
     public class SlaveException : Exception
     {
         private const string SlaveAddressPropertyName = "SlaveAdress";

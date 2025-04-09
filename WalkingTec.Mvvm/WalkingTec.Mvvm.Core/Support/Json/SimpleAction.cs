@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace WalkingTec.Mvvm.Core.Support.Json
 {
@@ -9,6 +8,7 @@ namespace WalkingTec.Mvvm.Core.Support.Json
         public Guid ID { get; set; }
         public ActionDescriptionAttribute ActionDes { get; set; }
         public string _name;
+
         public string ActionName
         {
             get
@@ -43,6 +43,7 @@ namespace WalkingTec.Mvvm.Core.Support.Json
         public bool MainHostOnly { get; set; }
 
         private string _url;
+
         public string Url
         {
             get

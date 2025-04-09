@@ -1,9 +1,9 @@
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Razor.TagHelpers;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 
@@ -103,7 +103,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 }
             }
 
-            if(listItems == null)
+            if (listItems == null)
             {
                 listItems = new List<ComboSelectListItem>();
             }
@@ -115,7 +115,8 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 Checked = x.Selected
             }).ToArray();
 
-            #endregion
+            #endregion 添加下拉数据 并 设置默认选中
+
             var selectVal = new List<string>();
             if (Field.Name.Contains("["))
             {
@@ -145,13 +146,13 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                     selectVal.Add(Field.Model.ToString());
                 }
             }
-            if(selectVal.Count > 0)
+            if (selectVal.Count > 0)
             {
                 DefaultValue = $"[{string.Join(",", selectVal.Select(x => "'" + x + "'"))}]";
             }
             else
             {
-                if(string.IsNullOrEmpty(DefaultValue) == false)
+                if (string.IsNullOrEmpty(DefaultValue) == false)
                 {
                     DefaultValue = $"[{string.Join(",", DefaultValue.Split(",").Select(x => "'" + x + "'"))}]";
                 }
@@ -166,7 +167,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                         Value = item?.ToString(),
                         Selected = true
                     });
-
                 }
 
                 data = listItems.Select(x => new
@@ -206,7 +206,7 @@ layui.use(['transfer'],function(){{
   var transferIns = transfer.render({{
     elem: '#'+_id
     ,title:{title}
-    ,data:{JsonSerializer.Serialize(data,new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase})}
+    ,data:{JsonSerializer.Serialize(data, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase })}
     {(string.IsNullOrEmpty(DefaultValue) ? string.Empty : $",value:defaultVal")}
     ,id:'{Id}'
     ,text:{{none:'{NonePlaceholder}',searchNone:'{SearchNonePlaceholder}'}}
@@ -223,7 +223,7 @@ layui.use(['transfer'],function(){{
       container.append('<input type=""hidden"" name=""'+name+'"" value=""'+defaultVal[i]+'""/>');
     }}
   }}
-  {(!Disabled?string.Empty: $@"
+  {(!Disabled ? string.Empty : $@"
     $('#'+_id).find(':checkbox').prop('disabled',true)
     $('#'+_id).find(':input').prop('disabled',true)
     transfer.render();")}

@@ -56,7 +56,6 @@ namespace WalkingTec.Mvvm.Core.Auth
                          String.Equals(x.Value, y.Value, valueComparison) &&
                          String.Equals(x.ValueType, y.ValueType, StringComparison.Ordinal));
 
-
             if (_options.IgnoreIssuer)
             {
                 return equal;
@@ -90,7 +89,6 @@ namespace WalkingTec.Mvvm.Core.Auth
             if (_options.IgnoreIssuer)
             {
                 return typeHash ^ valueHash;
-
             }
             else
             {
@@ -98,5 +96,4 @@ namespace WalkingTec.Mvvm.Core.Auth
             }
         }
     }
-
 }

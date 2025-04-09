@@ -1,10 +1,8 @@
-﻿using IoTClient.Enums;
-using PluginInterface;
-using IoTClient.Clients.PLC;
+﻿using IoTClient.Clients.PLC;
+using IoTClient.Enums;
 using Microsoft.Extensions.Logging;
+using PluginInterface;
 using DataTypeEnum = IoTClient.Enums.DataTypeEnum;
-using System.Text;
-using System.Linq;
 
 namespace PLC.MelsecMc
 {
@@ -32,7 +30,7 @@ namespace PLC.MelsecMc
 
         [ConfigParameter("最小通讯周期ms")] public uint MinPeriod { get; set; } = 3000;
 
-        #endregion
+        #endregion 配置参数
 
         #region 生命周期
 
@@ -96,7 +94,6 @@ namespace PLC.MelsecMc
             }
         }
 
-
         /// <summary>
         /// 释放
         /// </summary>
@@ -108,7 +105,6 @@ namespace PLC.MelsecMc
 
                 // Suppress finalization.
                 GC.SuppressFinalize(this);
-
             }
             catch (Exception ex)
             {
@@ -116,7 +112,7 @@ namespace PLC.MelsecMc
             }
         }
 
-        #endregion
+        #endregion 生命周期
 
         #region 读写方法
 
@@ -139,45 +135,59 @@ namespace PLC.MelsecMc
                         case PluginInterface.DataTypeEnum.Bit:
                             ret.Value = _plc.ReadBoolean(ioArg.Address).Value ? 1 : 0;
                             break;
+
                         case PluginInterface.DataTypeEnum.Bool:
                             ret.Value = _plc.ReadBoolean(ioArg.Address).Value;
                             break;
+
                         case PluginInterface.DataTypeEnum.UByte:
                             ret.Value = _plc.ReadByte(ioArg.Address).Value;
                             break;
+
                         case PluginInterface.DataTypeEnum.Byte:
                             ret.Value = (sbyte)_plc.ReadByte(ioArg.Address).Value;
                             break;
+
                         case PluginInterface.DataTypeEnum.Uint16:
                             ret.Value = _plc.ReadUInt16(ioArg.Address).Value;
                             break;
+
                         case PluginInterface.DataTypeEnum.Int16:
                             ret.Value = _plc.ReadInt16(ioArg.Address).Value;
                             break;
+
                         case PluginInterface.DataTypeEnum.Uint32:
                             ret.Value = _plc.ReadUInt32(ioArg.Address).Value;
                             break;
+
                         case PluginInterface.DataTypeEnum.Int32:
                             ret.Value = _plc.ReadInt32(ioArg.Address).Value;
                             break;
+
                         case PluginInterface.DataTypeEnum.Float:
                             ret.Value = _plc.ReadFloat(ioArg.Address).Value;
                             break;
+
                         case PluginInterface.DataTypeEnum.Double:
                             ret.Value = _plc.ReadDouble(ioArg.Address).Value;
                             break;
+
                         case PluginInterface.DataTypeEnum.Uint64:
                             ret.Value = _plc.ReadUInt64(ioArg.Address).Value;
                             break;
+
                         case PluginInterface.DataTypeEnum.Int64:
                             ret.Value = _plc.ReadInt64(ioArg.Address).Value;
                             break;
+
                         case PluginInterface.DataTypeEnum.AsciiString:
                             ret.Value = _plc.ReadString(ioArg.Address);
                             break;
+
                         case PluginInterface.DataTypeEnum.Utf8String:
                             ret.Value = _plc.ReadString(ioArg.Address);
                             break;
+
                         default:
                             ret.StatusType = VaribaleStatusTypeEnum.Bad;
                             ret.Message = $"读取失败,不支持的类型:{ioArg.ValueType}";
@@ -199,8 +209,8 @@ namespace PLC.MelsecMc
             return ret;
         }
 
-
         private Dictionary<string, object> _cache = new();
+
         /// <summary>
         /// 读
         /// </summary>
@@ -228,41 +238,53 @@ namespace PLC.MelsecMc
                         case PluginInterface.DataTypeEnum.Bool:
                             dataType = DataTypeEnum.Bool;
                             break;
+
                         case PluginInterface.DataTypeEnum.Bit:
                         case PluginInterface.DataTypeEnum.UByte:
                         case PluginInterface.DataTypeEnum.Byte:
                             dataType = DataTypeEnum.Byte;
                             break;
+
                         case PluginInterface.DataTypeEnum.Uint16:
                             dataType = DataTypeEnum.UInt16;
                             break;
+
                         case PluginInterface.DataTypeEnum.Int16:
                             dataType = DataTypeEnum.Int16;
                             break;
+
                         case PluginInterface.DataTypeEnum.Uint32:
                             dataType = DataTypeEnum.UInt32;
                             break;
+
                         case PluginInterface.DataTypeEnum.Int32:
                             dataType = DataTypeEnum.Int32;
                             break;
+
                         case PluginInterface.DataTypeEnum.Float:
                             dataType = DataTypeEnum.Float;
                             break;
+
                         case PluginInterface.DataTypeEnum.Double:
                             dataType = DataTypeEnum.Double;
                             break;
+
                         case PluginInterface.DataTypeEnum.Uint64:
                             dataType = DataTypeEnum.UInt64;
                             break;
+
                         case PluginInterface.DataTypeEnum.Int64:
                             dataType = DataTypeEnum.Int64;
                             break;
+
                         case PluginInterface.DataTypeEnum.AsciiString:
                             dataType = DataTypeEnum.String;
                             break;
+
                         case PluginInterface.DataTypeEnum.Utf8String:
                             dataType = DataTypeEnum.String;
                             break;
+
                         default:
                             ret.StatusType = VaribaleStatusTypeEnum.Bad;
                             ret.Message = $"读取失败,不支持的类型:{ioArg.ValueType}";
@@ -307,7 +329,6 @@ namespace PLC.MelsecMc
                                 _cache.Remove(address.Key);
                         }
                     }
-
                 }
                 catch (Exception ex)
                 {
@@ -354,8 +375,6 @@ namespace PLC.MelsecMc
             return ret;
         }
 
-
-
         /// <summary>
         /// 写
         /// </summary>
@@ -369,7 +388,7 @@ namespace PLC.MelsecMc
             await Task.CompletedTask;
             return rpcResponse;
         }
-        #endregion
 
+        #endregion 读写方法
     }
 }

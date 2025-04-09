@@ -1,16 +1,13 @@
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using WalkingTec.Mvvm.Core;
-using System.Linq;
 
 namespace WalkingTec.Mvvm.TagHelpers.LayUI.Chart
 {
-    public enum ChartThemeEnum { light, dark, vintage, chalk, essos, macarons, roma, walden, westeros, wonderland }
+    public enum ChartThemeEnum
+    { light, dark, vintage, chalk, essos, macarons, roma, walden, westeros, wonderland }
 
-    public enum ChartTypeEnum { Bar, Pie, Line, PieHollow, Scatter }
+    public enum ChartTypeEnum
+    { Bar, Pie, Line, PieHollow, Scatter }
 
     [HtmlTargetElement("wt:chart", TagStructure = TagStructure.WithoutEndTag)]
     public class ChartTagHelper : BaseElementTag
@@ -20,6 +17,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI.Chart
         private string _chartIdUserSet;
 
         private string _id;
+
         public new string Id
         {
             get
@@ -44,7 +42,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI.Chart
             }
         }
 
-
         public string Title { get; set; }
 
         public bool? ShowLegend { get; set; }
@@ -56,6 +53,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI.Chart
         public ChartTypeEnum Type { get; set; }
 
         public bool IsHorizontal { get; set; }
+
         //折线图弧度
         public bool OpenSmooth { get; set; }
 
@@ -122,7 +120,6 @@ formatter: function (params) {{
                 typeSeries = $"\"type\":\"{Type.ToString().ToLower()}\"";
             if (Type == ChartTypeEnum.Line)
                 typeSeries += $",\"smooth\": {OpenSmooth.ToString().ToLower()}";
-
 
             string xAxis = "", yAxis = "";
             if (Type != ChartTypeEnum.Pie && Type != ChartTypeEnum.PieHollow)

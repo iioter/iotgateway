@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using WalkingTec.Mvvm.Core;
 
 namespace WalkingTec.Mvvm.TagHelpers.LayUI
@@ -10,6 +8,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
     public class SubmitButtonTagHelper : BaseButtonTag
     {
         public string SubmitUrl { get; set; }
+
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             string innerclick = Click;
@@ -23,8 +22,9 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             output.Attributes.SetAttribute(new TagHelperAttribute("lay-submit"));
             if (context.Items.ContainsKey("formid"))
             {
-                if(string.IsNullOrEmpty(this.Id) == true){
-                    this.Id = Guid.NewGuid().ToString().Replace("-","");
+                if (string.IsNullOrEmpty(this.Id) == true)
+                {
+                    this.Id = Guid.NewGuid().ToString().Replace("-", "");
                 }
                 output.Attributes.SetAttribute("lay-filter", context.Items["formid"] + "filter");
                 formid = context.Items["formid"].ToString();
@@ -36,7 +36,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             if (string.IsNullOrEmpty(Click) == false || string.IsNullOrEmpty(ConfirmTxt) == false)
             {
                 Click = $"f_{this.Id}Click();";
-                output.Attributes.SetAttribute("lay-filter", "f_"+this.Id + "filter");
+                output.Attributes.SetAttribute("lay-filter", "f_" + this.Id + "filter");
                 output.PostElement.AppendHtml($@"
 <script>
 function f_{this.Id}Click(){{

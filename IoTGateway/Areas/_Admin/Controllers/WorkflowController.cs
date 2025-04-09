@@ -1,12 +1,6 @@
 // WTM默认页面 Wtm buidin page
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WalkingTec.Mvvm.Core;
-using WalkingTec.Mvvm.Core.Extensions;
-using WalkingTec.Mvvm.Mvc.Admin.ViewModels.ActionLogVMs;
 
 namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
 {
@@ -18,6 +12,5 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
         {
             return PartialView();
         }
-
     }
 }

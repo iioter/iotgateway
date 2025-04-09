@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace S7.Net.Types
+﻿namespace S7.Net.Types
 {
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public sealed class S7StringAttribute : Attribute
@@ -47,7 +45,6 @@ namespace S7.Net.Types
         /// </value>
         public int ReservedLengthInBytes => type == S7StringType.S7String ? reservedLength + 2 : (reservedLength * 2) + 4;
     }
-
 
     /// <summary>
     /// String type.

@@ -76,7 +76,6 @@ namespace WalkingTec.Mvvm.Core
                                 {
                                     item.SetValue(entity, Convert.ChangeType(row[item.Name], ptype));
                                 }
-
                             }
                         }
                     }
@@ -161,6 +160,6 @@ namespace WalkingTec.Mvvm.Core
             return dataTable;
         }
 
-        #endregion
+        #endregion 实体类转换成DataTable
     }
 }

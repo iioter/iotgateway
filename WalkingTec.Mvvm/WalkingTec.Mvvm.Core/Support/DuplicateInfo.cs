@@ -69,7 +69,6 @@ namespace WalkingTec.Mvvm.Core
             return rv;
         }
 
-
         /// <summary>
         /// 根据设定的字段，生成查询重复数据的Lambda，最终返回类似 x=>x.property == val的lambda
         /// </summary>
@@ -137,7 +136,6 @@ namespace WalkingTec.Mvvm.Core
 
         protected DuplicatedField()
         {
-
         }
 
         /// <summary>
@@ -149,7 +147,6 @@ namespace WalkingTec.Mvvm.Core
         {
             _directFieldExp = FieldExp;
         }
-
     }
 
     /// <summary>
@@ -159,7 +156,6 @@ namespace WalkingTec.Mvvm.Core
     {
         Type GetMiddleTableType();
     }
-
 
     /// <summary>
     /// 复杂重复数据字段信息
@@ -172,6 +168,7 @@ namespace WalkingTec.Mvvm.Core
         /// 中间字段
         /// </summary>
         private Expression<Func<T, List<V>>> _middleExp { get; set; }
+
         /// <summary>
         /// 最终字段
         /// </summary>
@@ -179,7 +176,6 @@ namespace WalkingTec.Mvvm.Core
 
         protected ComplexDuplicatedField()
         {
-
         }
 
         /// <summary>

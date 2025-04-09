@@ -1,6 +1,6 @@
-﻿using PluginInterface;
+﻿using Microsoft.Extensions.Logging;
 using OpenNETCF.MTConnect;
-using Microsoft.Extensions.Logging;
+using PluginInterface;
 
 namespace CNC.MTConnect
 {
@@ -24,10 +24,9 @@ namespace CNC.MTConnect
 
         public bool IsConnected { get; set; }
 
-        #endregion
+        #endregion 配置参数
 
         #region 生命周期
-
 
         public DeviceMTClient(string device, ILogger logger)
         {
@@ -69,15 +68,13 @@ namespace CNC.MTConnect
 
         public void Dispose()
         {
-
             // Suppress finalization.
             GC.SuppressFinalize(this);
         }
 
-        #endregion
+        #endregion 生命周期
 
         #region 读写方法
-
 
         [Method("读MTConnect", description: "读MTConnect ID")]
         public DriverReturnValueModel ReadById(DriverAddressIoArgModel ioarg)
@@ -118,6 +115,6 @@ namespace CNC.MTConnect
             return rpcResponse;
         }
 
-        #endregion
+        #endregion 读写方法
     }
 }

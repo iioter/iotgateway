@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json.Schema;
 using System;
 using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
@@ -15,11 +14,14 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         /// 搜索按钮前缀
         /// </summary>
         public const string SEARCH_BTN_ID_PREFIX = "wtSearchBtn_";
+
         /// <summary>
         /// 重置按钮前缀
         /// </summary>
         public const string RESET_BTN_ID_PREFIX = "wtResetBtn_";
+
         private IBasePagedListVM<TopBasePoco, BaseSearcher> _listVM;
+
         private IBasePagedListVM<TopBasePoco, BaseSearcher> ListVM
         {
             get
@@ -33,11 +35,12 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         }
 
         private BaseSearcher _searcherVM;
+
         private BaseSearcher SearcherVM
         {
             get
             {
-                if(_searcherVM == null)
+                if (_searcherVM == null)
                 {
                     if (ListVM == null)
                     {
@@ -55,6 +58,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         private string _gridIdUserSet;
 
         private string _gridId;
+
         /// <summary>
         /// 关联的 Grid 组件的 Id
         /// </summary>
@@ -64,7 +68,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             {
                 if (string.IsNullOrEmpty(_gridId))
                 {
-                    if (_gridIdUserSet==null)
+                    if (_gridIdUserSet == null)
                     {
                         if (ListVM != null)
                         {
@@ -89,8 +93,10 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         /// 关联的 Chart 组件的 Id
         /// </summary>
         public string ChartId { get; set; }
+
         public string ChartPrefix { get; set; }
         private string _searchBtnId;
+
         /// <summary>
         /// 搜索按钮Id
         /// </summary>
@@ -126,6 +132,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         public bool? Expanded { get; set; }
 
         private Configs _configs;
+
         public SearchPanelTagHelper(IOptionsMonitor<Configs> configs)
         {
             _configs = configs.CurrentValue;
@@ -138,7 +145,8 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             get
             {
                 string rv = "";
-                if(string.IsNullOrEmpty(Vm?.Name) == false) {
+                if (string.IsNullOrEmpty(Vm?.Name) == false)
+                {
                     rv = Vm?.Name;
                     if (ListVM != null)
                     {
@@ -147,12 +155,12 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 }
                 else
                 {
-                    if(ListVM != null)
+                    if (ListVM != null)
                     {
                         rv = "Searcher";
                     }
                 }
-                if(IsInSelector == true)
+                if (IsInSelector == true)
                 {
                     rv = rv.Replace(".Searcher", "").Replace("Searcher", "");
                 }
@@ -166,28 +174,28 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             {
                 IsInSelector = true;
             }
-            if(OldPost == true)
+            if (OldPost == true)
             {
                 output.Attributes.Add("oldpost", true);
             }
 
             var tempSearchTitleId = Guid.NewGuid().ToNoSplitString();
             bool show = false;
-            if(SearcherVM?.IsExpanded != null)
+            if (SearcherVM?.IsExpanded != null)
             {
                 Expanded = SearcherVM?.IsExpanded;
             }
-            if(Expanded != null)
+            if (Expanded != null)
             {
                 show = Expanded.Value;
             }
             else
             {
-                show =_configs.UIOptions.SearchPanel.DefaultExpand;
+                show = _configs.UIOptions.SearchPanel.DefaultExpand;
             }
 
             string showpage = "";
-            if(ListVM?.NeedPage == true)
+            if (ListVM?.NeedPage == true)
             {
                 showpage = $@",page:{{
         rpptext:'{THProgram._localizer["Sys.RecordsPerPage"]}',
@@ -234,15 +242,15 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             var refreshchartjs = "";
             if (string.IsNullOrEmpty(ChartId) == false)
             {
-                output.Attributes.SetAttribute("chartlink",  ChartId);
+                output.Attributes.SetAttribute("chartlink", ChartId);
                 foreach (var item in ChartId.Split(','))
                 {
                     refreshchartjs += $@"
-    ff.RefreshChart('{item}',{(string.IsNullOrEmpty(ChartPrefix)==true? "undefined":$"'{ChartPrefix}'")});
+    ff.RefreshChart('{item}',{(string.IsNullOrEmpty(ChartPrefix) == true ? "undefined" : $"'{ChartPrefix}'")});
 ";
                 }
             }
-                output.PostElement.AppendHtml($@"
+            output.PostElement.AppendHtml($@"
 <script>
   layui.use(['table','element'], function () {{
     const table = layui.table;

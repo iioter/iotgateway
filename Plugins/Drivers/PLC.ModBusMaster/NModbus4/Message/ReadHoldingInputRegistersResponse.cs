@@ -1,10 +1,8 @@
 ﻿namespace Modbus.Message
 {
+    using Data;
     using System;
     using System.Linq;
-
-    using Data;
-
     using Unme.Common;
 
     public class ReadHoldingInputRegistersResponse : AbstractModbusMessageWithData<RegisterCollection>, IModbusMessage

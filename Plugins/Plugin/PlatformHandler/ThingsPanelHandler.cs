@@ -15,6 +15,7 @@ namespace Plugin.PlatformHandler
         public ILogger<MessageService> Logger { get; }
 
         public event EventHandler<RpcRequest> OnExcRpc;
+
         private readonly DateTime _tsStartDt = new(1970, 1, 1);
 
         public ThingsPanelHandler(IManagedMqttClient mqttClient, ILogger<MessageService> logger, EventHandler<RpcRequest> onExcRpc)
@@ -24,11 +25,11 @@ namespace Plugin.PlatformHandler
             OnExcRpc += onExcRpc;
         }
 
-
         public async Task ClientConnected()
         {
             await MqttClient.SubscribeAsync("gateway/telemetry/control/+", MqttQualityOfServiceLevel.ExactlyOnce);
         }
+
         public void ReceiveRpc(MqttApplicationMessageReceivedEventArgs e)
         {
         }
@@ -52,7 +53,6 @@ namespace Plugin.PlatformHandler
                                 { deviceName, payload.Values }
                             }
                         }
-
                     };
                     await MqttClient.EnqueueAsync(new MqttApplicationMessageBuilder().WithTopic($"gateway/telemetry")
                         .WithPayload(JsonConvert.SerializeObject(telemetryData)).Build());
@@ -77,7 +77,6 @@ namespace Plugin.PlatformHandler
 
         public async Task DeviceDisconnected(string deviceName, Device device)
         {
-
             await Task.CompletedTask;
         }
 
@@ -90,6 +89,5 @@ namespace Plugin.PlatformHandler
         {
             return Task.CompletedTask;
         }
-
     }
 }

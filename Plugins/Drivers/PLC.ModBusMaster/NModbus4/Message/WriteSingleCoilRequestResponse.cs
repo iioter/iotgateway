@@ -1,13 +1,11 @@
 ﻿namespace Modbus.Message
 {
+    using Data;
     using System;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Net;
-
-    using Data;
-
     using Unme.Common;
 
     public class WriteSingleCoilRequestResponse : AbstractModbusMessageWithData<RegisterCollection>, IModbusRequest

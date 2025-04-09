@@ -20,10 +20,12 @@ namespace WalkingTec.Mvvm.Core
         /// 群组名
         /// </summary>
         public string Group { get; set; }
+
         /// <summary>
         /// 内网地址头
         /// </summary>
         public string InsideUrlHeader { get; set; }
+
         /// <summary>
         /// 外网地址头
         /// </summary>

@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WalkingTec.Mvvm.Core
 {
@@ -11,7 +8,8 @@ namespace WalkingTec.Mvvm.Core
     {
         public Dictionary<string, object> Fields = new Dictionary<string, object>();
 
-        public int Count { get { return Fields.Keys.Count; } }
+        public int Count
+        { get { return Fields.Keys.Count; } }
 
         public void Add(string name, object val = null)
         {

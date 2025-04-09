@@ -1,10 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WalkingTec.Mvvm.Core.Models
 {
@@ -22,6 +18,7 @@ namespace WalkingTec.Mvvm.Core.Models
         [StringLength(450)]
         [Required]
         public string WorkflowInstanceId { get; set; }
+
         [StringLength(450)]
         [Required]
         public string ActivityType { get; set; }
@@ -39,7 +36,5 @@ namespace WalkingTec.Mvvm.Core.Models
         public string Source { get; set; }
 
         public string Data { get; set; }
-
-
     }
 }

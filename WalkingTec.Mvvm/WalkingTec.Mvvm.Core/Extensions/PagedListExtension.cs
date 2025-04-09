@@ -6,6 +6,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
     public static class PagedListExtension
     {
         #region MakeGridColumn  生成GridColumn
+
         /// <summary>
         /// 生成GridColumn
         /// </summary>
@@ -38,9 +39,11 @@ namespace WalkingTec.Mvvm.Core.Extensions
             GridColumn<T> rv = new GridColumn<T>(ColumnExp, Format, Header, Width, Flex, AllowMultiLine, NeedGroup, ForeGroundFunc, BackGroundFunc);
             return rv;
         }
-        #endregion
+
+        #endregion MakeGridColumn  生成GridColumn
 
         #region MakeActionGridColumn  生成Grid动作列(增删该查)
+
         ///// <summary>
         ///// 生成Grid动作列(增删该查)
         ///// </summary>
@@ -60,9 +63,11 @@ namespace WalkingTec.Mvvm.Core.Extensions
         //    rv.Sortable = false;
         //    return rv;
         //}
-        #endregion
+
+        #endregion MakeActionGridColumn  生成Grid动作列(增删该查)
 
         #region MakeGridAction  创建一个新的列表动作
+
         ///// <summary>
         ///// 创建一个新的列表动作
         ///// </summary>
@@ -105,9 +110,11 @@ namespace WalkingTec.Mvvm.Core.Extensions
         //{
         //    return new GridAction { Name = name, Area = areaName, ControllerName = controllerName, DialogTitle = dialogTitle, ActionName = actionName, DialogWidth = dialogWidth, DialogHeight = dialogHeight, ParameterType = paraType, ShowInRow = showInRow, OnClickFunc = null, ShowDialog = showDialog, IconCls = iconCls, HideOnToolBar = hideOnToolBar, ButtonId = buttonId, IsRedirect = isRedirect, Resizable = resizable };
         //}
-        #endregion
+
+        #endregion MakeGridAction  创建一个新的列表动作
 
         #region MakeScriptGridAction  创建一个执行自定义js的列表动作
+
         ///// <summary>
         ///// 创建一个执行自定义js的列表动作
         ///// </summary>
@@ -142,9 +149,11 @@ namespace WalkingTec.Mvvm.Core.Extensions
         //{
         //    return new GridAction { Area = areaName, ControllerName = controllerName, ActionName = actionName, Name = name, OnClickFunc = script, ShowInRow = showInRow, ButtonId = buttonId, HideOnToolBar = hideOnToolBar, Resizable = resizable };
         //}
-        #endregion
+
+        #endregion MakeScriptGridAction  创建一个执行自定义js的列表动作
 
         #region MakeStandardAction  创建标准动作
+
         ////新增参数 whereStr
         ///// <summary>
         ///// 创建标准动作
@@ -245,9 +254,11 @@ namespace WalkingTec.Mvvm.Core.Extensions
 
         //    return new GridAction { Name = (name == null ? gridname : name), DialogTitle = dialogTitle, IconCls = iconcls, ControllerName = controllerName, ActionName = action, Area = areaName, DialogWidth = dialogWidth, DialogHeight = dialogHeight, ParameterType = paraType, ShowInRow = showinrow, ShowDialog = true, HideOnToolBar = hideontoolbar, ButtonId = buttonId, Resizable = resizable, whereStr = list.ToArray() };
         //}
-        #endregion
+
+        #endregion MakeStandardAction  创建标准动作
 
         #region MakeStandardExportAction  创建标准导出按钮
+
         ///// <summary>
         ///// 创建标准导出按钮
         ///// </summary>
@@ -317,7 +328,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
         //    }
         //    return ga;
         //}
-        #endregion
 
+        #endregion MakeStandardExportAction  创建标准导出按钮
     }
 }

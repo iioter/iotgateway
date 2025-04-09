@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -9,10 +8,13 @@ namespace WalkingTec.Mvvm.Core
     {
         [Display(Name = "_Admin.Normal")]
         Normal,
+
         [Display(Name = "_Admin.Exception")]
         Exception,
+
         [Display(Name = "_Admin.Debug")]
         Debug,
+
         [Display(Name = "_Admin.Job")]
         Job
     };
@@ -21,7 +23,7 @@ namespace WalkingTec.Mvvm.Core
     /// ActionLog
     /// </summary>
     [Table("ActionLogs")]
-    public class ActionLog : BasePoco,ITenant, ICloneable
+    public class ActionLog : BasePoco, ITenant, ICloneable
     {
         [Display(Name = "_Admin.Module")]
         [StringLength(255, ErrorMessage = "Validate.{0}stringmax{1}")]
@@ -54,6 +56,7 @@ namespace WalkingTec.Mvvm.Core
 
         [Display(Name = "_Admin.LogType")]
         public ActionLogTypesEnum LogType { get; set; }
+
         [Display(Name = "_Admin.Tenant")]
         [StringLength(50, ErrorMessage = "Validate.{0}stringmax{1}")]
         public string TenantCode { get; set; }
@@ -67,16 +70,14 @@ namespace WalkingTec.Mvvm.Core
         {
             return $@"
 |-{Core.CoreProgram._localizer?["_Admin.ActionTime"]}：{this.ActionTime}
-|-{Core.CoreProgram._localizer?["_Admin.Account"]}：{this.ITCode??""}
-|-IP：{this.IP??""}
-|-{Core.CoreProgram._localizer?["_Admin.Module"]}：{this.ModuleName??""}
+|-{Core.CoreProgram._localizer?["_Admin.Account"]}：{this.ITCode ?? ""}
+|-IP：{this.IP ?? ""}
+|-{Core.CoreProgram._localizer?["_Admin.Module"]}：{this.ModuleName ?? ""}
 |-{Core.CoreProgram._localizer?["_Admin.MethodName"]}：{this.ActionName ?? ""}
 |-Url：{this.ActionUrl ?? ""}
-|-{Core.CoreProgram._localizer?["_Admin.Duration"]}：{this.Duration.ToString("F2")+" s"}
+|-{Core.CoreProgram._localizer?["_Admin.Duration"]}：{this.Duration.ToString("F2") + " s"}
 |-{Core.CoreProgram._localizer?["_Admin.Remark"]}：{this.Remark}
 ";
         }
     }
-
-
 }

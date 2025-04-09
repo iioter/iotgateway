@@ -3,13 +3,14 @@
     using System;
     using System.Collections.Concurrent;
     using System.Collections.ObjectModel;
-    using System.Diagnostics;
     using System.Linq;
     using System.Net.Sockets;
     using System.Threading.Tasks;
+
 #if TIMER
     using System.Timers;
 #endif
+
     using IO;
 
     /// <summary>
@@ -27,6 +28,7 @@
 #if TIMER
         private Timer _timer;
 #endif
+
         private ModbusTcpSlave(byte unitId, TcpListener tcpListener)
             : base(unitId, new EmptyTransport())
         {
@@ -187,6 +189,7 @@
             }
         }
 #endif
+
         private void OnMasterConnectionClosedHandler(object sender, TcpConnectionEventArgs e)
         {
             ModbusMasterTcpConnection connection;

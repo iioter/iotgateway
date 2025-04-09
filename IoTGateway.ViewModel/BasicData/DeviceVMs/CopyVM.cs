@@ -1,11 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using IoTGateway.Model;
+using Microsoft.EntityFrameworkCore;
 using Plugin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
-using IoTGateway.Model;
 
 namespace IoTGateway.ViewModel.BasicData.DeviceVMs
 {
@@ -84,7 +84,6 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                                     IsUpload = deviceVariable.IsUpload
                                 };
                                 DC.Set<DeviceVariable>().Add(newDeviceVariable);
-
                             }
                         }
                     }

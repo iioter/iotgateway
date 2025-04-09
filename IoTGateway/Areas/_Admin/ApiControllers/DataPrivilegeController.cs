@@ -1,9 +1,8 @@
 // WTM默认页面 Wtm buidin page
-using System;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 using WalkingTec.Mvvm.Mvc;
@@ -69,7 +68,6 @@ namespace WalkingTec.Mvvm.Admin.Api
                     return Ok(vm.Entity);
                 }
             }
-
         }
 
         [ActionDescription("Sys.Edit")]
@@ -94,7 +92,6 @@ namespace WalkingTec.Mvvm.Admin.Api
             }
         }
 
-
         [HttpPost("[action]")]
         [ActionDescription("Sys.Delete")]
         public async Task<ActionResult> Delete(SimpleDpModel dp)
@@ -112,14 +109,12 @@ namespace WalkingTec.Mvvm.Admin.Api
             return Ok(1);
         }
 
-
-
         [AllRights]
         [HttpGet("[action]")]
         public ActionResult GetPrivilegeByTableName(string table)
         {
             var AllItems = new List<ComboSelectListItem>();
-            var dps =Wtm.DataPrivilegeSettings.Where(x => x.ModelName == table).SingleOrDefault();
+            var dps = Wtm.DataPrivilegeSettings.Where(x => x.ModelName == table).SingleOrDefault();
             if (dps != null)
             {
                 AllItems = dps.GetItemList(Wtm);

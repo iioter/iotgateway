@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Automation.OPCClient
+﻿namespace Automation.OPCClient
 {
     public class OPCChangeModel
     {
@@ -11,6 +9,7 @@ namespace Automation.OPCClient
             get { return name; }
             set { name = value; }
         }
+
         private object value;
 
         public object Value
@@ -18,6 +17,7 @@ namespace Automation.OPCClient
             get { return this.value; }
             set { this.value = value; }
         }
+
         private TagQuality quality;
 
         public TagQuality Quality

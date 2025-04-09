@@ -65,7 +65,6 @@ namespace WalkingTec.Mvvm.Core.Extensions
                 }
                 string[] series = cd.Select(x => x.Series).Distinct().ToArray();
 
-
                 var yCount = cd.GroupBy(x => x.Category).ToList();
                 var isScatter = cd.Any(x => x.ValueX > 0);
                 var dataset = "{\"source\":[";
@@ -75,7 +74,6 @@ namespace WalkingTec.Mvvm.Core.Extensions
                     i = 0;
                     foreach (var item in cd)
                     {
-
                         dataset += $"[{item.ValueX},{item.Value},{item.Addition},\"{item.Category}\",\"{item.Series}\"]";
 
                         if (i < cd.Count - 1)
@@ -173,6 +171,5 @@ namespace WalkingTec.Mvvm.Core.Extensions
                 return new { dataset = dataset, series = seriesStr, legend = legend };
             }
         }
-
     }
 }

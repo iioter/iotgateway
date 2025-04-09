@@ -1,11 +1,10 @@
 ﻿namespace Modbus.IO
 {
+    using Message;
     using System;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
-
-    using Message;
     using Utility;
 
     /// <summary>
@@ -39,11 +38,13 @@
                 case Modbus.Diagnostics:
                     numBytes = 1;
                     break;
+
                 case Modbus.WriteMultipleCoils:
                 case Modbus.WriteMultipleRegisters:
                     byte byteCount = frameStart[6];
                     numBytes = byteCount + 2;
                     break;
+
                 default:
                     string msg = $"Function code {functionCode} not supported.";
                     //Debug.WriteLine(msg);
@@ -72,6 +73,7 @@
                 case Modbus.ReadInputRegisters:
                     numBytes = frameStart[2] + 1;
                     break;
+
                 case Modbus.WriteSingleCoil:
                 case Modbus.WriteSingleRegister:
                 case Modbus.WriteMultipleCoils:
@@ -79,6 +81,7 @@
                 case Modbus.Diagnostics:
                     numBytes = 4;
                     break;
+
                 default:
                     string msg = $"Function code {functionCode} not supported.";
                     //Debug.WriteLine(msg);

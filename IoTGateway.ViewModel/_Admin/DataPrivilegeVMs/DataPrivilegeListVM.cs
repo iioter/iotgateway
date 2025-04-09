@@ -10,7 +10,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs
 {
     public class DataPrivilegeListVM : BasePagedListVM<DataPrivilege_ListView, DataPrivilegeSearcher>
     {
-
         protected override List<GridAction> InitGridAction()
         {
             string tp = "";
@@ -23,7 +22,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs
                 tp = "UserGroup";
             }
 
-                return new List<GridAction>
+            return new List<GridAction>
             {
                 this.MakeStandardAction("DataPrivilege", GridActionStandardTypesEnum.Create, "","_Admin", dialogWidth: 800).SetQueryString($"Type={tp}"),
                 this.MakeStandardAction("DataPrivilege", GridActionStandardTypesEnum.ExportExcel, "","_Admin"),
@@ -43,7 +42,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs
            };
         }
 
-
         public string GetPrivilegeName(DataPrivilege_ListView item)
         {
             var temp = Wtm.DataPrivilegeSettings.Where(x => x.ModelName == item.TableName).SingleOrDefault();
@@ -61,7 +59,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs
         {
             string editurl = "";
             string delurl = "";
-            if(Searcher.DpType == DpTypeEnum.User)
+            if (Searcher.DpType == DpTypeEnum.User)
             {
                 editurl = "/_Admin/DataPrivilege/Edit?ModelName=" + item.TableName + "&Type=User&Id=" + item.TargetId;
                 delurl = "/_Admin/DataPrivilege/Delete?ModelName=" + item.TableName + "&Type=User&Id=" + item.TargetId;
@@ -86,7 +84,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs
             IOrderedQueryable<DataPrivilege_ListView> query = null;
             if (Searcher.DpType == DpTypeEnum.User)
             {
-                query = DC.Set<DataPrivilege>().Where(x=>x.UserCode != null)
+                query = DC.Set<DataPrivilege>().Where(x => x.UserCode != null)
                     .CheckContain(Searcher.Name, x => x.UserCode)
                     .CheckContain(Searcher.TableName, x => x.TableName)
                     .GroupBy(x => new { x.UserCode, x.TableName }, x => x.RelateId)
@@ -102,7 +100,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs
             }
             else
             {
-                query = DC.Set<DataPrivilege>().Where(x=>x.GroupCode != null)
+                query = DC.Set<DataPrivilege>().Where(x => x.GroupCode != null)
                     .CheckContain(Searcher.Name, x => x.GroupCode)
                     .CheckContain(Searcher.TableName, x => x.TableName)
                        .GroupBy(x => new { x.GroupCode, x.TableName }, x => x.RelateId)
@@ -115,7 +113,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs
                            DpType = (int)Searcher.DpType
                        })
                     .OrderByDescending(x => x.Name).OrderByDescending(x => x.TableName);
-
             }
             return query;
         }
@@ -126,12 +123,12 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs
             {
                 return;
             }
-            var groupIDs = EntityList.Select(x=>x.TargetId).ToList();
+            var groupIDs = EntityList.Select(x => x.TargetId).ToList();
             Dictionary<string, string> groupdata = new Dictionary<string, string>();
             if (ConfigInfo.HasMainHost && Wtm.LoginUserInfo?.CurrentTenant == null)
             {
                 var dd = Wtm.CallAPI<List<ComboSelectListItem>>("mainhost", "/api/_account/GetFrameworkGroups").Result;
-                if(dd.Data != null)
+                if (dd.Data != null)
                 {
                     foreach (var item in dd.Data)
                     {
@@ -159,11 +156,15 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs
     {
         [Display(Name = "_Admin.DpTargetName")]
         public string Name { get; set; }
+
         public string TargetId { get; set; }
+
         [Display(Name = "_Admin.DataPrivilegeName")]
         public string TableName { get; set; }
+
         [Display(Name = "_Admin.DataPrivilegeCount")]
         public int RelateIDs { get; set; }
+
         public int DpType { get; set; }
         public string DomainName { get; set; }
 
@@ -174,5 +175,4 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs
         [Display(Name = "_Admin.DataPrivilegeName")]
         public string PName { get; set; }
     }
-
 }

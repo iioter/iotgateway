@@ -1,4 +1,3 @@
-
 using System.Text.Json.Serialization;
 
 namespace WalkingTec.Mvvm.Core.Support.Json

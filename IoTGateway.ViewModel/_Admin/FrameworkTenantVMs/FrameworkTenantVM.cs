@@ -1,17 +1,15 @@
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
-using Microsoft.EntityFrameworkCore;
 
 namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkTenantVMs
 {
     public partial class FrameworkTenantVM : BaseCRUDVM<FrameworkTenant>
     {
-
         [Display(Name = "_Admin.Role")]
         [Required(ErrorMessage = "Validate.{0}required")]
         public string AdminRoleCode { get; set; }
@@ -19,6 +17,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkTenantVMs
         public FrameworkTenantVM()
         {
         }
+
         public override DuplicatedInfo<FrameworkTenant> SetDuplicatedCheck()
         {
             var rv = CreateFieldsInfo(SimpleField(x => x.TCode));
@@ -88,7 +87,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkTenantVMs
                     MSD.AddModelError(" TenantDbError", Localizer["_Admin.TenantDbError"]);
                 }
             }
-
         }
 
         private void AddTenantData(IDataContext dc, List<FunctionPrivilege> fps)
@@ -129,6 +127,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkTenantVMs
             var key = $"{GlobalConstants.CacheKey.UserInfo}:{"admin" + "$`$" + Entity.TCode}";
             Cache.DeleteAsync(key).Wait();
         }
+
         public override void DoDelete()
         {
             base.DoDelete();

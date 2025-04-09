@@ -1,19 +1,15 @@
-﻿using System;
+﻿using IoTGateway.Model;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using IoTGateway.Model;
-
 
 namespace IoTGateway.ViewModel.BasicData.DeviceVMs
 {
     public partial class DeviceApiListVM : BasePagedListVM<DeviceApi_View, DeviceApiSearcher>
     {
-
         protected override IEnumerable<IGridColumn<DeviceApi_View>> InitGridHeader()
         {
             return new List<GridColumn<DeviceApi_View>>{
@@ -34,11 +30,11 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
         public override IOrderedQueryable<DeviceApi_View> GetSearchQuery()
         {
             var query = DC.Set<Device>()
-                .CheckContain(Searcher.DeviceName, x=>x.DeviceName)
-                .CheckEqual(Searcher.DriverId, x=>x.DriverId)
+                .CheckContain(Searcher.DeviceName, x => x.DeviceName)
+                .CheckEqual(Searcher.DriverId, x => x.DriverId)
                 .Select(x => new DeviceApi_View
                 {
-				    ID = x.ID,
+                    ID = x.ID,
                     DeviceName = x.DeviceName,
                     Index = x.Index,
                     Description = x.Description,
@@ -53,14 +49,14 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                 .OrderBy(x => x.ID);
             return query;
         }
-
     }
 
-    public class DeviceApi_View : Device{
+    public class DeviceApi_View : Device
+    {
         [Display(Name = "DriverName")]
         public String DriverName_view { get; set; }
+
         [Display(Name = "DeviceName")]
         public String DeviceName_view { get; set; }
-
     }
 }

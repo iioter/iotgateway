@@ -42,12 +42,16 @@ namespace WalkingTec.Mvvm.Core
         string TotalText { get; set; }
 
         List<FrameworkWorkflow> GetMyApproves(string flowname = null);
+
         #region Old
+
         event Action<IBasePagedListVM<T, S>> OnAfterInitList;
+
         /// <summary>
         ///记录批量操作时列表中选择的Id
         /// </summary>
         List<string> Ids { get; set; }
+
         string SelectorValueField { get; set; }
 
         /// <summary>
@@ -57,10 +61,12 @@ namespace WalkingTec.Mvvm.Core
         IEnumerable<T> GetEntityList();
 
         void ClearEntityList();
+
         /// <summary>
         /// 获取Searcher
         /// </summary>
         S Searcher { get; }
+
         /// <summary>
         /// GetIsSelected
         /// </summary>
@@ -120,10 +126,12 @@ namespace WalkingTec.Mvvm.Core
         /// </summary>
         /// <returns></returns>
         IOrderedQueryable<T> GetSearchQuery();
+
         /// <summary>
         /// DoSearch
         /// </summary>
         void DoSearch();
+
         /// <summary>
         /// CopyContext
         /// </summary>
@@ -141,6 +149,7 @@ namespace WalkingTec.Mvvm.Core
         /// <param name="entity"></param>
         /// <returns></returns>
         string SetFullRowColor(object entity);
+
         /// <summary>
         /// SetFullRowBgColor
         /// </summary>
@@ -157,8 +166,6 @@ namespace WalkingTec.Mvvm.Core
 
         void DoInitListVM();
 
-        #endregion
-
+        #endregion Old
     }
-
 }

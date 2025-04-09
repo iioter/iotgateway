@@ -1,15 +1,11 @@
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
-using System.Xml.Serialization;
 
 namespace WalkingTec.Mvvm.Core
 {
-
     [Table("FrameworkGroups")]
     [SoftKey(nameof(FrameworkGroup.GroupCode))]
-    public class FrameworkGroup : TreePoco<FrameworkGroup>,ITenant
+    public class FrameworkGroup : TreePoco<FrameworkGroup>, ITenant
     {
         [Display(Name = "_Admin.GroupCode")]
         [Required(ErrorMessage = "Validate.{0}required")]
@@ -36,6 +32,5 @@ namespace WalkingTec.Mvvm.Core
         [Display(Name = "_Admin.Tenant")]
         [StringLength(50, ErrorMessage = "Validate.{0}stringmax{1}")]
         public string TenantCode { get; set; }
-
     }
 }

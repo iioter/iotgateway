@@ -1,21 +1,12 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
-using System.Text.Unicode;
-using System.Threading.Tasks;
-using WalkingTec.Mvvm.Core.Extensions;
 
 namespace WalkingTec.Mvvm.Core.Json
 {
     public class NullableEnumConverter : JsonConverterFactory
     {
-
         public override bool CanConvert(Type typeToConvert)
         {
             return typeToConvert.IsGenericType && typeToConvert.GetGenericTypeDefinition() == typeof(Nullable<>) && typeToConvert.GetGenericArguments()[0].IsEnum;
@@ -25,11 +16,10 @@ namespace WalkingTec.Mvvm.Core.Json
             Type type,
             JsonSerializerOptions options)
         {
-
             var temp = CloneOptions(options);
             foreach (var item in options.Converters)
             {
-                if(item.GetType() != typeof(PocoConverter) && item.GetType() != typeof(NullableEnumConverter))
+                if (item.GetType() != typeof(PocoConverter) && item.GetType() != typeof(NullableEnumConverter))
                 {
                     temp.Converters.Add(item);
                 }
@@ -72,6 +62,7 @@ namespace WalkingTec.Mvvm.Core.Json
             JsonConverter<T>
         {
             protected readonly JsonSerializerOptions _options;
+
             public NullableEnumConverterInner(JsonSerializerOptions options)
             {
                 _options = options;
@@ -100,6 +91,5 @@ namespace WalkingTec.Mvvm.Core.Json
                 JsonSerializer.Serialize(writer, data, typeof(T), _options);
             }
         }
-
     }
 }

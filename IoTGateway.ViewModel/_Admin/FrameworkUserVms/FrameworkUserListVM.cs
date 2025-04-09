@@ -1,6 +1,4 @@
 // WTM默认页面 Wtm buidin page
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -54,27 +52,26 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkUserVms
         public override IOrderedQueryable<FrameworkUser_View> GetSearchQuery()
         {
             var query = DC.Set<FrameworkUser>()
-                .CheckContain(Searcher.ITCode,x=>x.ITCode)
-                .CheckContain(Searcher.Name, x=>x.Name)
-                .CheckEqual(Searcher.IsValid, x=>x.IsValid)
+                .CheckContain(Searcher.ITCode, x => x.ITCode)
+                .CheckContain(Searcher.Name, x => x.Name)
+                .CheckEqual(Searcher.IsValid, x => x.IsValid)
                .Select(x => new FrameworkUser_View
-                {
-                    ID = x.ID,
-                    ITCode = x.ITCode,
-                    Name = x.Name,
-                    PhotoId = x.PhotoId,
-                    CellPhone = x.CellPhone,
-                    IsValid = x.IsValid,
-                    RoleName_view = DC.Set<FrameworkUserRole>().Where(y => y.UserCode == x.ITCode)
+               {
+                   ID = x.ID,
+                   ITCode = x.ITCode,
+                   Name = x.Name,
+                   PhotoId = x.PhotoId,
+                   CellPhone = x.CellPhone,
+                   IsValid = x.IsValid,
+                   RoleName_view = DC.Set<FrameworkUserRole>().Where(y => y.UserCode == x.ITCode)
                         .Join(DC.Set<FrameworkRole>(), ur => ur.RoleCode, role => role.RoleCode, (ur, role) => role.RoleName).ToSepratedString(null, ","),
-                    GroupName_view = DC.Set<FrameworkUserGroup>().Where(y => y.UserCode == x.ITCode)
+                   GroupName_view = DC.Set<FrameworkUserGroup>().Where(y => y.UserCode == x.ITCode)
                         .Join(DC.Set<FrameworkGroup>(), ug => ug.GroupCode, group => group.GroupCode, (ug, group) => group.GroupName).ToSepratedString(null, ","),
                    Gender = x.Gender
-                })
+               })
                 .OrderBy(x => x.ITCode);
             return query;
         }
-
     }
 
     public class FrameworkUser_View : FrameworkUser

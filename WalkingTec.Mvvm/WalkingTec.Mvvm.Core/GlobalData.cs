@@ -12,7 +12,6 @@ namespace WalkingTec.Mvvm.Core
     /// </summary>
     public class GlobalData
     {
-
         /// <summary>
         /// 程序集
         /// </summary>
@@ -22,25 +21,29 @@ namespace WalkingTec.Mvvm.Core
         /// 可访问的url地址
         /// </summary>
         public List<string> AllAccessUrls { get; set; }
+
         public List<string> AllMainTenantOnlyUrls { get; set; }
         public Type CustomUserType { get; set; }
 
         public bool IsSpa { get; set; }
         private List<PropertyInfo> _customUserProperties;
-       public List<PropertyInfo> CustomUserProperties
+
+        public List<PropertyInfo> CustomUserProperties
         {
-            get {
-                if(_customUserProperties == null)
+            get
+            {
+                if (_customUserProperties == null)
                 {
                     _customUserProperties = new List<PropertyInfo>();
-                    if(CustomUserType != null)
+                    if (CustomUserType != null)
                     {
-                        _customUserProperties = CustomUserType.GetProperties( BindingFlags.Public| BindingFlags.Instance | BindingFlags.DeclaredOnly).Where(x=>x.PropertyType.IsListOf<TopBasePoco>() == false && typeof(TopBasePoco).IsAssignableFrom(x.PropertyType) == false).ToList();
+                        _customUserProperties = CustomUserType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).Where(x => x.PropertyType.IsListOf<TopBasePoco>() == false && typeof(TopBasePoco).IsAssignableFrom(x.PropertyType) == false).ToList();
                     }
                 }
                 return _customUserProperties;
             }
         }
+
         /// <summary>
         /// 模块
         /// </summary>
@@ -51,11 +54,13 @@ namespace WalkingTec.Mvvm.Core
 
         public List<SimpleMenu> AllMenus => MenuGetFunc?.Invoke();
         public List<FrameworkTenant> AllTenant => TenantGetFunc?.Invoke();
+
         /// <summary>
         /// 设置菜单委托
         /// </summary>
         /// <param name="func"></param>
         public void SetMenuGetFunc(Func<List<SimpleMenu>> func) => MenuGetFunc = func;
+
         public void SetTenantGetFunc(Func<List<FrameworkTenant>> func) => TenantGetFunc = func;
 
         public List<Type> GetPocoTypesAssignableFrom<T>()
@@ -65,6 +70,7 @@ namespace WalkingTec.Mvvm.Core
             rv.AddRange(allType.Where(x => typeof(T).IsAssignableFrom(x) && x != typeof(T) && x.IsAbstract == false).ToList());
             return rv;
         }
+
         public List<Type> GetTypesAssignableFrom<T>()
         {
             var rv = new List<Type>();
@@ -81,6 +87,5 @@ namespace WalkingTec.Mvvm.Core
             }
             return rv;
         }
-
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace S7.Net.Types
+﻿namespace S7.Net.Types
 {
     /// <summary>
     /// Converts the Timer data type to C# data type
@@ -26,12 +24,15 @@ namespace S7.Net.Types
                 case 0:
                     wert *= 0.01;
                     break;
+
                 case 1:
                     wert *= 0.1;
                     break;
+
                 case 2:
                     wert *= 1.0;
                     break;
+
                 case 3:
                     wert *= 10.0;
                     break;

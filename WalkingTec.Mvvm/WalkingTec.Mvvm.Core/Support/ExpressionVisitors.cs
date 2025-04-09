@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -86,7 +85,6 @@ typeof(Queryable),
 new Type[] { modelType },
 rv,
 Expression.Lambda(trueExp, new ParameterExpression[] { pe }));
-
             }
             //将模式设为addMode，再调用一次Visit来添加新的表达式
             _addMode = true;
@@ -195,12 +193,10 @@ Expression.Lambda(trueExp, new ParameterExpression[] { pe }));
                     }
                 }
                 return rv;
-
             }
             return base.VisitMethodCall(node);
         }
     }
-
 
     /// <summary>
     /// 替换表达式中的Where语句
@@ -433,7 +429,7 @@ Expression.Lambda(trueExp, new ParameterExpression[] { pe }));
             //获取源类型
             var checkType = GetDCModel(expression);
 
-            if (checkType != null && typeof(IPersistPoco).IsAssignableFrom( checkType))
+            if (checkType != null && typeof(IPersistPoco).IsAssignableFrom(checkType))
             {
                 _modelType = checkType;
                 //先调用一次Visit，删除所有的where表达式
@@ -517,16 +513,14 @@ Expression.Lambda(trueExp, new ParameterExpression[] { pe }));
             }
             return base.VisitBinary(node);
         }
-
     }
-
 
     /// <summary>
     /// 修改表达式参数
     /// </summary>
     public class ChangePara : ExpressionVisitor
     {
-        ParameterExpression _pe;
+        private ParameterExpression _pe;
 
         /// <summary>
         /// 修改参数
@@ -576,6 +570,7 @@ Expression.Lambda(trueExp, new ParameterExpression[] { pe }));
     {
         private List<string> _columns;
         private bool _found;
+
         /// <summary>
         /// 构造函数
         /// </summary>
@@ -593,7 +588,6 @@ Expression.Lambda(trueExp, new ParameterExpression[] { pe }));
             Visit(expression);
             return _columns;
         }
-
 
         /// <summary>
         /// 检查方法调用类型的表达式
@@ -672,5 +666,4 @@ Expression.Lambda(trueExp, new ParameterExpression[] { pe }));
             }
         }
     }
-
 }

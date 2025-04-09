@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace S7.Net.Types
+﻿namespace S7.Net.Types
 {
     /// <summary>
     /// Contains the methods to convert from bytes to byte arrays
@@ -14,7 +12,7 @@ namespace S7.Net.Types
         {
             return new byte[] { value }; ;
         }
-       
+
         /// <summary>
         /// Converts a byte array to byte
         /// </summary>
@@ -28,6 +26,5 @@ namespace S7.Net.Types
             }
             return bytes[0];
         }
-        
     }
 }

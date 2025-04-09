@@ -1,11 +1,11 @@
-﻿using MQTTnet.Client;
-using MQTTnet.Extensions.ManagedClient;
-using MQTTnet.Protocol;
-using PluginInterface;
-using IoTGateway.Model;
+﻿using IoTGateway.Model;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
+using MQTTnet.Client;
+using MQTTnet.Extensions.ManagedClient;
+using MQTTnet.Protocol;
 using Newtonsoft.Json;
+using PluginInterface;
 using PluginInterface.ThingsBoard;
 
 namespace Plugin.PlatformHandler
@@ -14,6 +14,7 @@ namespace Plugin.PlatformHandler
     {
         public IManagedMqttClient MqttClient { get; }
         public ILogger<MessageService> Logger { get; }
+
         public event EventHandler<RpcRequest> OnExcRpc;
 
         public ThingsCloudHandler(IManagedMqttClient mqttClient, ILogger<MessageService> logger, EventHandler<RpcRequest> onExcRpc)
@@ -23,7 +24,6 @@ namespace Plugin.PlatformHandler
             OnExcRpc += onExcRpc;
         }
 
-
         public async Task ClientConnected()
         {
             await MqttClient.SubscribeAsync("gateway/attributes/response", MqttQualityOfServiceLevel.ExactlyOnce);
@@ -32,6 +32,7 @@ namespace Plugin.PlatformHandler
             await MqttClient.SubscribeAsync("gateway/event/response", MqttQualityOfServiceLevel.ExactlyOnce);
             await MqttClient.SubscribeAsync("gateway/command/send", MqttQualityOfServiceLevel.ExactlyOnce);
         }
+
         public void ReceiveRpc(MqttApplicationMessageReceivedEventArgs e)
         {
             try
@@ -52,7 +53,6 @@ namespace Plugin.PlatformHandler
                         OnExcRpc?.Invoke(this, request);
                     });
                 }
-                    
             }
             catch (Exception ex)
             {

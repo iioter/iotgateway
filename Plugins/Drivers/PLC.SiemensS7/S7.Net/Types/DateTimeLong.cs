@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-
-namespace S7.Net.Types
+﻿namespace S7.Net.Types
 {
     /// <summary>
     /// Contains the methods to convert between <see cref="T:System.DateTime" /> and S7 representation of DateTimeLong (DTL) values.
@@ -10,6 +6,7 @@ namespace S7.Net.Types
     public static class DateTimeLong
     {
         public const int TypeLengthInBytes = 12;
+
         /// <summary>
         /// The minimum <see cref="T:System.DateTime" /> value supported by the specification.
         /// </summary>
@@ -73,7 +70,6 @@ namespace S7.Net.Types
                 throw new ArgumentOutOfRangeException(nameof(bytes), bytes.Length,
                     $"Parsing a DateTimeLong requires exactly 12 bytes of input data, input data is {bytes.Length} bytes long.");
             }
-
 
             var year = AssertRangeInclusive(Word.FromBytes(bytes[1], bytes[0]), 1970, 2262, "year");
             var month = AssertRangeInclusive(bytes[2], 1, 12, "month");

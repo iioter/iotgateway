@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace S7.Net.Types
+﻿namespace S7.Net.Types
 {
     /// <inheritdoc cref="S7String"/>
     [Obsolete("Please use S7String class")]

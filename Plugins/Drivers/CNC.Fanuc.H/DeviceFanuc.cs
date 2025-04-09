@@ -1,7 +1,7 @@
-﻿using PluginInterface;
-using HslCommunication;
+﻿using HslCommunication;
 using HslCommunication.CNC.Fanuc;
 using Microsoft.Extensions.Logging;
+using PluginInterface;
 
 namespace CNC.Fanuc.H
 {
@@ -26,7 +26,7 @@ namespace CNC.Fanuc.H
 
         [ConfigParameter("最小通讯周期ms")] public uint MinPeriod { get; set; } = 3000;
 
-        #endregion
+        #endregion 配置参数
 
         #region 生命周期
 
@@ -34,11 +34,10 @@ namespace CNC.Fanuc.H
         {
             //输入授权码，禁止非法使用
             //if (!Authorization.SetAuthorizationCode(""))
-               // return;
+            // return;
 
             _device = device;
             _logger = logger;
-
 
             _logger.LogInformation($"Device:[{_device}],Create()");
         }
@@ -105,12 +104,11 @@ namespace CNC.Fanuc.H
             {
                 _logger.LogError(ex, $"Device:[{_device}],Dispose()");
             }
-
         }
-        #endregion
+
+        #endregion 生命周期
 
         #region 读写方法
-
 
         [Method("Fanuc", description: "读系统状态")]
         public DriverReturnValueModel ReadSysStatusInfo(DriverAddressIoArgModel ioArg)
@@ -870,15 +868,13 @@ namespace CNC.Fanuc.H
             return ret;
         }
 
-
         public async Task<RpcResponse> WriteAsync(string requestId, string method, DriverAddressIoArgModel ioArg)
         {
             RpcResponse rpcResponse = new() { IsSuccess = false, Description = "设备驱动内未实现写入功能" };
             return rpcResponse;
         }
 
-        #endregion
-
+        #endregion 读写方法
 
         public DriverReturnValueModel Read(DriverAddressIoArgModel ioArg)
         {

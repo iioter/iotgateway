@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace S7.Net.Protocol
+﻿namespace S7.Net.Protocol
 {
     /// <summary>
     /// Implements a pair of TSAP addresses used to connect to a PLC.
@@ -69,9 +67,11 @@ namespace S7.Net.Protocol
             {
                 case CpuType.S7200:
                     return new TsapPair(new Tsap(0x10, 0x00), new Tsap(0x10, 0x01));
+
                 case CpuType.Logo0BA8:
                     // The actual values are probably on a per-project basis
                     return new TsapPair(new Tsap(0x01, 0x00), new Tsap(0x01, 0x02));
+
                 case CpuType.S7200Smart:
                 case CpuType.S71200:
                 case CpuType.S71500:
@@ -79,7 +79,8 @@ namespace S7.Net.Protocol
                 case CpuType.S7400:
                     // Testing with S7 1500 shows only the remote TSAP needs to match. This might differ for other
                     // PLC types.
-                    return new TsapPair(new Tsap(0x01, 0x00), new Tsap(0x03, (byte) ((rack << 5) | slot)));
+                    return new TsapPair(new Tsap(0x01, 0x00), new Tsap(0x03, (byte)((rack << 5) | slot)));
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(cpuType), "Invalid CPU Type specified");
             }

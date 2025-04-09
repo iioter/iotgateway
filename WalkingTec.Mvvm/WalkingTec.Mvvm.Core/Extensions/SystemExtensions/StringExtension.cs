@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text.RegularExpressions;
 
 namespace WalkingTec.Mvvm.Core.Extensions
 {
@@ -45,6 +44,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
             }
             return url;
         }
+
         /// <summary>
         /// 将数据列表转化为逗号分隔的字符串
         /// </summary>
@@ -107,13 +107,13 @@ namespace WalkingTec.Mvvm.Core.Extensions
                 var s = "";
                 if (Format == null)
                 {
-                    s = item?.ToString()??"";
+                    s = item?.ToString() ?? "";
                 }
                 else
                 {
                     s = Format.Invoke(item);
                 }
-                if(string.IsNullOrEmpty(s) == false)
+                if (string.IsNullOrEmpty(s) == false)
                 {
                     rv += s + seperator;
                 }
@@ -143,9 +143,9 @@ namespace WalkingTec.Mvvm.Core.Extensions
             return rv;
         }
 
-        public static string AppendQuery(this string self,string query)
+        public static string AppendQuery(this string self, string query)
         {
-            if(self == null)
+            if (self == null)
             {
                 return null;
             }
@@ -206,9 +206,9 @@ namespace WalkingTec.Mvvm.Core.Extensions
             return self;
         }
 
-        public static string ToQueryString(this IEnumerable self, string name=null)
+        public static string ToQueryString(this IEnumerable self, string name = null)
         {
-            if(self == null)
+            if (self == null)
             {
                 return "";
             }
@@ -221,7 +221,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
             {
                 rv += $"{name}={item?.ToString()}&";
             }
-            if(rv.Length > 0)
+            if (rv.Length > 0)
             {
                 rv = rv[0..^1];
             }
@@ -230,7 +230,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
 
         public static string RemoveSpecialChar(this string self)
         {
-            if(self == null)
+            if (self == null)
             {
                 return "";
             }

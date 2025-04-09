@@ -1,8 +1,8 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using IoTGateway.Model;
+﻿using IoTGateway.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using System.Linq;
+using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
 
 namespace IoTGateway.DataAccess
@@ -32,8 +32,9 @@ namespace IoTGateway.DataAccess
         {
         }
 
-        
-        public DataContext(DbContextOptions<DataContext> options) : base(options) { }
+        public DataContext(DbContextOptions<DataContext> options) : base(options)
+        {
+        }
 
         public override async Task<bool> DataInit(object allModules, bool IsSpa)
         {
@@ -61,14 +62,13 @@ namespace IoTGateway.DataAccess
                     UserCode = user.ITCode,
                     RoleCode = "001"
                 };
-                
+
                 Set<FrameworkUser>().Add(user);
                 Set<FrameworkUserRole>().Add(userrole);
                 await SaveChangesAsync();
             }
             return state;
         }
-
     }
 
     /// <summary>
@@ -82,5 +82,4 @@ namespace IoTGateway.DataAccess
             return new DataContext("Data Source = ../IoTGateway/data/iotgateway.db", DBTypeEnum.SQLite);
         }
     }
-
 }

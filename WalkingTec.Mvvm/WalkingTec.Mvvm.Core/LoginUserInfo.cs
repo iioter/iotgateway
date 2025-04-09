@@ -1,15 +1,11 @@
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using NPOI.SS.Formula.Functions;
 using WalkingTec.Mvvm.Core.Support.Json;
 
 namespace WalkingTec.Mvvm.Core
 {
-
     /// <summary>
     /// 用户登录信息，需要保存在Session中，所以使用Serializable标记
     /// </summary>
@@ -25,7 +21,9 @@ namespace WalkingTec.Mvvm.Core
         public string TenantCode { get; set; }
 
         private string _currentTenant;
-        public string CurrentTenant {
+
+        public string CurrentTenant
+        {
             get { return _currentTenant ?? TenantCode; }
             set { _currentTenant = value; }
         }
@@ -43,15 +41,19 @@ namespace WalkingTec.Mvvm.Core
         public List<SimpleGroup> Groups { get; set; }
 
         public Dictionary<string, object> Attributes { get; set; }
+
         /// <summary>
         /// 用户的页面权限列表
         /// </summary>
         public List<SimpleFunctionPri> FunctionPrivileges { get; set; }
+
         /// <summary>
         /// 用户的数据权限列表
         /// </summary>
         public List<SimpleDataPri> DataPrivileges { get; set; }
+
         public long TimeTick { get; set; } = DateTime.Now.Ticks;
+
         public async System.Threading.Tasks.Task LoadBasicInfoAsync(WTMContext context)
         {
             if (string.IsNullOrEmpty(this.ITCode) || context?.DC == null || context.BaseUserQuery == null)
@@ -69,8 +71,8 @@ namespace WalkingTec.Mvvm.Core
                                             .Select(x => new
                                             {
                                                 user = x,
-                                                UserRoles = DC.Set<FrameworkUserRole>().Where(y => y.UserCode == x.ITCode).Select(x=>x.RoleCode).ToList(),
-                                                UserGroups = DC.Set<FrameworkUserGroup>().Where(y => y.UserCode == x.ITCode).Select(x=>x.GroupCode).ToList(),
+                                                UserRoles = DC.Set<FrameworkUserRole>().Where(y => y.UserCode == x.ITCode).Select(x => x.RoleCode).ToList(),
+                                                UserGroups = DC.Set<FrameworkUserGroup>().Where(y => y.UserCode == x.ITCode).Select(x => x.GroupCode).ToList(),
                                             })
                                             .AsSingleQuery()
                                             .FirstOrDefaultAsync();
@@ -81,7 +83,7 @@ namespace WalkingTec.Mvvm.Core
                     var roleIDs = userInfo.UserRoles.ToList();
                     var groupIDs = userInfo.UserGroups.ToList();
                     List<SimpleGroup> groups = allgroups.Where(x => groupIDs.Contains(x.GroupCode)).ToList();
-                    List<SimpleRole>roles = allroles.Where(x => roleIDs.Contains(x.RoleCode)).ToList();
+                    List<SimpleRole> roles = allroles.Where(x => roleIDs.Contains(x.RoleCode)).ToList();
                     this.UserId = userInfo.user.ID.ToString();
                     this.ITCode = userInfo.user.ITCode;
                     if (string.IsNullOrEmpty(this.Name))
@@ -126,7 +128,7 @@ namespace WalkingTec.Mvvm.Core
                 }
             }
             var gc = moregroups.Select(x => x.GroupCode).ToList();
-            var rc = this.Roles.Select(x=>x.RoleCode).ToList();
+            var rc = this.Roles.Select(x => x.RoleCode).ToList();
 
             //查找登录用户的页面权限
             var funcPrivileges = await DC.Set<FunctionPrivilege>().AsNoTracking()
@@ -137,12 +139,12 @@ namespace WalkingTec.Mvvm.Core
                 .Where(x => x.UserCode == this.ITCode || (x.GroupCode != null && gc.Contains(x.GroupCode)))
                 .Distinct()
                 .ToListAsync();
-            ProcessTreeDp(dataPris,context);
+            ProcessTreeDp(dataPris, context);
             this.DataPrivileges = dataPris.Select(x => new SimpleDataPri { ID = x.ID, RelateId = x.RelateId, TableName = x.TableName, UserCode = x.UserCode, GroupCode = x.GroupCode }).ToList();
             this.FunctionPrivileges = funcPrivileges.Select(x => new SimpleFunctionPri { ID = x.ID, RoleCode = x.RoleCode, Allowed = x.Allowed, MenuItemId = x.MenuItemId }).ToList();
         }
 
-        public void ProcessTreeDp(List<DataPrivilege> dps,WTMContext context)
+        public void ProcessTreeDp(List<DataPrivilege> dps, WTMContext context)
         {
             var dpsSetting = context.DataPrivilegeSettings;
             foreach (var dp in dpsSetting)
@@ -154,7 +156,7 @@ namespace WalkingTec.Mvvm.Core
                     {
                         var skipids = dp.GetTreeParentIds(context, dps);
                         List<string> subids = new List<string>();
-                        subids.AddRange(GetSubIds(dp, ids, dp.ModelType, skipids,context));
+                        subids.AddRange(GetSubIds(dp, ids, dp.ModelType, skipids, context));
                         subids = subids.Distinct().ToList();
                         subids.ForEach(x => dps.Add(new DataPrivilege
                         {
@@ -172,7 +174,7 @@ namespace WalkingTec.Mvvm.Core
             var subids = dp.GetTreeSubIds(context, ids);
             if (subids.Count > 0)
             {
-                return subids.Concat(GetSubIds(dp, subids, modelType, skipids,context));
+                return subids.Concat(GetSubIds(dp, subids, modelType, skipids, context));
             }
             else
             {
@@ -192,7 +194,7 @@ namespace WalkingTec.Mvvm.Core
             }
             else
             {
-                using (var dc = context.CreateDC(false,"default"))
+                using (var dc = context.CreateDC(false, "default"))
                 {
                     menudata = dc?.Set<FrameworkMenu>()
                             .OrderBy(x => x.DisplayOrder)
@@ -214,7 +216,7 @@ namespace WalkingTec.Mvvm.Core
                             .ToList();
                 }
             }
-            var topdata = context.GlobaInfo.AllMenus.Where(x =>x.IsInside == false || x.FolderOnly == true || string.IsNullOrEmpty(x.MethodName)).ToList();
+            var topdata = context.GlobaInfo.AllMenus.Where(x => x.IsInside == false || x.FolderOnly == true || string.IsNullOrEmpty(x.MethodName)).ToList();
             var allowedids = context.LoginUserInfo?.FunctionPrivileges?.Select(x => x.MenuItemId).ToList();
             foreach (var item in topdata)
             {
@@ -284,7 +286,6 @@ namespace WalkingTec.Mvvm.Core
                 else
                 {
                     return context.CreateDC(cskey: "default");
-
                 }
             }
         }

@@ -10,6 +10,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
     public static class EnumExtension
     {
         #region 将枚举类型转化为下拉列表
+
         /// <summary>
         /// 将枚举类型转化为下拉列表
         /// </summary>
@@ -37,11 +38,11 @@ namespace WalkingTec.Mvvm.Core.Extensions
             List<ComboSelectListItem> rv = new List<ComboSelectListItem>();
             if (names != null)
             {
-                for(int i=0;i<names.Length;i++)
+                for (int i = 0; i < names.Length; i++)
                 {
                     var name = names[i];
                     var newitem = new ComboSelectListItem { Text = PropertyHelper.GetEnumDisplayName(self, name), Value = values.GetValue(i).ToString() };
-                    if(value is string)
+                    if (value is string)
                     {
                         if (value != null)
                         {
@@ -49,12 +50,11 @@ namespace WalkingTec.Mvvm.Core.Extensions
                             var vs = v.Split(',');
                             foreach (var item in vs)
                             {
-                                if (item != null && (newitem.Value.ToString() == item.ToString())||name == item.ToString())
+                                if (item != null && (newitem.Value.ToString() == item.ToString()) || name == item.ToString())
                                 {
                                     newitem.Selected = true;
                                     break;
                                 }
-
                             }
                         }
                     }
@@ -67,7 +67,6 @@ namespace WalkingTec.Mvvm.Core.Extensions
                                 newitem.Selected = true;
                                 break;
                             }
-
                         }
                     }
                     else
@@ -86,6 +85,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
             }
             return rv;
         }
-        #endregion
+
+        #endregion 将枚举类型转化为下拉列表
     }
 }

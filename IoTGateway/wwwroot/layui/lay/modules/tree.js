@@ -1,5 +1,5 @@
 /**
- 
+
  @Name：layui.tree 树
  @Author：star1029
  @License：MIT
@@ -202,7 +202,6 @@ layui.define('form', function (exports) {
                             return '<a href="' + item.href + '" target="_blank" class="' + ELEM_TEXT + '">' + (item.title || item.label || options.text.defaultNodeName) + '</a>';
                         } else {
                             return '<span class="' + ELEM_TEXT + (item.disabled ? ' ' + DISABLED : '') + '"><i class="iconfont ' + (item.icon || '') + '"></i>' + (item.title || item.label || options.text.defaultNodeName) + '</span>';
-
                         }
                     }()
                     , '</div>'
@@ -259,7 +258,6 @@ layui.define('form', function (exports) {
 
             //操作节点
             options.edit && that.operate(entryDiv, item);
-
         });
     };
 
@@ -382,8 +380,6 @@ layui.define('form', function (exports) {
             , options = that.config
             , entry = elem.children('.' + ELEM_ENTRY)
             , elemMain = entry.children('.' + ELEM_MAIN);
-
-
 
         //点击复选框
         elemMain.on('click', 'input[same="layuiTreeCheck"]+', function (e) {
@@ -621,7 +617,6 @@ layui.define('form', function (exports) {
                                 };
                             };
                         };
-
                     } else {
                         //若无兄弟节点
                         var prevDiv = elem.parent('.' + ELEM_PACK).prev();
@@ -649,7 +644,6 @@ layui.define('form', function (exports) {
 
                     elem.remove();
                 });
-
             };
         });
     };

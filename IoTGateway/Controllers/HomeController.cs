@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
@@ -12,6 +7,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Plugin;
 using PluginInterface;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Auth;
 using WalkingTec.Mvvm.Core.Extensions;
@@ -23,10 +23,12 @@ namespace IoTGateway.Controllers
     public class HomeController : BaseController
     {
         private readonly DeviceService _deviceService;
+
         public HomeController(DeviceService deviceService)
         {
             _deviceService = deviceService;
         }
+
         [AllRights]
         public IActionResult Index()
         {
@@ -51,7 +53,6 @@ namespace IoTGateway.Controllers
         public IActionResult GetDeviceChart()
         {
             var data = new List<ChartData>();
-
 
             data.Add(new ChartData
             {
@@ -96,8 +97,6 @@ namespace IoTGateway.Controllers
                     Value = deviceThread.Device.DeviceVariables.Count(x => x.StatusType == VaribaleStatusTypeEnum.Good),
                     Series = "Good"
                 });
-
-
             }
 
             var rv = data.ToChartData();
@@ -121,7 +120,7 @@ namespace IoTGateway.Controllers
                 data.Add(new ChartData
                 {
                     Category = "Actions",
-                    Value = controllers.SelectMany(x=>x.Actions).Count(),
+                    Value = controllers.SelectMany(x => x.Actions).Count(),
                     Series = area?.AreaName ?? "Default"
                 });
             }
@@ -153,7 +152,7 @@ namespace IoTGateway.Controllers
                     Value = m.GetProperties().Count(),
                     Category = m.GetPropertyDisplayName(),
                     Series = "Model"
-                }) ;
+                });
             }
             var rv = data.ToChartData();
             return Json(rv);
@@ -176,14 +175,12 @@ namespace IoTGateway.Controllers
                         ValueX = r.Next(200, 2000),
                         Series = "y" + j,
                         Addition = r.Next(100, 1000),
-
                     });
                 }
             }
             var rv = data.ToChartData();
             return Json(rv);
         }
-
 
         [AllRights]
         [ActionDescription("Layout")]
@@ -234,7 +231,5 @@ namespace IoTGateway.Controllers
             public int subscribers_count { get; set; }
             public int open_issues_count { get; set; }
         }
-
     }
-
 }

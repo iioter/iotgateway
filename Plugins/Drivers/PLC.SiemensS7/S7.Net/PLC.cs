@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Sockets;
 using S7.Net.Internal;
 using S7.Net.Protocol;
 using S7.Net.Types;
-
+using System.Net.Sockets;
 
 namespace S7.Net
 {
@@ -29,6 +24,7 @@ namespace S7.Net
 
         //TCP connection to device
         private TcpClient? tcpClient;
+
         private NetworkStream? _stream;
 
         private int readTimeout = DefaultTimeout; // default no timeout
@@ -272,8 +268,9 @@ namespace S7.Net
                     throw new Exception("Received error from PLC: Hardware fault.");
                 case ReadWriteErrorCode.Success:
                     break;
+
                 default:
-                    throw new Exception( $"Invalid response from PLC: statusCode={(byte)statusCode}.");
+                    throw new Exception($"Invalid response from PLC: statusCode={(byte)statusCode}.");
             }
         }
 
@@ -288,6 +285,7 @@ namespace S7.Net
         }
 
         #region IDisposable Support
+
         private bool disposedValue = false; // To detect redundant calls
 
         /// <summary>
@@ -324,7 +322,7 @@ namespace S7.Net
             // TODO: uncomment the following line if the finalizer is overridden above.
             // GC.SuppressFinalize(this);
         }
-        #endregion
 
+        #endregion IDisposable Support
     }
 }

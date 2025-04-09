@@ -1,9 +1,8 @@
 ﻿namespace Modbus.Message
 {
+    using Data;
     using System;
     using System.Linq;
-    using Data;
-
     using Unme.Common;
 
     public class ReadCoilsInputsResponse : AbstractModbusMessageWithData<DiscreteCollection>, IModbusMessage

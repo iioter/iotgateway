@@ -1,5 +1,4 @@
-﻿
-namespace S7.Net.Protocol
+﻿namespace S7.Net.Protocol
 {
     internal enum ReadWriteErrorCode : byte
     {

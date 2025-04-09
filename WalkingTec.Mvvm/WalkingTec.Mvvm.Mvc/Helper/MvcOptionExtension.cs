@@ -1,13 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Localization;
+using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Json;
 using WalkingTec.Mvvm.Mvc.Binders;
@@ -41,7 +38,6 @@ namespace WalkingTec.Mvvm.Mvc
             options.ModelMetadataDetailsProviders.Add(new ExcludeBindingMetadataProvider(typeof(IUIService)));
             options.ModelMetadataDetailsProviders.Add(new ExcludeBindingMetadataProvider(typeof(IStringLocalizer)));
             options.EnableEndpointRouting = true;
-
         }
 
         public static void UseWtmJsonOptions(this JsonOptions options)
@@ -92,6 +88,7 @@ namespace WalkingTec.Mvvm.Mvc
             jsonOptions2.Converters.Add(new DynamicDataConverter());
             CoreProgram.DefaultPostJsonOption = jsonOptions2;
         }
+
         public static void UseWtmApiOptions(this ApiBehaviorOptions options)
         {
             options.SuppressModelStateInvalidFilter = true;
@@ -100,6 +97,5 @@ namespace WalkingTec.Mvvm.Mvc
                 return new BadRequestObjectResult(a.ModelState.GetErrorJson());
             };
         }
-
     }
 }

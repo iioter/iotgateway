@@ -1,20 +1,18 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Data;
-using System.Data.SqlClient;
-using System.IO;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NPOI.HSSF.Util;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Data;
+using System.IO;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Text.Json.Serialization;
 using WalkingTec.Mvvm.Core.Extensions;
 using WalkingTec.Mvvm.Core.Support.FileHandlers;
 
@@ -27,8 +25,11 @@ namespace WalkingTec.Mvvm.Core
     public interface IBaseImport<out T> where T : BaseTemplateVM
     {
         T Template { get; }
+
         byte[] GenerateTemplate(out string displayName);
+
         void SetParms(Dictionary<string, string> parms);
+
         TemplateErrorListVM ErrorListVM { get; set; }
     }
 
@@ -42,6 +43,7 @@ namespace WalkingTec.Mvvm.Core
         where P : TopBasePoco, new()
     {
         #region 字段、属性
+
         /// <summary>
         /// 上传文件的Id，方便导入等操作中进行绑定，这类操作需要上传文件但不需要记录在数据库中，所以Model层中没有文件Id的字段
         /// </summary>
@@ -115,18 +117,22 @@ namespace WalkingTec.Mvvm.Core
         /// 是否覆盖已有数据
         /// </summary>
         public bool IsOverWriteExistData { get; set; } = true;
-        #endregion
+
+        #endregion 字段、属性
 
         #region 构造函数
+
         public BaseImportVM()
         {
             ErrorListVM = new TemplateErrorListVM();
             ValidityTemplateType = true;
             Template = new T();
         }
-        #endregion
 
-        #region  生成excel
+        #endregion 构造函数
+
+        #region 生成excel
+
         /// <summary>
         /// 生成模版
         /// </summary>
@@ -136,9 +142,11 @@ namespace WalkingTec.Mvvm.Core
         {
             return Template.GenerateTemplate(out displayName);
         }
-        #endregion
+
+        #endregion 生成excel
 
         #region 设置参数值
+
         /// <summary>
         /// 设置模版参数
         /// </summary>
@@ -147,7 +155,8 @@ namespace WalkingTec.Mvvm.Core
         {
             Template.Parms = parms;
         }
-        #endregion
+
+        #endregion 设置参数值
 
         #region 可重写方法
 
@@ -211,8 +220,8 @@ namespace WalkingTec.Mvvm.Core
                 if (Wtm.ServiceProvider != null)
                 {
                     var fp = Wtm.ServiceProvider.GetRequiredService<WtmFileProvider>();
-                   // var tempdc = Wtm.DC;
-                    file = fp.GetFile(UploadFileId, true,Wtm.CreateDC(false));
+                    // var tempdc = Wtm.DC;
+                    file = fp.GetFile(UploadFileId, true, Wtm.CreateDC(false));
                     //Wtm.DC = tempdc;
                 }
                 if (file == null)
@@ -288,7 +297,7 @@ namespace WalkingTec.Mvvm.Core
                     //        i = i + 1;
                     //    }
                     //    i = i - 1;
-                        pIndex++;
+                    pIndex++;
                     //}
                 }
 
@@ -363,6 +372,7 @@ namespace WalkingTec.Mvvm.Core
         }
 
         #region 进行公式计算
+
         public string GetCellFormulaValue(XSSFFormulaEvaluator XE, ICell cell, string Value)
         {
             if (!string.IsNullOrEmpty(Value) && Value.IndexOf("=") == 0)
@@ -380,7 +390,8 @@ namespace WalkingTec.Mvvm.Core
             }
             return Value;
         }
-        #endregion
+
+        #endregion 进行公式计算
 
         /// <summary>
         /// 根据模板中的数据，填写导入类的集合中
@@ -467,7 +478,6 @@ namespace WalkingTec.Mvvm.Core
                         ITenant ent = entity as ITenant;
                         ent.TenantCode = LoginUserInfo?.CurrentTenant;
                     }
-
                 }
 
                 //给子表赋值
@@ -540,13 +550,11 @@ namespace WalkingTec.Mvvm.Core
                                     //    ErrorListVM.EntityList.Add(new ErrorMessage { Message = validationResults.FirstOrDefault()?.ErrorMessage ?? "Error", ExcelIndex = item.ExcelIndex });
                                     //    break;
                                     //}
-
                                 }
                                 break;
                             }
                         }
                     }
-
                 }
                 entity.ExcelIndex = item.ExcelIndex;
                 if (isMainData)
@@ -822,7 +830,6 @@ namespace WalkingTec.Mvvm.Core
             }
         }
 
-
         private void TryValidateObject(object model, ValidationContext context, ICollection<ValidationResult> results)
         {
             var modelType = model.GetType();
@@ -893,7 +900,6 @@ namespace WalkingTec.Mvvm.Core
                 }
             }
         }
-
 
         /// <summary>
         /// 保存指定表中的数据
@@ -1125,9 +1131,11 @@ namespace WalkingTec.Mvvm.Core
             //    bulkCopy.WriteToServer(table);
             //}
         }
-        #endregion
+
+        #endregion 可重写方法
 
         #region 验证是否空行
+
         /// <summary>
         /// 验证Excel中某行是否为空行
         /// </summary>
@@ -1148,9 +1156,11 @@ namespace WalkingTec.Mvvm.Core
             }
             return result;
         }
-        #endregion
+
+        #endregion 验证是否空行
 
         #region 复制Excel属性
+
         /// <summary>
         /// 复制Excel属性
         /// </summary>
@@ -1184,9 +1194,11 @@ namespace WalkingTec.Mvvm.Core
             ep.DynamicColumns = li;
             return ep;
         }
-        #endregion
+
+        #endregion 复制Excel属性
 
         #region 设置异常信息
+
         /// <summary>
         /// 设置错误信息
         /// </summary>
@@ -1238,7 +1250,8 @@ namespace WalkingTec.Mvvm.Core
                 }
             }
         }
-        #endregion
+
+        #endregion 设置异常信息
 
         #region 验证数据重复
 
@@ -1298,7 +1311,6 @@ namespace WalkingTec.Mvvm.Core
                         }
                         var result = baseExp.Provider.CreateQuery(whereCallExpression);
 
-
                         foreach (var res in result)
                         {
                             if (IsOverWriteExistData == false)
@@ -1324,7 +1336,6 @@ namespace WalkingTec.Mvvm.Core
                                 {
                                     ErrorListVM.EntityList.Add(new ErrorMessage { Message = CoreProgram._localizer?["Sys.DuplicateGroupError", AllName], Index = Entity.ExcelIndex });
                                 }
-
                             }
                             return res as P;
                         }
@@ -1333,7 +1344,8 @@ namespace WalkingTec.Mvvm.Core
             }
             return null;
         }
-        #endregion
+
+        #endregion 验证数据重复
 
         protected DuplicatedInfo<P> CreateFieldsInfo(params DuplicatedField<P>[] FieldExps)
         {
@@ -1372,7 +1384,8 @@ namespace WalkingTec.Mvvm.Core
             if (string.IsNullOrEmpty(err))
             {
                 Models.IWtmFile fa = null;
-                if(Wtm.ServiceProvider == null) {
+                if (Wtm.ServiceProvider == null)
+                {
                     return mse;
                 }
                 var fp = Wtm.ServiceProvider.GetRequiredService<WtmFileProvider>();
@@ -1428,6 +1441,7 @@ namespace WalkingTec.Mvvm.Core
     }
 
     #region 辅助类
+
     public class ErrorMessage : TopBasePoco
     {
         [Display(Name = "Sys.RowIndex")]
@@ -1435,6 +1449,7 @@ namespace WalkingTec.Mvvm.Core
 
         [Display(Name = "Sys.CellIndex")]
         public long Cell { get; set; }
+
         [Display(Name = "Sys.ErrorMsg")]
         public string Message { get; set; }
     }
@@ -1444,7 +1459,6 @@ namespace WalkingTec.Mvvm.Core
     /// </summary>
     public class TemplateErrorListVM : BasePagedListVM<ErrorMessage, BaseSearcher>
     {
-
         public TemplateErrorListVM()
         {
             EntityList = new List<ErrorMessage>();
@@ -1465,6 +1479,5 @@ namespace WalkingTec.Mvvm.Core
         }
     }
 
-    #endregion
-
+    #endregion 辅助类
 }

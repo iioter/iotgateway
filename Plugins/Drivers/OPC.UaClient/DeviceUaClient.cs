@@ -1,7 +1,7 @@
-﻿using Opc.Ua;
+﻿using Microsoft.Extensions.Logging;
+using Opc.Ua;
 using OpcUaHelper;
 using PluginInterface;
-using Microsoft.Extensions.Logging;
 
 namespace OPC.UaClient
 {
@@ -24,7 +24,7 @@ namespace OPC.UaClient
 
         [ConfigParameter("最小通讯周期ms")] public uint MinPeriod { get; set; } = 3000;
 
-        #endregion
+        #endregion 配置参数
 
         #region 生命周期
 
@@ -107,9 +107,7 @@ namespace OPC.UaClient
             }
         }
 
-
-
-        #endregion
+        #endregion 生命周期
 
         [Method("读OPCUa", description: "读OPCUa节点")]
         public DriverReturnValueModel ReadNode(DriverAddressIoArgModel ioArg)

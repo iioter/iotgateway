@@ -2,8 +2,11 @@
 
 namespace WalkingTec.Mvvm.TagHelpers.LayUI
 {
-    public enum ItemsPerRowEnum { One=1, Two=2,Three=3,Four=4,Six=6,Twelve=12}
-    public enum AlignEnum { Left, Right, Center}
+    public enum ItemsPerRowEnum
+    { One = 1, Two = 2, Three = 3, Four = 4, Six = 6, Twelve = 12 }
+
+    public enum AlignEnum
+    { Left, Right, Center }
 
     [HtmlTargetElement("wt:row", TagStructure = TagStructure.NormalOrSelfClosing)]
     public class RowTagHelper : TagHelper
@@ -26,7 +29,8 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             {
                 output.Attributes.SetAttribute("class", $"layui-row ");
             }
-            if (string.IsNullOrEmpty(Id) == false){
+            if (string.IsNullOrEmpty(Id) == false)
+            {
                 output.Attributes.SetAttribute("id", Id);
             }
             switch (Align)
@@ -34,12 +38,15 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 case AlignEnum.Left:
                     output.Attributes.SetAttribute("style", "width:100%;text-align:left");
                     break;
+
                 case AlignEnum.Right:
                     output.Attributes.SetAttribute("style", "width:100%;text-align:right");
                     break;
+
                 case AlignEnum.Center:
                     output.Attributes.SetAttribute("style", "width:100%;text-align:center");
                     break;
+
                 default:
                     break;
             }
@@ -52,6 +59,5 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 context.Items.Add("ipr", (int?)ItemsPerRow);
             }
         }
-
     }
 }

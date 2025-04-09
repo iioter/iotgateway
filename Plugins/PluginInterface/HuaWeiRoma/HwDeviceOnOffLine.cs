@@ -29,6 +29,5 @@ namespace PluginInterface.HuaWeiRoma
         /// </summary>
         [JsonProperty(PropertyName = "status")]
         public string? Status { get; set; }
-
     }
 }

@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using WalkingTec.Mvvm.Core;
-using WalkingTec.Mvvm.Core.Extensions;
+﻿using IoTGateway.Model;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using IoTGateway.Model;
 using Microsoft.Extensions.Primitives;
-using NPOI.OpenXmlFormats.Dml.Chart;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using WalkingTec.Mvvm.Core;
 
 namespace IoTGateway.ViewModel.BasicData.DeviceVMs
 {
@@ -32,7 +29,6 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                 this.MakeAction("Device","ImportExcel",Localizer["ImportExcel"],Localizer["ImportExcel"], GridActionParameterTypesEnum.NoId,"BasicData",600).SetIconCls("layui-icon layui-icon-upload-circle").SetDialogTitle(Localizer["ImportExcel"]).SetHideOnToolBar(false).SetShowInRow(false),
             };
         }
-
 
         protected override IEnumerable<IGridColumn<Device_View>> InitGridHeader()
         {
@@ -83,7 +79,6 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                 dataRet.Add(itemF);
                 order++;
 
-
                 StringValues Ids = new();
                 if (FC.ContainsKey("Ids[]"))
                 {
@@ -117,15 +112,16 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
 
             return dataRet.AsQueryable<Device_View>().OrderBy(x => x.ExtraOrder);
         }
-
     }
 
     public class Device_View : Device
     {
         [Display(Name = "DriverName")]
         public String DriverName_view { get; set; }
+
         [Display(Name = "GroupName")]
         public String DeviceName_view { get; set; }
+
         public int ExtraOrder { get; set; }
     }
 }

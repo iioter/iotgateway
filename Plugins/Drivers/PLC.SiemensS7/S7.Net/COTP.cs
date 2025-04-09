@@ -1,11 +1,5 @@
-﻿using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace S7.Net
+﻿namespace S7.Net
 {
-
     /// <summary>
     /// COTP Protocol functions and types
     /// </summary>
@@ -16,6 +10,7 @@ namespace S7.Net
             Data = 0xf0,
             ConnectionConfirmed = 0xd0
         }
+
         /// <summary>
         /// Describes a COTP TPDU (Transport protocol data unit)
         /// </summary>
@@ -76,7 +71,6 @@ namespace S7.Net
                     BitConverter.ToString(Data)
                     );
             }
-
         }
 
         /// <summary>

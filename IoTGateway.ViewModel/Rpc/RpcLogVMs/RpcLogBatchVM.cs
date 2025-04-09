@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using IoTGateway.Model;
 using WalkingTec.Mvvm.Core;
-using WalkingTec.Mvvm.Core.Extensions;
-using IoTGateway.Model;
-
 
 namespace IoTGateway.ViewModel.Rpc.RpcLogVMs
 {
@@ -17,19 +10,15 @@ namespace IoTGateway.ViewModel.Rpc.RpcLogVMs
             ListVM = new RpcLogListVM();
             LinkedVM = new RpcLog_BatchEdit();
         }
-
     }
 
-	/// <summary>
+    /// <summary>
     /// Class to define batch edit fields
     /// </summary>
     public class RpcLog_BatchEdit : BaseVM
     {
-
         protected override void InitVM()
         {
         }
-
     }
-
 }

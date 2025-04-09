@@ -1,3 +1,4 @@
+using Fare;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -5,7 +6,6 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
-using Fare;
 
 namespace WalkingTec.Mvvm.Core.Extensions
 {
@@ -15,6 +15,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
     public static class TypeExtension
     {
         public static ImmutableDictionary<string, List<PropertyInfo>> _propertyCache { get; set; } = new Dictionary<string, List<PropertyInfo>>().ToImmutableDictionary();
+
         /// <summary>
         /// 判断是否是泛型
         /// </summary>
@@ -70,7 +71,6 @@ namespace WalkingTec.Mvvm.Core.Extensions
             }
         }
 
-
         #region 判断是否为枚举
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
             }
         }
 
-        #endregion
+        #endregion 判断是否为枚举
 
         /// <summary>
         /// 判断是否为值类型
@@ -139,7 +139,6 @@ namespace WalkingTec.Mvvm.Core.Extensions
                 return false;
             }
         }
-
 
         #region 判断是否是Bool
 
@@ -169,7 +168,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
             }
         }
 
-        #endregion
+        #endregion 判断是否是Bool
 
         public static Dictionary<string, string> GetRandomValues(this Type self)
         {
@@ -252,7 +251,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
                         var vs = Enum.GetValues(enumtype);
                         Random r = new Random();
                         var index = r.Next(0, vs.Length);
-                        val = enumtype.FullName+"."+ vs.GetValue(index).ToString();
+                        val = enumtype.FullName + "." + vs.GetValue(index).ToString();
                     }
                     else if (pro.PropertyType == typeof(string))
                     {
@@ -266,16 +265,16 @@ namespace WalkingTec.Mvvm.Core.Extensions
                             {
                                 max = length.MaximumLength;
                             }
-                            if(length.MinimumLength > 0)
+                            if (length.MinimumLength > 0)
                             {
                                 min = length.MinimumLength;
                             }
                         }
-                        if(min == max)
+                        if (min == max)
                         {
                             l = max;
                         }
-                        else if(min < max)
+                        else if (min < max)
                         {
                             l = new Random().Next(min, max);
                         }
@@ -287,7 +286,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
                         }
                         val = "\"" + val + "\"";
                     }
-                    else if(pro.PropertyType == typeof(DateTime) || pro.PropertyType == typeof(DateTime?))
+                    else if (pro.PropertyType == typeof(DateTime) || pro.PropertyType == typeof(DateTime?))
                     {
                         Random r = new Random();
                         val = DateTime.Now.AddDays(r.Next(-500, 500)).ToString("yyyy-MM-dd HH:mm:ss");
@@ -412,18 +411,18 @@ namespace WalkingTec.Mvvm.Core.Extensions
                     }
                     else if (pro.PropertyType == typeof(string))
                     {
-
                         var reg = pro.GetCustomAttribute<RegularExpressionAttribute>();
                         var length = pro.GetCustomAttribute<StringLengthAttribute>();
 
-                        if (reg != null) {
+                        if (reg != null)
+                        {
                             Xeger x = new Xeger(reg.Pattern);
                             val = x.Generate();
-                            if(length != null)
+                            if (length != null)
                             {
-                                if(length.MaximumLength > 0 && val.Length > length.MaximumLength)
+                                if (length.MaximumLength > 0 && val.Length > length.MaximumLength)
                                 {
-                                    val = val.Substring(0, length.MaximumLength-1);
+                                    val = val.Substring(0, length.MaximumLength - 1);
                                 }
                             }
                         }
@@ -458,7 +457,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
                                 val += pat[index];
                             }
                         }
-                        
+
                         val = "\"" + val + "\"";
                     }
                     else if (pro.PropertyType == typeof(DateTime) || pro.PropertyType == typeof(DateTime?))
@@ -482,7 +481,6 @@ namespace WalkingTec.Mvvm.Core.Extensions
             return rv;
         }
 
-
         public static PropertyInfo GetSingleProperty(this Type self, string name)
         {
             if (_propertyCache.ContainsKey(self.FullName) == false)
@@ -501,7 +499,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
             }
         }
 
-        public static PropertyInfo GetSingleProperty(this Type self, Func<PropertyInfo,bool> where)
+        public static PropertyInfo GetSingleProperty(this Type self, Func<PropertyInfo, bool> where)
         {
             if (_propertyCache.ContainsKey(self.FullName) == false)
             {
@@ -545,7 +543,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
 
         public static Type GetParentWorkflowPoco(this Type self)
         {
-            if(self == typeof(object))
+            if (self == typeof(object))
             {
                 return null;
             }
@@ -555,7 +553,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
                 return self;
             }
             else
-            {               
+            {
                 return self.BaseType.GetParentWorkflowPoco();
             }
         }

@@ -1,8 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Reflection;
 using System.Text.Json.Serialization;
 using WalkingTec.Mvvm.Core.Extensions;
 
@@ -11,7 +9,7 @@ namespace WalkingTec.Mvvm.Core
     /// <summary>
     /// TopBasePoco
     /// </summary>
-    public  class TopBasePoco
+    public class TopBasePoco
     {
         /// <summary>
         /// Id
@@ -62,12 +60,15 @@ namespace WalkingTec.Mvvm.Core
                 case Guid g1 when g1 != Guid.Empty:
                     rv = true;
                     break;
+
                 case string s when string.IsNullOrEmpty(s) == false:
                     rv = true;
                     break;
-                case int i when i>0:
+
+                case int i when i > 0:
                     rv = true;
                     break;
+
                 case long l when l > 0:
                     rv = true;
                     break;
@@ -82,7 +83,6 @@ namespace WalkingTec.Mvvm.Core
             return id;
         }
 
-
         public Type GetIDType()
         {
             var idpro = this.GetType().GetSingleProperty("ID");
@@ -93,17 +93,17 @@ namespace WalkingTec.Mvvm.Core
         {
             var idpro = this.GetType().GetSingleProperty("ID");
             idpro.SetValue(this, id.ConvertValue(idpro.PropertyType));
-
         }
 
         private bool? _isBasePoco = null;
+
         [NotMapped]
         [JsonIgnore]
         public bool IsBasePoco
         {
             get
             {
-                if(_isBasePoco == null)
+                if (_isBasePoco == null)
                 {
                     _isBasePoco = typeof(IBasePoco).IsAssignableFrom(this.GetType());
                 }
@@ -111,6 +111,4 @@ namespace WalkingTec.Mvvm.Core
             }
         }
     }
-
-
 }

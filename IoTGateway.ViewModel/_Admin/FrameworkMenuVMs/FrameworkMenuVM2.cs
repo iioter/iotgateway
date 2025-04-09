@@ -11,7 +11,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
 {
     public class FrameworkMenuVM2 : BaseCRUDVM<FrameworkMenu>
     {
-
         [Display(Name = "_Admin.Action")]
         public List<string> SelectedActionIDs { get; set; }
 
@@ -20,7 +19,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
 
         [Display(Name = "_Admin.AllowedRole")]
         public List<string> SelectedRolesCodes { get; set; }
-
 
         public FrameworkMenuVM2()
         {
@@ -90,7 +88,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
             }
             else
             {
-
                 if (string.IsNullOrEmpty(SelectedModule) == false && Entity.FolderOnly == false)
                 {
                     var modules = Wtm.GlobaInfo.AllModule;
@@ -142,7 +139,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
                         Entity.MethodName = "";
                     }
                 }
-
                 else
                 {
                     Entity.Children = null;
@@ -188,7 +184,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
             }
             else
             {
-
                 if (string.IsNullOrEmpty(SelectedModule) == false && Entity.FolderOnly == false)
                 {
                     var modules = Wtm.GlobaInfo.AllModule;
@@ -226,13 +221,11 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
                         }
                     }
                 }
-
                 else
                 {
                     Entity.Children = null;
                     Entity.Url = null;
                 }
-
             }
             base.DoAdd();
             List<Guid> guids = new List<Guid>();
@@ -255,7 +248,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
             toremove.ForEach(x => DC.DeleteEntity(x));
             foreach (var menuid in menuids)
             {
-
                 if (SelectedRolesCodes != null)
                 {
                     foreach (var code in SelectedRolesCodes)
@@ -271,7 +263,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
             DC.SaveChanges();
             Wtm.RemoveUserCacheByRole(SelectedRolesCodes.ToArray()).Wait();
         }
-
 
         public override void DoDelete()
         {

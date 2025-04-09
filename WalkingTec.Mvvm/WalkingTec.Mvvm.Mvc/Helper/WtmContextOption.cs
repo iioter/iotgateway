@@ -1,8 +1,6 @@
+using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Filters;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Support.FileHandlers;
 
@@ -25,8 +23,6 @@ namespace WalkingTec.Mvvm.Mvc.Helper
         /// </summary>
         public Func<IWtmFileHandler, string> FileSubDirSelector { get; set; }
 
-        public Func<WTMContext,string,LoginUserInfo> ReloadUserFunc { get; set; }
-
+        public Func<WTMContext, string, LoginUserInfo> ReloadUserFunc { get; set; }
     }
-
 }

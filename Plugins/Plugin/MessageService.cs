@@ -1,21 +1,15 @@
-﻿using IoTGateway.Model;
-using Microsoft.Extensions.Logging;
-using MQTTnet.Extensions.ManagedClient;
-using PluginInterface.IoTSharp;
-using PluginInterface;
-using IoTGateway.DataAccess;
-using MQTTnet.Client;
-using MQTTnet.Formatter;
-using MQTTnet;
-using MQTTnet.Protocol;
-using Plugin.PlatformHandler;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using IoTGateway.DataAccess;
+using IoTGateway.Model;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using MQTTnet;
+using MQTTnet.Client;
+using MQTTnet.Extensions.ManagedClient;
+using MQTTnet.Formatter;
+using Plugin.PlatformHandler;
+using PluginInterface;
+using PluginInterface.IoTSharp;
+using System.Collections.Concurrent;
 
 namespace Plugin
 {
@@ -30,6 +24,7 @@ namespace Plugin
         public bool IsConnected => Client?.IsConnected ?? false;
 
         public event EventHandler<RpcRequest>? OnExcRpc;
+
         public event EventHandler<ISAttributeResponse>? OnReceiveAttributes;
 
         private readonly string _tbRpcTopic = "v1/gateway/rpc";
@@ -62,6 +57,7 @@ namespace Plugin
                                 ?? throw new Exception("系统配置未找到");
 
                 #region ClientOptions
+
                 _options = new ManagedMqttClientOptionsBuilder()
                     .WithAutoReconnectDelay(TimeSpan.FromSeconds(5))
                     .WithMaxPendingMessages(100000)
@@ -75,7 +71,8 @@ namespace Plugin
                         .WithCleanSession(true)
                         .Build())
                     .Build();
-                #endregion
+
+                #endregion ClientOptions
 
                 Client.ConnectedAsync += Client_ConnectedAsync;
                 Client.DisconnectedAsync += Client_DisconnectedAsync;

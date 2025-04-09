@@ -4,8 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using Microsoft.Extensions.Options;
 using WalkingTec.Mvvm.Core.Extensions;
 using WalkingTec.Mvvm.Core.Models;
 
@@ -15,7 +13,7 @@ namespace WalkingTec.Mvvm.Core.Support.FileHandlers
     {
         public string SaveMode { get; set; }
         private static Dictionary<string, ConstructorInfo> _handlers;
-        private  static ConstructorInfo _defaultHandler;
+        private static ConstructorInfo _defaultHandler;
         private WTMContext _wtm;
         public static Func<IWtmFileHandler, string> _subDirFunc;
 
@@ -31,7 +29,7 @@ namespace WalkingTec.Mvvm.Core.Support.FileHandlers
             int count = 1;
             foreach (var item in types)
             {
-                var cons = item.GetConstructor(new Type[] { typeof(WTMContext)});
+                var cons = item.GetConstructor(new Type[] { typeof(WTMContext) });
                 var nameattr = item.GetCustomAttribute<DisplayAttribute>();
                 string name = "";
                 if (nameattr == null)
@@ -54,7 +52,6 @@ namespace WalkingTec.Mvvm.Core.Support.FileHandlers
             {
                 _defaultHandler = types[0].GetConstructor(new Type[] { typeof(WTMContext) });
             }
-
         }
 
         public IWtmFileHandler CreateFileHandler(string saveMode = null, IDataContext dc = null)
@@ -86,18 +83,18 @@ namespace WalkingTec.Mvvm.Core.Support.FileHandlers
             }
         }
 
-        public  IWtmFile Upload(string fileName, long fileLength, Stream data, string group = null, string subdir = null, string extra = null, string saveMode = null, IDataContext dc =null)
+        public IWtmFile Upload(string fileName, long fileLength, Stream data, string group = null, string subdir = null, string extra = null, string saveMode = null, IDataContext dc = null)
         {
             if (dc == null)
             {
                 dc = _wtm.CreateDC();
             }
             var fh = CreateFileHandler(saveMode, dc);
-            if(fileName == null)
+            if (fileName == null)
             {
                 fileName = "unknown";
             }
-            fileName = fileName.Replace("<", "").Replace(">","").Replace(" ", "");
+            fileName = fileName.Replace("<", "").Replace(">", "").Replace(" ", "");
             if (fh is WtmDataBaseFileHandler lfh)
             {
                 return lfh.UploadToDB(fileName, fileLength, data, group, subdir, extra);
@@ -159,12 +156,12 @@ namespace WalkingTec.Mvvm.Core.Support.FileHandlers
                     var fh = CreateFileHandler(rv.SaveMode, dc);
                     rv.DataStream = fh.GetFileData(rv);
                 }
-                catch {
+                catch
+                {
                     rv = null;
                 }
             }
             return rv;
-
         }
 
         public void DeleteFile(string id, IDataContext dc = null)
@@ -198,9 +195,7 @@ namespace WalkingTec.Mvvm.Core.Support.FileHandlers
                 }
                 catch { }
             }
-
         }
-
 
         public string GetFileName(string id, IDataContext dc = null)
         {
@@ -210,13 +205,12 @@ namespace WalkingTec.Mvvm.Core.Support.FileHandlers
                 dc = _wtm.CreateDC();
             }
             rv = dc.Set<FileAttachment>().CheckID(id).Select(x => x.FileName).FirstOrDefault();
-            if(rv == null)
+            if (rv == null)
             {
                 rv = "unknown";
             }
             rv = rv.Replace("<", "").Replace(">", "").Replace(" ", "");
             return rv;
         }
-
     }
 }

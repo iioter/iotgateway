@@ -21,6 +21,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.Controllers
             var vm = Wtm.CreateVM<FrameworkRoleListVM>();
             return PartialView(vm);
         }
+
         [ActionDescription("Sys.Search")]
         [HttpPost]
         public IActionResult Search(FrameworkRoleSearcher searcher)

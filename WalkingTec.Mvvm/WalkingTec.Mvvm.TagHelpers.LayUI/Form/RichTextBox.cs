@@ -1,7 +1,4 @@
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 
@@ -28,7 +25,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI.Form
             output.Attributes.Add("style", "display:none");
             output.Attributes.Add("isrich", "1");
 
-            if(string.IsNullOrEmpty(Field?.Model?.ToString()) == false)
+            if (string.IsNullOrEmpty(Field?.Model?.ToString()) == false)
             {
                 DefaultValue = null;
             }
@@ -46,7 +43,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI.Form
             {
                 url = "/_framework/UploadForLayUIRichTextBox";
             }
-            if(string.IsNullOrEmpty(UploadGroupName) == false)
+            if (string.IsNullOrEmpty(UploadGroupName) == false)
             {
                 url = url.AppendQuery($"groupName={UploadGroupName}");
             }
@@ -75,7 +72,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI.Form
             }
             url = url.AppendQuery(ExtraQuery);
 
-
             output.PostElement.AppendHtml($@"
 <script>
 layui.use('layedit', function(){{
@@ -85,7 +81,7 @@ layui.use('layedit', function(){{
       url: '{url}'
     }}
   }});
-  var index = layedit.build('{Id}'{(Height.HasValue?$",{{height:{Height.Value}}}":"")});
+  var index = layedit.build('{Id}'{(Height.HasValue ? $",{{height:{Height.Value}}}" : "")});
   $('#{Id}').attr('layeditindex',index);
 }});
 </script>
@@ -93,5 +89,4 @@ layui.use('layedit', function(){{
             base.Process(context, output);
         }
     }
-
 }

@@ -15,7 +15,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
             return self.ToString().Replace("-", string.Empty);
         }
 
-        #endregion
+        #endregion Guid Extensions
 
         /// <summary>
         /// 将CrudVM中Entity的关联字段设为空并返回一个新的CrudVM
@@ -25,13 +25,13 @@ namespace WalkingTec.Mvvm.Core.Extensions
         public static object GetCleanCrudVM(this object self)
         {
             var mtype = self.GetType();
-            if(typeof(IBaseCRUDVM<TopBasePoco>).IsAssignableFrom(mtype))
+            if (typeof(IBaseCRUDVM<TopBasePoco>).IsAssignableFrom(mtype))
             {
                 var rv = mtype.GetConstructor(Type.EmptyTypes).Invoke(null);
                 var toppros = mtype.GetAllProperties();
                 foreach (var tpro in toppros)
                 {
-                    if(tpro.Name == "Entity")
+                    if (tpro.Name == "Entity")
                     {
                         var entity = tpro.GetValue(self);
                         var pros = tpro.PropertyType.GetAllProperties();
@@ -62,6 +62,5 @@ namespace WalkingTec.Mvvm.Core.Extensions
             }
             return null;
         }
-
     }
 }

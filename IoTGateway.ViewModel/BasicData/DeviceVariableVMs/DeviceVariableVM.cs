@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
-using IoTGateway.DataAccess.Migrations;
-using WalkingTec.Mvvm.Core;
-using WalkingTec.Mvvm.Core.Extensions;
-using IoTGateway.Model;
-using Plugin;
+﻿using IoTGateway.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
+using Plugin;
 using PluginInterface;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using WalkingTec.Mvvm.Core;
+using WalkingTec.Mvvm.Core.Extensions;
 
 namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
 {
@@ -29,7 +26,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
             if (this.ControllerName.ToLower().Contains("add"))
             {
                 this.Entity.IsUpload = true;
-                this.Entity.ProtectType =  ProtectTypeEnum.ReadWrite;
+                this.Entity.ProtectType = ProtectTypeEnum.ReadWrite;
             }
             AllDevices = DC.Set<Device>().AsNoTracking().Where(x => x.DeviceTypeEnum == DeviceTypeEnum.Device)
                 .OrderBy(x => x.Parent.Index).ThenBy(x => x.Parent.DeviceName)
@@ -72,13 +69,12 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
             UpdateVaribale();
         }
 
-
         private void UpdateVaribale()
         {
             var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
             UpdateDevices.UpdateVariable(DC, deviceService, FC);
-
         }
+
         public override DuplicatedInfo<DeviceVariable> SetDuplicatedCheck()
         {
             var rv = CreateFieldsInfo(SimpleField(x => x.DeviceId), SimpleField(x => x.Name), SimpleField(x => x.Alias));

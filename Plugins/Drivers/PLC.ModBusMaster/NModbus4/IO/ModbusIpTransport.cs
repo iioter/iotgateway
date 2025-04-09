@@ -1,13 +1,11 @@
 ﻿namespace Modbus.IO
 {
+    using Message;
     using System;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Net;
-
-    using Message;
-
     using Unme.Common;
 
     /// <summary>

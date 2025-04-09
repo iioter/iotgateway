@@ -1,17 +1,14 @@
-﻿using System;
-using System.Threading.Tasks;
-using System.Web;
+﻿using IoTGateway.ViewModel.HomeVMs;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using System;
+using System.Threading.Tasks;
+using System.Web;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 using WalkingTec.Mvvm.Mvc;
 using WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkUserVms;
-using System.Collections.Generic;
-using IoTGateway.ViewModel.HomeVMs;
 
 namespace IoTGateway.Controllers
 {
@@ -85,7 +82,6 @@ namespace IoTGateway.Controllers
         {
             if (ConfigInfo.HasMainHost)
             {
-                
                 return Content(Localizer["_Admin.HasMainHost"]);
             }
             var vm = Wtm.CreateVM<RegVM>();
@@ -183,7 +179,5 @@ namespace IoTGateway.Controllers
                 }
             }
         }
-
     }
-
 }

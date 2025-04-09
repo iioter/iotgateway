@@ -23,8 +23,9 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.ActionLogVMs
         {
             var header = new List<GridColumn<ActionLog>>();
 
-            header.Add(this.MakeGridHeader(x => x.LogType, 100).SetForeGroundFunc((entity)=> {
-                if(entity.LogType == ActionLogTypesEnum.Exception)
+            header.Add(this.MakeGridHeader(x => x.LogType, 100).SetForeGroundFunc((entity) =>
+            {
+                if (entity.LogType == ActionLogTypesEnum.Exception)
                 {
                     return "FF0000";
                 }
@@ -38,12 +39,13 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.ActionLogVMs
             header.Add(this.MakeGridHeader(x => x.ITCode, 120));
             header.Add(this.MakeGridHeader(x => x.ActionUrl, 200));
             header.Add(this.MakeGridHeader(x => x.ActionTime, 200).SetSort(true).SetFormat((a, b) => a.ActionTime.ToString("yyyy-MM-dd HH:mm:ss")));
-            header.Add(this.MakeGridHeader(x => x.Duration, 100).SetSort(true).SetForeGroundFunc((entity)=> {
-                if(entity.Duration <= 1)
+            header.Add(this.MakeGridHeader(x => x.Duration, 100).SetSort(true).SetForeGroundFunc((entity) =>
+            {
+                if (entity.Duration <= 1)
                 {
                     return "008000";
                 }
-                else if(entity.Duration <= 3)
+                else if (entity.Duration <= 3)
                 {
                     return "FFC90E";
                 }
@@ -51,9 +53,10 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.ActionLogVMs
                 {
                     return "FF0000";
                 }
-            }).SetFormat((entity,v)=> { return ((double)v).ToString("f2"); }));
+            }).SetFormat((entity, v) => { return ((double)v).ToString("f2"); }));
             header.Add(this.MakeGridHeader(x => x.IP, 120));
-            header.Add(this.MakeGridHeader(x => x.Remark).SetFormat((a,b)=> {
+            header.Add(this.MakeGridHeader(x => x.Remark).SetFormat((a, b) =>
+            {
                 if (SearcherMode == ListVMSearchModeEnum.Search && a.Remark?.Length > 30)
                 {
                     a.Remark = a.Remark.Substring(0, 30) + "...";
@@ -64,17 +67,17 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.ActionLogVMs
 
             return header;
         }
-        
+
         public override IOrderedQueryable<ActionLog> GetSearchQuery()
         {
             var query = DC.Set<ActionLog>()
-                .CheckContain(Searcher.ITCode, x=>x.ITCode)
-                .CheckContain(Searcher.ActionUrl, x=>x.ActionUrl)
-                .CheckContain(Searcher.LogType, x=>x.LogType)
-                .CheckContain(Searcher.IP, x=>x.IP)
-                .CheckBetween(Searcher.ActionTime?.GetStartTime(), Searcher.ActionTime?.GetEndTime(), x=>x.ActionTime, includeMax:false)
-                .CheckWhere(Searcher.Duration,x=>x.Duration >= Searcher.Duration)
-                .OrderByDescending(x=>x.ActionTime);
+                .CheckContain(Searcher.ITCode, x => x.ITCode)
+                .CheckContain(Searcher.ActionUrl, x => x.ActionUrl)
+                .CheckContain(Searcher.LogType, x => x.LogType)
+                .CheckContain(Searcher.IP, x => x.IP)
+                .CheckBetween(Searcher.ActionTime?.GetStartTime(), Searcher.ActionTime?.GetEndTime(), x => x.ActionTime, includeMax: false)
+                .CheckWhere(Searcher.Duration, x => x.Duration >= Searcher.Duration)
+                .OrderByDescending(x => x.ActionTime);
 
             return query;
         }

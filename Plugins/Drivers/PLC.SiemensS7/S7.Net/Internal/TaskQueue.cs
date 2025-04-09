@@ -1,7 +1,3 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
 namespace S7.Net.Internal
 {
     internal class TaskQueue

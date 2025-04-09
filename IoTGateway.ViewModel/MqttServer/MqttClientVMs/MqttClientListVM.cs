@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using WalkingTec.Mvvm.Core;
-using WalkingTec.Mvvm.Core.Extensions;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using IoTGateway.Model;
-using Microsoft.Extensions.Primitives;
+﻿using MQTTnet.Formatter;
 using MQTTnet.Server;
-using MQTTnet.Formatter;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using WalkingTec.Mvvm.Core;
 
 namespace IoTGateway.ViewModel.MqttClient.MqttServerVMs
 {
@@ -35,13 +28,16 @@ namespace IoTGateway.ViewModel.MqttClient.MqttServerVMs
         {
             base.InitListVM();
         }
+
         protected override void InitVM()
         {
             base.InitVM();
         }
+
         public override void AfterDoSearcher()
         {
         }
+
         public override void DoSearch()
         {
             var mqttServer = Wtm.ServiceProvider.GetService(typeof(MqttServer)) as MqttServer;
@@ -58,13 +54,13 @@ namespace IoTGateway.ViewModel.MqttClient.MqttServerVMs
                     SentApplicationMessagesCount = client.SentApplicationMessagesCount,
                     SentPacketsCount = client.SentPacketsCount,
                     PendingApplicationMessagesCount = client.Session.PendingApplicationMessagesCount
-
                 };
                 this.EntityList.Add(mqttClient_);
             }
             int i = 0;
         }
     }
+
     public class MqttClient_View : TopBasePoco
     {
         [Display(Name = "ClientId")]
@@ -97,5 +93,4 @@ namespace IoTGateway.ViewModel.MqttClient.MqttServerVMs
         [Display(Name = "ProtocolVersion")]
         public MqttProtocolVersion MqttProtocolVersion { get; set; }
     }
-
 }

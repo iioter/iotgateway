@@ -1,13 +1,10 @@
-﻿using System;
+﻿using IoTGateway.Model;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using IoTGateway.Model;
-
 
 namespace IoTGateway.ViewModel.Rpc.RpcLogVMs
 {
@@ -27,7 +24,6 @@ namespace IoTGateway.ViewModel.Rpc.RpcLogVMs
                 this.MakeStandardAction("RpcLog", GridActionStandardTypesEnum.ExportExcel, Localizer["Sys.Export"], "Rpc"),
             };
         }
-
 
         protected override IEnumerable<IGridColumn<RpcLog_View>> InitGridHeader()
         {
@@ -68,6 +64,7 @@ namespace IoTGateway.ViewModel.Rpc.RpcLogVMs
                 .OrderByDescending(x => x.StartTime);
             return query;
         }
+
         public override void AfterDoSearcher()
         {
             foreach (var entity in EntityList)
@@ -81,21 +78,18 @@ namespace IoTGateway.ViewModel.Rpc.RpcLogVMs
                 }
                 catch (Exception)
                 {
-
                 }
             }
             base.AfterDoSearcher();
         }
-
     }
-
 
     public class RpcLog_View : RpcLog
     {
         [Display(Name = "DeviceName")]
         public String DeviceName_view { get; set; }
+
         [Display(Name = "Duration(ms)")]
         public double Duration { get; set; }
-
     }
 }

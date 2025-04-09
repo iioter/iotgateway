@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using Microsoft.Extensions.Logging;
 using WalkingTec.Mvvm.Core.ConfigOptions;
 
 namespace WalkingTec.Mvvm.Core
@@ -35,7 +33,7 @@ namespace WalkingTec.Mvvm.Core
             }
         }
 
-        #endregion
+        #endregion ConnectionStrings
 
         #region Domains
 
@@ -72,6 +70,7 @@ namespace WalkingTec.Mvvm.Core
         }
 
         private bool? _hasMainHost;
+
         public bool HasMainHost
         {
             get
@@ -86,15 +85,16 @@ namespace WalkingTec.Mvvm.Core
         }
 
         private string _mainHost;
+
         public string MainHost
         {
             get
             {
                 _mainHost = Domains?.Where(x => x.Key.ToLower() == "mainhost").Select(x => x.Value.Address).FirstOrDefault();
-                if(_mainHost != null)
+                if (_mainHost != null)
                 {
                     _mainHost = _mainHost.Trim();
-                    if(_mainHost.EndsWith('/') || _mainHost.EndsWith('\\'))
+                    if (_mainHost.EndsWith('/') || _mainHost.EndsWith('\\'))
                     {
                         _mainHost = _mainHost[0..^1];
                     }
@@ -102,8 +102,8 @@ namespace WalkingTec.Mvvm.Core
                 return _mainHost;
             }
         }
-        #endregion
 
+        #endregion Domains
 
         #region QuickDebug
 
@@ -124,7 +124,7 @@ namespace WalkingTec.Mvvm.Core
             }
         }
 
-        #endregion
+        #endregion QuickDebug
 
         #region Tenant
 
@@ -145,8 +145,7 @@ namespace WalkingTec.Mvvm.Core
             }
         }
 
-        #endregion
-
+        #endregion Tenant
 
         public string ErrorHandler { get; set; } = "/_Framework/Error";
 
@@ -169,7 +168,7 @@ namespace WalkingTec.Mvvm.Core
             }
         }
 
-        #endregion
+        #endregion Cookie prefix
 
         #region PageMode
 
@@ -193,7 +192,8 @@ namespace WalkingTec.Mvvm.Core
                 _pageMode = value;
             }
         }
-        #endregion
+
+        #endregion PageMode
 
         #region TabMode
 
@@ -217,7 +217,8 @@ namespace WalkingTec.Mvvm.Core
                 _tabMode = value;
             }
         }
-        #endregion
+
+        #endregion TabMode
 
         #region BlazorMode
 
@@ -241,8 +242,8 @@ namespace WalkingTec.Mvvm.Core
                 _blazorMode = value;
             }
         }
-        #endregion
 
+        #endregion BlazorMode
 
         #region Custom settings
 
@@ -267,7 +268,7 @@ namespace WalkingTec.Mvvm.Core
             }
         }
 
-        #endregion
+        #endregion Custom settings
 
         #region FileOptions
 
@@ -297,7 +298,7 @@ namespace WalkingTec.Mvvm.Core
             }
         }
 
-        #endregion
+        #endregion FileOptions
 
         #region UIOptions
 
@@ -345,7 +346,7 @@ namespace WalkingTec.Mvvm.Core
             }
         }
 
-        #endregion
+        #endregion UIOptions
 
         #region Is FileAttachment public
 
@@ -366,7 +367,7 @@ namespace WalkingTec.Mvvm.Core
             }
         }
 
-        #endregion
+        #endregion Is FileAttachment public
 
         #region UEditorOptions
 
@@ -391,7 +392,8 @@ namespace WalkingTec.Mvvm.Core
                 _ueditorOptions = value;
             }
         }
-        #endregion
+
+        #endregion UEditorOptions
 
         #region Cors configs
 
@@ -417,7 +419,7 @@ namespace WalkingTec.Mvvm.Core
             }
         }
 
-        #endregion
+        #endregion Cors configs
 
         #region Support Languages
 
@@ -443,6 +445,7 @@ namespace WalkingTec.Mvvm.Core
         }
 
         private List<CultureInfo> _supportLanguages;
+
         public List<CultureInfo> SupportLanguages
         {
             get
@@ -455,16 +458,14 @@ namespace WalkingTec.Mvvm.Core
                     {
                         _supportLanguages.Add(new CultureInfo(lan));
                     }
-
                 }
                 return _supportLanguages;
             }
         }
 
-        #endregion
+        #endregion Support Languages
 
         public string HostRoot { get; set; } = "";
-
 
         #region CookieOption configs
 
@@ -489,7 +490,7 @@ namespace WalkingTec.Mvvm.Core
             }
         }
 
-        #endregion
+        #endregion CookieOption configs
 
         #region JwtOption configs
 
@@ -514,7 +515,6 @@ namespace WalkingTec.Mvvm.Core
             }
         }
 
-        #endregion
-
+        #endregion JwtOption configs
     }
 }

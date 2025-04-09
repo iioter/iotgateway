@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Text.Json.Serialization;
 
 namespace WalkingTec.Mvvm.Core
@@ -15,6 +14,7 @@ namespace WalkingTec.Mvvm.Core
         /// 规定在左侧
         /// </summary>
         Left = 0,
+
         /// <summary>
         /// 规定在右侧
         /// </summary>
@@ -44,10 +44,12 @@ namespace WalkingTec.Mvvm.Core
         /// Center
         /// </summary>
         Center = 0,
+
         /// <summary>
         /// Left
         /// </summary>
         Left,
+
         /// <summary>
         /// Right
         /// </summary>
@@ -64,10 +66,12 @@ namespace WalkingTec.Mvvm.Core
         /// 正常列
         /// </summary>
         Normal = 0,
+
         /// <summary>
         /// 空列
         /// </summary>
         Space,
+
         /// <summary>
         /// 操作列
         /// </summary>
@@ -99,10 +103,12 @@ namespace WalkingTec.Mvvm.Core
         /// 列宽
         /// </summary>
         int? Width { get; set; }
+
         /// <summary>
         /// //监听单元格事件
         /// </summary>
         string Event { get; set; }
+
         /// <summary>
         /// 是否允许排序
         /// </summary>
@@ -173,8 +179,7 @@ namespace WalkingTec.Mvvm.Core
         /// </summary>
         int MaxDepth { get; }
 
-        #endregion
-
+        #endregion 只读属性 生成 Excel 及其 表头用
 
         #region 暂时没有用
 
@@ -188,10 +193,12 @@ namespace WalkingTec.Mvvm.Core
         bool IsLocked { get; set; }
 
         bool Sortable { get; set; }
+
         /// <summary>
         /// 是否允许多行
         /// </summary>
         bool AllowMultiLine { get; set; }
+
         /// <summary>
         /// 是否填充
         /// </summary>
@@ -210,20 +217,23 @@ namespace WalkingTec.Mvvm.Core
         object GetText(object source, bool needFormat = true);
 
         object GetObject(object source);
+
         /// <summary>
         /// 获取前景色
         /// </summary>
         /// <param name="source">源数据</param>
         /// <returns>前景色</returns>
         string GetForeGroundColor(object source);
+
         /// <summary>
         /// 获取背景色
         /// </summary>
         /// <param name="source">源数据</param>
         /// <returns>背景色</returns>
         string GetBackGroundColor(object source);
-        bool HasFormat();
-        #endregion
-    }
 
+        bool HasFormat();
+
+        #endregion 暂时没有用
+    }
 }

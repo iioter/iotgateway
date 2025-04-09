@@ -1,21 +1,22 @@
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
-using WalkingTec.Mvvm.Core;
-using WalkingTec.Mvvm.Core.Extensions;
 using System.Linq;
 using System.Text.Json;
-using Microsoft.Extensions.Options;
+using WalkingTec.Mvvm.Core;
+using WalkingTec.Mvvm.Core.Extensions;
 
 namespace WalkingTec.Mvvm.TagHelpers.LayUI
 {
-    [HtmlTargetElement("wt:tree",  TagStructure = TagStructure.WithoutEndTag)]
+    [HtmlTargetElement("wt:tree", TagStructure = TagStructure.WithoutEndTag)]
     public class TreeTagHelper : BaseFieldTag
     {
         public string EmptyText { get; set; }
         public ModelExpression Items { get; set; }
         public bool ShowLine { get; set; } = true;
+
         /// <summary>
         /// 勾选事件
         /// </summary>
@@ -32,6 +33,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         /// </para>
         /// </summary>
         public string ChangeFunc { get; set; }
+
         public bool AutoRow { get; set; }
         public bool? EnableSearch { get; set; }
         public bool? ShowToolbar { get; set; } = true;
@@ -83,20 +85,20 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             }
 
             List<object> vals = new List<object>();
-                if (Field?.Model != null)
+            if (Field?.Model != null)
+            {
+                if (MultiSelect == true)
                 {
-                    if (MultiSelect == true)
+                    foreach (var item in Field.Model as dynamic)
                     {
-                        foreach (var item in Field.Model as dynamic)
-                        {
-                            vals.Add(item.ToString());
-                        }
-                    }
-                    else
-                    {
-                        vals.Add(Field.Model.ToString());
+                        vals.Add(item.ToString());
                     }
                 }
+                else
+                {
+                    vals.Add(Field.Model.ToString());
+                }
+            }
             if (vals.Count == 0)
             {
                 if (string.IsNullOrEmpty(DefaultValue) == false)
@@ -107,22 +109,21 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
 
             List<LayuiTreeItem> treeitems = new List<LayuiTreeItem>();
 
-                if (string.IsNullOrEmpty(ItemUrl) == true && Items?.Model is List<TreeSelectListItem> mm)
-                {
-                    treeitems = GetLayuiTree(mm, vals);
-                }
+            if (string.IsNullOrEmpty(ItemUrl) == true && Items?.Model is List<TreeSelectListItem> mm)
+            {
+                treeitems = GetLayuiTree(mm, vals);
+            }
 
             if (string.IsNullOrEmpty(ItemUrl) == false)
             {
                 foreach (var item in vals)
                 {
-                    treeitems.Add(new  LayuiTreeItem
+                    treeitems.Add(new LayuiTreeItem
                     {
                         Title = "",
                         Id = item?.ToString(),
                         Checked = true
                     });
-
                 }
                 output.PostElement.AppendHtml($@"<script>
 ff.LoadComboItems('tree','{ItemUrl}','{Id}','{Field.Name}',{JsonSerializer.Serialize(vals)},function(){{
@@ -225,26 +226,26 @@ var {Id} = xmSelect.render({{
 
 </script>
 ";
-                output.PostElement.AppendHtml(script);
-                string hidden = $"<p id='tree{Id}hidden'>";
-                if (Field?.Model != null)
+            output.PostElement.AppendHtml(script);
+            string hidden = $"<p id='tree{Id}hidden'>";
+            if (Field?.Model != null)
+            {
+                if (MultiSelect == true)
                 {
-                    if (MultiSelect == true)
+                    foreach (var item in Field.Model as dynamic)
                     {
-                        foreach (var item in Field.Model as dynamic)
-                        {
-                            hidden += $@"
+                        hidden += $@"
 <input type='hidden' name='{Field?.Name}' value='{item.ToString()}'/>";
-                        }
                     }
-                    else
-                    {
-                        hidden += $"<input type='hidden' name='{Field?.Name}' value='{Field.Model}'/>";
-                    }
-                    hidden += " </p>";
                 }
+                else
+                {
+                    hidden += $"<input type='hidden' name='{Field?.Name}' value='{Field.Model}'/>";
+                }
+                hidden += " </p>";
+            }
 
-                output.PostElement.AppendHtml(hidden);
+            output.PostElement.AppendHtml(hidden);
             output.PostElement.AppendHtml($@"
 <input type=""hidden"" name=""_DONOTUSE_{Field.Name}"" value=""1"" />
 ");
@@ -274,7 +275,7 @@ var {Id} = xmSelect.render({{
                 if (s.Children != null && s.Children.Count() > 0)
                 {
                     news.Children = GetLayuiTree(s.Children, values);
-                    if(news.Children.Where(x=>x.Checked == true || x.Expand == true).Count() > 0)
+                    if (news.Children.Where(x => x.Checked == true || x.Expand == true).Count() > 0)
                     {
                         news.Expand = true;
                     }
@@ -283,7 +284,5 @@ var {Id} = xmSelect.render({{
             }
             return rv;
         }
-
-
     }
 }

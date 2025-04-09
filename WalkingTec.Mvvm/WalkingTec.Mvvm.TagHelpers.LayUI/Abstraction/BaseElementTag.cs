@@ -45,22 +45,22 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             }
             if (string.IsNullOrEmpty(Style) == false)
             {
-                if (this is TreeTagHelper )
+                if (this is TreeTagHelper)
                 {
                     Style += " overflow:auto;";
                 }
                 TagHelperAttribute prestyle = null;
-                if(output.Attributes.TryGetAttribute("style", out prestyle))
+                if (output.Attributes.TryGetAttribute("style", out prestyle))
                 {
                     string s = prestyle.Value.ToString();
-                    if(s.EndsWith(";") == false)
+                    if (s.EndsWith(";") == false)
                     {
                         s += ";";
                     }
-                    Style = s+Style;
+                    Style = s + Style;
                 }
-                
-                output.Attributes.SetAttribute("style",  Style);
+
+                output.Attributes.SetAttribute("style", Style);
             }
 
             if (context.Items.ContainsKey("ipr"))
@@ -82,7 +82,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                     output.PreElement.SetHtmlContent(preHtml + output.PreElement.GetContent());
                     output.PostElement.AppendHtml(postHtml);
                 }
-                if(this is CardTagHelper || this is FormTagHelper || this is ContainerTagHelper || this is TreeContainerTagHelper || this is SearchPanelTagHelper)
+                if (this is CardTagHelper || this is FormTagHelper || this is ContainerTagHelper || this is TreeContainerTagHelper || this is SearchPanelTagHelper)
                 {
                     context.Items.Remove("ipr");
                 }
@@ -91,43 +91,44 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             switch (this)
             {
                 case ComboBoxTagHelper item:
-                    if(item.MultiSelect == true)
+                    if (item.MultiSelect == true)
                     {
                         break;
                     }
-//                    if (item.LinkField != null || item.LinkId != null)
-//                    {
-//                        if (!string.IsNullOrEmpty(item.TriggerUrl))
-//                        {
-//                            output.PostElement.AppendHtml($@"
-//<script>
-//layui.use(['form'],function(){{
-//  var form = layui.form;
-//  form.on('select({output.Attributes["lay-filter"].Value})', function(data){{
-//    {FormatFuncName(item.ChangeFunc)};
-//    ff.ChainChange('{item.TriggerUrl}/'+data.value,data.elem)
-//    ff.changeComboIcon(data);
-//  }});
-//}})
-//</script>
-//");
-//                        }
-//                    }
-//                    else
-//                    {
-//                        output.PostElement.AppendHtml($@"
-//<script>
-//layui.use(['form'],function(){{
-//  var form = layui.form;
-//  form.on('select({output.Attributes["lay-filter"].Value})', function(data){{
-//    {FormatFuncName(item.ChangeFunc)};
-//    ff.changeComboIcon(data);
-//  }});
-//}})
-//</script>
-//");
-//                    }
+                    //                    if (item.LinkField != null || item.LinkId != null)
+                    //                    {
+                    //                        if (!string.IsNullOrEmpty(item.TriggerUrl))
+                    //                        {
+                    //                            output.PostElement.AppendHtml($@"
+                    //<script>
+                    //layui.use(['form'],function(){{
+                    //  var form = layui.form;
+                    //  form.on('select({output.Attributes["lay-filter"].Value})', function(data){{
+                    //    {FormatFuncName(item.ChangeFunc)};
+                    //    ff.ChainChange('{item.TriggerUrl}/'+data.value,data.elem)
+                    //    ff.changeComboIcon(data);
+                    //  }});
+                    //}})
+                    //</script>
+                    //");
+                    //                        }
+                    //                    }
+                    //                    else
+                    //                    {
+                    //                        output.PostElement.AppendHtml($@"
+                    //<script>
+                    //layui.use(['form'],function(){{
+                    //  var form = layui.form;
+                    //  form.on('select({output.Attributes["lay-filter"].Value})', function(data){{
+                    //    {FormatFuncName(item.ChangeFunc)};
+                    //    ff.changeComboIcon(data);
+                    //  }});
+                    //}})
+                    //</script>
+                    //");
+                    //                    }
                     break;
+
                 case CheckBoxTagHelper item:
                     if (string.IsNullOrEmpty(item.ChangeFunc) == false)
                     {
@@ -144,6 +145,7 @@ layui.use(['form'],function(){{
 ");
                     }
                     break;
+
                 case SwitchTagHelper item:
                     if (string.IsNullOrEmpty(item.ChangeFunc) == false)
                     {
@@ -159,6 +161,7 @@ layui.use(['form'],function(){{
 ");
                     }
                     break;
+
                 case RadioTagHelper item:
                     if (string.IsNullOrEmpty(item.ChangeFunc) == false)
                     {
@@ -175,6 +178,7 @@ layui.use(['form'],function(){{
 ");
                     }
                     break;
+
                 case TextBoxTagHelper item:
                     if (string.IsNullOrEmpty(item.SearchUrl) == false)
                     {
@@ -218,7 +222,6 @@ layui.use(['autocomplete'],function(){{
 }})
 </script>
 ");
-
                         }
                     }
                     break;
@@ -231,7 +234,7 @@ layui.use(['autocomplete'],function(){{
             //}
         }
 
-        public string FormatFuncName(string funcname,bool appendparameter = true)
+        public string FormatFuncName(string funcname, bool appendparameter = true)
         {
             if (funcname == null)
             {

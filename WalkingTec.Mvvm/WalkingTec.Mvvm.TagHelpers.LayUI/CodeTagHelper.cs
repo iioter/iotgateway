@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace WalkingTec.Mvvm.TagHelpers.LayUI
 {
-
     [HtmlTargetElement("wt:code", TagStructure = TagStructure.NormalOrSelfClosing)]
     public class CodeTagHelper : BaseElementTag
     {

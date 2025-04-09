@@ -9,10 +9,10 @@ namespace WalkingTec.Mvvm.Core
     public class SoftKeyAttribute : Attribute
     {
         public string PropertyName { get; set; }
+
         public SoftKeyAttribute(string proName)
         {
             this.PropertyName = proName;
         }
-
     }
 }

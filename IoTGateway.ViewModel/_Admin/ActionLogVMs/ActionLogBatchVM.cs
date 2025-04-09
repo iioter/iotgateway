@@ -1,7 +1,5 @@
 // WTM默认页面 Wtm buidin page
-using System;
 using WalkingTec.Mvvm.Core;
-
 
 namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.ActionLogVMs
 {
@@ -12,16 +10,12 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.ActionLogVMs
             ListVM = new ActionLogListVM();
             LinkedVM = new ActionLog_BatchEdit();
         }
-
     }
 
     public class ActionLog_BatchEdit : BaseVM
     {
-
         protected override void InitVM()
         {
         }
-
     }
-
 }

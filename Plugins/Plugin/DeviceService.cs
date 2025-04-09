@@ -1,20 +1,20 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using IoTGateway.DataAccess;
+using IoTGateway.Model;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using MQTTnet.Server;
 using PluginInterface;
 using System.Net;
 using System.Reflection;
 using WalkingTec.Mvvm.Core;
-using IoTGateway.DataAccess;
-using IoTGateway.Model;
-using MQTTnet.Server;
-using Microsoft.Extensions.Logging;
 
 namespace Plugin
 {
     public class DeviceService : IDisposable
     {
         private readonly ILogger<DeviceService> _logger;
-        public DriverService DriverManager; 
+        public DriverService DriverManager;
 
         public List<DeviceThread> DeviceThreads { get; } = new List<DeviceThread>();
         private readonly MessageService _messageService;

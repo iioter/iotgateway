@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Automation.OPCClient
+﻿namespace Automation.OPCClient
 {
-    class TagItem
+    internal class TagItem
     {
         private string name;
 
@@ -14,6 +9,7 @@ namespace Automation.OPCClient
             get { return name; }
             set { name = value; }
         }
+
         private int serverHandler;
 
         public int ServerHandler
@@ -21,6 +17,7 @@ namespace Automation.OPCClient
             get { return serverHandler; }
             set { serverHandler = value; }
         }
+
         private int clientHandler;
 
         public int ClientHandler

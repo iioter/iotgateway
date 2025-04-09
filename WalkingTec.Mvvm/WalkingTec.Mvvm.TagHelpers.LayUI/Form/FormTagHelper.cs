@@ -1,6 +1,6 @@
-using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using System.Text.RegularExpressions;
 using WalkingTec.Mvvm.Core;
 
 namespace WalkingTec.Mvvm.TagHelpers.LayUI
@@ -12,6 +12,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         public const string FORM_ID_PREFIX = "wtForm_";
 
         private string _id = null;
+
         public new string Id
         {
             get
@@ -23,7 +24,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                         var vm = Vm.Model as IBaseVM;
                         _id = $"{FORM_ID_PREFIX}{vm.UniqueId}";
                     }
-                    else if(Vm?.Model is BaseSearcher)
+                    else if (Vm?.Model is BaseSearcher)
                     {
                         var vm = Vm.Model as BaseSearcher;
                         _id = $"{FORM_ID_PREFIX}{vm.UniqueId}";
@@ -68,12 +69,12 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             var novm = true;
             BaseVM baseVM = null;
             BaseSearcher baseSearcher = null;
-            if (Vm?.Model is  BaseVM)
+            if (Vm?.Model is BaseVM)
             {
                 novm = false;
                 baseVM = Vm?.Model as BaseVM;
             }
-            if(Vm?.Model is BaseSearcher )
+            if (Vm?.Model is BaseSearcher)
             {
                 novm = false;
                 baseSearcher = Vm?.Model as BaseSearcher;
@@ -108,11 +109,11 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             }
             if (context.Items.ContainsKey("model") == false)
             {
-                if(baseVM != null)
+                if (baseVM != null)
                 {
                     context.Items.Add("model", baseVM);
                 }
-                else if(baseSearcher != null)
+                else if (baseSearcher != null)
                 {
                     context.Items.Add("model", baseSearcher);
                 }
@@ -128,7 +129,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 //因为框架默认的Batch本身是一个Post方法，无法使用同名方法处理提交后的工作
                 if (Vm.Model is IBaseBatchVM<BaseVM>)
                 {
-                    output.Attributes.SetAttribute("action",Regex.Replace(baseVM?.CurrentUrl,"/Batch", "/DoBatch", RegexOptions.IgnoreCase) ?? "#");
+                    output.Attributes.SetAttribute("action", Regex.Replace(baseVM?.CurrentUrl, "/Batch", "/DoBatch", RegexOptions.IgnoreCase) ?? "#");
                 }
                 else
                 {
@@ -142,7 +143,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
 ff.RenderForm('{Id}');
 ");
 
-            if(BeforeSubmit != null && BeforeSubmit.Contains("(") == false)
+            if (BeforeSubmit != null && BeforeSubmit.Contains("(") == false)
             {
                 BeforeSubmit += "()";
             }
@@ -171,21 +172,20 @@ layui.use(['form'],function(){{
                 output.PostContent.AppendHtml($@"
 <button class=""layui-hide"" id=""{Id}hidesubmit""  type=""submit"" lay-filter=""{Id}filterAuto"" lay-submit></button>
 ");
-
             }
 
             //如果是 SearchPanel，并且指定了 OldPost，则提交整个表单，而不是只刷新 Grid 数据
             if (OldPost == true && this is SearchPanelTagHelper search)
             {
-//                string addhidden = $"var form = $('#{search.Id}');";
-//                foreach (var item in search.GridId.Split(','))
-//                {
-//                    addhidden += $@"
-//    for(let f in {item}defaultfilter.where){{
-//        form.append(""<input type='hidden' name='Searcher.""+f+""' value='""+{item}defaultfilter.where[f]+""'/>"");
-//    }}
-//";
-//                }
+                //                string addhidden = $"var form = $('#{search.Id}');";
+                //                foreach (var item in search.GridId.Split(','))
+                //                {
+                //                    addhidden += $@"
+                //    for(let f in {item}defaultfilter.where){{
+                //        form.append(""<input type='hidden' name='Searcher.""+f+""' value='""+{item}defaultfilter.where[f]+""'/>"");
+                //    }}
+                //";
+                //                }
                 output.PostElement.AppendHtml($@"
 $('#{search.SearchBtnId}').on('click', function () {{
     if({BeforeSubmit ?? "true"} == false){{return false;}}
@@ -193,7 +193,6 @@ $('#{search.SearchBtnId}').on('click', function () {{
     return false;
   }});
 ");
-
             }
 
             //输出后台返回的错误信息

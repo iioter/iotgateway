@@ -1,9 +1,8 @@
 ﻿namespace Modbus.IO
 {
+    using Message;
     using System.Diagnostics;
     using System.IO;
-
-    using Message;
 
     /// <summary>
     ///     Transport for Serial protocols.

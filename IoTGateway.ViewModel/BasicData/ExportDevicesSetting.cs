@@ -1,31 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using WalkingTec.Mvvm.Core;
-using WalkingTec.Mvvm.Core.Extensions;
+﻿using IoTGateway.Model;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using IoTGateway.Model;
-using PluginInterface;
-using Plugin;
-using Newtonsoft.Json;
-using IoTGateway.DataAccess.Migrations;
-using NPOI.HSSF.Util;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using IoTGateway.ViewModel.BasicData.DeviceVariableVMs;
-using IoTGateway.ViewModel.BasicData.DeviceConfigVMs;
+using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
-using IoTGateway.ViewModel.Config.SystemConfigVMs;
-using IoTGateway.ViewModel.BasicData.DeviceVMs;
+using System.Linq;
+using WalkingTec.Mvvm.Core;
 
 namespace IoTGateway.ViewModel.BasicData
 {
     public class ExportDevicesSetting : BaseVM
     {
         #region GetData
+
         private List<Device> GetAllDevices()
         {
             var queryResult = DC.Set<Device>().AsNoTracking().AsNoTracking()
@@ -37,11 +24,10 @@ namespace IoTGateway.ViewModel.BasicData
 
         private List<DeviceConfig> GetAllDeviceConfigs()
         {
-            var queryResult = DC.Set<DeviceConfig>().AsNoTracking().Include(x=>x.Device)
+            var queryResult = DC.Set<DeviceConfig>().AsNoTracking().Include(x => x.Device)
                 .OrderBy(x => x.Device.DeviceName).ThenBy(x => x.DeviceConfigName).ToList();
             return queryResult;
         }
-
 
         private List<DeviceVariable> GetAllDeviceVariables()
         {
@@ -57,9 +43,11 @@ namespace IoTGateway.ViewModel.BasicData
                 .OrderBy(x => x.ID).ToList();
             return queryResult;
         }
-        #endregion
+
+        #endregion GetData
 
         #region GenerateWorkSheet
+
         private IWorkbook GenerateDevicesSheet(IWorkbook book, List<Device> devices)
         {
             if (book == null)
@@ -72,7 +60,7 @@ namespace IoTGateway.ViewModel.BasicData
 
             #region 生成表头
 
-            string[] colName = { "名称", "排序", "驱动名", "启动", "变化上传", "归档周期ms", "指令间隔ms", "类型" ,"所属组"};
+            string[] colName = { "名称", "排序", "驱动名", "启动", "变化上传", "归档周期ms", "指令间隔ms", "类型", "所属组" };
             IRow row = sheet.CreateRow(currentRow);
             row.HeightInPoints = 20;
 
@@ -82,9 +70,11 @@ namespace IoTGateway.ViewModel.BasicData
             }
 
             currentRow++;
-            #endregion
+
+            #endregion 生成表头
 
             #region 生成数据
+
             foreach (var device in devices)
             {
                 int currentCol = 0;
@@ -109,7 +99,7 @@ namespace IoTGateway.ViewModel.BasicData
                 currentRow++;
             }
 
-            #endregion
+            #endregion 生成数据
 
             return book;
         }
@@ -136,9 +126,11 @@ namespace IoTGateway.ViewModel.BasicData
             }
 
             currentRow++;
-            #endregion
+
+            #endregion 生成表头
 
             #region 生成数据
+
             foreach (var deviceConfig in deviceConfigs)
             {
                 int currentCol = 0;
@@ -154,11 +146,11 @@ namespace IoTGateway.ViewModel.BasicData
                 rowData.CreateCell(currentCol).SetCellValue(deviceConfig.Value);
                 currentCol++;
                 rowData.CreateCell(currentCol).SetCellValue(deviceConfig.EnumInfo);
-                
+
                 currentRow++;
             }
 
-            #endregion
+            #endregion 生成数据
 
             return book;
         }
@@ -175,7 +167,7 @@ namespace IoTGateway.ViewModel.BasicData
 
             #region 生成表头
 
-            string[] colName = { "设备名", "变量名", "方法", "地址", "类型", "大小端", "表达式", "别名","上传", "排序", "触发" };
+            string[] colName = { "设备名", "变量名", "方法", "地址", "类型", "大小端", "表达式", "别名", "上传", "排序", "触发" };
             IRow row = sheet.CreateRow(currentRow);
             row.HeightInPoints = 20;
 
@@ -185,9 +177,11 @@ namespace IoTGateway.ViewModel.BasicData
             }
 
             currentRow++;
-            #endregion
+
+            #endregion 生成表头
 
             #region 生成数据
+
             foreach (var deviceVariable in deviceVariables)
             {
                 int currentCol = 0;
@@ -217,7 +211,7 @@ namespace IoTGateway.ViewModel.BasicData
                 currentRow++;
             }
 
-            #endregion
+            #endregion 生成数据
 
             return book;
         }
@@ -244,9 +238,11 @@ namespace IoTGateway.ViewModel.BasicData
             }
 
             currentRow++;
-            #endregion
+
+            #endregion 生成表头
 
             #region 生成数据
+
             foreach (var systemConfig in systemConfigs)
             {
                 int currentCol = 0;
@@ -267,12 +263,12 @@ namespace IoTGateway.ViewModel.BasicData
                 currentRow++;
             }
 
-            #endregion
+            #endregion 生成数据
 
             return book;
         }
 
-        #endregion
+        #endregion GenerateWorkSheet
 
         public byte[] Export()
         {
