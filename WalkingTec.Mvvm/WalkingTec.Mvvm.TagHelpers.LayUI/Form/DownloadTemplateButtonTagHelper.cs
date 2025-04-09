@@ -21,6 +21,5 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             Text = THProgram._localizer["Sys.DownloadTemplate"];
             base.Process(context, output);
         }
-
     }
 }

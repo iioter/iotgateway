@@ -1,16 +1,16 @@
 // WTM默认页面 Wtm buidin page
-using System;
-using System.IO;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
+using WalkingTec.Mvvm.Core.Extensions;
 using WalkingTec.Mvvm.Core.Support.FileHandlers;
 using WalkingTec.Mvvm.Mvc;
-using WalkingTec.Mvvm.Core.Extensions;
-using System.Linq;
 
 namespace WalkingTec.Mvvm.Admin.Api
 {
@@ -66,7 +66,6 @@ namespace WalkingTec.Mvvm.Admin.Api
                 return Ok(new { Id = file.GetID(), Name = file.FileName });
             }
             return BadRequest(Localizer["Sys.UploadFailed"]);
-
         }
 
         [HttpGet("[action]/{id}")]
@@ -83,7 +82,6 @@ namespace WalkingTec.Mvvm.Admin.Api
         public async Task<IActionResult> GetFile([FromServices] WtmFileProvider fp, string id, string csName = null, int? width = null, int? height = null)
         {
             var file = fp.GetFile(id, true, Wtm.CreateDC(cskey: csName));
-
 
             if (file == null)
             {
@@ -151,18 +149,17 @@ namespace WalkingTec.Mvvm.Admin.Api
         {
             if (ConfigInfo.HasMainHost && Wtm.LoginUserInfo?.CurrentTenant == null)
             {
-                return Redirect(Wtm.ConfigInfo.MainHost+ Request.Path);
+                return Redirect(Wtm.ConfigInfo.MainHost + Request.Path);
             }
-            return await this.GetFile(fp,id, csName, width, height);
+            return await this.GetFile(fp, id, csName, width, height);
         }
-
 
         [HttpGet("[action]/{id}")]
         [ActionDescription("DownloadFile")]
         [Public]
         public IActionResult DownloadFile([FromServices] WtmFileProvider fp, string id, string csName = null)
         {
-            var file = fp.GetFile(id, true, Wtm.CreateDC(cskey:csName));
+            var file = fp.GetFile(id, true, Wtm.CreateDC(cskey: csName));
             if (file == null)
             {
                 return BadRequest(Localizer["Sys.FileNotFound"]);

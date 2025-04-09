@@ -29,16 +29,17 @@ namespace WalkingTec.Mvvm.Core.Support.Json
         public bool FolderOnly { get; set; }
         public string MethodName { get; set; }
         public bool? TenantAllowed { get; set; }
+
         public bool IsParentShowOnMenu(List<SimpleMenu> all)
         {
-            if(this.ParentId == null)
+            if (this.ParentId == null)
             {
                 return ShowOnMenu;
             }
             else
             {
                 var p = all.Where(x => x.ID == this.ParentId).FirstOrDefault();
-                if(p == null)
+                if (p == null)
                 {
                     return false;
                 }
@@ -49,19 +50,17 @@ namespace WalkingTec.Mvvm.Core.Support.Json
             }
         }
 
-        public  int GetLevel(List<SimpleMenu> all)
+        public int GetLevel(List<SimpleMenu> all)
         {
             int level = 0;
             var self = this;
             while (self.ParentId != null)
             {
                 level++;
-                self = all.Where(x=>x.ID == self.ParentId).FirstOrDefault();
+                self = all.Where(x => x.ID == self.ParentId).FirstOrDefault();
             }
             return level;
         }
-
-
     }
 
     public class SimpleMenuApi
@@ -129,7 +128,5 @@ namespace WalkingTec.Mvvm.Core.Support.Json
         /// <value></value>
         [JsonIgnore]
         public int? Order { get; set; }
-
     }
-
 }

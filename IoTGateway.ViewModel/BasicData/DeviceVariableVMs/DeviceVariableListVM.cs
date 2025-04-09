@@ -1,17 +1,15 @@
-﻿using System;
+﻿using IoTGateway.Model;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Plugin;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using IoTGateway.Model;
-using PluginInterface;
-using Plugin;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Linq.Expressions;
 
 namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
 {
@@ -19,6 +17,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
     {
         public List<TreeSelectListItem> AllDevices { get; set; }
         public List<LayuiTreeItem> DevicesTree { get; set; }
+
         protected override List<GridAction> InitGridAction()
         {
             return new List<GridAction>
@@ -58,12 +57,12 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                     item.Text = " " + item.Text;
                     item.Expended = true;
                     item.Selected = item.Value.ToString() == IoTBackgroundService.VariableSelectDeviceId.ToString();
-
                 });
             });
             DevicesTree = GetLayuiTree(AllDevices);
             base.InitListVM();
         }
+
         protected override IEnumerable<IGridColumn<DeviceVariable_View>> InitGridHeader()
         {
             return new List<GridColumn<DeviceVariable_View>>{
@@ -189,7 +188,6 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                         .ThenBy(x => x.DeviceAddress);
         }
 
-
         public override IOrderedQueryable<DeviceVariable_View> GetBatchQuery()
         {
             return GetSearchQuery();
@@ -223,6 +221,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
             }
             return rv;
         }
+
         public class LayuiTreeItem
         {
             [JsonProperty(PropertyName = "title")]

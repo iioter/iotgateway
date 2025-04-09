@@ -1,12 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text.Json;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Web;
 using DUWENINK.Captcha;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -17,13 +8,17 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NPOI.SS.Formula.Functions;
-using SixLabors.Fonts;
 using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Drawing;
-using SixLabors.ImageSharp.Drawing.Processing;
-using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Web;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 using WalkingTec.Mvvm.Core.Models;
@@ -36,13 +31,9 @@ namespace WalkingTec.Mvvm.Mvc
     public class _FrameworkController(ISecurityCodeHelper securityCode) : BaseController
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         private readonly ISecurityCodeHelper _securityCode = securityCode;
-
-
-
-
 
         [HttpPost]
         [Public]
@@ -58,7 +49,7 @@ namespace WalkingTec.Mvvm.Mvc
             , string _DONOT_USE_CURRENTCS
         )
         {
-            string cs =_DONOT_USE_CURRENTCS;
+            string cs = _DONOT_USE_CURRENTCS;
             Wtm.CurrentCS = cs;
             var listVM = Wtm.CreateVM(_DONOT_USE_VMNAME, null, null, true) as IBasePagedListVM<TopBasePoco, ISearcher>;
 
@@ -79,7 +70,9 @@ namespace WalkingTec.Mvvm.Mvc
             ViewBag.LinkField = _DONOT_USE_LINK_FIELD;
             ViewBag.TriggerUrl = _DONOT_USE_TRIGGER_URL;
             ViewBag.CurrentCS = cs;
+
             #region 获取选中的数据
+
             ViewBag.SelectData = "[]";
             ViewBag.SelectorValueField = _DONOT_USE_VFIELD;
             if (listVM.Ids?.Count > 0)
@@ -101,7 +94,8 @@ namespace WalkingTec.Mvvm.Mvc
                 listVM.SearcherMode = ListVMSearchModeEnum.Selector;
                 listVM.NeedPage = originNeedPage;
             }
-            #endregion
+
+            #endregion 获取选中的数据
 
             return PartialView(listVM);
         }
@@ -118,7 +112,6 @@ namespace WalkingTec.Mvvm.Mvc
             };
             return rv;
         }
-
 
         /// <summary>
         /// 获取分页数据
@@ -160,16 +153,16 @@ namespace WalkingTec.Mvvm.Mvc
                     else if (typeof(FrameworkRole).IsAssignableFrom(listVM.ModelType))
                     {
                         url = "/api/_frameworkrole/search";
-                    }                    
+                    }
                 }
-                if(string.IsNullOrEmpty(url) == false)
+                if (string.IsNullOrEmpty(url) == false)
                 {
                     var result = Wtm.CallAPI<string>("mainhost", url, HttpMethodEnum.POST, listVM.Searcher, 10).Result;
                     var rv = new ContentResult
                     {
                         ContentType = "application/json",
                         Content = result.Data
-                };
+                    };
                     return rv;
                 }
                 else
@@ -187,7 +180,6 @@ namespace WalkingTec.Mvvm.Mvc
                 throw new Exception("Invalid Vm Name");
             }
         }
-
 
         /// <summary>
         /// 单元格编辑
@@ -236,7 +228,7 @@ namespace WalkingTec.Mvvm.Mvc
             }
             var instanceType = Type.GetType(_DONOT_USE_VMNAME);
 
-            Wtm.CurrentCS =  _DONOT_USE_CS;
+            Wtm.CurrentCS = _DONOT_USE_CS;
             var listVM = Wtm.CreateVM(_DONOT_USE_VMNAME) as IBasePagedListVM<TopBasePoco, ISearcher>;
 
             listVM.FC = qs;
@@ -278,7 +270,7 @@ namespace WalkingTec.Mvvm.Mvc
             return File(data, "application/vnd.ms-excel", fileName);
         }
 
-        #endregion
+        #endregion Import/Export Excel
 
         [AllowAnonymous]
         [ActionDescription("Sys.ErrorHandle")]
@@ -335,7 +327,7 @@ namespace WalkingTec.Mvvm.Mvc
 
         [HttpPost]
         [ActionDescription("UploadFileRoute")]
-        public IActionResult Upload([FromServices] WtmFileProvider fp, string sm = null, string groupName = null, string subdir = null, string extra = null, bool IsTemprory = true, string _DONOT_USE_CS=null)
+        public IActionResult Upload([FromServices] WtmFileProvider fp, string sm = null, string groupName = null, string subdir = null, string extra = null, bool IsTemprory = true, string _DONOT_USE_CS = null)
         {
             var FileData = Request.Form.Files[0];
             var file = fp.Upload(FileData.FileName, FileData.Length, FileData.OpenReadStream(), groupName, subdir, extra, sm, Wtm.CreateDC(cskey: _DONOT_USE_CS));
@@ -386,14 +378,11 @@ namespace WalkingTec.Mvvm.Mvc
             {
                 string url = $"/_Framework/GetFile?id={file.GetID()}&stream=true&_DONOT_USE_CS={CurrentCS}";
                 return Content($"{{\"code\": 0 , \"msg\": \"\", \"data\": {{\"src\": \"{url}\"}}}}");
-
             }
             else
             {
                 return Content($"{{\"code\": 1 , \"msg\": \"{MvcProgram._localizer["Sys.UploadFailed"]}\", \"data\": {{\"src\": \"\"}}}}");
-
             }
-
         }
 
         [ActionDescription("GetFileName")]
@@ -433,7 +422,6 @@ namespace WalkingTec.Mvvm.Mvc
                 }
                 else
                 {
-
                 }
             }
             catch { }
@@ -493,7 +481,6 @@ namespace WalkingTec.Mvvm.Mvc
                 html = $@"<img id='FileObject' style='flex:auto;{(string.IsNullOrEmpty(width) ? "" : $"width:{width}px")}'  border=0 src='/_Framework/GetFile?id={id}&stream=true&_DONOT_USE_CS={_DONOT_USE_CS}'/>";
             }
             return Content(html);
-
         }
 
         [Public]
@@ -531,7 +518,6 @@ namespace WalkingTec.Mvvm.Mvc
                 throw new Exception(MvcProgram._localizer["Sys.NoPrivilege"]);
             }
         }
-
 
         [HttpGet]
         public IActionResult Menu()
@@ -611,7 +597,6 @@ namespace WalkingTec.Mvvm.Mvc
             HttpContext.Session.Set<string>("verify_code", chkCode);
             var imgbyte = _securityCode.GetEnDigitalCodeByte(chkCode);
             return File(imgbyte, "image/png");
-        
         }
 
         [Public]
@@ -646,21 +631,15 @@ namespace WalkingTec.Mvvm.Mvc
                 MS.Dispose();
             }
 
-
-
             if (file != null)
             {
                 string url = $"/_Framework/GetFile?id={file.GetID()}&stream=true&_DONOT_USE_CS={CurrentCS}";
                 return Content($"{{\"Code\": 200 , \"Msg\": \"success\", \"Data\": {{\"src\": \"{url}\",\"FileName\":\"{file.FileName}\"}}}}");
-
             }
             else
             {
                 return Content($"{{\"code\": 1 , \"msg\": \"{MvcProgram._localizer["Sys.UploadFailed"]}\", \"data\": {{\"src\": \"\"}}}}");
-
             }
-
-
         }
 
         [Public]
@@ -695,7 +674,6 @@ namespace WalkingTec.Mvvm.Mvc
             return FFResult().AddCustomScript("location.reload();");
         }
 
-
         [Public]
         public IActionResult SetLanguageForBlazor(string culture, string redirect)
         {
@@ -707,7 +685,6 @@ namespace WalkingTec.Mvvm.Mvc
 
             return Content($"<script>window.location.href='{HttpUtility.UrlDecode(redirect)}';</script>", "text/html");
         }
-
 
         [Public]
         [HttpGet]

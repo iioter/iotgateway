@@ -56,7 +56,7 @@
             if (!_allowZeroElement && index == 0)
             {
                 throw new ArgumentOutOfRangeException(
-                    nameof(index), 
+                    nameof(index),
                     "0 is not a valid address for a Modbus data collection.");
             }
 
@@ -77,7 +77,7 @@
             if (index == 0)
             {
                 throw new ArgumentOutOfRangeException(
-                    nameof(index), 
+                    nameof(index),
                     "0 is not a valid address for a Modbus data collection.");
             }
 
@@ -97,7 +97,7 @@
             if (index == 0)
             {
                 throw new ArgumentOutOfRangeException(
-                    nameof(index), 
+                    nameof(index),
                     "0 is not a valid address for a Modbus data collection.");
             }
 

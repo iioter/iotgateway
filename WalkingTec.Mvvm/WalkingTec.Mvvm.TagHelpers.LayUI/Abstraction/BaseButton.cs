@@ -1,12 +1,15 @@
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using WalkingTec.Mvvm.Core.Extensions;
 
 namespace WalkingTec.Mvvm.TagHelpers.LayUI
 {
-    public enum ButtonSizeEnum { Big, Normal, Small, Mini }
-    public enum ButtonThemeEnum { Primary, Normal, Warm, Danger, Disabled }
+    public enum ButtonSizeEnum
+    { Big, Normal, Small, Mini }
+
+    public enum ButtonThemeEnum
+    { Primary, Normal, Warm, Danger, Disabled }
+
     public abstract class BaseButtonTag : BaseElementTag
     {
         /// <summary>
@@ -44,7 +47,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
 
         public string ConfirmTxt { get; set; }
 
-
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             if (string.IsNullOrEmpty(Id))
@@ -63,17 +65,20 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                         case ButtonSizeEnum.Big:
                             btnclass += " layui-btn-lg";
                             break;
+
                         case ButtonSizeEnum.Small:
                             btnclass += " layui-btn-sm";
                             break;
+
                         case ButtonSizeEnum.Mini:
                             btnclass += " layui-btn-xs";
                             break;
+
                         default:
                             break;
                     }
                 }
-                if(Disabled == true)
+                if (Disabled == true)
                 {
                     Theme = ButtonThemeEnum.Disabled;
                     output.Attributes.SetAttribute(new TagHelperAttribute("disabled"));
@@ -140,6 +145,5 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
 
             base.Process(context, output);
         }
-
     }
 }

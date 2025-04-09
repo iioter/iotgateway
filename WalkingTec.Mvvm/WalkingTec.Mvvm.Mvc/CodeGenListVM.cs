@@ -9,9 +9,8 @@ using WalkingTec.Mvvm.Core.Extensions;
 
 namespace WalkingTec.Mvvm.Mvc
 {
-    public class CodeGenListVM : BasePagedListVM<CodeGenListView,BaseSearcher>
+    public class CodeGenListVM : BasePagedListVM<CodeGenListView, BaseSearcher>
     {
-
         public string ModelFullName { get; set; }
 
         public CodeGenListVM()
@@ -36,7 +35,7 @@ namespace WalkingTec.Mvvm.Mvc
 
         private string getCheckBox(string fieldname, bool val)
         {
-            return UIService.MakeCheckBox(val, name: fieldname, value:"true");
+            return UIService.MakeCheckBox(val, name: fieldname, value: "true");
         }
 
         private string withHidden(string fieldname, string val)
@@ -53,13 +52,13 @@ namespace WalkingTec.Mvvm.Mvc
                 var linktype = Type.GetType(entity.LinkedType);
                 if (linktype != typeof(FileAttachment))
                 {
-                    var subpros = Type.GetType(entity.LinkedType).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance).Where(x=>x.GetMemberType() == typeof(string) && x.Name != "BatchError").OrderBy(x => x.Name).ToList().ToListItems(x => x.Name, x => x.Name);
+                    var subpros = Type.GetType(entity.LinkedType).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance).Where(x => x.GetMemberType() == typeof(string) && x.Name != "BatchError").OrderBy(x => x.Name).ToList().ToListItems(x => x.Name, x => x.Name);
                     var subproswithname = subpros.Where(x => x.Text.ToLower().Contains("name")).ToList();
                     var subproswithoutname = subpros.Where(x => x.Text.ToLower().Contains("name") == false).ToList();
                     subpros = new List<ComboSelectListItem>();
                     subpros.AddRange(subproswithname);
                     subpros.AddRange(subproswithoutname);
-                    if(subpros.Count == 0)
+                    if (subpros.Count == 0)
                     {
                         subpros.Add(new ComboSelectListItem { Text = "Id", Value = "Id" });
                     }
@@ -75,7 +74,7 @@ namespace WalkingTec.Mvvm.Mvc
 
         public override IOrderedQueryable<CodeGenListView> GetSearchQuery()
         {
-            Type modeltype =  Type.GetType(ModelFullName);
+            Type modeltype = Type.GetType(ModelFullName);
             var pros = modeltype.GetAllProperties();
             List<CodeGenListView> lv = new List<CodeGenListView>();
             int count = 0;
@@ -105,11 +104,11 @@ namespace WalkingTec.Mvvm.Mvc
             {
                 if (skipFields.Contains(pro.Name) == false)
                 {
-                    if(pro.CanWrite == false)
+                    if (pro.CanWrite == false)
                     {
                         continue;
                     }
-                    if(pro.Name.ToLower() == "id" && pro.PropertyType != typeof(string))
+                    if (pro.Name.ToLower() == "id" && pro.PropertyType != typeof(string))
                     {
                         continue;
                     }
@@ -138,9 +137,10 @@ namespace WalkingTec.Mvvm.Mvc
                     {
                         show = true;
                     }
-                    if (typeof(TopBasePoco).IsAssignableFrom(checktype)){
+                    if (typeof(TopBasePoco).IsAssignableFrom(checktype))
+                    {
                         var fk = DC.GetFKName2(modeltype, pro.Name);
-                        if(fk != null)
+                        if (fk != null)
                         {
                             ignoreField.Add(fk);
                             show = true;
@@ -159,7 +159,7 @@ namespace WalkingTec.Mvvm.Mvc
                         {
                             if (modeltype.GetSingleProperty(fk) == null)
                             {
-                                view.FieldDes = $"<font color='#ff0000'>(Error:Can't find {fk.Replace("ID","Id")} in {checktype.Name})</font>";
+                                view.FieldDes = $"<font color='#ff0000'>(Error:Can't find {fk.Replace("ID", "Id")} in {checktype.Name})</font>";
                             }
                         }
                     }
@@ -178,7 +178,7 @@ namespace WalkingTec.Mvvm.Mvc
                             var subpros = checktype.GetAllProperties();
                             foreach (var spro in subpros)
                             {
-                                if(skipFields.Contains(spro.Name) == false)
+                                if (skipFields.Contains(spro.Name) == false)
                                 {
                                     Type subchecktype = spro.PropertyType;
                                     if (spro.PropertyType.IsNullable())
@@ -191,7 +191,8 @@ namespace WalkingTec.Mvvm.Mvc
                                         var fk = DC.GetFKName2(checktype, spro.Name);
                                         view.SubIdField = fk;
                                         show = true;
-                                        if(checktype.GetSingleProperty(fk) == null) {
+                                        if (checktype.GetSingleProperty(fk) == null)
+                                        {
                                             view.FieldDes = $"<font color='#ff0000'>(Error:Can't find {fk.Replace("ID", "Id")} in {checktype.Name})</font>";
                                         }
                                     }
@@ -220,7 +221,7 @@ namespace WalkingTec.Mvvm.Mvc
             {
                 if (ignoreField.Contains(lv[i].FieldName))
                 {
-                    for(int j = i; j < lv.Count; j++)
+                    for (int j = i; j < lv.Count; j++)
                     {
                         lv[j].Index--;
                     }
@@ -241,7 +242,6 @@ namespace WalkingTec.Mvvm.Mvc
         [Display(Name = "Codegen.FieldDes")]
         public string FieldDes { get; set; }
 
-
         [Display(Name = "Codegen.IsSearcherField")]
         public bool IsSearcherField { get; set; }
 
@@ -250,7 +250,6 @@ namespace WalkingTec.Mvvm.Mvc
 
         [Display(Name = "Codegen.IsFormField")]
         public bool IsFormField { get; set; }
-
 
         [Display(Name = "Codegen.SubField")]
         public string SubField { get; set; }
@@ -267,6 +266,5 @@ namespace WalkingTec.Mvvm.Mvc
 
         [Display(Name = "Codegen.LinkedType")]
         public string LinkedType { get; set; }
-
     }
 }

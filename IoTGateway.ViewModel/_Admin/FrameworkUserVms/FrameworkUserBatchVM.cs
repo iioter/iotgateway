@@ -1,10 +1,10 @@
 // WTM默认页面 Wtm buidin page
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.Json.Serialization;
-using Microsoft.EntityFrameworkCore;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 using WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkRoleVMs;
@@ -60,6 +60,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkUserVms
     {
         [Display(Name = "_Admin.Role")]
         public List<string> SelectedRolesCodes { get; set; }
+
         public List<ComboSelectListItem> AllRoles { get; set; }
 
         protected override void InitVM()
@@ -67,5 +68,4 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkUserVms
             AllRoles = DC.Set<FrameworkRole>().GetSelectListItems(Wtm, y => y.RoleName, y => y.RoleCode);
         }
     }
-
 }

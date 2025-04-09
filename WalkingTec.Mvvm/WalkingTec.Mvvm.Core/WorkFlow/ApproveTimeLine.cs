@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace WalkingTec.Mvvm.Core.WorkFlow
 {
     public class ApproveTimeLine
@@ -25,13 +19,16 @@ namespace WalkingTec.Mvvm.Core.WorkFlow
                     case "等待审批":
                         rv = "等待" + this.Approvers + "审批";
                         break;
+
                     case "同意":
                     case "拒绝":
                         rv = this.Approved + this.Action;
                         break;
+
                     case "_start":
                         rv = this.Approved + "提交审批";
                         break;
+
                     case "_finish":
                         rv = "流程结束";
                         break;

@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-
-namespace S7.Net.Types
+﻿namespace S7.Net.Types
 {
     /// <summary>
     /// Contains the conversion methods to convert Real from S7 plc to C# double.
@@ -44,7 +41,7 @@ namespace S7.Net.Types
         }
 
         /// <summary>
-        /// Converts an array of double to an array of bytes 
+        /// Converts an array of double to an array of bytes
         /// </summary>
         public static byte[] ToByteArray(double[] value) => TypeHelper.ToByteArray(value, ToByteArray);
 
@@ -52,6 +49,5 @@ namespace S7.Net.Types
         /// Converts an array of S7 LReal to an array of double
         /// </summary>
         public static double[] ToArray(byte[] bytes) => TypeHelper.ToArray(bytes, FromByteArray);
-        
     }
 }

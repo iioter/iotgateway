@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
-using WalkingTec.Mvvm.Core.Support.Json;
 
 namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkGroupVMs
 {
@@ -64,7 +63,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkGroupVMs
 
         public override IOrderedQueryable<FrameworkGroup_View> GetSearchQuery()
         {
-            return  DC.Set<FrameworkGroup>()
+            return DC.Set<FrameworkGroup>()
                 .CheckContain(Searcher.GroupCode, x => x.GroupCode)
                 .CheckContain(Searcher.GroupName, x => x.GroupName)
                  .GroupJoin(DC.Set<FrameworkUser>(), ok => ok.Manager, ik => ik.ITCode, (group, user) => new { user = user, group = group })
@@ -79,6 +78,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkGroupVMs
                  })
                 .OrderBy(x => x.GroupCode);
         }
+
         public override void AfterDoSearcher()
         {
             var topdata = EntityList.MakeTree(x => x.GroupCode).FlatTree(x => x.GroupCode);
@@ -87,9 +87,9 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkGroupVMs
                 topdata.ForEach((x) => { int l = x.GetLevel(); for (int i = 0; i < l; i++) { x.GroupName = "&nbsp;&nbsp;&nbsp;&nbsp;" + x.GroupName; } });
             }
             EntityList = topdata;
-
         }
     }
+
     public class FrameworkGroup_View : TreePoco<FrameworkGroup_View>
     {
         [Display(Name = "_Admin.GroupCode")]
@@ -111,7 +111,5 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkGroupVMs
         public string ManagerName { get; set; }
 
         public bool HasChild { get => HasChildren; }
-
     }
-
 }

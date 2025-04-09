@@ -1,11 +1,11 @@
-﻿using System;
+﻿using IoTGateway.Model;
+using Microsoft.EntityFrameworkCore;
+using Plugin;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
-using IoTGateway.Model;
-using Plugin;
-using Microsoft.EntityFrameworkCore;
 
 namespace IoTGateway.ViewModel.BasicData.DeviceVMs
 {
@@ -70,8 +70,8 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVMs
                 MSD.AddModelError("", ret.Message);
                 return;
             }
-
         }
+
         public override DuplicatedInfo<Device> SetDuplicatedCheck()
         {
             var rv = CreateFieldsInfo(SimpleField(x => x.DeviceName));

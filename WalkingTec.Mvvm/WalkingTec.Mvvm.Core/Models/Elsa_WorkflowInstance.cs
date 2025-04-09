@@ -1,15 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WalkingTec.Mvvm.Core.Models
 {
     [Table("WorkflowInstances", Schema = "Elsa")]
-    public class Elsa_WorkflowInstance:TopBasePoco
+    public class Elsa_WorkflowInstance : TopBasePoco
     {
         [Key]
         [Column("Id")]
@@ -50,9 +46,9 @@ namespace WalkingTec.Mvvm.Core.Models
         public DateTimeOffset? FaultedAt { get; set; }
         public string Data { get; set; }
         public string LastExecutedActivityId { get; set; }
+
         [StringLength(450)]
         [Required]
         public string DefinitionVersionId { get; set; }
-
     }
 }

@@ -1,6 +1,6 @@
-﻿using PluginInterface;
-using IoTClient.Clients.PLC;
+﻿using IoTClient.Clients.PLC;
 using Microsoft.Extensions.Logging;
+using PluginInterface;
 
 namespace PLC.AllenBradley
 {
@@ -25,9 +25,10 @@ namespace PLC.AllenBradley
 
         [ConfigParameter("最小通讯周期ms")] public uint MinPeriod { get; set; } = 3000;
 
-        #endregion
+        #endregion 配置参数
 
         #region 生命周期
+
         public DeviceAllenBradley(string device, ILogger logger)
         {
             _device = device;
@@ -64,7 +65,7 @@ namespace PLC.AllenBradley
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex,$"Device:[{_device}],Close()");
+                _logger.LogError(ex, $"Device:[{_device}],Close()");
                 return false;
             }
         }
@@ -85,7 +86,8 @@ namespace PLC.AllenBradley
                 _logger.LogError(ex, $"Device:[{_device}],Dispose(),Error");
             }
         }
-        #endregion
+
+        #endregion 生命周期
 
         #region 读写方法
 
@@ -103,45 +105,59 @@ namespace PLC.AllenBradley
                         case DataTypeEnum.Bit:
                             ret.Value = _plc.ReadBoolean(ioarg.Address).Value ? 1 : 0;
                             break;
+
                         case DataTypeEnum.Bool:
                             ret.Value = _plc.ReadBoolean(ioarg.Address).Value;
                             break;
+
                         case DataTypeEnum.UByte:
                             ret.Value = _plc.ReadByte(ioarg.Address).Value;
                             break;
+
                         case DataTypeEnum.Byte:
                             ret.Value = (sbyte)_plc.ReadByte(ioarg.Address).Value;
                             break;
+
                         case DataTypeEnum.Uint16:
                             ret.Value = _plc.ReadUInt16(ioarg.Address).Value;
                             break;
+
                         case DataTypeEnum.Int16:
                             ret.Value = _plc.ReadInt16(ioarg.Address).Value;
                             break;
+
                         case DataTypeEnum.Uint32:
                             ret.Value = _plc.ReadUInt32(ioarg.Address).Value;
                             break;
+
                         case DataTypeEnum.Int32:
                             ret.Value = _plc.ReadInt32(ioarg.Address).Value;
                             break;
+
                         case DataTypeEnum.Float:
                             ret.Value = _plc.ReadFloat(ioarg.Address).Value;
                             break;
+
                         case DataTypeEnum.Double:
                             ret.Value = _plc.ReadDouble(ioarg.Address).Value;
                             break;
+
                         case DataTypeEnum.Uint64:
                             ret.Value = _plc.ReadUInt64(ioarg.Address).Value;
                             break;
+
                         case DataTypeEnum.Int64:
                             ret.Value = _plc.ReadInt64(ioarg.Address).Value;
                             break;
+
                         case DataTypeEnum.AsciiString:
                             ret.Value = _plc.ReadString(ioarg.Address);
                             break;
+
                         case DataTypeEnum.Utf8String:
                             ret.Value = _plc.ReadString(ioarg.Address);
                             break;
+
                         default:
                             ret.StatusType = VaribaleStatusTypeEnum.Bad;
                             ret.Message = $"不支持的类型";
@@ -170,7 +186,6 @@ namespace PLC.AllenBradley
             return rpcResponse;
         }
 
-        #endregion
-
+        #endregion 读写方法
     }
 }

@@ -7,6 +7,7 @@
     {
         // supported function codes
         public const byte ReadCoils = 1;
+
         public const byte ReadInputs = 2;
         public const byte ReadHoldingRegisters = 3;
         public const byte ReadInputRegisters = 4;
@@ -26,6 +27,7 @@
 
         // modbus slave exception codes
         public const byte IllegalFunction = 1;
+
         public const byte IllegalDataAddress = 2;
         public const byte Acknowledge = 5;
         public const byte SlaveDeviceBusy = 6;

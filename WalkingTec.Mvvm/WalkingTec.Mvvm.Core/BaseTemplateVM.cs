@@ -1,19 +1,19 @@
+using NPOI.HSSF.Util;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.IO;
 using System.Linq;
-using NPOI.HSSF.UserModel;
-using NPOI.HSSF.Util;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
 
 namespace WalkingTec.Mvvm.Core
 {
     public class BaseTemplateVM : BaseVM
     {
         #region 属性
+
         /// <summary>
         /// 下载模板显示名称
         /// </summary>
@@ -38,9 +38,11 @@ namespace WalkingTec.Mvvm.Core
         /// Excel索引
         /// </summary>
         public long ExcelIndex { get; set; }
-        #endregion
+
+        #endregion 属性
 
         #region 构造函数
+
         public BaseTemplateVM()
         {
             ValidityTemplateType = true;
@@ -59,35 +61,37 @@ namespace WalkingTec.Mvvm.Core
                 }
             }
         }
-        #endregion
+
+        #endregion 构造函数
 
         #region 初始化Excel属性数据
+
         /// <summary>
         /// 初始化Excel属性数据  包括动态列,列表中的下拉选项
         /// </summary>
         public virtual void InitExcelData()
         {
-
         }
 
         public virtual void InitCustomFormat()
         {
-
         }
 
-        #endregion
+        #endregion 初始化Excel属性数据
 
-        #region  初始化模版数据
+        #region 初始化模版数据
+
         /// <summary>
         /// 初始化模版数据
         /// </summary>
         public virtual void SetTemplateDataValus()
         {
-
         }
-        #endregion
 
-        #region  生成模板
+        #endregion 初始化模版数据
+
+        #region 生成模板
+
         /// <summary>
         /// 生成模板
         /// </summary>
@@ -128,6 +132,7 @@ namespace WalkingTec.Mvvm.Core
             ISheet dataSheet = workbook.CreateSheet();
 
             #region 设置excel模板列头
+
             //默认灰色
             var headerStyle = GetCellStyle(workbook);
             headerStyle.IsLocked = true;
@@ -171,9 +176,11 @@ namespace WalkingTec.Mvvm.Core
                     case BackgroudColorEnum.Yellow:
                         row.Cells[_currentColunmIndex].CellStyle = yellowStyle;
                         break;
+
                     case BackgroudColorEnum.Red:
                         row.Cells[_currentColunmIndex].CellStyle = redStyle;
                         break;
+
                     default:
                         row.Cells[_currentColunmIndex].CellStyle = headerStyle;
                         break;
@@ -230,9 +237,11 @@ namespace WalkingTec.Mvvm.Core
                     _currentColunmIndex++;
                 }
             }
-            #endregion
+
+            #endregion 设置excel模板列头
 
             #region 添加模版数据
+
             if (TemplateDataTable?.Rows.Count > 0)
             {
                 for (int i = 0; i < TemplateDataTable.Rows.Count; i++)
@@ -247,7 +256,8 @@ namespace WalkingTec.Mvvm.Core
                     }
                 }
             }
-            #endregion
+
+            #endregion 添加模版数据
 
             //冻结行
             sheet.CreateFreezePane(0, 1, 0, 1);
@@ -267,9 +277,11 @@ namespace WalkingTec.Mvvm.Core
             workbook.Write(ms);
             return ms.ToArray();
         }
-        #endregion
+
+        #endregion 生成模板
 
         #region 取得表头的样式
+
         private static ICellStyle GetCellStyle(IWorkbook workbook, BackgroudColorEnum backgroudColor = BackgroudColorEnum.Grey)
         {
             var headerStyle = workbook.CreateCellStyle();
@@ -288,12 +300,15 @@ namespace WalkingTec.Mvvm.Core
                 case BackgroudColorEnum.Grey:
                     headerbg = HSSFColor.LightBlue.Index;
                     break;
+
                 case BackgroudColorEnum.Yellow:
                     headerbg = HSSFColor.LightYellow.Index;
                     break;
+
                 case BackgroudColorEnum.Red:
                     headerbg = HSSFColor.Pink.Index;
                     break;
+
                 default:
                     headerbg = HSSFColor.Pink.Index;
                     break;
@@ -305,9 +320,11 @@ namespace WalkingTec.Mvvm.Core
             headerStyle.Alignment = HorizontalAlignment.Center;
             return headerStyle;
         }
-        #endregion
+
+        #endregion 取得表头的样式
 
         #region 初始化DataTable(不含动态列)
+
         private void CreateDataTable()
         {
             TemplateDataTable = new DataTable();
@@ -321,25 +338,30 @@ namespace WalkingTec.Mvvm.Core
                     case ColumnDataType.Bool:
                         TemplateDataTable.Columns.Add(p.Name, typeof(bool));
                         break;
+
                     case ColumnDataType.Date:
                         TemplateDataTable.Columns.Add(p.Name, typeof(string));
                         break;
+
                     case ColumnDataType.Number:
                         TemplateDataTable.Columns.Add(p.Name, typeof(int));
                         break;
+
                     case ColumnDataType.Text:
                         TemplateDataTable.Columns.Add(p.Name, typeof(string));
                         break;
+
                     case ColumnDataType.Float:
                         TemplateDataTable.Columns.Add(p.Name, typeof(decimal));
                         break;
+
                     default:
                         TemplateDataTable.Columns.Add(p.Name, typeof(string));
                         break;
                 }
             }
         }
-        #endregion
 
+        #endregion 初始化DataTable(不含动态列)
     }
 }

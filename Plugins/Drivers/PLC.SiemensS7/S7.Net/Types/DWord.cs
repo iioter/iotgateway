@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace S7.Net.Types
+﻿namespace S7.Net.Types
 {
     /// <summary>
     /// Contains the conversion methods to convert DWord from S7 plc to C#.
@@ -15,7 +13,6 @@ namespace S7.Net.Types
             return (UInt32)(bytes[0] << 24 | bytes[1] << 16 | bytes[2] << 8 | bytes[3]);
         }
 
-
         /// <summary>
         /// Converts 4 bytes to DWord (UInt32)
         /// </summary>
@@ -24,9 +21,8 @@ namespace S7.Net.Types
             return (UInt32)((b4 << 24) | (b3 << 16) | (b2 << 8) | b1);
         }
 
-
         /// <summary>
-        /// Converts a uint (UInt32) to S7 DWord (4 bytes) 
+        /// Converts a uint (UInt32) to S7 DWord (4 bytes)
         /// </summary>
         public static byte[] ToByteArray(UInt32 value)
         {
@@ -40,13 +36,8 @@ namespace S7.Net.Types
             return bytes;
         }
 
-
-
-
-
-
         /// <summary>
-        /// Converts an array of uint (UInt32) to an array of S7 DWord (4 bytes) 
+        /// Converts an array of uint (UInt32) to an array of S7 DWord (4 bytes)
         /// </summary>
         public static byte[] ToByteArray(UInt32[] value)
         {

@@ -1,9 +1,7 @@
 // WTM默认页面 Wtm buidin page
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text.RegularExpressions;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 
@@ -55,7 +53,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
                 }
             }
 
-
             int order = 0;
             var data2 = topdata.Select(x => new FrameworkMenu_ListView
             {
@@ -76,6 +73,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
             return data2.AsQueryable() as IOrderedQueryable<FrameworkMenu_ListView>;
         }
     }
+
     public class FrameworkMenu_ListView : TreePoco<FrameworkMenu_ListView>
     {
         [Display(Name = "_Admin.PageName")]
@@ -110,14 +108,11 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
 
         public string IconClass { get; set; }
 
-
         public int ExtraOrder { get; set; }
 
         public bool? IsInside { get; set; }
 
         [Display(Name = "_Admin.TenantAllowed")]
         public bool? TenantAllowed { get; set; }
-
     }
-
 }

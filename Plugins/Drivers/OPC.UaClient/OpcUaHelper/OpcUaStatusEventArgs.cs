@@ -1,9 +1,4 @@
 ﻿using Opc.Ua;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OpcUaHelper
 {
@@ -12,16 +7,16 @@ namespace OpcUaHelper
     /// </summary>
     public class OpcUaStatusEventArgs
     {
-
-
         /// <summary>
         /// 是否异常
         /// </summary>
         public bool Error { get; set; }
+
         /// <summary>
         /// 时间
         /// </summary>
         public DateTime Time { get; set; }
+
         /// <summary>
         /// 文本
         /// </summary>
@@ -31,12 +26,10 @@ namespace OpcUaHelper
         /// 转化为字符串
         /// </summary>
         /// <returns></returns>
-        public override string ToString( )
+        public override string ToString()
         {
-            return Error ? "[异常]" : "[正常]" + Time.ToString( "  yyyy-MM-dd HH:mm:ss  " ) + Text;
+            return Error ? "[异常]" : "[正常]" + Time.ToString("  yyyy-MM-dd HH:mm:ss  ") + Text;
         }
-
-
     }
 
     /// <summary>
@@ -48,18 +41,20 @@ namespace OpcUaHelper
         /// 属性的名称
         /// </summary>
         public string Name { get; set; }
+
         /// <summary>
         /// 属性的类型描述
         /// </summary>
         public string Type { get; set; }
+
         /// <summary>
         /// 操作结果状态描述
         /// </summary>
         public StatusCode StatusCode { get; set; }
+
         /// <summary>
         /// 属性的值，如果读取错误，返回文本描述
         /// </summary>
         public object Value { get; set; }
-
     }
 }

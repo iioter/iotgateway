@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace WalkingTec.Mvvm.Core.ConfigOptions
 {
     public class Domain
@@ -41,6 +35,5 @@ namespace WalkingTec.Mvvm.Core.ConfigOptions
                 return rv;
             }
         }
-
     }
 }

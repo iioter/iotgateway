@@ -29,5 +29,4 @@ namespace WalkingTec.Mvvm.Core
             return false; /* Proxy all requests */
         }
     }
-
 }

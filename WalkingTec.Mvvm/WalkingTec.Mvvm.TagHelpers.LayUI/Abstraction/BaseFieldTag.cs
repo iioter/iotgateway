@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using System.Linq;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 
@@ -9,10 +8,12 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
     public abstract class BaseFieldTag : BaseElementTag
     {
         protected const string REQUIRED_ATTR_NAME = "field";
+
         /// <summary>
         /// 绑定的字段 必填
         /// </summary>
         public ModelExpression Field { get; set; }
+
         public string ItemUrl { get; set; }
 
         public bool Disabled { get; set; }
@@ -26,6 +27,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         public bool? Required { get; set; }
         public bool? HideLabel { get; set; }
         private string _id;
+
         public new string Id
         {
             get
@@ -33,11 +35,11 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 if (string.IsNullOrEmpty(_id))
                 {
                     string rv = string.Empty;
-                    if(Field != null)
+                    if (Field != null)
                     {
                         rv = Utils.GetIdByName(Field?.ModelExplorer.Container.ModelType.Name + "." + Field?.Name);
                     }
-                    return  rv;
+                    return rv;
                 }
                 else
                 {
@@ -54,7 +56,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
 
         public string DefaultValue { get; set; }
 
-
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             var preHtml = string.Empty;
@@ -70,8 +71,8 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             {
                 output.Attributes.SetAttribute("name", string.IsNullOrEmpty(Name) ? Field?.Name : Name);
             }
-                if (Disabled )
-                {
+            if (Disabled)
+            {
                 if (this is DateTimeTagHelper)
                 {
                     output.Attributes.SetAttribute("disabled", string.Empty);
@@ -80,9 +81,9 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 {
                     output.Attributes.SetAttribute("readonly", string.Empty);
                 }
-                    output.Attributes.TryGetAttribute("class", out TagHelperAttribute oldclass);
-                    output.Attributes.SetAttribute("class", "layui-disabled " + (oldclass?.Value ?? string.Empty));
-                }
+                output.Attributes.TryGetAttribute("class", out TagHelperAttribute oldclass);
+                output.Attributes.SetAttribute("class", "layui-disabled " + (oldclass?.Value ?? string.Empty));
+            }
             if (output.Attributes.ContainsName("lay-filter") == false && output.Attributes.ContainsName("id") == true)
             {
                 layfilter = $"{output.Attributes["id"].Value}filter";
@@ -93,10 +94,10 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 layfilter = output.Attributes["lay-filter"].Value.ToString();
             }
 
-            if (!(this is DisplayTagHelper) && ((Field.Metadata.IsRequired && Field.Name.Contains("[-1]")==false) || Required == true))
+            if (!(this is DisplayTagHelper) && ((Field.Metadata.IsRequired && Field.Name.Contains("[-1]") == false) || Required == true))
             {
                 requiredDot = "<font color='red'>*</font>";
-                if (!(this is UploadTagHelper || this is RadioTagHelper || this is CheckBoxTagHelper || this is MultiUploadTagHelper || this is ColorPickerTagHelper  || this is SliderTagHelper || this is TransferTagHelper)) // 上传组件自定义验证
+                if (!(this is UploadTagHelper || this is RadioTagHelper || this is CheckBoxTagHelper || this is MultiUploadTagHelper || this is ColorPickerTagHelper || this is SliderTagHelper || this is TransferTagHelper)) // 上传组件自定义验证
                 {
                     //richtextbox不需要进行必填验证
                     if (output.Attributes["isrich"] == null)
@@ -149,11 +150,12 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             if (HideLabel != true)
             {
                 string lb = "";
-                if(LabelText != "") {
+                if (LabelText != "")
+                {
                     lb = $"{requiredDot}{LabelText}:";
                 }
                 string instyle = $"style=\"{(LabelWidth == null || string.IsNullOrEmpty(PaddingText) == false ? "" : "margin-left:" + (LabelWidth + 30) + "px;")}";
-                if(this is DisplayTagHelper)
+                if (this is DisplayTagHelper)
                 {
                     instyle += "width:unset;";
                 }
@@ -161,14 +163,14 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 preHtml += $@"
 <div {(this is DisplayTagHelper ? "style=\"margin-bottom:0px;\"" : "")} class=""layui-form-item layui-form"" lay-filter=""{layfilter}div"">
     <label for=""{Id}"" class=""layui-form-label"" {(LabelWidth == null ? "style='min-height:21px;'" : "style='min-height:21px;width:" + LabelWidth + "px'")}>{lb}</label>
-    <div class=""{ (string.IsNullOrEmpty(PaddingText) ? "layui-input-block" : "layui-input-inline")}"" {instyle}>
+    <div class=""{(string.IsNullOrEmpty(PaddingText) ? "layui-input-block" : "layui-input-inline")}"" {instyle}>
 ";
             }
             else
             {
                 preHtml += $@"
 <div {(this is DisplayTagHelper ? "style=\"margin-bottom:0px;\"" : "")} class=""layui-form-item layui-form"" lay-filter=""{layfilter}div"">
-    <div class=""{ (string.IsNullOrEmpty(PaddingText) ? "layui-input-block" : "layui-input-inline")}"" style=""{(this is DisplayTagHelper ? "margin-left:0px;width:unset;" : "margin-left:0px;")}"">
+    <div class=""{(string.IsNullOrEmpty(PaddingText) ? "layui-input-block" : "layui-input-inline")}"" style=""{(this is DisplayTagHelper ? "margin-left:0px;width:unset;" : "margin-left:0px;")}"">
 ";
             }
             if (string.IsNullOrEmpty(PaddingText))
@@ -185,14 +187,11 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
 <div class=""layui-form-mid layui-word-aux"">{PaddingText}</div>
 </div>
 ";
-
             }
-
 
             output.PreElement.SetHtmlContent(preHtml + output.PreElement.GetContent());
             output.PostElement.AppendHtml(postHtml);
             base.Process(context, output);
         }
-
     }
 }

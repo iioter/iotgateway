@@ -105,7 +105,6 @@ namespace PLC.ModBusMaster
             return res;
         }
 
-
         public static bool[] GetBools(ushort[] src, int start, int num)
         {
             ushort[] temp = new ushort[num];
@@ -228,6 +227,5 @@ namespace PLC.ModBusMaster
             }
             return bcd;
         }
-
     }
 }

@@ -13,13 +13,17 @@ namespace WalkingTec.Mvvm.Core
     {
         //数据权限关联的表名
         string ModelName { get; set; }
+
         //数据权限名称
         string PrivillegeName { get; set; }
 
         Type ModelType { get; set; }
+
         //获取数据权限的下拉菜单
-        List<ComboSelectListItem> GetItemList (WTMContext wtmcontext, string filter = null, List<string> ids = null);
+        List<ComboSelectListItem> GetItemList(WTMContext wtmcontext, string filter = null, List<string> ids = null);
+
         List<string> GetTreeParentIds(WTMContext wtmcontext, List<DataPrivilege> dps);
+
         List<string> GetTreeSubIds(WTMContext wtmcontext, List<string> pids);
     }
 
@@ -31,12 +35,16 @@ namespace WalkingTec.Mvvm.Core
     {
         //数据权限关联的表名
         public string ModelName { get; set; }
+
         //数据权限名称
         public string PrivillegeName { get; set; }
+
         //显示字段
         private Expression<Func<T, string>> _displayField;
+
         //where过滤条件
         private Expression<Func<T, bool>> _where;
+
         public Type ModelType { get; set; }
 
         public DataPrivilegeInfo(string name, Expression<Func<T, string>> displayField, Expression<Func<T, bool>> where = null)
@@ -55,7 +63,7 @@ namespace WalkingTec.Mvvm.Core
         /// <param name="filter">filter</param>
         /// <param name="ids">ids</param>
         /// <returns>数据权限关联表的下拉菜单</returns>
-        public List<ComboSelectListItem> GetItemList(WTMContext wtmcontext, string filter = null,List<string> ids= null)
+        public List<ComboSelectListItem> GetItemList(WTMContext wtmcontext, string filter = null, List<string> ids = null)
         {
             var user = wtmcontext?.LoginUserInfo;
             Expression<Func<T, bool>> where = null;
@@ -118,6 +126,4 @@ namespace WalkingTec.Mvvm.Core
             return wtmcontext.DC.Set<T>().Where(pids.GetContainIdExpression<T>(parentid)).DynamicSelect("ID").ToList();
         }
     }
-
-
 }

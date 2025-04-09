@@ -9,7 +9,6 @@ namespace WalkingTec.Mvvm.Core.Extensions
     /// </summary>
     public static class ITreeDataExtension
     {
-
         /// <summary>
         /// 获取一个父节点下的所有子节点，包括子节点的子节点
         /// </summary>
@@ -22,7 +21,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
         {
             List<T> rv = new List<T>();
             var children = self.Children;
-            if(order != null && children != null)
+            if (order != null && children != null)
             {
                 children = children.OrderBy(order).ToList();
             }
@@ -89,11 +88,11 @@ namespace WalkingTec.Mvvm.Core.Extensions
         /// <param name="self">树形结构实例</param>
         /// <param name="order">排序字段，可以为空</param>
         /// <returns>返回标准列表，所有节点都在同一级上</returns>
-        public static List<T> FlatTree<T>(this List<T> self, Func<T,object> order = null)
-            where T :TreePoco<T>
+        public static List<T> FlatTree<T>(this List<T> self, Func<T, object> order = null)
+            where T : TreePoco<T>
         {
             List<T> rv = new List<T>();
-            if(order != null)
+            if (order != null)
             {
                 self = self.OrderBy(order).ToList();
             }
@@ -124,17 +123,18 @@ namespace WalkingTec.Mvvm.Core.Extensions
             }
             foreach (var item in self)
             {
-                if(item.Children == null)
+                if (item.Children == null)
                 {
                     item.Children = new List<T>();
                 }
                 var children = self.Where(x => x.ParentId == item.ID).ToList();
-                children.ForEach(x =>x.Parent = item);
+                children.ForEach(x => x.Parent = item);
                 item.Children.AddRange(children);
-                rv.Add(item);                
+                rv.Add(item);
             }
-            return rv.Where(x=>x.ParentId == null).ToList();
+            return rv.Where(x => x.ParentId == null).ToList();
         }
+
         /// <summary>
         /// 将树形结构列表转变为标准列表
         /// </summary>
@@ -185,7 +185,5 @@ namespace WalkingTec.Mvvm.Core.Extensions
             }
             return rv;
         }
-
-
     }
 }

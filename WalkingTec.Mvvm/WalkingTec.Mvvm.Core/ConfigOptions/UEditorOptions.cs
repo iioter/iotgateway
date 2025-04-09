@@ -1,4 +1,3 @@
-
 using System.Text.Json.Serialization;
 
 namespace WalkingTec.Mvvm.Core.ConfigOptions
@@ -6,6 +5,7 @@ namespace WalkingTec.Mvvm.Core.ConfigOptions
     public class UEditorOptions
     {
         #region 上传图片配置项
+
         /// <summary>
         /// 执行上传图片的action名称
         /// </summary>
@@ -82,7 +82,7 @@ namespace WalkingTec.Mvvm.Core.ConfigOptions
         [JsonPropertyName("imagePathFormat")]
         public string ImagePathFormat { get; set; } = "upload/image/{yyyy}{mm}{dd}/{time}{rand:6}";
 
-        #endregion
+        #endregion 上传图片配置项
 
         #region 涂鸦图片上传配置项
 
@@ -127,7 +127,8 @@ namespace WalkingTec.Mvvm.Core.ConfigOptions
         /// <value></value>
         [JsonPropertyName("scrawlInsertAlign")]
         public string ScrawlInsertAlign { get; set; } = "none";
-        #endregion
+
+        #endregion 涂鸦图片上传配置项
 
         #region 截图工具上传
 
@@ -158,7 +159,8 @@ namespace WalkingTec.Mvvm.Core.ConfigOptions
         /// <value></value>
         [JsonPropertyName("snapscreenInsertAlign")]
         public string SnapscreenInsertAlign { get; set; } = "none";
-        #endregion
+
+        #endregion 截图工具上传
 
         #region 抓取远程图片配置
 
@@ -206,7 +208,8 @@ namespace WalkingTec.Mvvm.Core.ConfigOptions
         /// <value></value>
         [JsonPropertyName("catcherAllowFiles")]
         public string[] CatcherAllowFiles { get; set; } = new string[] { ".png", ".jpg", ".jpeg", ".gif", ".bmp" };
-        #endregion
+
+        #endregion 抓取远程图片配置
 
         #region 上传视频配置
 
@@ -252,7 +255,7 @@ namespace WalkingTec.Mvvm.Core.ConfigOptions
         [JsonPropertyName("videoAllowFiles")]
         public string[] VideoAllowFiles { get; set; } = new string[] { ".flv", ".swf", ".mkv", ".avi", ".rm", ".rmvb", ".mpeg", ".mpg", ".ogg", ".ogv", ".mov", ".wmv", ".mp4", ".webm", ".mp3", ".wav", ".mid" };
 
-        #endregion
+        #endregion 上传视频配置
 
         #region 上传文件配置
 
@@ -298,7 +301,7 @@ namespace WalkingTec.Mvvm.Core.ConfigOptions
         [JsonPropertyName("fileAllowFiles")]
         public string[] FileAllowFiles { get; set; } = new string[] { ".png", ".jpg", ".jpeg", ".gif", ".bmp", ".flv", ".swf", ".mkv", ".avi", ".rm", ".rmvb", ".mpeg", ".mpg", ".ogg", ".ogv", ".mov", ".wmv", ".mp4", ".webm", ".mp3", ".wav", ".mid", ".rar", ".zip", ".tar", ".gz", ".7z", ".bz2", ".cab", ".iso", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".pdf", ".txt", ".md", ".xml" };
 
-        #endregion
+        #endregion 上传文件配置
 
         #region 列出指定目录下的图片
 
@@ -343,7 +346,8 @@ namespace WalkingTec.Mvvm.Core.ConfigOptions
         /// <value></value>
         [JsonPropertyName("imageManagerAllowFiles")]
         public string[] ImageManagerAllowFiles { get; set; } = new string[] { ".png", ".jpg", ".jpeg", ".gif", ".bmp" };
-        #endregion
+
+        #endregion 列出指定目录下的图片
 
         #region 列出指定目录下的文件
 
@@ -381,6 +385,7 @@ namespace WalkingTec.Mvvm.Core.ConfigOptions
         /// <value></value>
         [JsonPropertyName("fileManagerAllowFiles")]
         public string[] FileManagerAllowFiles { get; set; } = new string[] { ".png", ".jpg", ".jpeg", ".gif", ".bmp", ".flv", ".swf", ".mkv", ".avi", ".rm", ".rmvb", ".mpeg", ".mpg", ".ogg", ".ogv", ".mov", ".wmv", ".mp4", ".webm", ".mp3", ".wav", ".mid", ".rar", ".zip", ".tar", ".gz", ".7z", ".bz2", ".cab", ".iso", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".pdf", ".txt", ".md", ".xml" };
-        #endregion
+
+        #endregion 列出指定目录下的文件
     }
 }

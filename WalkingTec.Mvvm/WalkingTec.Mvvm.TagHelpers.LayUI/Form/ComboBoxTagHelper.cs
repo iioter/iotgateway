@@ -1,15 +1,13 @@
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.Extensions.Options;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace WalkingTec.Mvvm.TagHelpers.LayUI
 {
@@ -42,6 +40,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         /// 默认根据Field 绑定的值类型进行判断。Array or List 即多选，否则单选
         /// </summary>
         public bool? MultiSelect { get; set; }
+
         public bool AutoRow { get; set; }
 
         /// <summary>
@@ -59,6 +58,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         public string ChangeFunc { get; set; }
 
         private WTMContext _wtm;
+
         public ComboBoxTagHelper(IOptionsMonitor<Configs> configs, WTMContext wtm)
         {
             if (EmptyText == null)
@@ -83,7 +83,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             if (Disabled == true)
             {
                 output.Attributes.Add("disabled", "disabled");
-
             }
 
             var modeltype = Field.Metadata.ModelType;
@@ -121,7 +120,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
 
             output.PreElement.AppendHtml($@"<input type=""hidden"" name=""_DONOTUSE_{Field.Name}"" value=""1"" />");
 
-
             #region 添加下拉数据 并 设置默认选中
 
             var listItems = new List<ComboSelectListItem>();
@@ -158,7 +156,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 }
             }
 
-
             if (string.IsNullOrEmpty(ItemUrl) == false)
             {
                 //if (_wtm.HttpContext?.Request?.Host != null)
@@ -173,11 +170,9 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                         Value = item?.ToString(),
                         Selected = true
                     });
-
                 }
                 output.PostElement.AppendHtml($"<script>ff.LoadComboItems('combo','{ItemUrl}','{Id}','{Field.Name}',{JsonSerializer.Serialize(selectVal)})</script>");
             }
-
             else
             {
                 if (Items?.Model == null) // 添加默认下拉数据源
@@ -190,7 +185,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
 
                     if (checktype.IsEnumOrNullableEnum())
                     {
-                        listItems = checktype.ToListItems(Field.Model?? DefaultValue);
+                        listItems = checktype.ToListItems(Field.Model ?? DefaultValue);
                     }
                     else if (checktype == typeof(bool) || checktype == typeof(bool?))
                     {
@@ -199,7 +194,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                         {
                             df = test;
                         }
-                        listItems = Utils.GetBoolCombo(BoolComboTypes.Custom, (bool?)Field.Model??df, YesText, NoText);
+                        listItems = Utils.GetBoolCombo(BoolComboTypes.Custom, (bool?)Field.Model ?? df, YesText, NoText);
                     }
                 }
                 else // 添加用户设置的设置源
@@ -249,7 +244,7 @@ var {Id} = xmSelect.render({{
     name:'{Field.Name}',
     tips:'{EmptyText}',
     disabled: {Disabled.ToString().ToLower()},
-    {(THProgram._localizer["Sys.LayuiDateLan"] =="CN"? "language:'zn'," : "language:'en',")}
+    {(THProgram._localizer["Sys.LayuiDateLan"] == "CN" ? "language:'zn'," : "language:'en',")}
 	autoRow: {AutoRow.ToString().ToLower()},
 	filterable: {EnableSearch.ToString().ToLower()},
     template({{ item, sels, name, value }}){{
@@ -299,9 +294,9 @@ var {Id} = xmSelect.render({{
 ")}
 	height: '400px',
     on:function(data){{
-        {((LinkField != null || string.IsNullOrEmpty(LinkId) == false)?@$"
-            if (eval(""{(string.IsNullOrEmpty(ChangeFunc)?"1==1":FormatFuncName(ChangeFunc))}"") != false) {{
-                var u = ""{(TriggerUrl??"")}"";
+        {((LinkField != null || string.IsNullOrEmpty(LinkId) == false) ? @$"
+            if (eval(""{(string.IsNullOrEmpty(ChangeFunc) ? "1==1" : FormatFuncName(ChangeFunc))}"") != false) {{
+                var u = ""{(TriggerUrl ?? "")}"";
                 if (u.indexOf(""?"") == -1) {{
                     u += ""?t="" + new Date().getTime();
                 }}
@@ -311,10 +306,10 @@ var {Id} = xmSelect.render({{
                 ff.ChainChange(u, $('#{Id}')[0])
         }}" : FormatFuncName(ChangeFunc))}
    }},
-	data:  {JsonSerializer.Serialize(GetLayuiTree(listItems,selectVal))}
+	data:  {JsonSerializer.Serialize(GetLayuiTree(listItems, selectVal))}
 }});
      {Id}defaultvalues = {JsonSerializer.Serialize(selectVal)};
-        {(selectVal?.Count>0 && (LinkField != null || string.IsNullOrEmpty(LinkId) == false) ? @$"
+        {(selectVal?.Count > 0 && (LinkField != null || string.IsNullOrEmpty(LinkId) == false) ? @$"
                 var {Id}u = ""{(TriggerUrl ?? "")}"";
                 if ({Id}u.indexOf(""?"") == -1) {{
                     {Id}u += ""?t="" + new Date().getTime();
@@ -330,8 +325,8 @@ var {Id} = xmSelect.render({{
 </script>
 ";
             output.PostElement.AppendHtml(script);
-            #endregion
 
+            #endregion 添加下拉数据 并 设置默认选中
 
             base.Process(context, output);
         }
@@ -357,6 +352,5 @@ var {Id} = xmSelect.render({{
             }
             return rv;
         }
-
     }
 }

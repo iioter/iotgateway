@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using WalkingTec.Mvvm.Core;
-using WalkingTec.Mvvm.Core.Extensions;
-using IoTGateway.Model;
+﻿using IoTGateway.Model;
 using Plugin;
+using System;
+using System.ComponentModel.DataAnnotations;
+using WalkingTec.Mvvm.Core;
 
 namespace IoTGateway.ViewModel.BasicData.DeviceConfigVMs
 {
@@ -17,6 +13,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceConfigVMs
             ListVM = new DeviceConfigListVM();
             LinkedVM = new DeviceConfig_BatchEdit();
         }
+
         public override bool DoBatchDelete()
         {
             var ret = base.DoBatchDelete();
@@ -40,7 +37,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceConfigVMs
         }
     }
 
-	/// <summary>
+    /// <summary>
     /// Class to define batch edit fields
     /// </summary>
     public class DeviceConfig_BatchEdit : BaseVM
@@ -51,7 +48,5 @@ namespace IoTGateway.ViewModel.BasicData.DeviceConfigVMs
         protected override void InitVM()
         {
         }
-
     }
-
 }

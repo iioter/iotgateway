@@ -1,18 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.Extensions.Options;
-using NPOI.HPSF;
-using NPOI.SS.Formula;
+using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
-using WalkingTec.Mvvm.Core.Extensions;
 
 namespace WalkingTec.Mvvm.Mvc
 {
@@ -79,7 +71,8 @@ namespace WalkingTec.Mvvm.Mvc
                         context.Items["DONOTUSE_REQUESTBODY"] = body;
                     }
                 }
-                catch {
+                catch
+                {
                     context.Request.Body.Position = 0;
                 }
             }
@@ -92,7 +85,7 @@ namespace WalkingTec.Mvvm.Mvc
 
         private string TranslateWorkflow(string txt)
         {
-            if(txt == null)
+            if (txt == null)
             {
                 return "";
             }
@@ -176,7 +169,7 @@ namespace WalkingTec.Mvvm.Mvc
                 .Replace("\"hint\":\"WaitAll:wait for all incoming activities to have executed. WaitAny:continue execution as soon as any of the incoming activity has executed.\"", "\"hint\":\"等待全部:等待所有动作都完成. 等候任意:任意动作完成就可以继续\"")
                 .Replace("\"text\":\"WaitAll\"", "\"text\":\"等候全部\"")
                 .Replace("\"text\":\"WaitAny\"", "\"text\":\"等候任意\"")
-                .Replace("\"displayName\":\"Parallel for Each\"","\"displayName\":\"并行 for Each\"")
+                .Replace("\"displayName\":\"Parallel for Each\"", "\"displayName\":\"并行 for Each\"")
                 .Replace("\"description\":\"Iterate over a collection in parallel.\"", "\"description\":\"并行循环一个集合\"")
                 .Replace("\"displayName\":\"Switch\"", "\"displayName\":\"开关\"")
                 .Replace("\"description\":\"Evaluate multiple conditions and continue execution depending on the results.\"", "\"description\":\"评估多个条件的值，并且根据值运行\"")

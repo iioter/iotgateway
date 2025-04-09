@@ -24,7 +24,7 @@ namespace WalkingTec.Mvvm.Core
         /// <see cref="Microsoft.AspNetCore.Http.StatusCodes">
         /// </summary>
         public int Code { get; set; }
-        
+
         /// <summary>
         /// Message
         /// </summary>

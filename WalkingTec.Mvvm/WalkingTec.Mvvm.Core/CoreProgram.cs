@@ -1,26 +1,25 @@
-using System.Text.Json;
 using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Options;
+using System.Text.Json;
 
 namespace WalkingTec.Mvvm.Core
 {
     public class CoreProgram
     {
-        public static IStringLocalizer _localizer {
+        public static IStringLocalizer _localizer
+        {
             get;
             set;
         }
 
         public static JsonSerializerOptions DefaultJsonOption
         {
-            get;set;
+            get; set;
         }
 
         public static JsonSerializerOptions DefaultPostJsonOption
         {
             get; set;
         }
-
 
         public static string[] Buildindll = new string[]
             {
@@ -29,6 +28,5 @@ namespace WalkingTec.Mvvm.Core
                     "WalkingTec.Mvvm.Admin",
                     "WalkingTec.Mvvm.Taghelpers"
             };
-
     }
 }

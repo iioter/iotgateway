@@ -2,7 +2,8 @@
 
 namespace WalkingTec.Mvvm.Core
 {
-    public enum ReInitModes { FAILEDONLY, SUCCESSONLY, ALWAYS }
+    public enum ReInitModes
+    { FAILEDONLY, SUCCESSONLY, ALWAYS }
 
     /// <summary>
     /// 标记VM中的ReInit方法是在提交错误时触发，提交成功时触发，或是都触发。这是为了一些特殊逻辑的VM设计的

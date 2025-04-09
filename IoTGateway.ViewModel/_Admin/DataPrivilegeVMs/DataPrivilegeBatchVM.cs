@@ -1,6 +1,4 @@
 // WTM默认页面 Wtm buidin page
-using System;
-using System.ComponentModel.DataAnnotations;
 using WalkingTec.Mvvm.Core;
 
 namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs
@@ -12,12 +10,9 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs
             ListVM = new DataPrivilegeListVM();
             LinkedVM = new DataPrivilege_BatchEdit();
         }
-
     }
 
     public class DataPrivilege_BatchEdit : BaseVM
     {
-
     }
-
 }

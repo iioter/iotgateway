@@ -11,11 +11,12 @@ namespace WalkingTec.Mvvm.Core
 
         private static readonly DateTimeTypeEnum DefaultType = DateTimeTypeEnum.DateTime;
 
+        private DateRange()
+        { }
 
-        private DateRange() { }
-
-
-        public DateRange(DateTime startTime, DateTime endTime) : this(startTime, endTime, DefaultType, DefaultEpoch) { }
+        public DateRange(DateTime startTime, DateTime endTime) : this(startTime, endTime, DefaultType, DefaultEpoch)
+        {
+        }
 
         public DateRange(DateTime startTime, DateTime endTime, DateTimeTypeEnum type, DateTime epoch)
         {
@@ -25,8 +26,9 @@ namespace WalkingTec.Mvvm.Core
             SetEndTime(endTime);
         }
 
-
-        public DateRange(TimeSpan startSpan, TimeSpan endSpan) : this(startSpan, endSpan, DefaultType, DefaultEpoch) { }
+        public DateRange(TimeSpan startSpan, TimeSpan endSpan) : this(startSpan, endSpan, DefaultType, DefaultEpoch)
+        {
+        }
 
         public DateRange(TimeSpan startSpan, TimeSpan endSpan, DateTimeTypeEnum type, DateTime epoch)
         {
@@ -36,7 +38,9 @@ namespace WalkingTec.Mvvm.Core
             SetEndTime(epoch.Add(endSpan));
         }
 
-        public DateRange(DateTimeOffset startOffset, DateTimeOffset endOffset) : this(startOffset, endOffset, DefaultType, DefaultEpoch) { }
+        public DateRange(DateTimeOffset startOffset, DateTimeOffset endOffset) : this(startOffset, endOffset, DefaultType, DefaultEpoch)
+        {
+        }
 
         public DateRange(DateTimeOffset startOffset, DateTimeOffset endOffset, DateTimeTypeEnum type, DateTime epoch)
         {
@@ -50,9 +54,7 @@ namespace WalkingTec.Mvvm.Core
 
         public readonly DateTimeTypeEnum Type = DefaultType;
 
-
         public string Value => ToString();
-
 
         private DateTime? _startTime;
 
@@ -79,9 +81,11 @@ namespace WalkingTec.Mvvm.Core
             {
                 case DateTimeTypeEnum.Date:
                     return _endTime?.AddDays(1);
+
                 case DateTimeTypeEnum.DateTime when _startTime.HasValue && _endTime.HasValue && _startTime.Value == _endTime.Value:
                 case DateTimeTypeEnum.DateTime when _endTime.HasValue && _endTime.Value.Hour == 0 && _endTime.Value.Minute == 0 && _endTime.Value.Second == 0 && _endTime.Value.Millisecond == 0:
                     return _endTime?.AddDays(1);
+
                 default:
                     return _endTime;
             }
@@ -96,7 +100,6 @@ namespace WalkingTec.Mvvm.Core
             if (_startTime.HasValue && _startTime.Value > value) return;
             _endTime = value;
         }
-
 
         public DateTimeOffset? GetStartOffset()
         {
@@ -123,7 +126,6 @@ namespace WalkingTec.Mvvm.Core
             if (value == null) return;
             SetEndTime(value.Value.LocalDateTime);
         }
-
 
         public TimeSpan? GetStartSpan()
         {
@@ -188,24 +190,29 @@ namespace WalkingTec.Mvvm.Core
                     {
                         case DateTimeKind.Unspecified:
                             return new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute, time.Second, time.Millisecond, DateTimeKind.Local);
+
                         case DateTimeKind.Utc:
                             return time.ToLocalTime();
                     }
                     break;
+
                 case DateTimeKind.Unspecified:
                     switch (time.Kind)
                     {
                         case DateTimeKind.Local:
                             return new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute, time.Second, time.Millisecond, DateTimeKind.Unspecified);
+
                         case DateTimeKind.Utc:
                             return new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute, time.Second, time.Millisecond, DateTimeKind.Unspecified);
                     }
                     break;
+
                 case DateTimeKind.Utc:
                     switch (time.Kind)
                     {
                         case DateTimeKind.Local:
                             return time.ToUniversalTime();
+
                         case DateTimeKind.Unspecified:
                             return new DateTime(time.Year, time.Month, time.Day, time.Hour, time.Minute, time.Second, time.Millisecond, DateTimeKind.Utc);
                     }
@@ -261,7 +268,6 @@ namespace WalkingTec.Mvvm.Core
             }
         }
 
-
         public static DateRange Yesterday
         {
             get
@@ -270,7 +276,6 @@ namespace WalkingTec.Mvvm.Core
                 return result;
             }
         }
-
 
         public static DateRange UtcDefault => UtcToday;
 
@@ -308,7 +313,6 @@ namespace WalkingTec.Mvvm.Core
                 var result = new DateRange(DateTime.UtcNow.Date.AddDays(-7), DateTime.UtcNow.Date, DefaultType, UtCDefaultEpoch);
                 return result;
             }
-
         }
 
         public static DateRange UtcToday
@@ -328,7 +332,6 @@ namespace WalkingTec.Mvvm.Core
                 return result;
             }
         }
-
 
         private static readonly Dictionary<DateTimeTypeEnum, string> DateTimeRegexDic = new Dictionary<DateTimeTypeEnum, string>()
         {
@@ -382,7 +385,6 @@ namespace WalkingTec.Mvvm.Core
             return input.Length == 2 && TryParse(input[0], input[1], DefaultEpoch, out result);
         }
 
-
         public static bool TryParse(string startTime, string endTime, DateTime epoch, out DateRange result)
         {
             result = null;
@@ -399,7 +401,6 @@ namespace WalkingTec.Mvvm.Core
 
                         result = new DateRange(new DateTime(y1, 1, 1, 0, 0, 0, epoch.Kind), new DateTime(y2, 1, 1, 0, 0, 0, epoch.Kind));
                         return true;
-
                     }
                 //Month
                 case 7:

@@ -1,32 +1,31 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using IoTGateway.Model;
+using IoTGateway.ViewModel.BasicData.DeviceVMs;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using Plugin;
+using PluginInterface;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
-using IoTGateway.Model;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.Extensions.DependencyInjection;
 using WalkingTec.Mvvm.Core.Support.FileHandlers;
-using NPOI.XSSF.UserModel;
-using NPOI.SS.UserModel;
-using PluginInterface;
-using IoTGateway.ViewModel.BasicData.DeviceVMs;
-using Microsoft.Extensions.Logging;
 
 namespace IoTGateway.ViewModel.BasicData
 {
     public class ImportExcelVM : BaseVM
     {
-
         [Display(Name = "全部覆盖")]
         public bool Cover { get; set; }
-        public string 导入结果 { get; set; }
 
+        public string 导入结果 { get; set; }
 
         [Display(Name = "Excel模板文件")]
         public Guid ExcelFileId { get; set; }
+
         public FileAttachment ExcelFile { get; set; }
 
         private List<Driver> _drivers;
@@ -77,11 +76,9 @@ namespace IoTGateway.ViewModel.BasicData
                 var deviceVariables = GetVariables(sheetVariables);
                 DC.Set<DeviceVariable>().AddRange(deviceVariables);
 
-
                 var sheetDeviceConfigs = xssfworkbook.GetSheet("通讯配置");
                 var deviceConfigs = GetDeviceConfigs(sheetDeviceConfigs);
                 DC.Set<DeviceConfig>().AddRange(deviceConfigs);
-
 
                 var sheetSystemConfig = xssfworkbook.GetSheet("传输配置");
                 var newSystemConfig = GetSystemConfig(sheetSystemConfig);
@@ -113,7 +110,6 @@ namespace IoTGateway.ViewModel.BasicData
                 Console.WriteLine($"{导入结果},{ex.Message}");
             }
         }
-
 
         private List<Device> GetDevices(ISheet sheetDevice)
         {
@@ -214,7 +210,6 @@ namespace IoTGateway.ViewModel.BasicData
                 }
             }
 
-
             return deviceConfigs;
         }
 
@@ -240,7 +235,6 @@ namespace IoTGateway.ViewModel.BasicData
                 }
             }
 
-
             return systemConfig;
         }
 
@@ -258,7 +252,6 @@ namespace IoTGateway.ViewModel.BasicData
                 var displayAttrib = (DisplayAttribute)member.GetCustomAttributes(displayAttributeType, false).First();
                 dateTypeNameMapping.Add(displayAttrib.Name, (DataTypeEnum)Enum.Parse(enumType, name));
             }
-
         }
 
         protected void EndianNameMapping()
@@ -275,8 +268,6 @@ namespace IoTGateway.ViewModel.BasicData
                 var displayAttrib = (DisplayAttribute)member.GetCustomAttributes(displayAttributeType, false).First();
                 endianTypeNameMapping.Add(displayAttrib.Name, (EndianEnum)Enum.Parse(enumType, name));
             });
-
         }
-
     }
 }

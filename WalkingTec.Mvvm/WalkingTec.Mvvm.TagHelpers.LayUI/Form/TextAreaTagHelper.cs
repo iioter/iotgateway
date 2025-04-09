@@ -1,6 +1,5 @@
-using System.Net;
-using System.Web;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using System.Net;
 
 namespace WalkingTec.Mvvm.TagHelpers.LayUI
 {

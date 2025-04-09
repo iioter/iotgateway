@@ -2,11 +2,14 @@
 
 namespace WalkingTec.Mvvm.TagHelpers.LayUI
 {
-    public enum QuoteStyleEnum { Default, Simple}
+    public enum QuoteStyleEnum
+    { Default, Simple }
+
     [HtmlTargetElement("wt:quote", TagStructure = TagStructure.NormalOrSelfClosing)]
     public class QuoteTagHelper : BaseElementTag
     {
         public QuoteStyleEnum QuoteStyle { get; set; }
+
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "blockquote";
@@ -20,6 +23,5 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             }
             base.Process(context, output);
         }
-
     }
 }

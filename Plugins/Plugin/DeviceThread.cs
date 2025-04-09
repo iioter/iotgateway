@@ -1,13 +1,13 @@
-﻿using PluginInterface;
-using System.Reflection;
-using System.Text;
+﻿using DynamicExpresso;
 using IoTGateway.DataAccess;
 using IoTGateway.Model;
-using DynamicExpresso;
-using MQTTnet.Server;
-using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
+using MQTTnet.Server;
+using Newtonsoft.Json;
+using PluginInterface;
+using System.Reflection;
+using System.Text;
 
 namespace Plugin
 {
@@ -20,8 +20,10 @@ namespace Plugin
         private readonly string _projectId;
         private readonly MessageService _messageService;
         private Interpreter? _interpreter;
+
         // 缓存所有标记 MethodAttribute 的方法委托，避免每次调用反射
         public readonly Dictionary<string, Func<DriverAddressIoArgModel, DriverReturnValueModel>> MethodDelegates;
+
         private Task? _task;
         private readonly DateTime _tsStartDt = new(1970, 1, 1);
         private readonly CancellationTokenSource _tokenSource = new CancellationTokenSource();

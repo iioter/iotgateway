@@ -10,6 +10,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs
     {
         [Display(Name = "_Admin.GroupDp")]
         UserGroup,
+
         [Display(Name = "_Admin.UserDp")]
         User
     }
@@ -18,14 +19,18 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.DataPrivilegeVMs
     {
         [Display(Name = "_Admin.Account")]
         public string Name { get; set; }
+
         [Display(Name = "_Admin.Privileges")]
         public string TableName { get; set; }
+
         public List<ComboSelectListItem> TableNames { get; set; }
 
         [Display(Name = "_Admin.DpType")]
         public DpTypeEnum DpType { get; set; }
+
         public Guid? DomainID { get; set; }
         public List<ComboSelectListItem> AllDomains { get; set; }
+
         protected override void InitVM()
         {
             TableNames = new List<ComboSelectListItem>();

@@ -1,16 +1,10 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WalkingTec.Mvvm.Core.Models
 {
-    [Table("Bookmarks",Schema = "Elsa")]
-    
-    public class Elsa_Bookmark:TopBasePoco
+    [Table("Bookmarks", Schema = "Elsa")]
+    public class Elsa_Bookmark : TopBasePoco
     {
         [Key]
         [Column("Id")]
@@ -45,6 +39,5 @@ namespace WalkingTec.Mvvm.Core.Models
         [StringLength(450)]
         [Required]
         public string CorrelationId { get; set; }
-
     }
 }

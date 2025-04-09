@@ -1,13 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using IoTGateway.Model;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
 using Plugin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
-using IoTGateway.Model;
 
 namespace IoTGateway.ViewModel.BasicData
 {
@@ -88,6 +86,7 @@ namespace IoTGateway.ViewModel.BasicData
                         }
                     }
                     break;
+
                 case FromVM.Config:
                     foreach (var id in ids)
                     {
@@ -102,6 +101,7 @@ namespace IoTGateway.ViewModel.BasicData
                         }
                     }
                     break;
+
                 case FromVM.Device:
                     foreach (var id in ids)
                     {
@@ -112,6 +112,7 @@ namespace IoTGateway.ViewModel.BasicData
                         }
                     }
                     break;
+
                 default:
                     break;
             }
@@ -145,5 +146,4 @@ namespace IoTGateway.ViewModel.BasicData
             return guids;
         }
     }
-
 }

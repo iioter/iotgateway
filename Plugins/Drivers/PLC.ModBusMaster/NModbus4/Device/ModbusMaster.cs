@@ -1,13 +1,12 @@
 ﻿namespace Modbus.Device
 {
+    using Data;
+    using IO;
+    using Message;
     using System;
     using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading.Tasks;
-
-    using Data;
-    using IO;
-    using Message;
 
     /// <summary>
     ///     Modbus master device.

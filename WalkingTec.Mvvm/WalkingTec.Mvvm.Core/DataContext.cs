@@ -6,9 +6,6 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Console;
-using Microsoft.Extensions.Logging.Debug;
-using Microsoft.Extensions.Options;
 using MySqlConnector;
 using Npgsql;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
@@ -18,7 +15,6 @@ using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core.Extensions;
@@ -71,7 +67,10 @@ namespace WalkingTec.Mvvm.Core
         public FrameworkContext(CS cs) : base(cs)
         {
         }
-        public FrameworkContext(DbContextOptions options) : base(options) { }
+
+        public FrameworkContext(DbContextOptions options) : base(options)
+        {
+        }
 
         /// <summary>
         /// OnModelCreating
@@ -126,14 +125,13 @@ namespace WalkingTec.Mvvm.Core
             }
         }
 
-
         /// <summary>
         /// 数据初始化
         /// </summary>
         /// <param name="allModules"></param>
         /// <param name="IsSpa"></param>
         /// <returns>返回true表示需要进行初始化数据操作，返回false即数据库已经存在或不需要初始化数据</returns>
-        public async override Task<bool> DataInit(object allModules, bool IsSpa)
+        public override async Task<bool> DataInit(object allModules, bool IsSpa)
         {
             bool rv = await Database.EnsureCreatedAsync();
             //判断是否存在初始数据
@@ -207,7 +205,6 @@ namespace WalkingTec.Mvvm.Core
                                     item.ModuleName += "Api";
                                     item.ShowOnMenu = false;
                                     apifolder.Children.Add(item);
-
                                 }
                             }
                             Set<FrameworkMenu>().Add(apifolder);
@@ -231,7 +228,6 @@ namespace WalkingTec.Mvvm.Core
             }
             return rv;
         }
-
 
         private FrameworkMenu GetFolderMenu(string FolderText, bool isShowOnMenu = true, bool isInherite = false)
         {
@@ -345,7 +341,6 @@ namespace WalkingTec.Mvvm.Core
             }
             return menu;
         }
-
     }
 
     public partial class EmptyContext : DbContext, IDataContext
@@ -361,7 +356,9 @@ namespace WalkingTec.Mvvm.Core
         /// IsFake
         /// </summary>
         public bool IsFake { get; set; }
+
         private string _tenantCode;
+
         public string TenantCode
         {
             get
@@ -369,7 +366,9 @@ namespace WalkingTec.Mvvm.Core
                 return _tenantCode;
             }
         }
+
         public bool IsDebug { get; set; }
+
         /// <summary>
         /// CSName
         /// </summary>
@@ -379,7 +378,6 @@ namespace WalkingTec.Mvvm.Core
 
         public string Version { get; set; }
         public CS ConnectionString { get; set; }
-
 
         /// <summary>
         /// FrameworkContext
@@ -415,7 +413,9 @@ namespace WalkingTec.Mvvm.Core
             ConnectionString = cs;
         }
 
-        public EmptyContext(DbContextOptions options) : base(options) { }
+        public EmptyContext(DbContextOptions options) : base(options)
+        {
+        }
 
         public IDataContext CreateNew()
         {
@@ -429,7 +429,7 @@ namespace WalkingTec.Mvvm.Core
             }
         }
 
-        public IDataContext ReCreate(ILoggerFactory _logger=null)
+        public IDataContext ReCreate(ILoggerFactory _logger = null)
         {
             if (this?.Database?.CurrentTransaction != null)
             {
@@ -444,7 +444,7 @@ namespace WalkingTec.Mvvm.Core
                 }
                 else
                 {
-                   rv =(IDataContext)this.GetType().GetConstructor(new Type[] { typeof(string), typeof(DBTypeEnum) }).Invoke(new object[] { CSName, DBType });
+                    rv = (IDataContext)this.GetType().GetConstructor(new Type[] { typeof(string), typeof(DBTypeEnum) }).Invoke(new object[] { CSName, DBType });
                 }
                 rv.SetTenantCode(this.TenantCode);
                 if (_logger != null)
@@ -455,13 +455,14 @@ namespace WalkingTec.Mvvm.Core
                 return rv;
             }
         }
+
         /// <summary>
         /// 将一个实体设为填加状态
         /// </summary>
         /// <param name="entity">实体</param>
         public void AddEntity<T>(T entity) where T : TopBasePoco
         {
-            this.Entry(entity).State = EntityState.Added;            
+            this.Entry(entity).State = EntityState.Added;
         }
 
         /// <summary>
@@ -523,7 +524,6 @@ namespace WalkingTec.Mvvm.Core
             else
             {
                 set.Remove(exist);
-
             }
         }
 
@@ -608,12 +608,13 @@ namespace WalkingTec.Mvvm.Core
             {
                 case DBTypeEnum.SqlServer:
                     var ver = 120;
-                    if (string.IsNullOrEmpty(Version)==false)
+                    if (string.IsNullOrEmpty(Version) == false)
                     {
                         int.TryParse(Version, out ver);
                     }
-                    optionsBuilder.UseSqlServer(CSName,o => o.UseCompatibilityLevel(ver));
+                    optionsBuilder.UseSqlServer(CSName, o => o.UseCompatibilityLevel(ver));
                     break;
+
                 case DBTypeEnum.MySql:
                     ServerVersion sv = null;
                     if (string.IsNullOrEmpty(Version) == false)
@@ -627,12 +628,15 @@ namespace WalkingTec.Mvvm.Core
                     optionsBuilder.UseMySql(CSName, sv, b => b.SchemaBehavior(MySqlSchemaBehavior.Translate,
     (schema, entity) => $"{entity}"));
                     break;
+
                 case DBTypeEnum.PgSql:
                     optionsBuilder.UseNpgsql(CSName);
                     break;
+
                 case DBTypeEnum.Memory:
                     optionsBuilder.UseInMemoryDatabase(CSName);
                     break;
+
                 case DBTypeEnum.SQLite:
                     optionsBuilder.UseSqlite(CSName);
                     break;
@@ -647,18 +651,22 @@ namespace WalkingTec.Mvvm.Core
                             case "19":
                                 option.UseOracleSQLCompatibility(OracleSQLCompatibility.DatabaseVersion19);
                                 break;
+
                             case "21":
                                 option.UseOracleSQLCompatibility(OracleSQLCompatibility.DatabaseVersion21);
                                 break;
+
                             case "23":
                                 option.UseOracleSQLCompatibility(OracleSQLCompatibility.DatabaseVersion23);
                                 break;
+
                             default:
                                 option.UseOracleSQLCompatibility(OracleSQLCompatibility.DatabaseVersion19);
                                 break;
                         }
                     });
                     break;
+
                 default:
                     break;
             }
@@ -683,19 +691,21 @@ namespace WalkingTec.Mvvm.Core
         {
             this._tenantCode = code;
         }
+
         /// <summary>
         /// 数据初始化
         /// </summary>
         /// <param name="allModules"></param>
         /// <param name="IsSpa"></param>
         /// <returns>返回true表示需要进行初始化数据操作，返回false即数据库已经存在或不需要初始化数据</returns>
-        public async virtual Task<bool> DataInit(object allModules, bool IsSpa)
+        public virtual async Task<bool> DataInit(object allModules, bool IsSpa)
         {
             bool rv = await Database.EnsureCreatedAsync();
             return rv;
         }
 
         #region 执行存储过程返回datatable
+
         /// <summary>
         /// 执行存储过程，返回datatable结果集
         /// </summary>
@@ -706,7 +716,8 @@ namespace WalkingTec.Mvvm.Core
         {
             return Run(command, CommandType.StoredProcedure, paras);
         }
-        #endregion
+
+        #endregion 执行存储过程返回datatable
 
         public IEnumerable<TElement> RunSP<TElement>(string command, params object[] paras)
         {
@@ -714,19 +725,21 @@ namespace WalkingTec.Mvvm.Core
         }
 
         #region 执行Sql语句，返回datatable
+
         public DataTable RunSQL(string sql, params object[] paras)
         {
             return Run(sql, CommandType.Text, paras);
         }
-        #endregion
+
+        #endregion 执行Sql语句，返回datatable
 
         public IEnumerable<TElement> RunSQL<TElement>(string sql, params object[] paras)
         {
             return Run<TElement>(sql, CommandType.Text, paras);
         }
 
-
         #region 执行存储过程或Sql语句返回DataTable
+
         /// <summary>
         /// 执行存储过程或Sql语句返回DataTable
         /// </summary>
@@ -768,8 +781,8 @@ namespace WalkingTec.Mvvm.Core
             }
             return table;
         }
-        #endregion
 
+        #endregion 执行存储过程或Sql语句返回DataTable
 
         public IEnumerable<TElement> Run<TElement>(string sql, CommandType commandType, params object[] paras)
         {
@@ -779,7 +792,6 @@ namespace WalkingTec.Mvvm.Core
             return entityList;
         }
 
-
         public object CreateCommandParameter(string name, object value, ParameterDirection dir)
         {
             object rv = null;
@@ -788,15 +800,19 @@ namespace WalkingTec.Mvvm.Core
                 case DBTypeEnum.SqlServer:
                     rv = new SqlParameter(name, value) { Direction = dir };
                     break;
+
                 case DBTypeEnum.MySql:
                     rv = new MySqlParameter(name, value) { Direction = dir };
                     break;
+
                 case DBTypeEnum.PgSql:
                     rv = new NpgsqlParameter(name, value) { Direction = dir };
                     break;
+
                 case DBTypeEnum.SQLite:
                     rv = new SqliteParameter(name, value) { Direction = dir };
                     break;
+
                 case DBTypeEnum.Oracle:
                     //rv = new OracleParameter(name, value) { Direction = dir };
                     break;
@@ -812,8 +828,6 @@ namespace WalkingTec.Mvvm.Core
 
     public class NullContext : IDataContext
     {
-
-
         public string TenantCode { get; }
         public bool IsFake { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
@@ -857,7 +871,6 @@ namespace WalkingTec.Mvvm.Core
 
         public void Dispose()
         {
-
         }
 
         public IDataContext ReCreate(ILoggerFactory _logger = null)
@@ -919,6 +932,7 @@ namespace WalkingTec.Mvvm.Core
         {
             throw new NotImplementedException();
         }
+
         public void SetTenantCode(string code)
         {
             throw new NotImplementedException();
@@ -947,8 +961,6 @@ namespace WalkingTec.Mvvm.Core
         public void EnsureCreate()
         {
             throw new NotImplementedException();
-
         }
     }
-
 }

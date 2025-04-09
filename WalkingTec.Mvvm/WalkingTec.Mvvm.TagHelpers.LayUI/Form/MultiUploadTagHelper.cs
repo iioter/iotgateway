@@ -1,8 +1,8 @@
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Razor.TagHelpers;
-using WalkingTec.Mvvm.Core;
 using System.Linq;
+using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 
 namespace WalkingTec.Mvvm.TagHelpers.LayUI
@@ -49,16 +49,22 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         public int? PreviewHeight { get; set; }
 
         public string CustomType { get; set; }
+
         /// <summary>
         /// 同时上传的文件数（0不限制）
         /// </summary>
         public int NumFileOnce { get; set; }
+
         public string ConnectionString { get; set; }
         public string ExtraQuery { get; set; }
         public string UploadGroupName { get; set; }
         public string UploadSubdir { get; set; }
-        public string UploadMode { get; set;
+
+        public string UploadMode
+        {
+            get; set;
         }
+
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             string idstring = "";
@@ -92,21 +98,27 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                     case UploadTypeEnum.AllFiles:
                         ext = "";
                         break;
+
                     case UploadTypeEnum.ImageFile:
                         ext = "jpg|jpeg|gif|bmp|png|tif";
                         break;
+
                     case UploadTypeEnum.ZipFile:
                         ext = "zip";
                         break;
+
                     case UploadTypeEnum.ExcelFile:
                         ext = "xls|xlsx";
                         break;
+
                     case UploadTypeEnum.PDFFile:
                         ext = "pdf";
                         break;
+
                     case UploadTypeEnum.WordFile:
                         ext = "doc|docx";
                         break;
+
                     case UploadTypeEnum.TextFile:
                         ext = "txt";
                         break;
@@ -244,7 +256,7 @@ layui.use(['upload'],function(){{
         {Id}selected.push(res.Data.Id);
         {Id}SetValues();
         {(ShowPreview == true ? $@"
-            $('#{Id}label').append('<label id=""label'+res.Data.Id+'""><img alt=""'+res.Data.Name+'"" layer-src=""/_Framework/GetFile?id='+ res.Data.Id+'&_DONOT_USE_CS={(vm != null ? vm.CurrentCS : "")}"" src=""/_Framework/GetFile?id='+ res.Data.Id+'&stream=true&width={PreviewWidth ?? 64}&height={PreviewHeight ?? 64}&_DONOT_USE_CS={(vm!=null?vm.CurrentCS:"")}""  class=""layui-upload-img"" width={PreviewWidth ?? 64} height={PreviewHeight ?? 64} id=""preview'+res.Data.Id+'"" style=""cursor:pointer;margin-bottom:5px"" /><i class=""layui-icon layui-icon-close"" style=""font-size: 20px;position:relative;left:-10px;top:-27px;color: #ff0000;cursor: pointer;"" id=""del'+res.Data.Id+'""></i></label> ');
+            $('#{Id}label').append('<label id=""label'+res.Data.Id+'""><img alt=""'+res.Data.Name+'"" layer-src=""/_Framework/GetFile?id='+ res.Data.Id+'&_DONOT_USE_CS={(vm != null ? vm.CurrentCS : "")}"" src=""/_Framework/GetFile?id='+ res.Data.Id+'&stream=true&width={PreviewWidth ?? 64}&height={PreviewHeight ?? 64}&_DONOT_USE_CS={(vm != null ? vm.CurrentCS : "")}""  class=""layui-upload-img"" width={PreviewWidth ?? 64} height={PreviewHeight ?? 64} id=""preview'+res.Data.Id+'"" style=""cursor:pointer;margin-bottom:5px"" /><i class=""layui-icon layui-icon-close"" style=""font-size: 20px;position:relative;left:-10px;top:-27px;color: #ff0000;cursor: pointer;"" id=""del'+res.Data.Id+'""></i></label> ');
             $('#preview'+res.Data.Id).on('click',function(){{
               {Id}DoPreview(res.Data.Id);
             }});
@@ -295,12 +307,12 @@ $.ajax({{
   url: '{geturl}',
   async: true,
   success: function(data) {{
-    {(ShowPreview == true ? $@" {(Disabled == true? $@"
+    {(ShowPreview == true ? $@" {(Disabled == true ? $@"
       $('#{Id}label').append('<label id=""label{fileId}""><img layer-src=""{downloadurl}"" src=""{picurl}"" alt=""'+data+'""  class=""layui-upload-img"" width={PreviewWidth ?? 64} height={PreviewHeight ?? 64} id=""preview{fileId}"" style=""cursor:pointer;margin-bottom:5px""/></label> ');
             $('#preview{fileId}').on('click',function(){{
               {Id}DoPreview();
             }});
-" :$@"
+" : $@"
       $('#{Id}label').append('<label id=""label{fileId}""><img layer-src=""{downloadurl}"" src=""{picurl}"" alt=""'+data+'"" class=""layui-upload-img"" width={PreviewWidth ?? 64} height={PreviewHeight ?? 64} id=""preview{fileId}"" style=""cursor:pointer;margin-bottom:5px""/><i class=""layui-icon layui-icon-close"" style=""font-size: 20px;position:relative;left:-10px;top:-27px;color: #ff0000;cursor:pointer;margin-bottom:5px"" id=""del{fileId}""></i></label> ');
             $('#del{fileId}').on('click',function(){{
               {Id}DoDelete('{fileId}');
@@ -309,9 +321,9 @@ $.ajax({{
               {Id}DoPreview();
             }});
 ")}
-    " : $@"{(Disabled == true? $@"
+    " : $@"{(Disabled == true ? $@"
         $('#{Id}label').append(""<label id='label{fileId}'><a class='layui-btn layui-btn-primary layui-btn-xs' style='margin:9px 0;width:unset width:300px;' href='{downloadurl}'>""+data+""</a></label>"");
-" :$@"
+" : $@"
         $('#{Id}label').append(""<label id='label{fileId}'><button class='layui-btn layui-btn-sm layui-btn-danger' type='button' id='del{fileId}' style='color:white'>""+data+""  {WalkingTec.Mvvm.TagHelpers.LayUI.THProgram._localizer["Sys.Delete"]}</button><br/></label>"");
         $('#del{fileId}').on('click',function(){{
           {Id}DoDelete('{fileId}');
@@ -323,11 +335,8 @@ $.ajax({{
 </script>
 ");
                 }
-
-                
             }
             base.Process(context, output);
-
         }
     }
 }

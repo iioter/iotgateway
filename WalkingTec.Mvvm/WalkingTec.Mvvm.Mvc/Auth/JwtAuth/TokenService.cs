@@ -1,17 +1,13 @@
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Auth;
-using WalkingTec.Mvvm.Core.Extensions;
 using WalkingTec.Mvvm.Core.Support.Json;
 
 namespace WalkingTec.Mvvm.Mvc.Auth
@@ -21,7 +17,6 @@ namespace WalkingTec.Mvvm.Mvc.Auth
         private readonly JwtOption _jwtOptions;
 
         private const Token _emptyToken = null;
-
 
         public TokenService(
             IOptionsMonitor<Configs> configs
@@ -36,7 +31,6 @@ namespace WalkingTec.Mvvm.Mvc.Auth
                 throw new ArgumentNullException(nameof(loginUserInfo));
 
             var signinCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtOptions.SecurityKey)), SecurityAlgorithms.HmacSha256);
-
 
             var cls = new List<Claim>()
                 {

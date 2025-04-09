@@ -6,6 +6,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
     public class ContainerTagHelper : BaseElementTag
     {
         public AlignEnum? Align { get; set; }
+
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "div";
@@ -14,12 +15,15 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 case AlignEnum.Left:
                     output.Attributes.SetAttribute("style", "width:100%;text-align:left");
                     break;
+
                 case AlignEnum.Right:
                     output.Attributes.SetAttribute("style", "width:100%;text-align:right");
                     break;
+
                 case AlignEnum.Center:
                     output.Attributes.SetAttribute("style", "width:100%;text-align:center");
                     break;
+
                 default:
                     break;
             }

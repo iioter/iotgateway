@@ -11,6 +11,5 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             output.Attributes.SetAttribute("type", "button");
             base.Process(context, output);
         }
-
     }
 }

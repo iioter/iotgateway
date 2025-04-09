@@ -1,9 +1,8 @@
-﻿using S7.Net;
-using System.Text;
-using S7.Net.Types;
+﻿using Microsoft.Extensions.Logging;
 using PluginInterface;
-using Microsoft.Extensions.Logging;
-using System.IO;
+using S7.Net;
+using S7.Net.Types;
+using System.Text;
 
 namespace PLC.SiemensS7
 {
@@ -39,7 +38,7 @@ namespace PLC.SiemensS7
 
         [ConfigParameter("最小通讯周期ms")] public uint MinPeriod { get; set; } = 3000;
 
-        #endregion
+        #endregion 配置参数
 
         #region 生命周期
 
@@ -121,8 +120,7 @@ namespace PLC.SiemensS7
             }
         }
 
-
-        #endregion
+        #endregion 生命周期
 
         #region 读写方法
 
@@ -148,9 +146,8 @@ namespace PLC.SiemensS7
                         var head = _plc.ReadBytes(dataItem.DataType, dataItem.DB, dataItem.StartByteAdr, 2);
                         var strBytes = _plc.ReadBytes(dataItem.DataType, dataItem.DB, dataItem.StartByteAdr + 2, head[1]);
                         var strRaw = GetString(ioArg.ValueType, strBytes);
-                        
-                        ret.Value = strRaw;
 
+                        ret.Value = strRaw;
                     }
                     else
                         ret.Value = _plc.Read(ioArg.Address);
@@ -255,30 +252,39 @@ namespace PLC.SiemensS7
                             toWrite = ioArg.Value.ToString()?.ToLower() == "true" ||
                                       ioArg.Value.ToString()?.ToLower() == "1";
                             break;
+
                         case DataTypeEnum.UByte:
                             toWrite = byte.Parse(ioArg.Value.ToString());
                             break;
+
                         case DataTypeEnum.Byte:
                             toWrite = sbyte.Parse(ioArg.Value.ToString());
                             break;
+
                         case DataTypeEnum.Uint16:
                             toWrite = ushort.Parse(ioArg.Value.ToString());
                             break;
+
                         case DataTypeEnum.Int16:
                             toWrite = short.Parse(ioArg.Value.ToString());
                             break;
+
                         case DataTypeEnum.Uint32:
                             toWrite = uint.Parse(ioArg.Value.ToString());
                             break;
+
                         case DataTypeEnum.Int32:
                             toWrite = int.Parse(ioArg.Value.ToString());
                             break;
+
                         case DataTypeEnum.Float:
                             toWrite = float.Parse(ioArg.Value.ToString());
                             break;
+
                         case DataTypeEnum.AsciiString:
                             toWrite = GetStringBytes(ioArg);
                             break;
+
                         default:
                             rpcResponse.Description = $"类型{DataTypeEnum.Float}不支持写入";
                             break;
@@ -301,7 +307,6 @@ namespace PLC.SiemensS7
                                (byte)((byte[])toWrite).Length);
                             //在写入字符串内容
                             await _plc?.WriteAsync(dataItem.DataType, dataItem.DB, dataItem.StartByteAdr + 2, (byte[])toWrite);
-
                         }
                         else
                             await _plc?.WriteAsync(ioArg.Address, toWrite);
@@ -335,11 +340,9 @@ namespace PLC.SiemensS7
             return rpcResponse;
         }
 
-
-        #endregion
+        #endregion 读写方法
 
         #region 私有方法
-
 
         private byte[]? GetStringBytes(DriverAddressIoArgModel ioArg)
         {
@@ -369,15 +372,16 @@ namespace PLC.SiemensS7
                         toWriteString = toWriteString.Take(length).ToString();
                 }
 
-
                 switch (ioArg.ValueType)
                 {
                     case DataTypeEnum.Utf8String:
                         return Encoding.UTF8.GetBytes(toWriteString);
+
                     case DataTypeEnum.Gb2312String:
                         Encoding toEcoding = Encoding.GetEncoding("gb2312");
                         byte[] fromBytes = Encoding.UTF8.GetBytes(toWriteString);
                         return Encoding.Convert(Encoding.UTF8, toEcoding, fromBytes);
+
                     case DataTypeEnum.AsciiString:
                     default:
                         return Encoding.ASCII.GetBytes(toWriteString);
@@ -389,7 +393,6 @@ namespace PLC.SiemensS7
             }
         }
 
-
         private string GetString(DataTypeEnum dataType, byte[] strBytes)
         {
             string? str = string.Empty;
@@ -398,11 +401,13 @@ namespace PLC.SiemensS7
                 case DataTypeEnum.Utf8String:
                     str = Encoding.UTF8.GetString(strBytes);
                     break;
+
                 case DataTypeEnum.Gb2312String:
                     Encoding fromEncoding = Encoding.GetEncoding("gb2312");
                     byte[] toBytes = Encoding.Convert(fromEncoding, Encoding.UTF8, strBytes);
                     str = Encoding.UTF8.GetString(toBytes);
                     break;
+
                 case DataTypeEnum.AsciiString:
                 default:
                     var strRaw = Encoding.ASCII.GetString(strBytes.Where(x => x is >= 0x20 and <= 0x7E).ToArray());
@@ -411,7 +416,7 @@ namespace PLC.SiemensS7
 
             return str.TrimEnd(new char[] { '\0' });
         }
-        #endregion
 
+        #endregion 私有方法
     }
 }

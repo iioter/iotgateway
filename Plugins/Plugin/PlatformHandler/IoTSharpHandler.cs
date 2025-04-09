@@ -16,6 +16,7 @@ namespace Plugin.PlatformHandler
         public ILogger<MessageService> Logger { get; }
 
         public event EventHandler<RpcRequest> OnExcRpc;
+
         private readonly DateTime _tsStartDt = new(1970, 1, 1);
 
         public IoTSharpHandler(IManagedMqttClient mqttClient, ILogger<MessageService> logger, EventHandler<RpcRequest> onExcRpc)
@@ -25,7 +26,6 @@ namespace Plugin.PlatformHandler
             OnExcRpc = onExcRpc;
         }
 
-
         public async Task ClientConnected()
         {
             await MqttClient.SubscribeAsync("devices/+/rpc/request/+/+", MqttQualityOfServiceLevel.ExactlyOnce);
@@ -33,6 +33,7 @@ namespace Plugin.PlatformHandler
             //Message: {"device": "Device A", "data": {"attribute1": "value1", "attribute2": 42}}
             await MqttClient.SubscribeAsync("devices/+/attributes/response/+", MqttQualityOfServiceLevel.ExactlyOnce);
         }
+
         public void ReceiveRpc(MqttApplicationMessageReceivedEventArgs e)
         {
             try
@@ -146,6 +147,5 @@ namespace Plugin.PlatformHandler
         {
             return Task.CompletedTask;
         }
-
     }
 }

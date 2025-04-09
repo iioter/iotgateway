@@ -1,6 +1,6 @@
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using WalkingTec.Mvvm.Core;
 
 namespace WalkingTec.Mvvm.Mvc.Binders
@@ -48,7 +48,7 @@ namespace WalkingTec.Mvvm.Mvc.Binders
                 return Task.CompletedTask;
             }
 
-            if(DateRange.TryParse(value,out var dateRange))
+            if (DateRange.TryParse(value, out var dateRange))
                 bindingContext.Result = ModelBindingResult.Success(dateRange);
             return Task.CompletedTask;
         }

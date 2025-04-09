@@ -1,12 +1,10 @@
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using WalkingTec.Mvvm.Core;
-using WalkingTec.Mvvm.Core.Attributes;
 using WalkingTec.Mvvm.Core.Extensions;
 
 namespace WalkingTec.Mvvm.TagHelpers.LayUI
@@ -14,7 +12,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
     [HtmlTargetElement("wt:checkbox", Attributes = REQUIRED_ATTR_NAME, TagStructure = TagStructure.WithoutEndTag)]
     public class CheckBoxTagHelper : BaseFieldTag
     {
-
         /// <summary>
         /// 选项
         /// </summary>
@@ -90,13 +87,11 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                         Value = item?.ToString(),
                         Selected = true
                     });
-
                 }
                 output.PostElement.AppendHtml($"<script>ff.LoadComboItems('checkbox','{ItemUrl}','{Id}','{Field.Name}',{JsonSerializer.Serialize(values)},undefined,{Disabled.ToString().ToLower()})</script>");
             }
             else
             {
-
                 if (Items?.Model == null)
                 {
                     if (modelType.IsList())
@@ -165,7 +160,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
 </script>
 ");
             base.Process(context, output);
-
         }
 
         private void SetSelected(List<ComboSelectListItem> source, IList data)
@@ -209,7 +203,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                     }
                 }
             }
-
         }
     }
 }

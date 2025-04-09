@@ -1,9 +1,8 @@
 // WTM默认页面 Wtm buidin page
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 using WalkingTec.Mvvm.Mvc;
@@ -74,7 +73,6 @@ namespace WalkingTec.Mvvm.Admin.Api
                     return Ok(vm.Entity);
                 }
             }
-
         }
 
         [ActionDescription("Sys.Edit")]
@@ -191,7 +189,6 @@ namespace WalkingTec.Mvvm.Admin.Api
         [HttpPost("[action]")]
         public ActionResult Import(FrameworkTenantImportVM vm)
         {
-
             if (CanUseTenant() == false)
             {
                 ModelState.Clear();
@@ -220,8 +217,6 @@ namespace WalkingTec.Mvvm.Admin.Api
             return Ok(Wtm.GlobaInfo.AllTenant.AsQueryable().Where(x => x.TenantCode == parent).GetSelectListItems(Wtm, x => x.TName, x => x.TCode));
         }
 
-
-
         private bool CanUseTenant()
         {
             if (Wtm.LoginUserInfo != null && (Wtm.LoginUserInfo.CurrentTenant == null || Wtm.GlobaInfo.AllTenant.Any(x => x.TCode == Wtm.LoginUserInfo.CurrentTenant && x.Enabled == true && x.EnableSub == true)))
@@ -230,7 +225,5 @@ namespace WalkingTec.Mvvm.Admin.Api
             }
             return false;
         }
-
-
     }
 }

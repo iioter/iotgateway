@@ -1,11 +1,10 @@
 ﻿namespace Modbus.Message
 {
+    using Data;
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Net;
-
-    using Data;
 
     /// <summary>
     ///     Class holding all implementation shared between two or more message types.

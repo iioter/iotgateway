@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using IoTGateway.ViewModel.BasicData.DeviceConfigVMs;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using WalkingTec.Mvvm.Core;
-using WalkingTec.Mvvm.Mvc;
 using WalkingTec.Mvvm.Core.Extensions;
-using IoTGateway.ViewModel.BasicData.DeviceConfigVMs;
+using WalkingTec.Mvvm.Mvc;
 
 namespace IoTGateway.Controllers
 {
@@ -13,6 +12,7 @@ namespace IoTGateway.Controllers
     public partial class DeviceConfigController : BaseController
     {
         #region Search
+
         [ActionDescription("Sys.Search")]
         public ActionResult Index()
         {
@@ -36,9 +36,10 @@ namespace IoTGateway.Controllers
             }
         }
 
-        #endregion
+        #endregion Search
 
         #region Create
+
         [ActionDescription("Sys.Create")]
         public ActionResult Create()
         {
@@ -68,9 +69,11 @@ namespace IoTGateway.Controllers
                 }
             }
         }
-        #endregion
+
+        #endregion Create
 
         #region Edit
+
         [ActionDescription("Sys.Edit")]
         public ActionResult Edit(string id)
         {
@@ -101,9 +104,11 @@ namespace IoTGateway.Controllers
                 }
             }
         }
-        #endregion
+
+        #endregion Edit
 
         #region Delete
+
         [ActionDescription("Sys.Delete")]
         public ActionResult Delete(string id)
         {
@@ -126,18 +131,22 @@ namespace IoTGateway.Controllers
                 return FFResult().CloseDialog().RefreshGrid();
             }
         }
-        #endregion
+
+        #endregion Delete
 
         #region Details
+
         [ActionDescription("Sys.Details")]
         public ActionResult Details(string id)
         {
             var vm = Wtm.CreateVM<DeviceConfigVM>(id);
             return PartialView(vm);
         }
-        #endregion
+
+        #endregion Details
 
         #region BatchEdit
+
         [HttpPost]
         [ActionDescription("Sys.BatchEdit")]
         public ActionResult BatchEdit(string[] IDs)
@@ -152,16 +161,18 @@ namespace IoTGateway.Controllers
         {
             if (!ModelState.IsValid || !vm.DoBatchEdit())
             {
-                return PartialView("BatchEdit",vm);
+                return PartialView("BatchEdit", vm);
             }
             else
             {
                 return FFResult().CloseDialog().RefreshGrid().Alert(Localizer["Sys.BatchEditSuccess", vm.Ids.Length]);
             }
         }
-        #endregion
+
+        #endregion BatchEdit
 
         #region BatchDelete
+
         [HttpPost]
         [ActionDescription("Sys.BatchDelete")]
         public ActionResult BatchDelete(string[] IDs)
@@ -176,17 +187,19 @@ namespace IoTGateway.Controllers
         {
             if (!ModelState.IsValid || !vm.DoBatchDelete())
             {
-                return PartialView("BatchDelete",vm);
+                return PartialView("BatchDelete", vm);
             }
             else
             {
                 return FFResult().CloseDialog().RefreshGrid().Alert(Localizer["Sys.BatchDeleteSuccess", vm.Ids.Length]);
             }
         }
-        #endregion
+
+        #endregion BatchDelete
 
         #region Import
-		[ActionDescription("Sys.Import")]
+
+        [ActionDescription("Sys.Import")]
         public ActionResult Import()
         {
             var vm = Wtm.CreateVM<DeviceConfigImportVM>();
@@ -206,7 +219,8 @@ namespace IoTGateway.Controllers
                 return FFResult().CloseDialog().RefreshGrid().Alert(Localizer["Sys.ImportSuccess", vm.EntityList.Count.ToString()]);
             }
         }
-        #endregion
+
+        #endregion Import
 
         [ActionDescription("Sys.Export")]
         [HttpPost]
@@ -214,6 +228,5 @@ namespace IoTGateway.Controllers
         {
             return vm.GetExportData();
         }
-
     }
 }

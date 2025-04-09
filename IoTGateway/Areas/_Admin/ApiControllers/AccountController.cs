@@ -1,16 +1,15 @@
 // WTM默认页面 Wtm buidin page
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 using WalkingTec.Mvvm.Core.Support.Json;
@@ -26,12 +25,10 @@ namespace WalkingTec.Mvvm.Admin.Api
     [AllRights]
     public class AccountController : BaseApiController
     {
-
         [AllowAnonymous]
         [HttpPost("[action]")]
         public async Task<IActionResult> Login([FromForm] string account, [FromForm] string password, [FromForm] string tenant = null, [FromForm] bool rememberLogin = false)
         {
-
             var user = Wtm.DoLogin(account, password, tenant);
             if (user == null)
             {
@@ -56,7 +53,6 @@ namespace WalkingTec.Mvvm.Admin.Api
             await Wtm.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, properties);
             return CheckUserInfo();
         }
-
 
         [AllowAnonymous]
         [HttpPost("[action]")]
@@ -88,7 +84,6 @@ namespace WalkingTec.Mvvm.Admin.Api
             }
             return CheckUserInfo();
         }
-
 
         [AllRights]
         [HttpGet("[action]")]
@@ -132,7 +127,6 @@ namespace WalkingTec.Mvvm.Admin.Api
             DC.SaveChanges();
             return Ok();
         }
-
 
         [HttpPost("[action]")]
         [AllRights]
@@ -195,7 +189,6 @@ namespace WalkingTec.Mvvm.Admin.Api
             }
         }
 
-
         [AllRights]
         [HttpPost("[action]")]
         public IActionResult ChangePassword(ChangePasswordVM vm)
@@ -220,7 +213,6 @@ namespace WalkingTec.Mvvm.Admin.Api
                     return Ok();
                 }
             }
-
         }
 
         [Public]
@@ -276,7 +268,6 @@ namespace WalkingTec.Mvvm.Admin.Api
             return Ok(DC.Set<FrameworkGroup>().GetTreeSelectListItems(Wtm, x => x.GroupName, x => x.GroupCode));
         }
 
-
         [HttpGet("GetUserById")]
         [AllRights]
         public IActionResult GetUserById(string keywords)
@@ -312,7 +303,6 @@ namespace WalkingTec.Mvvm.Admin.Api
             var users = DC.Set<FrameworkUserRole>().Where(x => x.RoleCode == keywords).Select(x => x.UserCode).ToList();
             return Ok(users);
         }
-
     }
 
     public class SimpleLogin
@@ -323,6 +313,7 @@ namespace WalkingTec.Mvvm.Admin.Api
 
         public string RemoteToken { get; set; }
     }
+
     public class SimpleReg
     {
         [Display(Name = "_Admin.Account")]
@@ -343,5 +334,4 @@ namespace WalkingTec.Mvvm.Admin.Api
         [Display(Name = "_Admin.Photo")]
         public Guid? PhotoId { get; set; }
     }
-
 }

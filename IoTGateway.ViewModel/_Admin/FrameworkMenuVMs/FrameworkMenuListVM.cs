@@ -1,7 +1,5 @@
 // WTM默认页面 Wtm buidin page
-using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -29,17 +27,20 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
                         this.MakeGridHeader(x => x.ActionName, 150),
                     });
                     break;
+
                 case ListVMSearchModeEnum.Custom1:
                     rv.AddRange(new GridColumn<FrameworkMenu_ListView>[] {
                         this.MakeGridHeader(x => x.PageName,300),
                     });
                     break;
+
                 case ListVMSearchModeEnum.Custom2:
                     rv.AddRange(new GridColumn<FrameworkMenu_ListView>[] {
                         this.MakeGridHeader(x => x.PageName,200),
                          this.MakeGridHeader(x => x.ParentId).SetHeader(Localizer["Sys.Operation"]).SetFormat((item, cell) => GenerateCheckBox(item)).SetAlign(GridColumnAlignEnum.Left),
                    });
                     break;
+
                 default:
                     rv.AddRange(new GridColumn<FrameworkMenu_ListView>[] {
                         this.MakeGridHeader(x => x.PageName,300),
@@ -89,7 +90,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
             return rv.ToString();
         }
 
-
         protected override List<GridAction> InitGridAction()
         {
             if (SearcherMode == ListVMSearchModeEnum.Search)
@@ -108,7 +108,6 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
                 return new List<GridAction>();
             }
         }
-
 
         private string PhotoIdFormat(FrameworkMenu_ListView entity, object val)
         {
@@ -141,10 +140,10 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
                     item.ModuleName = Localizer[item.ModuleName];
                 }
             }
-           if(Wtm.ConfigInfo.EnableTenant == true && LoginUserInfo.CurrentTenant != null)
+            if (Wtm.ConfigInfo.EnableTenant == true && LoginUserInfo.CurrentTenant != null)
             {
                 var ct = Wtm.GlobaInfo.AllTenant.Where(x => x.TCode == LoginUserInfo.CurrentTenant).FirstOrDefault();
-                for(int i = 0; i < topdata.Count; i++)
+                for (int i = 0; i < topdata.Count; i++)
                 {
                     if (topdata[i].TenantAllowed == false || (topdata[i].Url != null && ct.EnableSub == false && topdata[i].Url.ToLower().Contains("frameworktenant")))
                     {
@@ -217,10 +216,7 @@ namespace WalkingTec.Mvvm.Mvc.Admin.ViewModels.FrameworkMenuVMs
                 }).OrderBy(x => x.ExtraOrder);
 
                 return data2.AsQueryable() as IOrderedQueryable<FrameworkMenu_ListView>;
-
             }
         }
-
     }
-
 }

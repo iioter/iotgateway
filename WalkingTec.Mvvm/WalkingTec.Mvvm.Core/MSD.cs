@@ -15,13 +15,16 @@ namespace WalkingTec.Mvvm.Core
         /// <param name="name"></param>
         /// <returns></returns>
         List<MsdError> this[string name] { get; }
+
         /// <summary>
         /// 添加模型错误
         /// </summary>
         /// <param name="key">字段名称</param>
         /// <param name="errorMessage">错误信息</param>
         void AddModelError(string key, string errorMessage);
+
         void RemoveModelError(string key);
+
         int Count { get; }
 
         IEnumerable<string> Keys { get; }
@@ -33,8 +36,6 @@ namespace WalkingTec.Mvvm.Core
         bool IsValid { get; }
     }
 
-
-
     /// <summary>
     /// 记录错误的简单类
     /// </summary>
@@ -43,7 +44,6 @@ namespace WalkingTec.Mvvm.Core
         public string ErrorMessage { get; set; }
         public Exception Exception { get; set; }
     }
-
 
     public class BasicMSD : IModelStateService
     {

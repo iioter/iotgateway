@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Automation.OPCClient
+﻿namespace Automation.OPCClient
 {
     public class TagTreeNode
     {
@@ -29,7 +24,7 @@ namespace Automation.OPCClient
 
         public bool IsLeaf { get; set; }
 
-        public string FullPath 
+        public string FullPath
         {
             get
             {

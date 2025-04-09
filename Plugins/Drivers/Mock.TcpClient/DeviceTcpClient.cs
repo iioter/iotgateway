@@ -1,6 +1,6 @@
-﻿using SimpleTCP;
+﻿using Microsoft.Extensions.Logging;
 using PluginInterface;
-using Microsoft.Extensions.Logging;
+using SimpleTCP;
 
 namespace Mock.TcpClient
 {
@@ -17,6 +17,7 @@ namespace Mock.TcpClient
         /// 缓存最新的服务器返回的原始数据
         /// </summary>
         private byte[]? _latestRcvData;
+
         public ILogger _logger { get; set; }
         private readonly string _device;
 
@@ -38,7 +39,7 @@ namespace Mock.TcpClient
 
         [ConfigParameter("最小通讯周期ms")] public uint MinPeriod { get; set; } = 3000;
 
-        #endregion
+        #endregion 配置参数
 
         #region 生命周期
 
@@ -134,7 +135,8 @@ namespace Mock.TcpClient
             {
             }
         }
-        #endregion
+
+        #endregion 生命周期
 
         #region 读写方法
 
@@ -184,10 +186,12 @@ namespace Mock.TcpClient
                             case DataTypeEnum.Byte:
                                 ret.Value = _latestRcvData[startIndex];
                                 break;
+
                             case DataTypeEnum.Int16:
                                 var buffer16 = _latestRcvData.Skip(startIndex).Take(2).ToArray();
                                 ret.Value = BitConverter.ToInt16(new[] { buffer16[0], buffer16[1] }, 0);
                                 break;
+
                             case DataTypeEnum.Float:
                                 //拿到有用的数据
                                 var buffer32 = _latestRcvData.Skip(startIndex).Take(4).ToArray();
@@ -213,14 +217,14 @@ namespace Mock.TcpClient
             return ret;
         }
 
-
         public async Task<RpcResponse> WriteAsync(string requestId, string method, DriverAddressIoArgModel ioArg)
         {
             RpcResponse rpcResponse = new() { IsSuccess = false, Description = "设备驱动内未实现写入功能" };
             await Task.CompletedTask;
             return rpcResponse;
         }
-        #endregion
+
+        #endregion 读写方法
     }
 
     public enum ConnectionType

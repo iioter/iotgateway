@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace WalkingTec.Mvvm.TagHelpers.LayUI
@@ -11,10 +10,12 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         /// 选中时返回的就是默认的on
         /// </summary>
         public string Value { get; set; }
+
         /// <summary>
         /// 可设定默认开
         /// </summary>
         public bool? Checked { get; set; }
+
         /// 可自定义开关两种状态的文本
         /// 例：ON|OFF 开启|关闭等
         /// </summary>
@@ -37,7 +38,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         /// </summary>
         public string ChangeFunc { get; set; }
 
-
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "input";
@@ -50,7 +50,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             output.Attributes.Add("lay-text", string.IsNullOrEmpty(LayText) ? $"{Core.CoreProgram._localizer?["Sys.Yes"]}|{Core.CoreProgram._localizer?["Sys.No"]}" : LayText);
             bool? Checked = null;
 
-            if(Field.Model != null)
+            if (Field.Model != null)
             {
                 DefaultValue = null;
             }
@@ -70,7 +70,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             output.PostElement.AppendHtml($@"<input type=""hidden"" name=""_DONOTUSE_{Field.Name}"" value=""1"" />");
 
             base.Process(context, output);
-
         }
     }
 }

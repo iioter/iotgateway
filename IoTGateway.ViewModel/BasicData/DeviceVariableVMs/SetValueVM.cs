@@ -1,15 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using IoTGateway.Model;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Primitives;
+using Newtonsoft.Json;
 using Plugin;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using WalkingTec.Mvvm.Core;
-using WalkingTec.Mvvm.Core.Extensions;
-using IoTGateway.Model;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.Extensions.Primitives;
-using System.Runtime.Intrinsics.Arm;
-using Newtonsoft.Json;
 
 namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
 {
@@ -39,7 +37,6 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                 {
                     kv[ids[i]] = values[i];
                 }
-
 
                 var setValues = JsonConvert.DeserializeObject<List<SetValue>>(
                     JsonConvert.SerializeObject(DC.Set<DeviceVariable>()
@@ -85,7 +82,6 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                                 };
                                 dapThread.MyMqttClient_OnExcRpc(this, request);
                             }
-
                         }
                     }
                 设置结果 = "下发完成，请在Rpc日志页面查看结果";
@@ -137,7 +133,6 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
                                 }
                             }
                         }
-
                     }
                 }
 
@@ -150,12 +145,16 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
     {
         [Display(Name = "设备名")]
         public string DeviceName { get; set; }
+
         [Display(Name = "设定原值")]
         public object SetRawValue { get; set; }
+
         [Display(Name = "原值")]
         public string RawValue { get; set; }
+
         [Display(Name = "计算值")]
         public string Value { get; set; }
+
         [Display(Name = "状态")]
         public string Status { get; set; }
     }

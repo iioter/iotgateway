@@ -1,13 +1,8 @@
-﻿using System;
+﻿using IoTGateway.Model;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using IoTGateway.Model;
-
 
 namespace IoTGateway.ViewModel.BasicData.DriverVMs
 {
@@ -28,7 +23,6 @@ namespace IoTGateway.ViewModel.BasicData.DriverVMs
             };
         }
 
-
         protected override IEnumerable<IGridColumn<Driver_View>> InitGridHeader()
         {
             return new List<GridColumn<Driver_View>>{
@@ -43,10 +37,10 @@ namespace IoTGateway.ViewModel.BasicData.DriverVMs
         public override IOrderedQueryable<Driver_View> GetSearchQuery()
         {
             var query = DC.Set<Driver>()
-                .CheckContain(Searcher.DriverName, x=>x.DriverName)
+                .CheckContain(Searcher.DriverName, x => x.DriverName)
                 .Select(x => new Driver_View
                 {
-				    ID = x.ID,
+                    ID = x.ID,
                     DriverName = x.DriverName,
                     FileName = x.FileName,
                     AssembleName = x.AssembleName,
@@ -55,10 +49,9 @@ namespace IoTGateway.ViewModel.BasicData.DriverVMs
                 .OrderBy(x => x.FileName);
             return query;
         }
-
     }
 
-    public class Driver_View : Driver{
-
+    public class Driver_View : Driver
+    {
     }
 }

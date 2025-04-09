@@ -1,15 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WalkingTec.Mvvm.Core.Models
 {
     [Table("WorkflowDefinitions", Schema = "Elsa")]
-    public class Elsa_WorkflowDefinition:TopBasePoco
+    public class Elsa_WorkflowDefinition : TopBasePoco
     {
         [Key]
         [Column("Id")]
@@ -40,9 +36,12 @@ namespace WalkingTec.Mvvm.Core.Models
 
         public bool IsPublished { get; set; }
         public bool IsLatest { get; set; }
+
         [StringLength(450)]
         public string Tag { get; set; }
+
         public string Data { get; set; }
+
         [Required]
         public DateTimeOffset CreatedAt { get; set; }
     }

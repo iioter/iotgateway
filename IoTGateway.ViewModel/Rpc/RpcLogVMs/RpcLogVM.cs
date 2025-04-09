@@ -1,12 +1,7 @@
-﻿using System;
+﻿using IoTGateway.Model;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
-using IoTGateway.Model;
-
 
 namespace IoTGateway.ViewModel.Rpc.RpcLogVMs
 {
@@ -25,7 +20,7 @@ namespace IoTGateway.ViewModel.Rpc.RpcLogVMs
         }
 
         public override void DoAdd()
-        {           
+        {
             base.DoAdd();
         }
 

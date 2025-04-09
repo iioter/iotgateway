@@ -24,9 +24,10 @@ namespace WalkingTec.Mvvm.Core.Extensions
             }
             var el = self.GetEntityList().ToList();
             //如果列表主键都为0，则生成自增主键，避免主键重复
-            if (el.All(x => {
+            if (el.All(x =>
+            {
                 var id = x.GetID();
-                if(id == null || (id is Guid gid && gid == Guid.Empty) || (id is int iid && iid==0) || (id is long lid && lid == 0))
+                if (id == null || (id is Guid gid && gid == Guid.Empty) || (id is int iid && iid == 0) || (id is long lid && lid == 0))
                 {
                     return true;
                 }
@@ -34,7 +35,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
                 {
                     return false;
                 }
-            } ))
+            }))
             {
                 el.ForEach(x => x.ID = Guid.NewGuid());
             }
@@ -59,9 +60,11 @@ namespace WalkingTec.Mvvm.Core.Extensions
                 case ColumnFormatTypeEnum.Dialog:
                     rv = vm.UIService.MakeDialogButton(info.ButtonType, info.Url, info.Text, info.Width, info.Height, info.Title, info.ButtonID, info.ShowDialog, info.Resizable, info.Maxed, info.ButtonClass, info.Style).ToString();
                     break;
+
                 case ColumnFormatTypeEnum.Button:
                     rv = vm.UIService.MakeButton(info.ButtonType, info.Url, info.Text, info.Width, info.Height, info.Title, info.ButtonID, info.Resizable, info.Maxed, vm.ViewDivId, info.ButtonClass, info.Style, info.RType).ToString();
                     break;
+
                 case ColumnFormatTypeEnum.Download:
                     if (info.FileID == null)
                     {
@@ -72,6 +75,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
                         rv = vm.UIService.MakeDownloadButton(info.ButtonType, info.FileID.Value, info.Text, vm.CurrentCS, info.ButtonClass, info.Style).ToString();
                     }
                     break;
+
                 case ColumnFormatTypeEnum.ViewPic:
                     if (info.FileID == null)
                     {
@@ -82,12 +86,15 @@ namespace WalkingTec.Mvvm.Core.Extensions
                         rv = vm.UIService.MakeViewButton(info.ButtonType, info.FileID.Value, info.Text, info.Width, info.Height, info.Title, info.Resizable, vm.CurrentCS, info.Maxed, info.ButtonClass, info.Style).ToString();
                     }
                     break;
+
                 case ColumnFormatTypeEnum.Script:
                     rv = vm.UIService.MakeScriptButton(info.ButtonType, info.Text, info.Script, info.ButtonID, info.Url, info.ButtonClass, info.Style).ToString();
                     break;
+
                 case ColumnFormatTypeEnum.Html:
                     rv = info.Html;
                     break;
+
                 default:
                     break;
             }
@@ -183,7 +190,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
                                 for (int i = 0; i < children.Count; i++)
                                 {
                                     var item = children[i];
-                                    html += self.GetSingleDataJson(item, returnColumnObject,0,enumToString);
+                                    html += self.GetSingleDataJson(item, returnColumnObject, 0, enumToString);
                                     if (i < children.Count - 1)
                                     {
                                         html += ",";
@@ -230,7 +237,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
                             //如果列是布尔值，直接返回true或false，让前台生成CheckBox
                             if (ptype == typeof(bool) || ptype == typeof(bool?))
                             {
-                                if(enumToString == false)
+                                if (enumToString == false)
                                 {
                                     html = html.ToLower();
                                     inner = true;
@@ -276,7 +283,6 @@ namespace WalkingTec.Mvvm.Core.Extensions
                         {
                             continue;
                         }
-
                     }
                     else
                     {
@@ -285,18 +291,22 @@ namespace WalkingTec.Mvvm.Core.Extensions
                         switch (col.EditType)
                         {
                             case EditTypeEnum.TextBox:
-                                html = (self as BaseVM).UIService.MakeTextBox(name, val,null,col.IsReadOnly);
+                                html = (self as BaseVM).UIService.MakeTextBox(name, val, null, col.IsReadOnly);
                                 break;
+
                             case EditTypeEnum.CheckBox:
                                 _ = bool.TryParse(val, out bool nb);
-                                html = (self as BaseVM).UIService.MakeCheckBox(nb, null, name, "true",col.IsReadOnly);
+                                html = (self as BaseVM).UIService.MakeCheckBox(nb, null, name, "true", col.IsReadOnly);
                                 break;
+
                             case EditTypeEnum.ComboBox:
-                                html = (self as BaseVM).UIService.MakeCombo(name, col.ListItems, val,null,col.IsReadOnly);
+                                html = (self as BaseVM).UIService.MakeCombo(name, col.ListItems, val, null, col.IsReadOnly);
                                 break;
+
                             case EditTypeEnum.Datetime:
-                                html = (self as BaseVM).UIService.MakeDateTime(name, val,null, col.IsReadOnly,col.DateType);
+                                html = (self as BaseVM).UIService.MakeDateTime(name, val, null, col.IsReadOnly, col.DateType);
                                 break;
+
                             default:
                                 break;
                         }
@@ -315,7 +325,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
                     sb.Append(',');
                 }
             }
-            sb.Append($"\"TempIsSelected\":\"{ (isSelected == true ? "1" : "0") }\"");
+            sb.Append($"\"TempIsSelected\":\"{(isSelected == true ? "1" : "0")}\"");
             foreach (var cc in colorcolumns)
             {
                 if (string.IsNullOrEmpty(cc.Value.Item1) == false)
@@ -359,7 +369,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
         /// <returns>json string</returns>
         public static string GetJson<T>(this IBasePagedListVM<T, BaseSearcher> self, bool PlainText = true, bool enumToString = true, Func<Dictionary<string, object>> func = null) where T : TopBasePoco, new()
         {
-            if(self.Searcher.IsPlainText != null)
+            if (self.Searcher.IsPlainText != null)
             {
                 PlainText = self.Searcher.IsPlainText.Value;
             }
@@ -392,12 +402,9 @@ namespace WalkingTec.Mvvm.Core.Extensions
             return new { Data = self.GetEntityList(), Count = self.Searcher.Count, PageCount = self.Searcher.PageCount, Page = self.Searcher.Page, Msg = "success", Code = 200 };
         }
 
-
         public static string GetError<T>(this IBasePagedListVM<T, BaseSearcher> self) where T : TopBasePoco, new()
         {
             return $@"{{""Data"":{{}},""Count"":0,""Page"":0,""PageCount"":0,""Msg"":""{(self as BaseVM).MSD.GetFirstError()}"",""Code"":400}}";
         }
-
-
     }
 }

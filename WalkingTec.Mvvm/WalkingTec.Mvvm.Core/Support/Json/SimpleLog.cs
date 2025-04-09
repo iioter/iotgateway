@@ -1,13 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace WalkingTec.Mvvm.Core.Support.Json
 {
-
     public class SimpleLog
     {
-
         public ActionLog GetActionLog()
         {
             return new ActionLog
@@ -47,14 +43,17 @@ namespace WalkingTec.Mvvm.Core.Support.Json
         public ActionLogTypesEnum LogType { get; set; }
 
         public DateTime? CreateTime { get; set; }
+
         /// <summary>
         /// CreateBy
         /// </summary>
         public string CreateBy { get; set; }
+
         /// <summary>
         /// UpdateTime
         /// </summary>
         public DateTime? UpdateTime { get; set; }
+
         /// <summary>
         /// UpdateBy
         /// </summary>

@@ -1,9 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace S7.Net
+﻿namespace S7.Net
 {
     /// <summary>
     /// Extensions for Streams

@@ -34,7 +34,7 @@
         /// <param name="bit">The index (zero based) of the bit to set.</param>
         public static void SetBit(ref byte value, int bit)
         {
-            value = (byte) ((value | (1 << bit)) & 0xFF);
+            value = (byte)((value | (1 << bit)) & 0xFF);
         }
 
         /// <summary>
@@ -58,7 +58,7 @@
         /// <param name="bit">The index (zero based) of the bit to clear.</param>
         public static void ClearBit(ref byte value, int bit)
         {
-            value = (byte) (value & ~(1 << bit) & 0xFF);
+            value = (byte)(value & ~(1 << bit) & 0xFF);
         }
     }
 }

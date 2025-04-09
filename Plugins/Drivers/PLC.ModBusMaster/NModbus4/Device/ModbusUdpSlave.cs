@@ -1,15 +1,12 @@
 ﻿namespace Modbus.Device
 {
+    using IO;
+    using Message;
     using System;
-    using System.Diagnostics;
     using System.Linq;
     using System.Net;
     using System.Net.Sockets;
     using System.Threading.Tasks;
-
-    using IO;
-    using Message;
-
     using Unme.Common;
 
     /// <summary>

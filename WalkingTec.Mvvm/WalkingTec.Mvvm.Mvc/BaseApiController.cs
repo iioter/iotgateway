@@ -1,30 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text.Json.Serialization;
 using WalkingTec.Mvvm.Core;
-using WalkingTec.Mvvm.Core.Auth;
 using WalkingTec.Mvvm.Core.Extensions;
-using WalkingTec.Mvvm.Core.Implement;
-using WalkingTec.Mvvm.Core.Support.Json;
 
 namespace WalkingTec.Mvvm.Mvc
 {
     public abstract class BaseApiController : ControllerBase, IBaseController
     {
-
         [JsonIgnore]
         [BindNever]
         public WTMContext Wtm { get; set; }
@@ -36,7 +25,6 @@ namespace WalkingTec.Mvvm.Mvc
         [JsonIgnore]
         [BindNever]
         public GlobalData GlobaInfo { get => Wtm?.GlobaInfo; }
-
 
         [JsonIgnore]
         [BindNever]
@@ -57,10 +45,10 @@ namespace WalkingTec.Mvvm.Mvc
         [JsonIgnore]
         [BindNever]
         public string BaseUrl { get => Wtm?.BaseUrl; }
+
         [JsonIgnore]
         [BindNever]
         public IStringLocalizer Localizer { get => Wtm?.Localizer; }
-
 
         //-------------------------------------------方法------------------------------------//
 
@@ -234,8 +222,8 @@ namespace WalkingTec.Mvvm.Mvc
         //}
         //#endregion
 
-
         #region ReInit model
+
         [NonAction]
         private void SetReInit(ModelStateDictionary msd, BaseVM model)
         {
@@ -256,9 +244,11 @@ namespace WalkingTec.Mvvm.Mvc
                 }
             }
         }
-        #endregion
+
+        #endregion ReInit model
 
         #region Validate model
+
         [NonAction]
         public Dictionary<string, string> RedoValidation(object item)
         {
@@ -275,9 +265,11 @@ namespace WalkingTec.Mvvm.Mvc
 
             return rv;
         }
-        #endregion
+
+        #endregion Validate model
 
         #region update viewmodel
+
         /// <summary>
         /// Set viewmodel's properties to the matching items posted by user
         /// </summary>
@@ -301,13 +293,12 @@ namespace WalkingTec.Mvvm.Mvc
                 return false;
             }
         }
-        #endregion
+
+        #endregion update viewmodel
 
         protected JsonResult JsonMore(object data, int statusCode = StatusCodes.Status200OK, string msg = "success")
         {
             return new JsonResult(new JsonResultT<object> { Msg = msg, Code = statusCode, Data = data });
         }
-
     }
-
 }

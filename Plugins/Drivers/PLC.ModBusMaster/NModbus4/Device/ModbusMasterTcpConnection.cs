@@ -1,15 +1,13 @@
 ﻿namespace Modbus.Device
 {
+    using IO;
+    using Message;
     using System;
-    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Net;
     using System.Net.Sockets;
     using System.Threading.Tasks;
-
-    using IO;
-    using Message;
 
     /// <summary>
     /// Represents an incoming connection from a Modbus master. Contains the slave's logic to process the connection.

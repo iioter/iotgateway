@@ -1,19 +1,19 @@
-﻿using System;
+﻿using IoTGateway.Model;
+using Microsoft.EntityFrameworkCore;
+using Plugin;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using IoTGateway.Model;
-using Plugin;
 
 namespace IoTGateway.ViewModel.BasicData.DeviceConfigVMs
 {
     public partial class DeviceConfigListVM : BasePagedListVM<DeviceConfig_View, DeviceConfigSearcher>
     {
         public List<TreeSelectListItem> AllDevices { get; set; }
+
         protected override List<GridAction> InitGridAction()
         {
             return new List<GridAction>
@@ -28,6 +28,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceConfigVMs
                 this.MakeStandardAction("DeviceConfig", GridActionStandardTypesEnum.ExportExcel, Localizer["Sys.Export"], "BasicData"),
             };
         }
+
         protected override void InitListVM()
         {
             AllDevices = DC.Set<Device>().AsNoTracking()
@@ -44,14 +45,13 @@ namespace IoTGateway.ViewModel.BasicData.DeviceConfigVMs
                     if (deviceThread != null)
                         item.Icon = deviceThread.Device.AutoStart ? (deviceThread.Driver.IsConnected ? "layui-icon layui-icon-link" : "layui-icon layui-icon-unlink") : "layui-icon layui-icon-pause";
 
-                    item.Text = " "+item.Text;
+                    item.Text = " " + item.Text;
                     item.Expended = true;
-                    item.Selected =item.Value.ToString() == IoTBackgroundService.ConfigSelectDeviceId.ToString();
+                    item.Selected = item.Value.ToString() == IoTBackgroundService.ConfigSelectDeviceId.ToString();
                 }
             }
             base.InitListVM();
         }
-
 
         protected override IEnumerable<IGridColumn<DeviceConfig_View>> InitGridHeader()
         {
@@ -88,13 +88,11 @@ namespace IoTGateway.ViewModel.BasicData.DeviceConfigVMs
                 .OrderBy(x => x.DeviceName_view).ThenBy(x => x.DeviceConfigName);
             return query;
         }
-
     }
 
     public class DeviceConfig_View : DeviceConfig
     {
         [Display(Name = "DeviceName")]
         public String DeviceName_view { get; set; }
-
     }
 }

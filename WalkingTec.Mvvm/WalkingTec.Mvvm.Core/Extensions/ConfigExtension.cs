@@ -1,24 +1,23 @@
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Text;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 
 namespace WalkingTec.Mvvm.Core.Extensions
 {
     public static class ConfigExtension
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="configBuilder"></param>
         /// <param name="env"></param>
         /// <param name="jsonFileDir"></param>
         /// <param name="jsonFileName"></param>
         /// <returns></returns>
-        public static IConfigurationBuilder WTMConfig(this IConfigurationBuilder configBuilder, IHostEnvironment env, string jsonFileDir=null, string jsonFileName = null)
+        public static IConfigurationBuilder WTMConfig(this IConfigurationBuilder configBuilder, IHostEnvironment env, string jsonFileDir = null, string jsonFileName = null)
         {
             IConfigurationBuilder rv = configBuilder;
             if (string.IsNullOrEmpty(jsonFileDir))
@@ -49,7 +48,6 @@ namespace WalkingTec.Mvvm.Core.Extensions
             return rv;
         }
 
-
         public static IConfigurationBuilder WTM_SetCurrentDictionary(this IConfigurationBuilder cb)
         {
             CurrentDirectoryHelpers.SetCurrentDirectory();
@@ -75,7 +73,6 @@ namespace WalkingTec.Mvvm.Core.Extensions
             }
             return cb;
         }
-
     }
 
     /// <summary>
@@ -84,37 +81,24 @@ namespace WalkingTec.Mvvm.Core.Extensions
     internal class CurrentDirectoryHelpers
 
     {
-
         internal const string AspNetCoreModuleDll = "aspnetcorev2_inprocess.dll";
 
-
-
         [System.Runtime.InteropServices.DllImport("kernel32.dll")]
-
         private static extern IntPtr GetModuleHandle(string lpModuleName);
 
-
-
         [System.Runtime.InteropServices.DllImport(AspNetCoreModuleDll)]
-
         private static extern int http_get_application_properties(ref IISConfigurationData iiConfigData);
 
-
-
         [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
-
         private struct IISConfigurationData
 
         {
-
             public IntPtr pNativeApplication;
 
             [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.BStr)]
-
             public string pwzFullApplicationPath;
 
             [System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.BStr)]
-
             public string pwzVirtualApplicationPath;
 
             public bool fWindowsAuthEnabled;
@@ -122,19 +106,14 @@ namespace WalkingTec.Mvvm.Core.Extensions
             public bool fBasicAuthEnabled;
 
             public bool fAnonymousAuthEnable;
-
         }
-
-
 
         public static void SetCurrentDirectory()
 
         {
-
             try
 
             {
-
                 // Check if physical path was provided by ANCM
 
                 var sitePhysicalPath = Environment.GetEnvironmentVariable("ASPNETCORE_IIS_PHYSICAL_PATH");
@@ -142,51 +121,32 @@ namespace WalkingTec.Mvvm.Core.Extensions
                 if (string.IsNullOrEmpty(sitePhysicalPath))
 
                 {
-
                     // Skip if not running ANCM InProcess
 
                     if (GetModuleHandle(AspNetCoreModuleDll) == IntPtr.Zero)
 
                     {
-
                         return;
-
                     }
-
-
 
                     IISConfigurationData configurationData = default(IISConfigurationData);
 
                     if (http_get_application_properties(ref configurationData) != 0)
 
                     {
-
                         return;
-
                     }
 
-
-
                     sitePhysicalPath = configurationData.pwzFullApplicationPath;
-
                 }
 
-
-
                 Environment.CurrentDirectory = sitePhysicalPath;
-
             }
-
             catch
 
             {
-
                 // ignore
-
             }
-
         }
-
     }
-
 }

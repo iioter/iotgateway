@@ -1,17 +1,14 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Configuration;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Microsoft.AspNetCore.Http;
 
 namespace WalkingTec.Mvvm.Core
 {
-
     public static class WTMeLoggerExtensions
     {
         public static ILoggingBuilder AddWTMLogger(this ILoggingBuilder builder)
@@ -28,7 +25,7 @@ namespace WalkingTec.Mvvm.Core
         private IServiceProvider sp = null;
         private LoggerFilterOptions logConfig;
 
-        public WTMLoggerProvider( IOptionsMonitor<LoggerFilterOptions> _logConfig, IServiceProvider sp)
+        public WTMLoggerProvider(IOptionsMonitor<LoggerFilterOptions> _logConfig, IServiceProvider sp)
         {
             this.sp = sp;
             logConfig = _logConfig.CurrentValue;
@@ -36,9 +33,11 @@ namespace WalkingTec.Mvvm.Core
 
         public ILogger CreateLogger(string categoryName)
         {
-            return new WTMLogger(categoryName, logConfig,sp);
+            return new WTMLogger(categoryName, logConfig, sp);
         }
-        public void Dispose() { }
+
+        public void Dispose()
+        { }
     }
 
     public class WTMLogger : ILogger
@@ -56,14 +55,14 @@ namespace WalkingTec.Mvvm.Core
 
         public bool IsEnabled(LogLevel logLevel)
         {
-            if(logConfig == null || categoryName == "VueCliMiddleware")
+            if (logConfig == null || categoryName == "VueCliMiddleware")
             {
                 return false;
             }
             var level = logConfig.Rules.Where(x =>
                 x.ProviderName == "WTM" &&
                     (
-                      (x.CategoryName != null &&  categoryName.ToLower().StartsWith(x.CategoryName.ToLower()) ) ||
+                      (x.CategoryName != null && categoryName.ToLower().StartsWith(x.CategoryName.ToLower())) ||
                       categoryName == "WalkingTec.Mvvm.Core.ActionLog"
                     )
                 )
@@ -131,7 +130,7 @@ namespace WalkingTec.Mvvm.Core
                 {
                     try
                     {
-                        using (var dc = wtm.CreateDC(true,logerror:false))
+                        using (var dc = wtm.CreateDC(true, logerror: false))
                         {
                             if (dc != null)
                             {

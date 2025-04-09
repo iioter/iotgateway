@@ -14,7 +14,6 @@ namespace WalkingTec.Mvvm.Core
         /// The value to be submitted
         /// </summary>
         public string Value { get; set; }
-
     }
 
     public class MenuItem : ListItem
@@ -51,13 +50,12 @@ namespace WalkingTec.Mvvm.Core
         /// </summary>
         /// <value></value>
         public string Icon { get; set; }
-
     }
 
     /// <summary>
     /// 树形下拉菜单项
     /// </summary>
-    public class TreeSelectListItem: ComboSelectListItem
+    public class TreeSelectListItem : ComboSelectListItem
     {
         public bool Expended { get; set; }
         public string Url { get; set; }
@@ -66,5 +64,4 @@ namespace WalkingTec.Mvvm.Core
         public bool Leaf => Children == null || Children.Count() == 0;
         public List<TreeSelectListItem> Children { get; set; }
     }
-
 }

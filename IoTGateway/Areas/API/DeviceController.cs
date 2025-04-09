@@ -1,10 +1,10 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using IoTGateway.Model;
+﻿using IoTGateway.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Plugin;
+using System.Linq;
+using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Mvc;
 
@@ -19,23 +19,23 @@ namespace IoTGateway.Areas.API
     {
         private readonly ILogger<DeviceController> _logger;
         private readonly DeviceService _deviceService;
-        public DeviceController(ILogger<DeviceController>  logger, DeviceService deviceService)
+
+        public DeviceController(ILogger<DeviceController> logger, DeviceService deviceService)
         {
             _logger = logger;
             _deviceService = deviceService;
-
         }
+
         /// <summary>
         /// 获取设备列表
         /// </summary>
         /// <returns></returns>
         [Public]
         [HttpGet("Device/GetDevices")]
-        public async Task<IActionResult>  GetDevices()
+        public async Task<IActionResult> GetDevices()
         {
             return Ok(await DC.Set<Device>().Include(x => x.Driver).Where(x => x.ParentId != null).AsNoTracking()
                 .OrderBy(x => x.Index).ToListAsync());
-
         }
     }
 }

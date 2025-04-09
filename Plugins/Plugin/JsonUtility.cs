@@ -1,17 +1,12 @@
-﻿using Newtonsoft.Json.Converters;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Plugin
 {
     public static class JsonUtility
     {
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="data">要序列化的数据</param>
         /// <param name="dateTimeFormat">时间格式 默认yyyy-MM-dd HH:mm:ss</param>

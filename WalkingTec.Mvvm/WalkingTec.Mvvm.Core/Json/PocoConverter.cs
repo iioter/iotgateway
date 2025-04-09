@@ -2,20 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
-using System.Text.Unicode;
-using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core.Extensions;
 
 namespace WalkingTec.Mvvm.Core.Json
 {
     public class PocoConverter : JsonConverterFactory
     {
-
         public override bool CanConvert(Type typeToConvert)
         {
             return typeof(TopBasePoco).IsAssignableFrom(typeToConvert);
@@ -25,11 +19,10 @@ namespace WalkingTec.Mvvm.Core.Json
             Type type,
             JsonSerializerOptions options)
         {
-
             var temp = CloneOptions(options);
             foreach (var item in options.Converters)
             {
-                if(item.GetType() != typeof(PocoConverter))
+                if (item.GetType() != typeof(PocoConverter))
                 {
                     temp.Converters.Add(item);
                 }
@@ -69,6 +62,7 @@ namespace WalkingTec.Mvvm.Core.Json
             JsonConverter<T> where T : TopBasePoco
         {
             protected readonly JsonSerializerOptions _options;
+
             public PocoConverterInner(JsonSerializerOptions options)
             {
                 _options = options;
@@ -79,7 +73,6 @@ namespace WalkingTec.Mvvm.Core.Json
                 Type typeToConvert,
                 JsonSerializerOptions options)
             {
-
                 return JsonSerializer.Deserialize<T>(ref reader, _options);
             }
 
@@ -111,7 +104,7 @@ namespace WalkingTec.Mvvm.Core.Json
                         }
                         else
                         {
-                            pro.SetValue(Entity,null);
+                            pro.SetValue(Entity, null);
                         }
                     }
                     //找到类型为List<xxx>的字段
@@ -134,7 +127,7 @@ namespace WalkingTec.Mvvm.Core.Json
                                         string subkey = ftype.FullName + newitem?.GetID() ?? "";
                                         if (datacache.ContainsKey(subkey) == false || (Entity is TreePoco && pro.Name == "Children"))
                                         {
-                                            RemoveCycleReference(newitem, datacache.ToDictionary(x=>x.Key,x=>x.Value));
+                                            RemoveCycleReference(newitem, datacache.ToDictionary(x => x.Key, x => x.Value));
                                             found = true;
                                         }
                                         else
@@ -144,7 +137,7 @@ namespace WalkingTec.Mvvm.Core.Json
                                         }
                                     }
                                 }
-                                if(found == false)
+                                if (found == false)
                                 {
                                     pro.SetValue(Entity, null);
                                 }
@@ -152,9 +145,7 @@ namespace WalkingTec.Mvvm.Core.Json
                         }
                     }
                 }
-
             }
         }
-
     }
 }

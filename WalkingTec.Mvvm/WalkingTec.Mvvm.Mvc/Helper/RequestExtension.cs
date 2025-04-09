@@ -1,11 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
 
 namespace WalkingTec.Mvvm.Mvc
@@ -28,7 +26,7 @@ namespace WalkingTec.Mvvm.Mvc
             }
             else
             {
-                if(request.HasFormContentType == true)
+                if (request.HasFormContentType == true)
                 {
                     Dictionary<string, string> data = new Dictionary<string, string>();
                     foreach (var item in request.Form)
@@ -40,7 +38,7 @@ namespace WalkingTec.Mvvm.Mvc
                 else
                 {
                     string s = "";
-                    if (request.HttpContext?.Items?.ContainsKey("DONOTUSE_REQUESTBODY")==true)
+                    if (request.HttpContext?.Items?.ContainsKey("DONOTUSE_REQUESTBODY") == true)
                     {
                         s = request.HttpContext.Items["DONOTUSE_REQUESTBODY"].ToString();
                     }
@@ -53,7 +51,7 @@ namespace WalkingTec.Mvvm.Mvc
 
         public static IActionResult ToActionResult(this ApiResult<string> self)
         {
-            if(self == null)
+            if (self == null)
             {
                 return new BadRequestResult();
             }

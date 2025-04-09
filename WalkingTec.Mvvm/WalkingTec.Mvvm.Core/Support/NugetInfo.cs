@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace WalkingTec.Mvvm.Core.Support
 {
@@ -12,7 +10,7 @@ namespace WalkingTec.Mvvm.Core.Support
     public class NugetInfoData
     {
         public string version { get; set; }
-        public List<NugetVersionData> versions {get;set;}
+        public List<NugetVersionData> versions { get; set; }
     }
 
     public class NugetVersionData

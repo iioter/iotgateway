@@ -1,7 +1,7 @@
 ﻿namespace Modbus.IO
 {
-    using System;
     using Message;
+    using System;
 
     public class EmptyTransport : ModbusTransport
     {

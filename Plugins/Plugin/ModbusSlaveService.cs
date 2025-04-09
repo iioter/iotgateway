@@ -1,19 +1,20 @@
 ﻿using Microsoft.Extensions.Logging;
-using System.Net;
-using System.Net.Sockets;
 using Modbus.Data;
 using Modbus.Device;
+using System.Net;
+using System.Net.Sockets;
 
 namespace Plugin
 {
     public class ModbusSlaveService : IDisposable
     {
         private readonly ILogger<ModbusSlaveService> _logger;
-        readonly TcpListener _slaveTcpListener;
+        private readonly TcpListener _slaveTcpListener;
         private readonly Timer _mSimulationTimer;
         private readonly object _lock = new();
         private readonly ModbusSlave _slave;
         private Task _task;
+
         public ModbusSlaveService(ILogger<ModbusSlaveService> logger)
         {
             _logger = logger;
@@ -55,6 +56,7 @@ namespace Plugin
                 _logger.LogError($"Modbus Server Error", ex);
             }
         }
+
         public void Dispose()
         {
             _logger.LogError($"Modbus Server Dispose");

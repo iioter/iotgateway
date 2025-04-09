@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -5,9 +7,6 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Razor.TagHelpers;
-using Microsoft.Extensions.Options;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 
@@ -17,6 +16,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
     public class DataTableTagHelper : TagHelper
     {
         #region const
+
         protected const string REQUIRED_ATTR_NAME = "vm";
 
         /// <summary>
@@ -33,13 +33,14 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         /// 用于生成操作列
         /// </summary>
         public const string TABLE_TOOLBAR_PREFIX = "wtToolBar_";
-        #endregion
 
+        #endregion const
 
         public ModelExpression Vm { get; set; }
         public bool IsInSelector { get; set; }
 
         private IBasePagedListVM<TopBasePoco, BaseSearcher> _listVM;
+
         private IBasePagedListVM<TopBasePoco, BaseSearcher> ListVM
         {
             get
@@ -55,6 +56,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         private string _gridIdUserSet;
 
         private string _id;
+
         public string Id
         {
             get
@@ -80,6 +82,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         }
 
         private string _searchPanelId;
+
         /// <summary>
         /// 搜索面板 Id
         /// </summary>
@@ -128,6 +131,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         }
 
         private string _tableJSVar;
+
         /// <summary>
         /// datatable 渲染之后返回对象的变量名
         /// </summary>
@@ -144,18 +148,22 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         }
 
         private string ToolBarId => $"{TABLE_TOOLBAR_PREFIX}{(string.IsNullOrEmpty(_gridIdUserSet) ? ListVM.UniqueId : _gridIdUserSet)}";
+
         /// <summary>
         /// 设定复选框列 默认false
         /// </summary>
         public bool HiddenCheckbox { get; set; }
+
         /// <summary>
         /// 设定复选框列 默认false
         /// </summary>
         public bool HiddenGridIndex { get; set; }
+
         /// <summary>
         /// 全部选中
         /// </summary>
         public bool? CheckedAll { get; set; }
+
         /// <summary>
         /// 复选框在第几列
         /// </summary>
@@ -180,12 +188,14 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         /// table容器的默认宽度是 auto，你可以借助该参数设置一个固定值，当容器中的内容超出了该宽度时，会自动出现横向滚动条。
         /// </summary>
         public int? Width { get; set; }
+
         public bool AutoSearch { get; set; } = true;
 
         /// <summary>
         /// 接口地址
         /// </summary>
         public string Url { get; set; }
+
         /// <summary>
         /// Http Request Method 默认 GET
         /// <para>如果无需自定义HTTP类型，可不加该参数 <see cref="HttpMethodEnum" /></para>
@@ -284,6 +294,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         /// 是否显示删选列按钮
         /// </summary>
         public bool? NeedShowFilter { get; set; }
+
         /// <summary>
         /// 排除的搜索条件
         /// </summary>
@@ -345,7 +356,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             output.TagName = "table";
             output.Attributes.Add("id", Id);
             output.Attributes.Add("lay-filter", Id);
-            output.Attributes.Add("subpro", ListVM?.DetailGridPrix??"");
+            output.Attributes.Add("subpro", ListVM?.DetailGridPrix ?? "");
             output.TagMode = TagMode.StartTagAndEndTag;
 
             var config = ListVM.ConfigInfo;
@@ -368,14 +379,14 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             }
             var righttoolbar = ",defaultToolbar: []";
             int lefttoolbarmergin = -120;
-            if(NeedShowFilter == true && NeedShowPrint == true)
+            if (NeedShowFilter == true && NeedShowPrint == true)
             {
                 righttoolbar = ",defaultToolbar: ['filter', 'print']";
                 lefttoolbarmergin = -45;
             }
             else
             {
-                if(NeedShowFilter == true)
+                if (NeedShowFilter == true)
                 {
                     righttoolbar = ",defaultToolbar: ['filter']";
                     lefttoolbarmergin = -80;
@@ -428,7 +439,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                         {
                             if (prop.PropertyType.IsGenericType == false || (prop.PropertyType.GenericTypeArguments[0] != typeof(ComboSelectListItem) && prop.PropertyType.GenericTypeArguments[0] != typeof(TreeSelectListItem)))
                             {
-                                var listvalue = prop.GetValue(ListVM.Searcher);                                
+                                var listvalue = prop.GetValue(ListVM.Searcher);
                                 if (listvalue != null)
                                 {
                                     if (IsInSelector == true)
@@ -450,6 +461,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             var page = ListVM.NeedPage;
 
             #region 生成 Layui 所需的表头
+
             var rawCols = ListVM?.GetHeaders();
             var maxDepth = (ListVM?.GetChildrenDepth()) ?? 1;
             var layuiCols = new List<List<LayuiColumn>>();
@@ -468,7 +480,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                     UnResize = true,
                     //Width = 45
                 };
-                if(LineHeight != null)
+                if (LineHeight != null)
                 {
                     checkboxHeader.Style = $"height:{LineHeight}px";
                 }
@@ -493,7 +505,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             }
             var nextCols = new List<IGridColumn<TopBasePoco>>();// 下一级列头
 
-            generateColHeader(rawCols, nextCols, tempCols, maxDepth,0);
+            generateColHeader(rawCols, nextCols, tempCols, maxDepth, 0);
 
             if (nextCols.Count > 0)
             {
@@ -505,7 +517,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 layuiCols[0][0].TotalRowText = ListVM?.TotalText;
             }
 
-            #endregion
+            #endregion 生成 Layui 所需的表头
 
             #region 处理 DataTable 操作按钮
 
@@ -524,11 +536,12 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 }
             }
 
-            #endregion
+            #endregion 处理 DataTable 操作按钮
 
             #region DataTable
+
             var toolbardef = "";
-            if(toolBarBtnStrBuilder.Length > 0 || NeedShowFilter == true || NeedShowPrint == true)
+            if (toolBarBtnStrBuilder.Length > 0 || NeedShowFilter == true || NeedShowPrint == true)
             {
                 toolbardef = $" ,toolbar: '#{ToolBarId}2'";
             }
@@ -558,8 +571,8 @@ layui.use(['table'], function(){{
     ,text:{{
         none:'{THProgram._localizer["Sys.NoData"]}'
     }}
-    {(IsInSelector==false? $",request: {{ 'pageName': 'Page', 'limitName': 'Limit'}}":"")}    
-    { toolbardef}
+    {(IsInSelector == false ? $",request: {{ 'pageName': 'Page', 'limitName': 'Limit'}}" : "")}
+    {toolbardef}
     {righttoolbar}
     {(!NeedShowTotal ? string.Empty : ",totalRow:true")}
     ,headers: {{layuisearch: 'true'}}
@@ -573,7 +586,7 @@ layui.use(['table'], function(){{
         gototext:'{THProgram._localizer["Sys.Goto"]}',
         pagetext:'{THProgram._localizer["Sys.Page"]}',
         oktext:'{THProgram._localizer["Sys.GotoButtonText"]}',
-    }}":",page:false")}
+    }}" : ",page:false")}
     {(page ? $",limit:{Limit}" : $",limit:{(UseLocalData ? ListVM.GetEntityList().Count().ToString() : "0")}")}
     {(page
         ? (Limits == null || Limits.Length == 0
@@ -583,7 +596,7 @@ layui.use(['table'], function(){{
         : string.Empty)}
     {(!Width.HasValue ? string.Empty : $",width: {Width.Value}")}
     {(!Height.HasValue ? string.Empty : (Height.Value >= 0 ? $",height: {Height.Value}" : $",height: 'full{Height.Value}'"))}
-    ,cols:{JsonSerializer.Serialize(layuiCols, joption).Replace("\"_raw_", "").Replace("_raw_\"", "").Replace("\\r\\n","").Replace("\\\"","\"")}
+    ,cols:{JsonSerializer.Serialize(layuiCols, joption).Replace("\"_raw_", "").Replace("_raw_\"", "").Replace("\\r\\n", "").Replace("\\\"", "\"")}
     {(!Skin.HasValue ? string.Empty : $",skin: '{Skin.Value.ToString().ToLower()}'")}
     {(Even.HasValue && !Even.Value ? $",even: false" : string.Empty)}
     {(!Size.HasValue ? string.Empty : $",size: '{Size.Value.ToString().ToLower()}'")}
@@ -592,7 +605,7 @@ layui.use(['table'], function(){{
       if(res.Code == 401){{ layui.layer.confirm(res.Msg,{{title:'{THProgram._localizer["Sys.Error"]}'}}, function(index){{window.location.reload();layer.close(index);}});}}
       if(res.Code != undefined && res.Code != 200){{ layui.layer.alert(res.Msg,{{title:'{THProgram._localizer["Sys.Error"]}'}});}}
      var tab = $('#{Id} + .layui-table-view');tab.find('table').css('border-collapse','separate');
-      {(Height == null ? $"tab.css('overflow','hidden').addClass('donotuse_fill donotuse_pdiv');tab.children('.layui-table-box').addClass('donotuse_fill donotuse_pdiv').css('height','100px');tab.find('.layui-table-main').addClass('donotuse_fill');tab.find('.layui-table-header').css('min-height','{maxDepth*38}px');ff.triggerResize();" : string.Empty)}
+      {(Height == null ? $"tab.css('overflow','hidden').addClass('donotuse_fill donotuse_pdiv');tab.children('.layui-table-box').addClass('donotuse_fill donotuse_pdiv').css('height','100px');tab.find('.layui-table-main').addClass('donotuse_fill');tab.find('.layui-table-header').css('min-height','{maxDepth * 38}px');ff.triggerResize();" : string.Empty)}
       {(LineHeight.HasValue == true ? $"tab.find('td .layui-table-cell').css('height','{LineHeight}px')" : string.Empty)}
       {(MultiLine == true ? $"tab.find('.layui-table-cell').css('height','auto').css('white-space','normal');" : string.Empty)}
        tab.find('div [lay-event=\'LAYTABLE_COLS\']').attr('title','{THProgram._localizer["Sys.ColumnFilter"]}');
@@ -625,7 +638,7 @@ setTimeout(function(){{
   {(string.IsNullOrEmpty(CheckedFunc) ? string.Empty : $"table.on('checkbox({Id})',{CheckedFunc});")}
     table.on('sort({Id})', function(obj){{
     var sortfilter = {{}};
-    sortfilter['{(IsInSelector==true?"Searcher.":"")}SortInfo.Property'] = obj.field;
+    sortfilter['{(IsInSelector == true ? "Searcher." : "")}SortInfo.Property'] = obj.field;
     sortfilter['{(IsInSelector == true ? "Searcher." : "")}SortInfo.Direction'] = obj.type.replace(obj.type[0],obj.type[0].toUpperCase());
     var w = $.extend({Id}option.where,sortfilter,ff.GetSearchFormData('{SearchPanelId}','{fieldPre}'));
 
@@ -642,8 +655,8 @@ setTimeout(function(){{
 <!-- Grid 行内按钮 -->
 <script type=""text/html"" id=""{ToolBarId}"">{rowBtnStrBuilder}</script>
 ");
-            #endregion
 
+            #endregion DataTable
 
             //output.PreElement.AppendHtml($@"<div style=""text-align:right;padding-bottom:10px;padding-top:5px;margin-right:15px;line-height:35px;"">{toolBarBtnStrBuilder}</div>");
             output.PostElement.AppendHtml($@"
@@ -679,14 +692,13 @@ setTimeout(function(){{
         )
         {
             var temp = rawCols.Where(x => x.Fixed == GridColumnFixedEnum.Left).ToArray();
-            generateColHeaderCore(temp, nextCols, tempCols, maxDepth,depth);
+            generateColHeaderCore(temp, nextCols, tempCols, maxDepth, depth);
 
             temp = rawCols.Where(x => x.Fixed == null).ToArray();
             generateColHeaderCore(temp, nextCols, tempCols, maxDepth, depth);
 
             temp = rawCols.Where(x => x.Fixed == GridColumnFixedEnum.Right).ToArray();
             generateColHeaderCore(temp, nextCols, tempCols, maxDepth, depth);
-
         }
 
         private void generateColHeaderCore(
@@ -721,7 +733,7 @@ setTimeout(function(){{
 
                 // 非编辑状态且有字段名的情况下，设置template
                 if ((string.IsNullOrEmpty(ListVM.DetailGridPrix) == true && string.IsNullOrEmpty(item.Field) == false) || item.Field == "BatchError")
-                    tempCol.Templet = getTemplate(item.Field,random);
+                    tempCol.Templet = getTemplate(item.Field, random);
 
                 NeedShowTotal |= item.ShowTotal == true;
                 switch (item.ColumnType)
@@ -729,6 +741,7 @@ setTimeout(function(){{
                     case GridColumnTypeEnum.Space:
                         tempCol.Type = LayuiColumnTypeEnum.Space;
                         break;
+
                     case GridColumnTypeEnum.Action:
                         tempCol.Toolbar = $"#{ToolBarId}";
                         break;
@@ -770,9 +783,9 @@ setTimeout(function(){{
             bool isSub = false
         )
         {
-            if (string.IsNullOrEmpty(item.Url) || vm.Wtm?.IsUrlPublic(item.Url)==true || vm.Wtm?.IsAccessable(item.Url) == true ||
+            if (string.IsNullOrEmpty(item.Url) || vm.Wtm?.IsUrlPublic(item.Url) == true || vm.Wtm?.IsAccessable(item.Url) == true ||
                 item.ParameterType == GridActionParameterTypesEnum.AddRow ||
-                item.ParameterType == GridActionParameterTypesEnum.RemoveRow                 
+                item.ParameterType == GridActionParameterTypesEnum.RemoveRow
             )
             {
                 // Grid 行内按钮
@@ -820,7 +833,7 @@ setTimeout(function(){{
                                 subBarBtnStrList.AppendFormat("<dd style=\"padding: 0 0px;margin-bottom:1px;line-height: initial;\">{0}</dd>", subBarBtnStr.ToString());
                             }
                         }
-                        if(subBarBtnStrList.Length == 0)
+                        if (subBarBtnStrList.Length == 0)
                         {
                             return;
                         }
@@ -881,6 +894,7 @@ if(data==undefined||data==null||data.ID==undefined||data.ID==null){{
 }}
 ");
                         break;
+
                     case GridActionParameterTypesEnum.MultiIds:
                         script.Append($@"
 isPost = true;
@@ -891,6 +905,7 @@ if(ids.length == 0){{
 }}
 ");
                         break;
+
                     case GridActionParameterTypesEnum.SingleIdWithNull:
                         script.Append($@"
 var ids = [];
@@ -913,12 +928,14 @@ if(ids.length > 1){{
 }}
 ");
                         break;
+
                     case GridActionParameterTypesEnum.MultiIdWithNull:
                         script.Append($@"
 var ids = ff.GetSelections('{Id}');
 isPost = true;
 ");
                         break;
+
                     default: break;
                 }
 
@@ -936,7 +953,7 @@ case '{item.Area + item.ControllerName + item.ActionName + item.QueryString}':{{
                     string actionScript = "";
                     if (string.IsNullOrEmpty(item.OnClickFunc))
                     {
-                        if(item.IsDownload == true)
+                        if (item.IsDownload == true)
                         {
                             actionScript = $"ff.Download(tempUrl,ids);";
                         }
@@ -963,7 +980,7 @@ case '{item.Area + item.ControllerName + item.ActionName + item.QueryString}':{{
                         }
                         else
                         {
-                            if ( (item.Area == string.Empty && item.ControllerName == "_Framework" && item.ActionName == "GetExportExcel") || item.IsExport == true)
+                            if ((item.Area == string.Empty && item.ControllerName == "_Framework" && item.ActionName == "GetExportExcel") || item.IsExport == true)
                             {
                                 actionScript = $"ff.DownloadExcelOrPdf(tempUrl,'{SearchPanelId}',{Id}defaultfilter.where,ids);";
                             }
@@ -1010,7 +1027,7 @@ var isPost = false;
             }
         }
 
-        private string getTemplate(string field,string random)
+        private string getTemplate(string field, string random)
         {
             return $@"function(d){{var sty = '';var bg = '';var did = '{field}{random}_'+d.LAY_INDEX;if(d.{field}__bgcolor != undefined) bg = ""<script>$('#""+did+""').closest('td').css('background-color','""+d.{field}__bgcolor+""');</s""+""cript>""; if(d.{field}__forecolor != undefined) sty = 'color:'+d.{field}__forecolor+';'; return '<div style=""'+sty+'"" id=""'+did+'"">'+d.{field}.replace(/\""/g,""'"")+bg+'</div>';}}";
         }

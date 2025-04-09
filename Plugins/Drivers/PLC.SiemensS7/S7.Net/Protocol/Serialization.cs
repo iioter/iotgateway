@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using S7.Net.Types;
+﻿using S7.Net.Types;
 
 namespace S7.Net.Protocol
 {
@@ -35,45 +33,64 @@ namespace S7.Net.Protocol
             {
                 case "Boolean":
                     return new[] { (byte)((bool)value ? 1 : 0) };
+
                 case "Byte":
                     return Types.Byte.ToByteArray((byte)value);
+
                 case "Int16":
                     return Types.Int.ToByteArray((Int16)value);
+
                 case "UInt16":
                     return Types.Word.ToByteArray((UInt16)value);
+
                 case "Int32":
                     return Types.DInt.ToByteArray((Int32)value);
+
                 case "UInt32":
                     return Types.DWord.ToByteArray((UInt32)value);
+
                 case "Single":
                     return Types.Real.ToByteArray((float)value);
+
                 case "Double":
                     return Types.LReal.ToByteArray((double)value);
+
                 case "DateTime":
                     return Types.DateTime.ToByteArray((System.DateTime)value);
+
                 case "Byte[]":
                     return (byte[])value;
+
                 case "Int16[]":
                     return Types.Int.ToByteArray((Int16[])value);
+
                 case "UInt16[]":
                     return Types.Word.ToByteArray((UInt16[])value);
+
                 case "Int32[]":
                     return Types.DInt.ToByteArray((Int32[])value);
+
                 case "UInt32[]":
                     return Types.DWord.ToByteArray((UInt32[])value);
+
                 case "Single[]":
                     return Types.Real.ToByteArray((float[])value);
+
                 case "Double[]":
                     return Types.LReal.ToByteArray((double[])value);
+
                 case "String":
                     // Hack: This is backwards compatible with the old code, but functionally it's broken
                     // if the consumer does not pay attention to string length.
                     var stringVal = (string)value;
                     return Types.String.ToByteArray(stringVal, stringVal.Length);
+
                 case "DateTime[]":
                     return Types.DateTime.ToByteArray((System.DateTime[])value);
+
                 case "DateTimeLong[]":
                     return Types.DateTimeLong.ToByteArray((System.DateTime[])value);
+
                 default:
                     throw new InvalidVariableTypeException();
             }

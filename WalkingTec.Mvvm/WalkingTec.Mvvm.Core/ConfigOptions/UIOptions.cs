@@ -21,7 +21,6 @@ namespace WalkingTec.Mvvm.Core.ConfigOptions
 
         public class ComboBoxOptions
         {
-
             /// <summary>
             /// 默认允许ComboBox搜索
             /// </summary>
@@ -30,7 +29,6 @@ namespace WalkingTec.Mvvm.Core.ConfigOptions
 
         public class DateTimeOptions
         {
-
             /// <summary>
             /// 默认开启DateTime只读
             /// </summary>
@@ -39,7 +37,6 @@ namespace WalkingTec.Mvvm.Core.ConfigOptions
 
         public class SearchPanelOptions
         {
-
             /// <summary>
             /// 默认展开SearchPanel内容
             /// </summary>

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using S7.Net.Types;
+﻿using S7.Net.Types;
 
 namespace S7.Net.Protocol
 {
@@ -10,11 +8,11 @@ namespace S7.Net.Protocol
         {
             message.Add(Header.Template);
 
-            message[Header.Offsets.ParameterCount] = (byte) dataItems.Length;
+            message[Header.Offsets.ParameterCount] = (byte)dataItems.Length;
             var paramSize = dataItems.Length * Parameter.Template.Length;
 
             Serialization.SetWordAt(message, Header.Offsets.ParameterSize,
-                (ushort) (2 + paramSize));
+                (ushort)(2 + paramSize));
 
             var paramOffset = Header.Template.Length;
             var data = new ByteArray();
@@ -28,10 +26,10 @@ namespace S7.Net.Protocol
                 var value = Serialization.SerializeDataItem(item);
                 var wordLen = item.Value is bool ? 1 : 2;
 
-                message[paramOffset + Parameter.Offsets.WordLength] = (byte) wordLen;
-                Serialization.SetWordAt(message, paramOffset + Parameter.Offsets.Amount, (ushort) value.Length);
-                Serialization.SetWordAt(message, paramOffset + Parameter.Offsets.DbNumber, (ushort) item.DB);
-                message[paramOffset + Parameter.Offsets.Area] = (byte) item.DataType;
+                message[paramOffset + Parameter.Offsets.WordLength] = (byte)wordLen;
+                Serialization.SetWordAt(message, paramOffset + Parameter.Offsets.Amount, (ushort)value.Length);
+                Serialization.SetWordAt(message, paramOffset + Parameter.Offsets.DbNumber, (ushort)item.DB);
+                message[paramOffset + Parameter.Offsets.Area] = (byte)item.DataType;
 
                 data.Add(0x00);
                 if (item.Value is bool b)
@@ -47,7 +45,8 @@ namespace S7.Net.Protocol
                     data.AddWord(1);
 
                     data.Add(b ? (byte)1 : (byte)0);
-                    if (itemCount != dataItems.Length) { 
+                    if (itemCount != dataItems.Length)
+                    {
                         data.Add(0);
                     }
                 }
@@ -57,9 +56,9 @@ namespace S7.Net.Protocol
 
                     var len = value.Length;
                     data.Add(0x04);
-                    data.AddWord((ushort) (len << 3));
+                    data.AddWord((ushort)(len << 3));
                     data.Add(value);
-                    
+
                     if ((len & 0b1) == 1 && itemCount != dataItems.Length)
                     {
                         data.Add(0);
@@ -71,8 +70,8 @@ namespace S7.Net.Protocol
 
             message.Add(data.Array);
 
-            Serialization.SetWordAt(message, Header.Offsets.MessageLength, (ushort) message.Length);
-            Serialization.SetWordAt(message, Header.Offsets.DataLength, (ushort) (message.Length - paramOffset));
+            Serialization.SetWordAt(message, Header.Offsets.MessageLength, (ushort)message.Length);
+            Serialization.SetWordAt(message, Header.Offsets.DataLength, (ushort)(message.Length - paramOffset));
 
             return message.Length;
         }
@@ -98,12 +97,11 @@ namespace S7.Net.Protocol
                 {
                     Plc.ValidateResponseCode((ReadWriteErrorCode)itemResults[i]);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     if (errors == null) errors = new List<Exception>();
                     errors.Add(new Exception($"Write of dataItem {dataItems[i]} failed: {e.Message}."));
                 }
-
             }
 
             if (errors != null)

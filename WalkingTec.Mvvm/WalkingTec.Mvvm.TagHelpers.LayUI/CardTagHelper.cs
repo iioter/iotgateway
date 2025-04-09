@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace WalkingTec.Mvvm.TagHelpers.LayUI
 {
-
-    public enum CardThemeEnum {  Dark, White}
+    public enum CardThemeEnum
+    { Dark, White }
 
     [HtmlTargetElement("wt:card", TagStructure = TagStructure.NormalOrSelfClosing)]
     public class CardTagHelper : BaseElementTag
@@ -11,6 +11,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         public AlignEnum? Align { get; set; }
         public string Title { get; set; }
         public CardThemeEnum CardTheme { get; set; }
+
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "div";
@@ -20,12 +21,15 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 case AlignEnum.Left:
                     style = "width:100%;text-align:left;";
                     break;
+
                 case AlignEnum.Right:
                     style = "width:100%;text-align:right;";
                     break;
+
                 case AlignEnum.Center:
                     style = "width:100%;text-align:center;";
                     break;
+
                 default:
                     break;
             }
@@ -42,7 +46,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 output.PreElement.SetHtmlContent(pre);
                 output.PostElement.SetHtmlContent(post);
             }
-            if(CardTheme == CardThemeEnum.Dark)
+            if (CardTheme == CardThemeEnum.Dark)
             {
                 style += "border: solid 1px #eee;";
                 output.Attributes.SetAttribute("class", "layui-card");

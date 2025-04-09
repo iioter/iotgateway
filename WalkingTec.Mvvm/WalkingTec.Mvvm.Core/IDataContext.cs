@@ -24,6 +24,7 @@ namespace WalkingTec.Mvvm.Core
         bool IsDebug { get; set; }
         string TenantCode { get; }
         DBTypeEnum DBType { get; set; }
+
         /// <summary>
         /// AddEntity
         /// </summary>
@@ -104,7 +105,7 @@ namespace WalkingTec.Mvvm.Core
         /// <returns></returns>
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
 
-        #endregion
+        #endregion SaveChange
 
         /// <summary>
         /// 初始化
@@ -115,7 +116,9 @@ namespace WalkingTec.Mvvm.Core
         Task<bool> DataInit(object AllModel, bool IsSpa);
 
         void EnsureCreate();
+
         IDataContext CreateNew();
+
         IDataContext ReCreate(ILoggerFactory _logger = null);
 
         /// <summary>
@@ -125,6 +128,7 @@ namespace WalkingTec.Mvvm.Core
         /// <param name="paras">参数</param>
         /// <returns></returns>
         DataTable RunSP(string command, params object[] paras);
+
         IEnumerable<TElement> RunSP<TElement>(string command, params object[] paras);
 
         /// <summary>
@@ -134,12 +138,17 @@ namespace WalkingTec.Mvvm.Core
         /// <param name="paras">参数</param>
         /// <returns></returns>
         DataTable RunSQL(string command, params object[] paras);
+
         IEnumerable<TElement> RunSQL<TElement>(string sql, params object[] paras);
+
         DataTable Run(string sql, CommandType commandType, params object[] paras);
+
         IEnumerable<TElement> Run<TElement>(string sql, CommandType commandType, params object[] paras);
+
         object CreateCommandParameter(string name, object value, ParameterDirection dir);
 
         void SetLoggerFactory(ILoggerFactory factory);
+
         void SetTenantCode(string tc);
     }
 }

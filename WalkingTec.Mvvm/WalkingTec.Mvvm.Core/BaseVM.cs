@@ -1,20 +1,14 @@
-
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Localization;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Reflection;
 using System.Text.Json.Serialization;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Localization;
-using Microsoft.Extensions.Logging;
-
 using WalkingTec.Mvvm.Core.Extensions;
-using WalkingTec.Mvvm.Core.Support.Json;
 
 namespace WalkingTec.Mvvm.Core
 {
-
     /// <summary>
     /// 所有ViewModel的基类，提供了基本的功能
     /// </summary>
@@ -34,6 +28,7 @@ namespace WalkingTec.Mvvm.Core
         public WTMContext Wtm { get; set; }
 
         private Guid _uniqueId;
+
         /// <summary>
         /// VM实例的Id
         /// </summary>
@@ -50,7 +45,6 @@ namespace WalkingTec.Mvvm.Core
             }
         }
 
-
         /// <summary>
         /// 前台传递过来的弹出窗口ID，多层弹出窗口用逗号分隔
         /// </summary>
@@ -58,6 +52,7 @@ namespace WalkingTec.Mvvm.Core
         public string WindowIds { get => Wtm?.WindowIds; }
 
         private string _viewdivid;
+
         /// <summary>
         /// PartialView中主Div的Id
         /// </summary>
@@ -75,8 +70,8 @@ namespace WalkingTec.Mvvm.Core
             }
         }
 
-
         private IDataContext _dc;
+
         /// <summary>
         /// 数据库环境
         /// </summary>
@@ -140,7 +135,6 @@ namespace WalkingTec.Mvvm.Core
         /// </summary>
         [JsonIgnore]
         public Configs ConfigInfo { get => Wtm?.ConfigInfo; }
-
 
         [JsonIgnore]
         public IUIService UIService { get => Wtm?.UIService; }
@@ -209,12 +203,16 @@ namespace WalkingTec.Mvvm.Core
 
         [JsonIgnore]
         public string PropertyNameInParent { get; set; }
+
         [JsonIgnore]
         public BaseVM ParentVM { get; set; }
+
         [Display(Name = "_Admin.Remark")]
         public string Remark { get; set; }
+
         public string ActionName { get; set; }
-        #endregion
+
+        #endregion Property
 
         #region Event
 
@@ -222,12 +220,13 @@ namespace WalkingTec.Mvvm.Core
         /// InitVM完成后触发的事件
         /// </summary>
         public event Action<IBaseVM> OnAfterInit;
+
         /// <summary>
         /// ReInitVM完成后触发的事件
         /// </summary>
         public event Action<IBaseVM> OnAfterReInit;
 
-        #endregion
+        #endregion Event
 
         #region Method
 
@@ -277,6 +276,7 @@ namespace WalkingTec.Mvvm.Core
                 ReInitSubVM(subins);
             }
         }
+
         /// <summary>
         /// 初始化ViewModel，框架会在创建VM实例之后自动调用本函数
         /// </summary>
@@ -318,14 +318,14 @@ namespace WalkingTec.Mvvm.Core
         {
             string rv = "";
             var p = this;
-            while (p != null && string.IsNullOrEmpty(p.PropertyNameInParent)==false)
+            while (p != null && string.IsNullOrEmpty(p.PropertyNameInParent) == false)
             {
                 rv = p.PropertyNameInParent + "." + rv;
                 p = p.ParentVM;
             }
             return rv;
         }
-        #endregion
 
+        #endregion Method
     }
 }

@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using IoTGateway.Model;
 using WalkingTec.Mvvm.Core;
-using WalkingTec.Mvvm.Core.Extensions;
-using IoTGateway.Model;
-
 
 namespace IoTGateway.ViewModel.Config.SystemConfigVMs
 {
@@ -17,19 +10,15 @@ namespace IoTGateway.ViewModel.Config.SystemConfigVMs
             ListVM = new SystemConfigListVM();
             LinkedVM = new SystemConfig_BatchEdit();
         }
-
     }
 
-	/// <summary>
+    /// <summary>
     /// Class to define batch edit fields
     /// </summary>
     public class SystemConfig_BatchEdit : BaseVM
     {
-
         protected override void InitVM()
         {
         }
-
     }
-
 }

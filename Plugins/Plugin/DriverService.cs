@@ -1,12 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using IoTGateway.DataAccess;
+using IoTGateway.Model;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using PluginInterface;
 using System.Reflection;
 using System.Text.Json;
 using WalkingTec.Mvvm.Core;
-using IoTGateway.DataAccess;
-using IoTGateway.Model;
-using Microsoft.Extensions.Logging;
 
 namespace Plugin
 {

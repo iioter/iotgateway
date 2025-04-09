@@ -1,9 +1,6 @@
 ﻿using S7.Net.Helper;
 using S7.Net.Protocol.S7;
 using S7.Net.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using DateTime = S7.Net.Types.DateTime;
 using Timer = S7.Net.Types.Timer;
 
@@ -49,6 +46,7 @@ namespace S7.Net
                 case DataType.Counter:
                     stream.WriteByte((byte)dataType);
                     break;
+
                 default:
                     stream.WriteByte(0x02);
                     break;
@@ -65,6 +63,7 @@ namespace S7.Net
                 case DataType.Counter:
                     stream.WriteByteArray(Types.Word.ToByteArray((ushort)(startByteAdr)));
                     break;
+
                 default:
                     stream.WriteByteArray(Types.Word.ToByteArray((ushort)((startByteAdr) * 8)));
                     break;
@@ -91,31 +90,37 @@ namespace S7.Net
                         return bytes[0];
                     else
                         return bytes;
+
                 case VarType.Word:
                     if (varCount == 1)
                         return Word.FromByteArray(bytes);
                     else
                         return Word.ToArray(bytes);
+
                 case VarType.Int:
                     if (varCount == 1)
                         return Int.FromByteArray(bytes);
                     else
                         return Int.ToArray(bytes);
+
                 case VarType.DWord:
                     if (varCount == 1)
                         return DWord.FromByteArray(bytes);
                     else
                         return DWord.ToArray(bytes);
+
                 case VarType.DInt:
                     if (varCount == 1)
                         return DInt.FromByteArray(bytes);
                     else
                         return DInt.ToArray(bytes);
+
                 case VarType.Real:
                     if (varCount == 1)
                         return Types.Real.FromByteArray(bytes);
                     else
                         return Types.Real.ToArray(bytes);
+
                 case VarType.LReal:
                     if (varCount == 1)
                         return Types.LReal.FromByteArray(bytes);
@@ -124,8 +129,10 @@ namespace S7.Net
 
                 case VarType.String:
                     return Types.String.FromByteArray(bytes);
+
                 case VarType.S7String:
                     return S7String.FromByteArray(bytes);
+
                 case VarType.S7WString:
                     return S7WString.FromByteArray(bytes);
 
@@ -134,11 +141,13 @@ namespace S7.Net
                         return Timer.FromByteArray(bytes);
                     else
                         return Timer.ToArray(bytes);
+
                 case VarType.Counter:
                     if (varCount == 1)
                         return Counter.FromByteArray(bytes);
                     else
                         return Counter.ToArray(bytes);
+
                 case VarType.Bit:
                     if (varCount == 1)
                     {
@@ -186,28 +195,37 @@ namespace S7.Net
             {
                 case VarType.Bit:
                     return (varCount + 7) / 8;
+
                 case VarType.Byte:
                     return (varCount < 1) ? 1 : varCount;
+
                 case VarType.String:
                     return varCount;
+
                 case VarType.S7String:
                     return ((varCount + 2) & 1) == 1 ? (varCount + 3) : (varCount + 2);
+
                 case VarType.S7WString:
                     return (varCount * 2) + 4;
+
                 case VarType.Word:
                 case VarType.Timer:
                 case VarType.Int:
                 case VarType.Counter:
                     return varCount * 2;
+
                 case VarType.DWord:
                 case VarType.DInt:
                 case VarType.Real:
                     return varCount * 4;
+
                 case VarType.LReal:
                 case VarType.DateTime:
                     return varCount * 8;
+
                 case VarType.DateTimeLong:
                     return varCount * 12;
+
                 default:
                     return 0;
             }
