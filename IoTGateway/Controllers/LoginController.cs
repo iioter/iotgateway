@@ -33,15 +33,15 @@ namespace IoTGateway.Controllers
         [HttpPost]
         public async Task<ActionResult> Login(LoginVM vm)
         {
-            if (Wtm.ConfigInfo.IsQuickDebug == false)
-            {
-                var verifyCode = HttpContext.Session.Get<string>("verify_code");
-                if (string.IsNullOrEmpty(verifyCode) || verifyCode.ToLower() != vm.VerifyCode.ToLower())
-                {
-                    vm.MSD.AddModelError("", Localizer["Login.ValidationFail"]);
-                    return View(vm);
-                }
-            }
+            //if (Wtm.ConfigInfo.IsQuickDebug == false)
+            //{
+            //    var verifyCode = HttpContext.Session.Get<string>("verify_code");
+            //    if (string.IsNullOrEmpty(verifyCode) || verifyCode.ToLower() != vm.VerifyCode.ToLower())
+            //    {
+            //        vm.MSD.AddModelError("", Localizer["Login.ValidationFail"]);
+            //        return View(vm);
+            //    }
+            //}
             var user = Wtm.DoLogin(vm.ITCode, vm.Password, vm.Tenant);
             if (user == null)
             {

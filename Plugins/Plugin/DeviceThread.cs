@@ -31,6 +31,7 @@ namespace Plugin
 
         //增加时间容忍断开连接
         private DateTime _lastGoodTime = DateTime.UtcNow;
+
         private readonly TimeSpan _maxFailureDuration = TimeSpan.FromSeconds(60);
 
         public DeviceThread(Device device, IDriver driver, string projectId, MessageService messageService,
@@ -161,7 +162,6 @@ namespace Plugin
                                 // 至少有一个变量读取成功，刷新最后成功时间
                                 _lastGoodTime = DateTime.UtcNow;
                             }
-
                         }
                         else
                         {

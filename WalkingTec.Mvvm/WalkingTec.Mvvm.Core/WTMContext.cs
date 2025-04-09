@@ -247,6 +247,7 @@ namespace WalkingTec.Mvvm.Core
         private IStringLocalizerFactory _stringLocalizerFactory;
         private IStringLocalizer _localizer;
         private ILoggerFactory _loggerFactory;
+
         public ILoggerFactory LoggerFactory
         { get { return _loggerFactory; } }
 
