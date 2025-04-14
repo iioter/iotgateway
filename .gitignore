@@ -25,3 +25,5 @@ bin-release/
 /IoTGateway/IoTGateway.csproj.user
 /IoTGateway/.config
 *.ps1
+app
+3d
