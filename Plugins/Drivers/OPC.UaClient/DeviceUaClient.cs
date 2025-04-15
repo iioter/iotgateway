@@ -61,7 +61,7 @@ namespace OPC.UaClient
             }
             catch (Exception ex)
             {
-                _logger.LogInformation($"Device:[{_device}],Connect()");
+                _logger.LogError(ex, $"Device:[{_device}],Connect(),Error");
                 return false;
             }
 
