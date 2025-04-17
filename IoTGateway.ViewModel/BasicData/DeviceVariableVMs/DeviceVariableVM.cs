@@ -37,11 +37,6 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
             {
                 AllMethods = deviceService.GetDriverMethods(Entity.DeviceId);
             }
-            else if (IoTBackgroundService.VariableSelectDeviceId != null)
-            {
-                Entity.DeviceId = IoTBackgroundService.VariableSelectDeviceId;
-                AllMethods = deviceService.GetDriverMethods(Entity.DeviceId);
-            }
 
             if (AllMethods?.Count() > 0)
                 AllMethods[0].Selected = true;

@@ -44,10 +44,6 @@ namespace IoTGateway.ViewModel.BasicData.DeviceConfigVMs
                     }
                 }
             }
-            else if (IoTBackgroundService.ConfigSelectDeviceId != null)
-            {
-                Entity.DeviceId = IoTBackgroundService.ConfigSelectDeviceId;
-            }
         }
 
         public override void DoAdd()

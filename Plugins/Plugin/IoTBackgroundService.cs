@@ -11,7 +11,6 @@ namespace Plugin
     {
         public static DBTypeEnum DbType;
         public static string connnectSetting;
-        public static Guid? VariableSelectDeviceId, ConfigSelectDeviceId;
         private readonly IHostApplicationLifetime _appLifeTime;
         private readonly IServiceProvider _serviceProvider;
 

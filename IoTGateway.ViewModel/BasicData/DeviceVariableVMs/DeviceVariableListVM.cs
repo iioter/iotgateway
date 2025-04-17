@@ -56,7 +56,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
 
                     item.Text = " " + item.Text;
                     item.Expended = true;
-                    item.Selected = item.Value.ToString() == IoTBackgroundService.VariableSelectDeviceId.ToString();
+                    item.Selected = false;
                 });
             });
             DevicesTree = GetLayuiTree(AllDevices);
@@ -107,9 +107,6 @@ namespace IoTGateway.ViewModel.BasicData.DeviceVariableVMs
 
         public override IOrderedQueryable<DeviceVariable_View> GetSearchQuery()
         {
-            if (Searcher.DeviceId != null)
-                IoTBackgroundService.VariableSelectDeviceId = Searcher.DeviceId;
-
             // 获取设备服务
             var deviceService = Wtm.ServiceProvider.GetService(typeof(DeviceService)) as DeviceService;
 

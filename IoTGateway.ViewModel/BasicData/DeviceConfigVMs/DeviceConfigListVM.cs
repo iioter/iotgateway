@@ -47,7 +47,7 @@ namespace IoTGateway.ViewModel.BasicData.DeviceConfigVMs
 
                     item.Text = " " + item.Text;
                     item.Expended = true;
-                    item.Selected = item.Value.ToString() == IoTBackgroundService.ConfigSelectDeviceId.ToString();
+                    item.Selected = false;
                 }
             }
             base.InitListVM();
@@ -68,8 +68,6 @@ namespace IoTGateway.ViewModel.BasicData.DeviceConfigVMs
 
         public override IOrderedQueryable<DeviceConfig_View> GetSearchQuery()
         {
-            if (Searcher.DeviceId != null)
-                IoTBackgroundService.ConfigSelectDeviceId = Searcher.DeviceId;
             var query = DC.Set<DeviceConfig>()
                 .CheckContain(Searcher.DeviceConfigName, x => x.DeviceConfigName)
                 .CheckContain(Searcher.Value, x => x.Value)
