@@ -1,5 +1,6 @@
 ﻿using Opc.Ua;
 using Opc.Ua.Client;
+using Opc.Ua.Configuration;
 
 namespace OpcUaHelper
 {
@@ -98,6 +99,18 @@ namespace OpcUaHelper
             };
 
             configuration.Validate(ApplicationType.Client);
+
+            var appInstance = new ApplicationInstance
+            {
+                ApplicationName = OpcUaName,
+                ApplicationType = ApplicationType.Client,
+                ApplicationConfiguration = configuration
+            };
+
+            appInstance.CheckApplicationInstanceCertificate(true, 2048);
+
+            configuration.Validate(ApplicationType.Client);
+
             m_configuration = configuration;
         }
 
