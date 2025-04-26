@@ -13,6 +13,8 @@
 		<Nullable>disable</Nullable>
 
 		<CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>
+
+		<ApplicationIcon>wwwroot\favicon.ico</ApplicationIcon>
 		<!--<PlatformTarget>x86</PlatformTarget>-->
 	</PropertyGroup>
 
