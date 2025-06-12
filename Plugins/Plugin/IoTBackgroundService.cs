@@ -44,6 +44,10 @@ namespace Plugin
                 case "memory":
                     DbType = DBTypeEnum.Memory;
                     break;
+
+                case "dameng":
+                    DbType = DBTypeEnum.DaMeng;
+                    break;
             }
 
             if (DbType == DBTypeEnum.SQLite)
