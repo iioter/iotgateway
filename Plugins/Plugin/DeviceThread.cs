@@ -82,129 +82,129 @@ namespace Plugin
         }
 
         /// <summary>
-/// 处理驱动主动上报的数据
-/// </summary>
-/// <param name="sender"></param>
-/// <param name="e"></param>
-private async Task OnDriverDataReceived(object sender, DataReportEventArgs e)
-{
-    try
-    {
-        // 根据变量名或地址查找对应的DeviceVariable
-        var deviceVariable = Device.DeviceVariables?.FirstOrDefault(v => 
-            v.Name == e.VariableName || 
-            v.DeviceAddress == e.Address ||
-            (!string.IsNullOrEmpty(e.Address) && v.DeviceAddress == e.Address));
-
-        if (deviceVariable == null)
+        /// 处理驱动主动上报的数据
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async Task OnDriverDataReceived(object sender, DataReportEventArgs e)
         {
-            _logger.LogWarning($"未找到对应的设备变量: {e.VariableName}, 地址: {e.Address}");
-            return;
-        }
-
-        // 创建返回值模型
-        var ret = new DriverReturnValueModel
-        {
-            Value = e.Value,
-            StatusType = e.StatusType,
-            Timestamp = e.Timestamp,
-            Message = e.Message,
-            VarId = deviceVariable.ID
-        };
-
-        // 将原始值加入队列（保存最近3次）
-        deviceVariable.EnqueueVariable(ret.Value);
-
-        // 表达式计算（如果配置了）
-        if (ret.StatusType == VaribaleStatusTypeEnum.Good && !string.IsNullOrWhiteSpace(deviceVariable.Expressions?.Trim()))
-        {
-            var expressionText = DealMysqlStr(deviceVariable.Expressions)
-                .Replace("raw",
-                    deviceVariable.Values[0] is bool
-                        ? $"Convert.ToBoolean(\"{deviceVariable.Values[0]}\")"
-                        : deviceVariable.Values[0]?.ToString())
-                .Replace("$v",
-                    deviceVariable.Values[0] is bool
-                        ? $"Convert.ToBoolean(\"{deviceVariable.Values[0]}\")"
-                        : deviceVariable.Values[0]?.ToString())
-                .Replace("$pv",
-                    deviceVariable.Values[1] is bool
-                        ? $"Convert.ToBoolean(\"{deviceVariable.Values[1]}\")"
-                        : deviceVariable.Values[1]?.ToString())
-                .Replace("$ppv",
-                    deviceVariable.Values[2] is bool
-                        ? $"Convert.ToBoolean(\"{deviceVariable.Values[2]}\")"
-                        : deviceVariable.Values[2]?.ToString());
-
             try
             {
-                ret.CookedValue = _interpreter!.Eval(expressionText);
+                // 根据变量名或地址查找对应的DeviceVariable
+                var deviceVariable = Device.DeviceVariables?.FirstOrDefault(v => 
+                    v.Name == e.VariableName || 
+                    v.DeviceAddress == e.Address ||
+                    (!string.IsNullOrEmpty(e.Address) && v.DeviceAddress == e.Address));
+        
+                if (deviceVariable == null)
+                {
+                    _logger.LogWarning($"未找到对应的设备变量: {e.VariableName}, 地址: {e.Address}");
+                    return;
+                }
+        
+                // 创建返回值模型
+                var ret = new DriverReturnValueModel
+                {
+                    Value = e.Value,
+                    StatusType = e.StatusType,
+                    Timestamp = e.Timestamp,
+                    Message = e.Message,
+                    VarId = deviceVariable.ID
+                };
+        
+                // 将原始值加入队列（保存最近3次）
+                deviceVariable.EnqueueVariable(ret.Value);
+        
+                // 表达式计算（如果配置了）
+                if (ret.StatusType == VaribaleStatusTypeEnum.Good && !string.IsNullOrWhiteSpace(deviceVariable.Expressions?.Trim()))
+                {
+                    var expressionText = DealMysqlStr(deviceVariable.Expressions)
+                        .Replace("raw",
+                            deviceVariable.Values[0] is bool
+                                ? $"Convert.ToBoolean(\"{deviceVariable.Values[0]}\")"
+                                : deviceVariable.Values[0]?.ToString())
+                        .Replace("$v",
+                            deviceVariable.Values[0] is bool
+                                ? $"Convert.ToBoolean(\"{deviceVariable.Values[0]}\")"
+                                : deviceVariable.Values[0]?.ToString())
+                        .Replace("$pv",
+                            deviceVariable.Values[1] is bool
+                                ? $"Convert.ToBoolean(\"{deviceVariable.Values[1]}\")"
+                                : deviceVariable.Values[1]?.ToString())
+                        .Replace("$ppv",
+                            deviceVariable.Values[2] is bool
+                                ? $"Convert.ToBoolean(\"{deviceVariable.Values[2]}\")"
+                                : deviceVariable.Values[2]?.ToString());
+        
+                    try
+                    {
+                        ret.CookedValue = _interpreter!.Eval(expressionText);
+                    }
+                    catch (Exception ex)
+                    {
+                        ret.Message = $"表达式错误：{expressionText}";
+                        ret.StatusType = VaribaleStatusTypeEnum.ExpressionError;
+                        _logger.LogError(ex, $"表达式计算失败: {expressionText}");
+                    }
+                }
+                else
+                {
+                    ret.CookedValue = ret.Value;
+                }
+        
+                // 将计算后的值加入队列
+                deviceVariable.EnqueueCookedVariable(ret.CookedValue);
+        
+                // 更新设备变量的状态
+                deviceVariable.Value = ret.Value;
+                deviceVariable.CookedValue = ret.CookedValue;
+                deviceVariable.StatusType = ret.StatusType;
+                deviceVariable.Timestamp = ret.Timestamp;
+                deviceVariable.Message = ret.Message;
+        
+                // 发布到MQTT（用于前端展示）
+                if (JsonConvert.SerializeObject(deviceVariable.Values[1]) != JsonConvert.SerializeObject(deviceVariable.Values[0]) ||
+                    JsonConvert.SerializeObject(deviceVariable.CookedValues[1]) != JsonConvert.SerializeObject(deviceVariable.CookedValues[0]))
+                {
+                    var msgInternal = new InjectedMqttApplicationMessage(
+                        new MqttApplicationMessage()
+                        {
+                            Topic = $"internal/v1/gateway/telemetry/{Device.DeviceName}/{deviceVariable.Name}",
+                            PayloadSegment = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(ret))
+                        });
+                    _mqttServer.InjectApplicationMessage(msgInternal);
+                }
+        
+                // 如果变量配置为上传，则发布遥测数据
+                if (deviceVariable.IsUpload && ret.StatusType == VaribaleStatusTypeEnum.Good)
+                {
+                    var deviceName = string.IsNullOrWhiteSpace(deviceVariable.Alias) ? Device.DeviceName : deviceVariable.Alias;
+                    var sendModel = new Dictionary<string, List<PayLoad>>
+                    {
+                        {
+                            deviceName,
+                            new List<PayLoad>
+                            {
+                                new PayLoad
+                                {
+                                    Values = new Dictionary<string, object> { { deviceVariable.Name, ret.CookedValue } },
+                                    TS = (long)(DateTime.UtcNow - _tsStartDt).TotalMilliseconds,
+                                    DeviceStatus = DeviceStatusTypeEnum.Good
+                                }
+                            }
+                        }
+                    };
+        
+                    await _messageService.PublishTelemetryAsync(deviceName, Device, sendModel);
+                }
+        
+                _logger.LogDebug($"处理驱动上报数据: {deviceVariable.Name} = {ret.CookedValue}");
             }
             catch (Exception ex)
             {
-                ret.Message = $"表达式错误：{expressionText}";
-                ret.StatusType = VaribaleStatusTypeEnum.ExpressionError;
-                _logger.LogError(ex, $"表达式计算失败: {expressionText}");
+                _logger.LogError(ex, $"处理驱动上报数据失败: {e.VariableName}");
             }
         }
-        else
-        {
-            ret.CookedValue = ret.Value;
-        }
-
-        // 将计算后的值加入队列
-        deviceVariable.EnqueueCookedVariable(ret.CookedValue);
-
-        // 更新设备变量的状态
-        deviceVariable.Value = ret.Value;
-        deviceVariable.CookedValue = ret.CookedValue;
-        deviceVariable.StatusType = ret.StatusType;
-        deviceVariable.Timestamp = ret.Timestamp;
-        deviceVariable.Message = ret.Message;
-
-        // 发布到MQTT（用于前端展示）
-        if (JsonConvert.SerializeObject(deviceVariable.Values[1]) != JsonConvert.SerializeObject(deviceVariable.Values[0]) ||
-            JsonConvert.SerializeObject(deviceVariable.CookedValues[1]) != JsonConvert.SerializeObject(deviceVariable.CookedValues[0]))
-        {
-            var msgInternal = new InjectedMqttApplicationMessage(
-                new MqttApplicationMessage()
-                {
-                    Topic = $"internal/v1/gateway/telemetry/{Device.DeviceName}/{deviceVariable.Name}",
-                    PayloadSegment = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(ret))
-                });
-            _mqttServer.InjectApplicationMessage(msgInternal);
-        }
-
-        // 如果变量配置为上传，则发布遥测数据
-        if (deviceVariable.IsUpload && ret.StatusType == VaribaleStatusTypeEnum.Good)
-        {
-            var deviceName = string.IsNullOrWhiteSpace(deviceVariable.Alias) ? Device.DeviceName : deviceVariable.Alias;
-            var sendModel = new Dictionary<string, List<PayLoad>>
-            {
-                {
-                    deviceName,
-                    new List<PayLoad>
-                    {
-                        new PayLoad
-                        {
-                            Values = new Dictionary<string, object> { { deviceVariable.Name, ret.CookedValue } },
-                            TS = (long)(DateTime.UtcNow - _tsStartDt).TotalMilliseconds,
-                            DeviceStatus = DeviceStatusTypeEnum.Good
-                        }
-                    }
-                }
-            };
-
-            await _messageService.PublishTelemetryAsync(deviceName, Device, sendModel);
-        }
-
-        _logger.LogDebug($"处理驱动上报数据: {deviceVariable.Name} = {ret.CookedValue}");
-    }
-    catch (Exception ex)
-    {
-        _logger.LogError(ex, $"处理驱动上报数据失败: {e.VariableName}");
-    }
-}
 
         private async Task CreateThreadAsync(CancellationToken token)
         {
