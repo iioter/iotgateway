@@ -131,44 +131,45 @@ namespace Plugin
         {
             try
             {
-                // 缓存本次待发送的数据，减少重复查找
-                if (!sendModel.TryGetValue(deviceName, out var newTelemetry) || newTelemetry.Count == 0)
-                {
-                    return false;
-                }
+                var newTelemetry = sendModel[deviceName];
 
-                // 尝试获取上一次的遥测数据
-                if (!_lastTelemetrys.TryGetValue(deviceName, out var lastTelemetry))
+                // 取出当前待发送的首条数据
+                var newPayload = newTelemetry[0];
+
+                // 如果没有历史数据，直接发布并缓存
+                if (!_lastTelemetrys.TryGetValue(deviceName, out var lastTelemetry) || lastTelemetry == null || lastTelemetry.Count == 0)
                 {
                     _lastTelemetrys[deviceName] = newTelemetry;
                     return true;
                 }
 
-                var newPayload = newTelemetry[0];
                 var lastPayload = lastTelemetry[0];
 
+                // 如果启用了差异检测功能
                 if (device.CgUpload)
                 {
-                    if (newPayload.TS - lastPayload.TS > device.EnforcePeriod ||
-                        !newPayload.Values.SequenceEqual(lastPayload.Values))
+                    bool isTimeExceeded = (newPayload.TS - lastPayload.TS) > device.EnforcePeriod;
+                    bool isValueChanged = !newPayload.Values.SequenceEqual(lastPayload.Values);
+
+                    if (isTimeExceeded || isValueChanged)
                     {
                         _lastTelemetrys[deviceName] = newTelemetry;
                         return true;
                     }
+
+                    // 未超时也无变化，则不发布
+                    return false;
                 }
-                else
-                {
-                    _lastTelemetrys[deviceName] = newTelemetry;
-                    return true;
-                }
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error in CanPubTelemetry");
+
+                // 未启用差异检测，直接发布
+                _lastTelemetrys[deviceName] = newTelemetry;
                 return true;
             }
-
-            return false;
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in CanPubTelemetry for device: {DeviceName}", deviceName);
+                return true; // 出现异常，选择保守发布
+            }
         }
 
         public async Task PublishTelemetryAsync(string deviceName, Device device, Dictionary<string, List<PayLoad>> sendModel)

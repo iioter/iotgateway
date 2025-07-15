@@ -97,7 +97,7 @@ namespace Plugin.PlatformHandler
             {
                 if (payload.Values != null)
                 {
-                    payload.Values["_ts_"] = (long)(DateTime.UtcNow - _tsStartDt).TotalMilliseconds;
+                    //payload.Values["_ts_"] = (long)(DateTime.UtcNow - _tsStartDt).TotalMilliseconds;
                     await MqttClient.EnqueueAsync(new MqttApplicationMessageBuilder().WithTopic($"devices/{deviceName}/telemetry")
                         .WithPayload(JsonConvert.SerializeObject(payload.Values)).Build());
                 }
