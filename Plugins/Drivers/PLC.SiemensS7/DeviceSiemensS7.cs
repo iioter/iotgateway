@@ -150,16 +150,27 @@ namespace PLC.SiemensS7
                         ret.Value = strRaw;
                     }
                     else
-                        ret.Value = _plc.Read(ioArg.Address);
-                    if (ioArg.ValueType == DataTypeEnum.Float)
                     {
-                        var buffer = new byte[4];
-
-                        buffer[3] = (byte)((uint)ret.Value >> 24);
-                        buffer[2] = (byte)((uint)ret.Value >> 16);
-                        buffer[1] = (byte)((uint)ret.Value >> 8);
-                        buffer[0] = (byte)((uint)ret.Value >> 0);
-                        ret.Value = BitConverter.ToSingle(buffer, 0);
+                        ret.Value = _plc.Read(ioArg.Address);
+                        switch (ioArg.ValueType)
+                        {
+                            case DataTypeEnum.Int16:
+                                ret.Value = (short)(ushort)ret.Value;
+                                break;
+                            case DataTypeEnum.Int32:
+                                ret.Value = (int)(uint)ret.Value;
+                                break;
+                            case DataTypeEnum.Float:
+                                var buffer = new byte[4];
+                                buffer[3] = (byte)((uint)ret.Value >> 24);
+                                buffer[2] = (byte)((uint)ret.Value >> 16);
+                                buffer[1] = (byte)((uint)ret.Value >> 8);
+                                buffer[0] = (byte)((uint)ret.Value >> 0);
+                                ret.Value = BitConverter.ToSingle(buffer, 0);
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
                 catch (Exception ex)
