@@ -27,6 +27,7 @@ namespace PLC.ModBusMaster
 
         public ILogger _logger { get; set; }
         private readonly string _device;
+         public event Func<object, DataReportEventArgs, Task>? OnDataReceived;
 
         #region 配置参数
 
