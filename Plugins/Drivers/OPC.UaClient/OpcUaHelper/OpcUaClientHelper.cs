@@ -1,4 +1,5 @@
 ﻿using Opc.Ua;
+using Opc.Ua.Bindings;
 using Opc.Ua.Client;
 using Opc.Ua.Configuration;
 
@@ -88,7 +89,7 @@ namespace OpcUaHelper
                     MaxMessageSize = 419430400,
                     MaxBufferSize = 65535,
                     ChannelLifetime = -1,
-                    SecurityTokenLifetime = -1
+                    SecurityTokenLifetime = TcpMessageLimits.DefaultSecurityTokenLifeTime
                 },
                 ClientConfiguration = new ClientConfiguration
                 {
