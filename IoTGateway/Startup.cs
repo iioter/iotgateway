@@ -1,4 +1,6 @@
-﻿using IoTGateway.MCP;
+﻿using IoTGateway.Extensions;
+using IoTGateway.MCP;
+using IoTGateway.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -71,6 +73,7 @@ namespace IoTGateway
             services.AddSingleton<DriverService>();
             services.AddSingleton<MessageService>();
             services.AddSingleton<ModbusSlaveService>();
+            services.AddSingleton<MQTTService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -105,11 +108,6 @@ namespace IoTGateway
                     endpoints.MapMqtt("/mqtt");
                 });
 
-                app.UseMqttServer(server =>
-                {
-                    // Todo: Do something with the server
-                });
-
                 endpoints.MapControllerRoute(
                    name: "areaRoute",
                    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
@@ -119,6 +117,7 @@ namespace IoTGateway
             });
 
             app.UseWtmContext();
+            app.UseMqttServer();
         }
 
         /// <summary>

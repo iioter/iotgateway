@@ -61,6 +61,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalkingTec.Mvvm.Mvc", "Walk
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalkingTec.Mvvm.TagHelpers.LayUI", "WalkingTec.Mvvm\WalkingTec.Mvvm.TagHelpers.LayUI\WalkingTec.Mvvm.TagHelpers.LayUI.csproj", "{8E0EE445-F777-4563-BB06-33DCC0AD00FE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IoTGateway.Service", "IoTGateway.Service\IoTGateway.Service.csproj", "{BD7FB3A8-3D0A-4F37-AB71-A3DBF6A6269D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -151,6 +153,10 @@ Global
 		{8E0EE445-F777-4563-BB06-33DCC0AD00FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E0EE445-F777-4563-BB06-33DCC0AD00FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E0EE445-F777-4563-BB06-33DCC0AD00FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD7FB3A8-3D0A-4F37-AB71-A3DBF6A6269D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD7FB3A8-3D0A-4F37-AB71-A3DBF6A6269D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD7FB3A8-3D0A-4F37-AB71-A3DBF6A6269D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD7FB3A8-3D0A-4F37-AB71-A3DBF6A6269D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

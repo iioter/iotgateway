@@ -35,6 +35,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\IoTGateway.Model\IoTGateway.Model.csproj" />
 		<ProjectReference Include="..\IoTGateway.DataAccess\IoTGateway.DataAccess.csproj" />
+		<ProjectReference Include="..\IoTGateway.Service\IoTGateway.Service.csproj" />
 		<ProjectReference Include="..\IoTGateway.ViewModel\IoTGateway.ViewModel.csproj" />
 		<ProjectReference Include="..\WalkingTec.Mvvm\WalkingTec.Mvvm.Mvc\WalkingTec.Mvvm.Mvc.csproj" />
 		<ProjectReference Include="..\WalkingTec.Mvvm\WalkingTec.Mvvm.TagHelpers.LayUI\WalkingTec.Mvvm.TagHelpers.LayUI.csproj" />

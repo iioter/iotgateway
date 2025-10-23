@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="MQTTnet.AspNetCore" Version="4.3.7.1207" />
+		<PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.3.7.1207" />
+	</ItemGroup>
+
+</Project>

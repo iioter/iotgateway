@@ -2,6 +2,7 @@
 using MQTTnet.Server;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using WalkingTec.Mvvm.Core;
 
 namespace IoTGateway.ViewModel.MqttClient.MqttServerVMs
@@ -34,15 +35,14 @@ namespace IoTGateway.ViewModel.MqttClient.MqttServerVMs
             base.InitVM();
         }
 
-        public override void AfterDoSearcher()
-        {
-        }
-
         public override void DoSearch()
         {
             var mqttServer = Wtm.ServiceProvider.GetService(typeof(MqttServer)) as MqttServer;
-            foreach (var client in mqttServer.GetClientsAsync().Result)
+            var clients = mqttServer.GetClientsAsync().Result;
+            foreach (var client in clients)
             {
+                if (this.EntityList.Any(x => x.ClientId == client.Id))
+                    continue;
                 MqttClient_View mqttClient_ = new MqttClient_View
                 {
                     ClientId = client.Id,
@@ -57,7 +57,6 @@ namespace IoTGateway.ViewModel.MqttClient.MqttServerVMs
                 };
                 this.EntityList.Add(mqttClient_);
             }
-            int i = 0;
         }
     }
 
