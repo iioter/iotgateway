@@ -2,8 +2,7 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace WalkingTec.Mvvm.TagHelpers.LayUI
 {
-    public enum FieldSetStyleEnum
-    { Default, Simple }
+    public enum FieldSetStyleEnum { Default, Simple }
 
     [HtmlTargetElement("wt:fieldset", TagStructure = TagStructure.NormalOrSelfClosing)]
     public class FieldSetTagHelper : BaseElementTag

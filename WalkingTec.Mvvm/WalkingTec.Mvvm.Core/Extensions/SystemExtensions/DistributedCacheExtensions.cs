@@ -23,12 +23,14 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using Microsoft.Extensions.Caching.Distributed;
 using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+
+using Microsoft.Extensions.Caching.Distributed;
+
 
 namespace WalkingTec.Mvvm.Core.Extensions
 {
@@ -40,7 +42,6 @@ namespace WalkingTec.Mvvm.Core.Extensions
         private const string SPLIT_CHAR = ":";
 
         private static string _instanceName;
-
         private static string InstanceName
         {
             get
@@ -70,7 +71,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
             if (value == null)
                 return default;
             else
-                return JsonSerializer.Deserialize<T>(value, Core.CoreProgram.DefaultJsonOption);
+                return JsonSerializer.Deserialize<T>(value,Core.CoreProgram.DefaultJsonOption);
         }
 
         public static async Task<T> GetAsync<T>(
@@ -103,7 +104,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
             }
         }
 
-        #endregion Get
+        #endregion
 
         #region Set
 
@@ -113,8 +114,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
             T value,
             DistributedCacheEntryOptions options = null)
         {
-            if (options == null && typeof(T) == typeof(LoginUserInfo))
-            {
+            if(options == null && typeof(T) == typeof(LoginUserInfo) ){
                 options = new DistributedCacheEntryOptions()
                 {
                     AbsoluteExpirationRelativeToNow = new System.TimeSpan(7, 0, 0, 0)
@@ -139,7 +139,8 @@ namespace WalkingTec.Mvvm.Core.Extensions
                 await cache.SetAsync(InstanceName + key.ToLower(), Encoding.UTF8.GetBytes(JsonSerializer.Serialize(value, CoreProgram.DefaultJsonOption)), options, token);
         }
 
-        #endregion Set
+        #endregion
+
 
         #region Delete
 
@@ -158,6 +159,6 @@ namespace WalkingTec.Mvvm.Core.Extensions
             await cache.RemoveAsync(InstanceName + key.ToLower(), token);
         }
 
-        #endregion Delete
+        #endregion
     }
 }

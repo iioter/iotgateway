@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFramework>net8.0</TargetFramework>
-    <OutputPath>../../../IoTGateway/bin/Debug/net8.0/drivers</OutputPath>
+	  <TargetFramework>net10.0</TargetFramework>
+    <OutputPath>../../../IoTGateway/bin/Debug/$(TargetFramework)/drivers</OutputPath>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.IO.Ports" Version="8.0.0" />
+    <PackageReference Include="System.IO.Ports" />
   </ItemGroup>
 
   <ItemGroup>

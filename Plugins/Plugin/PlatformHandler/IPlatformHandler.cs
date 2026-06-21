@@ -1,6 +1,6 @@
 ﻿using IoTGateway.Model;
 using Microsoft.Extensions.Logging;
-using MQTTnet.Client;
+using MQTTnet;
 using MQTTnet.Extensions.ManagedClient;
 using PluginInterface;
 

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using WalkingTec.Mvvm.Core;
 
 namespace WalkingTec.Mvvm.Mvc
@@ -61,12 +62,12 @@ namespace WalkingTec.Mvvm.Mvc
             string rv = "";
             foreach (var key in Keys)
             {
-                if (this[key].Count > 0)
-                {
+                if(this[key].Count > 0){
                     rv = this[key].First().ErrorMessage;
                 }
             }
             return rv;
         }
     }
+
 }

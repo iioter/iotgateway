@@ -3,6 +3,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Localization;
 
 using WalkingTec.Mvvm.Core;
+using WalkingTec.Mvvm.Core.Support.Json;
 
 namespace WalkingTec.Mvvm.Mvc
 {
@@ -14,13 +15,13 @@ namespace WalkingTec.Mvvm.Mvc
         GlobalData GlobaInfo { get; }
         string CurrentCS { get; }
 
-        DBTypeEnum? CurrentDbType { get; }
+        DBTypeEnum? CurrentDbType { get;  }
 
         IDataContext DC { get; }
 
         IDistributedCache Cache { get; }
 
-        string BaseUrl { get; }
+        string BaseUrl { get;  }
 
         ModelStateDictionary ModelState { get; }
 

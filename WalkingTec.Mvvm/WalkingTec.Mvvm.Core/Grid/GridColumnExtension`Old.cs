@@ -25,7 +25,6 @@ namespace WalkingTec.Mvvm.Core
             }
             return rv;
         }
-
         /// <summary>
         /// Id
         /// </summary>
@@ -38,7 +37,6 @@ namespace WalkingTec.Mvvm.Core
             self.Id = id;
             return self;
         }
-
         /// <summary>
         /// 列头
         /// </summary>
@@ -51,7 +49,6 @@ namespace WalkingTec.Mvvm.Core
             self.Title = header;
             return self;
         }
-
         /// <summary>
         /// 本列是否需要分组
         /// </summary>
@@ -64,19 +61,16 @@ namespace WalkingTec.Mvvm.Core
             self.NeedGroup = needGroup;
             return self;
         }
-
         public static GridColumn<T> SetLocked<T>(this GridColumn<T> self, bool locked) where T : TopBasePoco
         {
             self.IsLocked = locked;
             return self;
         }
-
         public static GridColumn<T> SetSortable<T>(this GridColumn<T> self, bool sortable = false) where T : TopBasePoco
         {
             self.Sortable = sortable;
             return self;
         }
-
         /// <summary>
         /// 列宽
         /// </summary>
@@ -89,7 +83,6 @@ namespace WalkingTec.Mvvm.Core
             self.Width = width;
             return self;
         }
-
         /// <summary>
         /// 是否允许换行
         /// </summary>
@@ -102,7 +95,6 @@ namespace WalkingTec.Mvvm.Core
             self.AllowMultiLine = allowMultiLine;
             return self;
         }
-
         /// <summary>
         /// 设置某列是否应该尽量充满
         /// </summary>
@@ -115,7 +107,6 @@ namespace WalkingTec.Mvvm.Core
             self.Flex = flex;
             return self;
         }
-
         ///// <summary>
         ///// 时间与数字类型Format
         ///// </summary>
@@ -140,7 +131,6 @@ namespace WalkingTec.Mvvm.Core
             self.Format = format;
             return self;
         }
-
         /// <summary>
         /// 计算列值的表达式
         /// </summary>
@@ -153,7 +143,6 @@ namespace WalkingTec.Mvvm.Core
             self.ColumnExp = columnExp;
             return self;
         }
-
         /// <summary>
         /// 子列
         /// </summary>
@@ -176,7 +165,6 @@ namespace WalkingTec.Mvvm.Core
             self.Children = temp;
             return self;
         }
-
         /// <summary>
         /// 本列前景色函数
         /// </summary>
@@ -189,7 +177,6 @@ namespace WalkingTec.Mvvm.Core
             self.ForeGroundFunc = foreGroundFunc;
             return self;
         }
-
         /// <summary>
         /// 本列背景色函数
         /// </summary>

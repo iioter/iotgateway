@@ -3,11 +3,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using WalkingTec.Mvvm.Core.Extensions;
-using WalkingTec.Mvvm.Core.Models;
 using WalkingTec.Mvvm.Core.Support.FileHandlers;
 
 namespace WalkingTec.Mvvm.Core
@@ -46,12 +46,12 @@ namespace WalkingTec.Mvvm.Core
     /// </summary>
     /// <typeparam name="TModel">批量修改的VM</typeparam>
     /// <typeparam name="TLinkModel">批量列表VM</typeparam>
-    public class BaseBatchVM<TModel, TLinkModel> : BaseVM, IBaseBatchVM<TLinkModel> where TModel : TopBasePoco, new() where TLinkModel : BaseVM
+    public class BaseBatchVM<TModel, TLinkModel> : BaseVM, IBaseBatchVM<TLinkModel> where TModel : TopBasePoco,new() where TLinkModel : BaseVM
     {
         /// <summary>
         /// 批量修改的VM
         /// </summary>
-
+        
         public TLinkModel LinkedVM { get; set; }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace WalkingTec.Mvvm.Core
             //如果包含附件，则先删除附件
             List<Guid> fileids = new List<Guid>();
             var fa = pros.Where(x => x.PropertyType == typeof(FileAttachment) || typeof(TopBasePoco).IsAssignableFrom(x.PropertyType)).ToList();
-            var isPersist = typeof(IPersistPoco).IsAssignableFrom(modelType);
+            var isPersist =typeof(IPersistPoco).IsAssignableFrom(modelType);
             var isBasePoco = typeof(IBasePoco).IsAssignableFrom(modelType);
             var query = DC.Set<TModel>().AsQueryable();
             var fas = pros.Where(x => typeof(IEnumerable<ISubFile>).IsAssignableFrom(x.PropertyType)).ToList();
@@ -157,17 +157,18 @@ namespace WalkingTec.Mvvm.Core
                     }
                     else
                     {
+
                         foreach (var f in fa)
                         {
                             if (f.PropertyType == typeof(FileAttachment))
                             {
-                                string fidfield = DC.GetFKName2(modelType, f.Name);
+                                string fidfield =  DC.GetFKName2(modelType, f.Name);
                                 var fidpro = pros.Where(x => x.Name == fidfield).FirstOrDefault();
                                 var idresult = fidpro.GetValue(Entity);
-                                if (idresult != null)
+                                if(idresult != null)
                                 {
                                     Guid fid = Guid.Empty;
-                                    if (Guid.TryParse(idresult.ToString(), out fid) == true)
+                                    if(Guid.TryParse(idresult.ToString(), out fid) == true)
                                     {
                                         fileids.Add(fid);
                                     }
@@ -189,6 +190,7 @@ namespace WalkingTec.Mvvm.Core
                             }
                             else
                             {
+
                             }
                         }
                         if (typeof(TModel) != typeof(FileAttachment))
@@ -202,19 +204,6 @@ namespace WalkingTec.Mvvm.Core
                             }
                         }
                         DC.DeleteEntity(Entity);
-
-                        if (typeof(IWorkflow).IsAssignableFrom(typeof(TModel)))
-                        {
-                            var wi = DC.Set<Elsa_WorkflowInstance>().CheckEqual(typeof(TModel).FullName, x => x.ContextType).CheckEqual(Entity.GetID().ToString(), x => x.ContextId).ToList();
-                            if (wi.Count > 0)
-                            {
-                                DC.Set<Elsa_WorkflowInstance>().RemoveRange(wi);
-                                var wl = DC.Set<Elsa_WorkflowExecutionLogRecord>().CheckContain(wi.Select(x => x.ID).ToList(), x => x.WorkflowInstanceId).ToList();
-                                DC.Set<Elsa_WorkflowExecutionLogRecord>().RemoveRange(wl);
-                                var ww = DC.Set<FrameworkWorkflow>().CheckContain(wi.Select(x => x.ID).ToList(), x => x.WorkflowId).ToList();
-                                DC.Set<FrameworkWorkflow>().RemoveRange(ww);
-                            }
-                        }
                     }
                 }
                 catch (Exception e)
@@ -267,6 +256,7 @@ namespace WalkingTec.Mvvm.Core
             return rv;
         }
 
+
         /// <summary>
         /// 批量修改，默认对Ids中包含的数据进行修改，子类如果有特殊判断应重载本函数
         /// </summary>
@@ -294,20 +284,30 @@ namespace WalkingTec.Mvvm.Core
                 vm = vmtype.GetConstructor(System.Type.EmptyTypes).Invoke(null) as IBaseCRUDVM<TModel>;
                 vm.CopyContext(this);
             }
+            var entityList = DC.Set<TModel>().CheckIDs(idsData).ToList();
             //循环所有数据
-            for (int i = 0; i < idsData.Count; i++)
+            for (int i = 0; i < entityList.Count; i++)
             {
                 try
                 {
                     //如果找不到对应数据，则输出错误
-                    TModel entity = new TModel();
-                    entity.SetID(idsData[i]);
-                    //循环LinkedVM中的属性，给entity中同名属性赋值
+                    TModel entity = entityList[i];
+                    if (vm != null)
+                    {
+                        vm.SetEntity(entity);
+                    }
+                    if (entity == null)
+                    {
+                        ErrorMessage.Add(idsData[i], CoreProgram._localizer?["Sys.DataNotExist"]);
+                        rv = false;
+                        break;
+                    }
+                    //如果能找到，则循环LinkedVM中的属性，给entity中同名属性赋值
                     foreach (var pro in pros)
                     {
                         var proToSet = entity.GetType().GetSingleProperty(pro.Name);
                         var val = FC.ContainsKey("LinkedVM." + pro.Name) ? FC["LinkedVM." + pro.Name] : null;
-                        if (val == null && FC.ContainsKey("LinkedVM." + pro.Name + "[]"))
+                        if(val == null && FC.ContainsKey("LinkedVM." + pro.Name + "[]"))
                         {
                             val = FC["LinkedVM." + pro.Name + "[]"];
                         }
@@ -315,14 +315,13 @@ namespace WalkingTec.Mvvm.Core
                         if (proToSet != null && val != null && valuetoset != null)
                         {
                             var hasvalue = true;
-                            if (val is StringValues sv && StringValues.IsNullOrEmpty(sv) == true)
+                            if ( val is StringValues sv && StringValues.IsNullOrEmpty(sv) == true)
                             {
                                 hasvalue = false;
                             }
                             if (hasvalue)
                             {
                                 proToSet.SetValue(entity, valuetoset);
-                                DC.UpdateProperty(entity, proToSet.Name);
                             }
                         }
                     }
@@ -356,20 +355,19 @@ namespace WalkingTec.Mvvm.Core
                             }
                         }
                     }
-                    if (typeof(IBasePoco).IsAssignableFrom(typeof(TModel)))
+                    if (typeof(IBasePoco).IsAssignableFrom( typeof(TModel)))
                     {
                         IBasePoco ent = entity as IBasePoco;
                         if (ent.UpdateTime == null)
                         {
                             ent.UpdateTime = DateTime.Now;
-                            DC.UpdateProperty(entity, nameof(ent.UpdateTime));
                         }
                         if (string.IsNullOrEmpty(ent.UpdateBy))
                         {
                             ent.UpdateBy = LoginUserInfo?.ITCode;
-                            DC.UpdateProperty(entity, nameof(ent.UpdateBy));
                         }
                     }
+                    DC.UpdateEntity(entity);
                 }
                 catch (Exception e)
                 {
@@ -416,6 +414,7 @@ namespace WalkingTec.Mvvm.Core
             {
                 item.BatchError = ErrorMessage.Where(x => x.Key == item.GetID().ToString()).Select(x => x.Value).FirstOrDefault();
             }
+
         }
     }
 }

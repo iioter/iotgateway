@@ -1,41 +1,24 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<Description>WalkingTec.Mvvm</Description>
 		<AssemblyName>WalkingTec.Mvvm.Mvc</AssemblyName>
 		<CopyRefAssembliesToPublishDirectory>true</CopyRefAssembliesToPublishDirectory>
-		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<LangVersion>latest</LangVersion>
 		<Title>$(AssemblyName)</Title>
 		<OutputType>Library</OutputType>
 		<IsPackable>true</IsPackable>
-		<Ver>8.1.12</Ver>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<EmbeddedResource Include="GeneratorFiles\Spa\Vue\**\*.txt" />
 		<EmbeddedResource Include="Views\**\*.cshtml" />
-		<None Remove="fonts\Candara.ttf" />
 		<None Remove="GeneratorFiles\Spa\Blazor\Controller.txt" />
 		<None Remove="GeneratorFiles\Spa\Blazor\Create.txt" />
 		<None Remove="GeneratorFiles\Spa\Blazor\Details.txt" />
 		<None Remove="GeneratorFiles\Spa\Blazor\Edit.txt" />
 		<None Remove="GeneratorFiles\Spa\Blazor\Import.txt" />
 		<None Remove="GeneratorFiles\Spa\Blazor\Index.txt" />
-		<None Remove="GeneratorFiles\Spa\Vue3\Create.txt" />
-		<None Remove="GeneratorFiles\Spa\Vue3\Details.txt" />
-		<None Remove="GeneratorFiles\Spa\Vue3\Edit.txt" />
-		<None Remove="GeneratorFiles\Spa\Vue3\Import.txt" />
-		<None Remove="GeneratorFiles\Spa\Vue3\Index.txt" />
-		<None Remove="GeneratorFiles\Spa\Vue3\indexapi.txt" />
-		<None Remove="GeneratorFiles\Spa\Vue\Create.txt" />
-		<None Remove="GeneratorFiles\Spa\Vue\Details.txt" />
-		<None Remove="GeneratorFiles\Spa\Vue\Edit.txt" />
-		<None Remove="GeneratorFiles\Spa\Vue\Import.txt" />
-		<None Remove="GeneratorFiles\Spa\Vue\index.txt" />
-		<Content Include="fonts\Candara.ttf">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</Content>
 		<EmbeddedResource Include="framework_layui.js" />
 		<EmbeddedResource Include="GeneratorFiles\ApiTest.txt" />
 		<EmbeddedResource Include="GeneratorFiles\ApiTestTopPoco.txt" />
@@ -72,45 +55,23 @@
 		<EmbeddedResource Include="GeneratorFiles\Mvc\CreateView.txt" />
 		<EmbeddedResource Include="GeneratorFiles\Mvc\DeleteView.txt" />
 		<EmbeddedResource Include="GeneratorFiles\Mvc\DetailsView.txt" />
-		<EmbeddedResource Include="GeneratorFiles\Spa\Vue3\Create.txt" />
-		<EmbeddedResource Include="GeneratorFiles\Spa\Vue3\Details.txt" />
-		<EmbeddedResource Include="GeneratorFiles\Spa\Vue3\Edit.txt" />
-		<EmbeddedResource Include="GeneratorFiles\Spa\Vue3\Import.txt" />
-		<EmbeddedResource Include="GeneratorFiles\Spa\Vue3\Index.txt" />
-		<EmbeddedResource Include="GeneratorFiles\Spa\Vue3\indexapi.txt" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DUWENINK.Captcha" Version="0.7.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.3" />
-		<PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="8.0.3" />
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.14" />
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.3" />
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.1.0" />
-		<PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="8.0.3" />
-		<PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.5.0" />
-		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
-		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
-		<PackageReference Include="VueCliMiddleware" Version="6.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" />
+		<PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" />
+		<PackageReference Include="SixLabors.ImageSharp" />
+		<PackageReference Include="SixLabors.ImageSharp.Drawing" />
+		<PackageReference Include="Swashbuckle.AspNetCore.Swagger" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" />
+		<PackageReference Include="VueCliMiddleware" />
 	</ItemGroup>
 
 
 	<ItemGroup>
 		<ProjectReference Include="..\WalkingTec.Mvvm.TagHelpers.LayUI\WalkingTec.Mvvm.TagHelpers.LayUI.csproj" />
-	</ItemGroup>
-
-
-	<ItemGroup>
-		<None Update="fonts\impact.ttf">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="fonts\monbaiti.ttf">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
-		<None Update="fonts\STCAIYUN.ttf">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-		</None>
 	</ItemGroup>
 
 </Project>

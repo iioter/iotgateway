@@ -1,7 +1,8 @@
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Razor.TagHelpers;
 using System;
 using System.Linq;
+
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace WalkingTec.Mvvm.TagHelpers.LayUI
 {
@@ -12,7 +13,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
     {
         // 水平滑块
         Default = 0,
-
         // 垂直滑块
         Vertical
     }
@@ -132,7 +132,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 value0 = Field?.Model == null ? "0" : Field.Model.ToString();
                 value1 = Field1?.Model == null ? "0" : Field1.Model.ToString();
             }
-            else if (string.IsNullOrEmpty(DefaultValue) == false)
+            else if(string.IsNullOrEmpty(DefaultValue) == false)
             {
                 if (DefaultValue.StartsWith('[') && DefaultValue.EndsWith(']'))
                 {
@@ -177,9 +177,11 @@ layui.use(['slider'],function(){{
     }}
     {(string.IsNullOrEmpty(OnTipsFunc) ? string.Empty : $",setTips: function(value){{return {OnTipsFunc}(value,sliderIns);}}")}
   }});
-  {(SliderType == SliderTypeEnum.Vertical ?
+  {
+    (SliderType == SliderTypeEnum.Vertical ?
       (Input ? "$('#'+_id+' .layui-slider-input').attr('style','right:unset;top:-40px');" : string.Empty) :
-      $"$('#'+_id).attr('style','min-height: 18px;padding-top: 18px;');{(Input ? "$('#'+_id+' .layui-slider-input').attr('style','top:3px;');" : string.Empty)}")}
+      $"$('#'+_id).attr('style','min-height: 18px;padding-top: 18px;');{(Input ? "$('#'+_id+' .layui-slider-input').attr('style','top:3px;');" : string.Empty)}")
+  }
 }})
 </script>
 ";

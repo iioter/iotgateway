@@ -1,18 +1,20 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using NPOI.HSSF.Util;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using NPOI.HSSF.Util;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using WalkingTec.Mvvm.Core.Extensions;
 using WalkingTec.Mvvm.Core.Support.FileHandlers;
 
@@ -25,11 +27,8 @@ namespace WalkingTec.Mvvm.Core
     public interface IBaseImport<out T> where T : BaseTemplateVM
     {
         T Template { get; }
-
         byte[] GenerateTemplate(out string displayName);
-
         void SetParms(Dictionary<string, string> parms);
-
         TemplateErrorListVM ErrorListVM { get; set; }
     }
 
@@ -43,7 +42,6 @@ namespace WalkingTec.Mvvm.Core
         where P : TopBasePoco, new()
     {
         #region 字段、属性
-
         /// <summary>
         /// 上传文件的Id，方便导入等操作中进行绑定，这类操作需要上传文件但不需要记录在数据库中，所以Model层中没有文件Id的字段
         /// </summary>
@@ -117,22 +115,18 @@ namespace WalkingTec.Mvvm.Core
         /// 是否覆盖已有数据
         /// </summary>
         public bool IsOverWriteExistData { get; set; } = true;
-
-        #endregion 字段、属性
+        #endregion
 
         #region 构造函数
-
         public BaseImportVM()
         {
             ErrorListVM = new TemplateErrorListVM();
             ValidityTemplateType = true;
             Template = new T();
         }
+        #endregion
 
-        #endregion 构造函数
-
-        #region 生成excel
-
+        #region  生成excel
         /// <summary>
         /// 生成模版
         /// </summary>
@@ -142,11 +136,9 @@ namespace WalkingTec.Mvvm.Core
         {
             return Template.GenerateTemplate(out displayName);
         }
-
-        #endregion 生成excel
+        #endregion
 
         #region 设置参数值
-
         /// <summary>
         /// 设置模版参数
         /// </summary>
@@ -155,8 +147,7 @@ namespace WalkingTec.Mvvm.Core
         {
             Template.Parms = parms;
         }
-
-        #endregion 设置参数值
+        #endregion
 
         #region 可重写方法
 
@@ -220,8 +211,8 @@ namespace WalkingTec.Mvvm.Core
                 if (Wtm.ServiceProvider != null)
                 {
                     var fp = Wtm.ServiceProvider.GetRequiredService<WtmFileProvider>();
-                    // var tempdc = Wtm.DC;
-                    file = fp.GetFile(UploadFileId, true, Wtm.CreateDC(false));
+                   // var tempdc = Wtm.DC;
+                    file = fp.GetFile(UploadFileId, true,Wtm.CreateDC(false));
                     //Wtm.DC = tempdc;
                 }
                 if (file == null)
@@ -235,12 +226,12 @@ namespace WalkingTec.Mvvm.Core
                 Template.InitCustomFormat();
 
                 //【CHECK】判断是否上传的是正确的模板数据
-                string TemplateHiddenName = xssfworkbook.GetSheetAt(1).GetRow(0).Cells[2].ToString();
-                if (ValidityTemplateType && !TemplateHiddenName.Equals(typeof(T).Name))
-                {
-                    ErrorListVM.EntityList.Add(new ErrorMessage { Message = CoreProgram._localizer?["Sys.WrongTemplate"] });
-                    return;
-                }
+                //string TemplateHiddenName = xssfworkbook.GetSheetAt(1).GetRow(0).Cells[2].ToString();
+                //if (ValidityTemplateType && !TemplateHiddenName.Equals(typeof(T).Name))
+                //{
+                //    ErrorListVM.EntityList.Add(new ErrorMessage { Message = CoreProgram._localizer?["Sys.WrongTemplate"] });
+                //    return;
+                //}
 
                 //获取数据的Sheet页信息
                 ISheet sheet = xssfworkbook.GetSheetAt(0);
@@ -261,44 +252,45 @@ namespace WalkingTec.Mvvm.Core
                 //【CHECK】验证模板的列数是否正确
                 var dynamicColumn = ListTemplateProptetys.Where(x => x.DataType == ColumnDataType.Dynamic).FirstOrDefault();
                 int columnCount = dynamicColumn == null ? ListTemplateProptetys.Count : (ListTemplateProptetys.Count + dynamicColumn.DynamicColumns.Count - 1);
-                if (columnCount != cells.Count)
+                if (columnCount > cells.Count)
                 {
-                    ErrorListVM.EntityList.Add(new ErrorMessage { Message = CoreProgram._localizer?["Sys.WrongTemplate"] });
+                    ErrorListVM.EntityList.Add(new ErrorMessage
+                        { Message = CoreProgram._localizer?["Sys.WrongTemplate"] });
                     return;
                 }
 
                 //【CHECK】判断字段是否根据顺序能一对一相对应。  //是否可以去除？
                 int pIndex = 0;
                 HasSubTable = false;
-                for (int i = 0; i < cells.Count; i++)
+                for (int i = 0; i < columnCount; i++)
                 {
                     //是否有子表
                     HasSubTable = ListTemplateProptetys[pIndex].SubTableType != null ? true : HasSubTable;
-                    //if (ListTemplateProptetys[pIndex].DataType != ColumnDataType.Dynamic)
-                    //{
-                    //    if (cells[i].ToString().Trim('*') != ListTemplateProptetys[pIndex].ColumnName)
-                    //    {
-                    //        ErrorListVM.EntityList.Add(new ErrorMessage { Message = CoreProgram._localizer?["Sys.WrongTemplate"] });
-                    //        return;
-                    //    }
-                    //    pIndex++;
-                    //}
-                    //else
-                    //{
-                    //    var listDynamicColumns = ListTemplateProptetys[i].DynamicColumns;
-                    //    int dcCount = listDynamicColumns.Count;
-                    //    for (int dclIndex = 0; dclIndex < dcCount; dclIndex++)
-                    //    {
-                    //        if (cells[i].ToString().Trim('*') != listDynamicColumns[dclIndex].ColumnName)
-                    //        {
-                    //            ErrorListVM.EntityList.Add(new ErrorMessage { Message = CoreProgram._localizer?["Sys.WrongTemplate"] });
-                    //            break;
-                    //        }
-                    //        i = i + 1;
-                    //    }
-                    //    i = i - 1;
-                    pIndex++;
-                    //}
+                    if (ListTemplateProptetys[pIndex].DataType != ColumnDataType.Dynamic)
+                    {
+                        if (cells[i].ToString().Trim('*') != ListTemplateProptetys[pIndex].ColumnName)
+                        {
+                            ErrorListVM.EntityList.Add(new ErrorMessage { Message = CoreProgram._localizer?["Sys.WrongTemplate"] });
+                            return;
+                        }
+                        pIndex++;
+                    }
+                    else
+                    {
+                        var listDynamicColumns = ListTemplateProptetys[i].DynamicColumns;
+                        int dcCount = listDynamicColumns.Count;
+                        for (int dclIndex = 0; dclIndex < dcCount; dclIndex++)
+                        {
+                            if (cells[i].ToString().Trim('*') != listDynamicColumns[dclIndex].ColumnName)
+                            {
+                                ErrorListVM.EntityList.Add(new ErrorMessage { Message = CoreProgram._localizer?["Sys.WrongTemplate"] });
+                                break;
+                            }
+                            i = i + 1;
+                        }
+                        i = i - 1;
+                        pIndex++;
+                    }
                 }
 
                 //如果有子表，则设置主表字段非必填
@@ -372,7 +364,6 @@ namespace WalkingTec.Mvvm.Core
         }
 
         #region 进行公式计算
-
         public string GetCellFormulaValue(XSSFFormulaEvaluator XE, ICell cell, string Value)
         {
             if (!string.IsNullOrEmpty(Value) && Value.IndexOf("=") == 0)
@@ -390,8 +381,7 @@ namespace WalkingTec.Mvvm.Core
             }
             return Value;
         }
-
-        #endregion 进行公式计算
+        #endregion
 
         /// <summary>
         /// 根据模板中的数据，填写导入类的集合中
@@ -478,6 +468,7 @@ namespace WalkingTec.Mvvm.Core
                         ITenant ent = entity as ITenant;
                         ent.TenantCode = LoginUserInfo?.CurrentTenant;
                     }
+
                 }
 
                 //给子表赋值
@@ -550,11 +541,13 @@ namespace WalkingTec.Mvvm.Core
                                     //    ErrorListVM.EntityList.Add(new ErrorMessage { Message = validationResults.FirstOrDefault()?.ErrorMessage ?? "Error", ExcelIndex = item.ExcelIndex });
                                     //    break;
                                     //}
+
                                 }
                                 break;
                             }
                         }
                     }
+
                 }
                 entity.ExcelIndex = item.ExcelIndex;
                 if (isMainData)
@@ -830,6 +823,7 @@ namespace WalkingTec.Mvvm.Core
             }
         }
 
+
         private void TryValidateObject(object model, ValidationContext context, ICollection<ValidationResult> results)
         {
             var modelType = model.GetType();
@@ -900,6 +894,7 @@ namespace WalkingTec.Mvvm.Core
                 }
             }
         }
+
 
         /// <summary>
         /// 保存指定表中的数据
@@ -1131,11 +1126,9 @@ namespace WalkingTec.Mvvm.Core
             //    bulkCopy.WriteToServer(table);
             //}
         }
-
-        #endregion 可重写方法
+        #endregion
 
         #region 验证是否空行
-
         /// <summary>
         /// 验证Excel中某行是否为空行
         /// </summary>
@@ -1156,11 +1149,9 @@ namespace WalkingTec.Mvvm.Core
             }
             return result;
         }
-
-        #endregion 验证是否空行
+        #endregion
 
         #region 复制Excel属性
-
         /// <summary>
         /// 复制Excel属性
         /// </summary>
@@ -1194,11 +1185,9 @@ namespace WalkingTec.Mvvm.Core
             ep.DynamicColumns = li;
             return ep;
         }
-
-        #endregion 复制Excel属性
+        #endregion
 
         #region 设置异常信息
-
         /// <summary>
         /// 设置错误信息
         /// </summary>
@@ -1250,8 +1239,7 @@ namespace WalkingTec.Mvvm.Core
                 }
             }
         }
-
-        #endregion 设置异常信息
+        #endregion
 
         #region 验证数据重复
 
@@ -1288,14 +1276,7 @@ namespace WalkingTec.Mvvm.Core
                         //将字段名保存，为后面生成错误信息作准备
                         props.AddRange(field.GetProperties());
                     }
-                    if (typeof(ITenant).IsAssignableFrom(modelType) && props.Any(x => x.Name.ToLower() == "tenantcode") == false && Wtm?.ConfigInfo.EnableTenant == true && group.UseTenant == true)
-                    {
-                        ITenant ent = Entity as ITenant;
-                        ent.TenantCode = LoginUserInfo.CurrentTenant;
-                        var f = new DuplicatedField<P>(x => (x as ITenant).TenantCode);
-                        Expression exp = f.GetExpression(Entity, para);
-                        conditions.Add(exp);
-                    }
+
                     if (conditions.Count > 0)
                     {
                         //循环添加条件并生成Where语句
@@ -1310,6 +1291,7 @@ namespace WalkingTec.Mvvm.Core
                                  Expression.Lambda<Func<P, bool>>(conditions[i], new ParameterExpression[] { para }));
                         }
                         var result = baseExp.Provider.CreateQuery(whereCallExpression);
+
 
                         foreach (var res in result)
                         {
@@ -1336,6 +1318,7 @@ namespace WalkingTec.Mvvm.Core
                                 {
                                     ErrorListVM.EntityList.Add(new ErrorMessage { Message = CoreProgram._localizer?["Sys.DuplicateGroupError", AllName], Index = Entity.ExcelIndex });
                                 }
+
                             }
                             return res as P;
                         }
@@ -1344,8 +1327,7 @@ namespace WalkingTec.Mvvm.Core
             }
             return null;
         }
-
-        #endregion 验证数据重复
+        #endregion
 
         protected DuplicatedInfo<P> CreateFieldsInfo(params DuplicatedField<P>[] FieldExps)
         {
@@ -1384,8 +1366,7 @@ namespace WalkingTec.Mvvm.Core
             if (string.IsNullOrEmpty(err))
             {
                 Models.IWtmFile fa = null;
-                if (Wtm.ServiceProvider == null)
-                {
+                if(Wtm.ServiceProvider == null) {
                     return mse;
                 }
                 var fp = Wtm.ServiceProvider.GetRequiredService<WtmFileProvider>();
@@ -1441,7 +1422,6 @@ namespace WalkingTec.Mvvm.Core
     }
 
     #region 辅助类
-
     public class ErrorMessage : TopBasePoco
     {
         [Display(Name = "Sys.RowIndex")]
@@ -1449,7 +1429,6 @@ namespace WalkingTec.Mvvm.Core
 
         [Display(Name = "Sys.CellIndex")]
         public long Cell { get; set; }
-
         [Display(Name = "Sys.ErrorMsg")]
         public string Message { get; set; }
     }
@@ -1459,6 +1438,7 @@ namespace WalkingTec.Mvvm.Core
     /// </summary>
     public class TemplateErrorListVM : BasePagedListVM<ErrorMessage, BaseSearcher>
     {
+
         public TemplateErrorListVM()
         {
             EntityList = new List<ErrorMessage>();
@@ -1479,5 +1459,6 @@ namespace WalkingTec.Mvvm.Core
         }
     }
 
-    #endregion 辅助类
+    #endregion
+
 }

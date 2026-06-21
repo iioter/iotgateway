@@ -1,3 +1,4 @@
+using System.Web;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
@@ -15,7 +16,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI.Form
 
         //定义宽度
         public new int? Width { get; set; }
-
         public string UploadGroupName { get; set; }
         public string UploadSubdir { get; set; }
         public string ConnectionString { get; set; }
@@ -55,6 +55,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI.Form
             {
                 url = url.AppendQuery($"sm={UploadMode}");
             }
+
 
             if (vm != null)
             {

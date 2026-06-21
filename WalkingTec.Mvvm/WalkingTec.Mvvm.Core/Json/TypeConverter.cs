@@ -1,6 +1,11 @@
 using System;
+using System.Collections.Generic;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Unicode;
+using NPOI.SS.Formula.Functions;
+using WalkingTec.Mvvm.Core.Extensions;
 
 namespace WalkingTec.Mvvm.Core.Json
 {
@@ -13,7 +18,8 @@ namespace WalkingTec.Mvvm.Core.Json
 
         public override void Write(Utf8JsonWriter writer, Type value, JsonSerializerOptions options)
         {
-            writer.WriteNullValue();
+                writer.WriteNullValue();
         }
     }
+
 }

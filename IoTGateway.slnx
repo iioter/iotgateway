@@ -1,0 +1,39 @@
+<Solution>
+  <Folder Name="/Plugins/">
+    <Project Path="Plugins/Plugin/Plugin.csproj" />
+    <Project Path="Plugins/PluginInterface/PluginInterface.csproj" />
+  </Folder>
+  <Folder Name="/Plugins/Drivers/" />
+  <Folder Name="/Plugins/Drivers/CNC/">
+    <Project Path="Plugins/Drivers/CNC.Fanuc.H/CNC.Fanuc.H.csproj" />
+    <Project Path="Plugins/Drivers/CNC.Fanuc/CNC.Fanuc.csproj" />
+    <Project Path="Plugins/Drivers/CNC.MTConnect/CNC.MTConnect.csproj" />
+  </Folder>
+  <Folder Name="/Plugins/Drivers/Mock/">
+    <Project Path="Plugins/Drivers/Mock.TcpClient/Mock.TcpClient.csproj" />
+  </Folder>
+  <Folder Name="/Plugins/Drivers/OPC/">
+    <Project Path="Plugins/Drivers/OPC.DaClient/OPC.DaClient.csproj" />
+    <Project Path="Plugins/Drivers/OPC.UaClient/OPC.UaClient.csproj" />
+  </Folder>
+  <Folder Name="/Plugins/Drivers/Other/">
+    <Project Path="Plugins/Drivers/Other.Toledo/Other.Toledo.csproj" />
+  </Folder>
+  <Folder Name="/Plugins/Drivers/PLC/">
+    <Project Path="Plugins/Drivers/PLC.AllenBradley/PLC.AllenBradley.csproj" />
+    <Project Path="Plugins/Drivers/PLC.MelsecMc/PLC.MelsecMc.csproj" />
+    <Project Path="Plugins/Drivers/PLC.ModBusMaster/PLC.ModBusMaster.csproj" />
+    <Project Path="Plugins/Drivers/PLC.OmronFins/PLC.OmronFins.csproj" />
+    <Project Path="Plugins/Drivers/PLC.SiemensS7/PLC.SiemensS7.csproj" />
+  </Folder>
+  <Folder Name="/WalkingTec.Mvvm/">
+    <Project Path="WalkingTec.Mvvm/WalkingTec.Mvvm.Core/WalkingTec.Mvvm.Core.csproj" />
+    <Project Path="WalkingTec.Mvvm/WalkingTec.Mvvm.Mvc/WalkingTec.Mvvm.Mvc.csproj" />
+    <Project Path="WalkingTec.Mvvm/WalkingTec.Mvvm.TagHelpers.LayUI/WalkingTec.Mvvm.TagHelpers.LayUI.csproj" />
+  </Folder>
+  <Project Path="IoTGateway.DataAccess/IoTGateway.DataAccess.csproj" />
+  <Project Path="IoTGateway.Model/IoTGateway.Model.csproj" />
+  <Project Path="IoTGateway.Service/IoTGateway.Service.csproj" />
+  <Project Path="IoTGateway.ViewModel/IoTGateway.ViewModel.csproj" />
+  <Project Path="IoTGateway/IoTGateway.csproj" />
+</Solution>

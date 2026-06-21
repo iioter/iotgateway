@@ -3,7 +3,6 @@ using IoTGateway.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
-using MQTTnet.Client;
 using MQTTnet.Extensions.ManagedClient;
 using MQTTnet.Formatter;
 using Plugin.PlatformHandler;
@@ -49,7 +48,7 @@ namespace Plugin
                     Client.Dispose();
                 }
 
-                Client = new MqttFactory().CreateManagedMqttClient();
+                Client = new MqttClientFactory().CreateManagedMqttClient();
 
                 // 使用 using 声明，确保资源及时释放
                 await using var dc = new DataContext(IoTBackgroundService.connnectSetting, IoTBackgroundService.DbType);

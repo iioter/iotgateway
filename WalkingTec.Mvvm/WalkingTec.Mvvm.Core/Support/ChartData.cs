@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
 namespace WalkingTec.Mvvm.Core
 {
     public class ChartData
@@ -6,7 +10,6 @@ namespace WalkingTec.Mvvm.Core
         public string Category { get; set; }
 
         public double Value { get; set; }
-
         //散点图 x值
         public double ValueX { get; set; }
 
@@ -14,5 +17,6 @@ namespace WalkingTec.Mvvm.Core
         public string Series { get; set; }
 
         public double Addition { get; set; }
+
     }
 }

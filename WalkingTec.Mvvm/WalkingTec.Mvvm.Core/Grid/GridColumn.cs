@@ -15,7 +15,6 @@ namespace WalkingTec.Mvvm.Core
     public class GridColumn<T> : IGridColumn<T> where T : TopBasePoco
     {
         public bool? ShowTotal { get; set; }
-
         public GridColumn(Expression<Func<T, object>> columnExp, int? width)
         {
             ColumnExp = columnExp;
@@ -26,9 +25,7 @@ namespace WalkingTec.Mvvm.Core
         /// 表头类型
         /// </summary>
         public GridColumnTypeEnum ColumnType { get; set; }
-
         private string _field;
-
         /// <summary>
         /// 设定字段名
         /// </summary>
@@ -53,7 +50,6 @@ namespace WalkingTec.Mvvm.Core
         }
 
         private string _title;
-
         /// <summary>
         /// 标题名称
         /// </summary>
@@ -77,12 +73,10 @@ namespace WalkingTec.Mvvm.Core
         /// 列宽
         /// </summary>
         public int? Width { get; set; }
-
         /// <summary>
         /// //监听单元格事件
         /// </summary>
         public string Event { get; set; }
-
         /// <summary>
         /// 是否允许排序
         /// </summary>
@@ -117,9 +111,7 @@ namespace WalkingTec.Mvvm.Core
         /// 子列
         /// </summary>
         public IEnumerable<IGridColumn<T>> Children { get; set; }
-
         private int? _childrenLen;
-
         /// <summary>
         /// 底层子列数量
         /// </summary>
@@ -174,7 +166,6 @@ namespace WalkingTec.Mvvm.Core
                 return rv;
             }
         }
-
         /// <summary>
         /// 获取最大层数
         /// </summary>
@@ -197,13 +188,13 @@ namespace WalkingTec.Mvvm.Core
                     rv += max;
                 }
                 return rv;
+
             }
         }
 
-        #endregion 只读属性 生成 Excel 及其 表头用
+        #endregion
 
         private PropertyInfo _pi;
-
         protected PropertyInfo PI
         {
             get
@@ -243,14 +234,12 @@ namespace WalkingTec.Mvvm.Core
         }
 
         #region 暂时没有用
-
         /// <summary>
         ///
         /// </summary>
         public string Id { get; set; }
 
         private Func<T, object> _compiledCol;
-
         protected Func<T, object> CompiledCol
         {
             get
@@ -270,8 +259,8 @@ namespace WalkingTec.Mvvm.Core
             }
         }
 
-        private Type _fieldType;
 
+        private Type _fieldType;
         /// <summary>
         /// 获取值域类型
         /// </summary>
@@ -300,20 +289,16 @@ namespace WalkingTec.Mvvm.Core
         /// 本列是否需要分组
         /// </summary>
         public bool NeedGroup { get; set; }
-
         public bool IsLocked { get; set; }
         public bool Sortable { get; set; }
-
         /// <summary>
         /// 是否允许换行
         /// </summary>
         public bool AllowMultiLine { get; set; }
-
         /// <summary>
         /// 设置某列是否应该尽量充满
         /// </summary>
         public int? Flex { get; set; }
-
         /// <summary>
         /// 列内容的格式化函数
         /// </summary>
@@ -323,11 +308,11 @@ namespace WalkingTec.Mvvm.Core
         /// 本列前景色函数
         /// </summary>
         public Func<T, string> ForeGroundFunc { get; set; }
-
         /// <summary>
         /// 本列背景色函数
         /// </summary>
         public Func<T, string> BackGroundFunc { get; set; }
+
 
         /// <summary>
         /// 获取最底层的子列
@@ -386,9 +371,10 @@ namespace WalkingTec.Mvvm.Core
             }
         }
 
+
         public bool HasFormat()
         {
-            if (Format != null)
+            if(Format != null)
             {
                 return true;
             }
@@ -408,12 +394,12 @@ namespace WalkingTec.Mvvm.Core
         {
             object rv = null;
             var col = CompiledCol?.Invoke(source as T);
-            if (needFormat == false && Format != null)
+            if(needFormat == false && Format != null)
             {
                 var test = Format.Invoke(source as T, col);
-                if (test is ColumnFormatInfo == false && test is List<ColumnFormatInfo> == false)
+                if(test is ColumnFormatInfo == false && test is List<ColumnFormatInfo> == false)
                 {
-                    return test ?? "";
+                    return test??"";
                 }
             }
 
@@ -426,7 +412,7 @@ namespace WalkingTec.Mvvm.Core
                 else if (col is DateTime || col is DateTime?)
                 {
                     var datevalue = col as DateTime?;
-                    if (datevalue != null)
+                    if(datevalue != null)
                     {
                         if (datevalue.Value.Hour == 0 && datevalue.Value.Minute == 0 && datevalue.Value.Second == 0)
                         {
@@ -488,7 +474,6 @@ namespace WalkingTec.Mvvm.Core
             string rv = PropertyHelper.GetPropertyDisplayName(PI);
             return rv ?? "";
         }
-
         /// <summary>
         /// 默认构造函数
         /// </summary>
@@ -497,7 +482,6 @@ namespace WalkingTec.Mvvm.Core
             AllowMultiLine = true;
             this.Sortable = true;
         }
-
         /// <summary>
         /// 构造函数
         /// </summary>
@@ -525,6 +509,6 @@ namespace WalkingTec.Mvvm.Core
             this.Sortable = sortable;
         }
 
-        #endregion 暂时没有用
+        #endregion
     }
 }

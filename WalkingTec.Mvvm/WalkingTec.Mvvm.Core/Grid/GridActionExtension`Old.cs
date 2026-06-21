@@ -18,7 +18,6 @@ namespace WalkingTec.Mvvm.Core
             self.ButtonId = buttonId;
             return self;
         }
-
         /// <summary>
         /// 按钮名称
         /// </summary>
@@ -30,7 +29,6 @@ namespace WalkingTec.Mvvm.Core
             self.Name = name;
             return self;
         }
-
         /// <summary>
         /// 弹出窗口的标题
         /// </summary>
@@ -42,7 +40,6 @@ namespace WalkingTec.Mvvm.Core
             self.DialogTitle = dialogTitle;
             return self;
         }
-
         /// <summary>
         /// 动作图标css
         /// </summary>
@@ -54,7 +51,6 @@ namespace WalkingTec.Mvvm.Core
             self.IconCls = iconCls;
             return self;
         }
-
         /// <summary>
         /// 动作的Area
         /// </summary>
@@ -66,7 +62,6 @@ namespace WalkingTec.Mvvm.Core
             self.Area = area;
             return self;
         }
-
         /// <summary>
         /// 动作的Controller
         /// </summary>
@@ -78,7 +73,6 @@ namespace WalkingTec.Mvvm.Core
             self.ControllerName = controllerName;
             return self;
         }
-
         /// <summary>
         /// 动作的Action
         /// </summary>
@@ -90,7 +84,6 @@ namespace WalkingTec.Mvvm.Core
             self.ActionName = actionName;
             return self;
         }
-
         /// <summary>
         /// 动作的QueryString
         /// </summary>
@@ -102,7 +95,6 @@ namespace WalkingTec.Mvvm.Core
             self.QueryString = queryString;
             return self;
         }
-
         /// <summary>
         /// 弹出窗口的宽度、高度
         /// </summary>
@@ -116,7 +108,6 @@ namespace WalkingTec.Mvvm.Core
             self.DialogHeight = dialogHeight;
             return self;
         }
-
         /// <summary>
         /// 是否需要弹出窗口
         /// </summary>
@@ -128,12 +119,12 @@ namespace WalkingTec.Mvvm.Core
             self.ShowDialog = showDialog;
             return self;
         }
-
         public static GridAction SetForcePost(this GridAction self, bool forcepost = true)
         {
             self.ForcePost = forcepost;
             return self;
         }
+
 
         /// <summary>
         /// 是否跳转到新页面
@@ -146,7 +137,6 @@ namespace WalkingTec.Mvvm.Core
             self.IsRedirect = isRedirect;
             return self;
         }
-
         /// <summary>
         /// 动作类型
         /// </summary>
@@ -159,8 +149,9 @@ namespace WalkingTec.Mvvm.Core
             return self;
         }
 
+
         /// <summary>
-        /// 如果不为null，则只运行这个变量设定的script，其他的属性都不起作用
+        /// 如果不为null，则只运行这个变量设定的script，其他的属性都不起作用    
         /// </summary>
         /// <param name="self"></param>
         /// <param name="onClickScript"></param>
@@ -174,7 +165,6 @@ namespace WalkingTec.Mvvm.Core
             self.OnClickFunc = onClickScript;
             return self;
         }
-
         /// <summary>
         /// 如果设定了SubActions，则代表需要用SplitButton的形式展示，主GridAction将不起作用
         /// </summary>
@@ -190,7 +180,6 @@ namespace WalkingTec.Mvvm.Core
             self.SubActions.AddRange(gridActions);
             return self;
         }
-
         /// <summary>
         /// 是否可以拖动改变弹出窗体大小
         /// </summary>

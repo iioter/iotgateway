@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using WalkingTec.Mvvm.Core.Extensions;
 
@@ -13,30 +14,25 @@ namespace WalkingTec.Mvvm.Core
         #region Property
 
         #region 分页相关
-
         /// <summary>
         /// 当前页
         /// </summary>
         public int Page { get; set; }
-
         /// <summary>
         /// 每页数
         /// </summary>
         public int Limit { get; set; }
-
         /// <summary>
         /// 记录数
         /// </summary>
         [JsonIgnore]
         public long Count { get; set; }
-
         /// <summary>
         /// 分页数
         /// </summary>
         [JsonIgnore]
         public int PageCount { get; set; }
-
-        #endregion 分页相关
+        #endregion
 
         /// <summary>
         /// 记录 Controller 中的表单数据
@@ -49,7 +45,6 @@ namespace WalkingTec.Mvvm.Core
 
         public bool? IsPlainText { get; set; }
         public bool? IsEnumToString { get; set; }
-
         /// <summary>
         /// 获取VM的全名
         /// </summary>
@@ -65,7 +60,6 @@ namespace WalkingTec.Mvvm.Core
         }
 
         private IDataContext _dc;
-
         /// <summary>
         /// 数据库环境
         /// </summary>
@@ -103,9 +97,7 @@ namespace WalkingTec.Mvvm.Core
 
         [JsonIgnore]
         public string ViewDivId { get; set; }
-
         #region 未使用
-
         /// <summary>
         /// 排序信息
         /// </summary>
@@ -118,7 +110,6 @@ namespace WalkingTec.Mvvm.Core
         public bool? IsExpanded { get; set; }
 
         private Guid _uniqueId;
-
         [JsonIgnore]
         public string UniqueId
         {
@@ -134,10 +125,9 @@ namespace WalkingTec.Mvvm.Core
 
         [JsonIgnore]
         public WTMContext Wtm { get; set; }
+        #endregion
 
-        #endregion 未使用
-
-        #endregion Property
+        #endregion
 
         #region Event
 
@@ -145,13 +135,12 @@ namespace WalkingTec.Mvvm.Core
         /// InitVM 完成后触发的事件
         /// </summary>
         public event Action<ISearcher> OnAfterInit;
-
         /// <summary>
         /// ReInitVM 完成后触发的事件
         /// </summary>
         public event Action<ISearcher> OnAfterReInit;
 
-        #endregion Event
+        #endregion
 
         #region Method
 
@@ -190,8 +179,8 @@ namespace WalkingTec.Mvvm.Core
 
         public virtual void Validate()
         {
-        }
 
+        }
         /// <summary>
         /// 将源 VM 的 FC 等内容复制到本VM中
         /// </summary>
@@ -203,6 +192,7 @@ namespace WalkingTec.Mvvm.Core
             this.ViewDivId = vm.ViewDivId;
         }
 
-        #endregion Method
+        #endregion
+
     }
 }

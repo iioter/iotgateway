@@ -1,7 +1,7 @@
 ﻿namespace WalkingTec.Mvvm.TagHelpers.LayUI
 {
     /// <summary>
-    /// HTTP Method
+    /// HTTP Method 
     /// </summary>
     public enum HttpMethodEnum
     {
@@ -9,7 +9,6 @@
         /// HTTP GET Method
         /// </summary>
         GET = 0,
-
         /// <summary>
         /// HTTP POST Method
         /// </summary>

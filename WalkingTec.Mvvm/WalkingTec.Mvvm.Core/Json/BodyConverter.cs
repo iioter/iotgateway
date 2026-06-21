@@ -90,10 +90,12 @@ namespace WalkingTec.Mvvm.Core.Json
             return rv;
         }
 
+
         public override void Write(Utf8JsonWriter writer, PostedBody value, JsonSerializerOptions options)
         {
             return;
         }
+
     }
 
     public class PostedBody

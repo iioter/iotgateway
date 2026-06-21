@@ -1,4 +1,5 @@
 using System;
+using WalkingTec.Mvvm.Core.Exceptions;
 
 namespace WalkingTec.Mvvm.Mvc
 {
@@ -17,15 +18,16 @@ namespace WalkingTec.Mvvm.Mvc
 
         public static FResult Alert(this FResult self, string msg, string title = null)
         {
-            self.ContentBuilder.Append($"ff.Alert('{msg}','{title ?? MvcProgram._localizer?["Sys.Info"]}');");
+            self.ContentBuilder.Append($"ff.Alert('{msg}','{title??MvcProgram._localizer?["Sys.Info"]}');");
             return self;
         }
 
         public static FResult Message(this FResult self, string msg, string title = null)
         {
-            self.ContentBuilder.Append($"ff.Msg('{msg}','{title ?? MvcProgram._localizer?["Sys.Info"]}');");
+            self.ContentBuilder.Append($"ff.Msg('{msg}','{title??MvcProgram._localizer?["Sys.Info"]}');");
             return self;
         }
+
 
         public static FResult RefreshGrid(this FResult self, string winId = "", int index = 0)
         {
@@ -65,7 +67,6 @@ namespace WalkingTec.Mvvm.Mvc
             self.RefreshGrid(winId);
             return self;
         }
-
         /// <summary>
         /// 刷新当前页面
         /// </summary>
@@ -88,6 +89,7 @@ namespace WalkingTec.Mvvm.Mvc
             self.ContentBuilder.Append($"window.location.url='{url}'");
             return self;
         }
+
 
         public static FResult AddCustomScript(this FResult self, string script)
         {

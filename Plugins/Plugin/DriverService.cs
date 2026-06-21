@@ -23,7 +23,7 @@ namespace Plugin
         public DriverService(IConfiguration configRoot, ILogger<DriverService> logger)
         {
             _logger = logger;
-            _driverPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "drivers/net8.0");
+            _driverPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "drivers/net10.0");
 
             try
             {

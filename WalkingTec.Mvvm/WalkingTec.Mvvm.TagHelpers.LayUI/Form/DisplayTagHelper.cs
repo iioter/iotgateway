@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using System;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
+using System.Linq;
+using System;
 
 namespace WalkingTec.Mvvm.TagHelpers.LayUI
 {
@@ -14,11 +15,12 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
+
             bool isFile = false;
 
             if (Field?.Name?.ToLower().EndsWith("id") == true)
             {
-                var file = Field.Metadata.ContainerType.GetSingleProperty(x => x.Name.ToLower() + "id" == Field.Metadata.PropertyName.ToLower());
+                var file = Field.Metadata.ContainerType.GetSingleProperty(x => x.Name.ToLower() + "id" == Field.Metadata.PropertyName.ToLower()); 
                 if (file != null && file.PropertyType == typeof(FileAttachment))
                 {
                     isFile = true;
@@ -165,5 +167,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             }
             base.Process(context, output);
         }
+
     }
 }

@@ -56,26 +56,16 @@ namespace WalkingTec.Mvvm.Core
             string qs = null;
             switch (standardType)
             {
-                case GridActionStandardTypesEnum.Approve:
-                    iconcls = "layui-icon layui-icon-form";
-                    gridname = CoreProgram._localizer?["Sys.Approve"];
-                    paraType = GridActionParameterTypesEnum.SingleId;
-                    showInRow = true;
-                    hideOnToolBar = true;
-                    break;
-
                 case GridActionStandardTypesEnum.Create:
                     iconcls = "layui-icon layui-icon-add-1";
                     gridname = CoreProgram._localizer?["Sys.Create"];
                     paraType = GridActionParameterTypesEnum.NoId;
                     break;
-
                 case GridActionStandardTypesEnum.AddRow:
                     iconcls = "layui-icon layui-icon-add-1";
                     gridname = CoreProgram._localizer?["Sys.Create"];
                     paraType = GridActionParameterTypesEnum.AddRow;
                     break;
-
                 case GridActionStandardTypesEnum.Edit:
                     iconcls = "layui-icon layui-icon-edit";
                     gridname = CoreProgram._localizer?["Sys.Edit"];
@@ -83,7 +73,6 @@ namespace WalkingTec.Mvvm.Core
                     showInRow = true;
                     hideOnToolBar = true;
                     break;
-
                 case GridActionStandardTypesEnum.Delete:
                     iconcls = "layui-icon layui-icon-delete";
                     gridname = CoreProgram._localizer?["Sys.Delete"];
@@ -91,7 +80,6 @@ namespace WalkingTec.Mvvm.Core
                     showInRow = true;
                     hideOnToolBar = true;
                     break;
-
                 case GridActionStandardTypesEnum.SimpleDelete:
                     iconcls = "layui-icon layui-icon-delete";
                     gridname = CoreProgram._localizer?["Sys.Delete"];
@@ -112,7 +100,6 @@ namespace WalkingTec.Mvvm.Core
                     showInRow = true;
                     hideOnToolBar = true;
                     break;
-
                 case GridActionStandardTypesEnum.Details:
                     iconcls = "layui-icon layui-icon-form";
                     gridname = CoreProgram._localizer?["Sys.Details"];
@@ -120,19 +107,16 @@ namespace WalkingTec.Mvvm.Core
                     showInRow = true;
                     hideOnToolBar = true;
                     break;
-
                 case GridActionStandardTypesEnum.BatchEdit:
                     iconcls = "layui-icon layui-icon-edit";
                     gridname = CoreProgram._localizer?["Sys.BatchEdit"];
                     paraType = GridActionParameterTypesEnum.MultiIds;
                     break;
-
                 case GridActionStandardTypesEnum.BatchDelete:
                     iconcls = "layui-icon layui-icon-delete";
                     gridname = CoreProgram._localizer?["Sys.BatchDelete"];
                     paraType = GridActionParameterTypesEnum.MultiIds;
                     break;
-
                 case GridActionStandardTypesEnum.SimpleBatchDelete:
                     iconcls = "layui-icon layui-icon-delete";
                     gridname = CoreProgram._localizer?["Sys.BatchDelete"];
@@ -142,24 +126,21 @@ namespace WalkingTec.Mvvm.Core
                     actionName = "BatchDelete";
                     ispost = true;
                     break;
-
                 case GridActionStandardTypesEnum.Import:
                     iconcls = "layui-icon layui-icon-templeate-1";
                     gridname = CoreProgram._localizer?["Sys.Import"];
                     paraType = GridActionParameterTypesEnum.NoId;
                     break;
-
                 case GridActionStandardTypesEnum.ExportExcel:
                     iconcls = "layui-icon layui-icon-download-circle";
                     gridname = CoreProgram._localizer?["Sys.Export"];
                     paraType = GridActionParameterTypesEnum.MultiIdWithNull;
-                    name = CoreProgram._localizer?["Sys.ExportExcel"];
+                    name = CoreProgram._localizer?["Sys.ExportExcel"];                    
                     showInRow = false;
                     showDialog = false;
                     hideOnToolBar = false;
                     isexport = true;
-                    break;
-
+                   break;
                 default:
                     break;
             }
@@ -198,10 +179,9 @@ namespace WalkingTec.Mvvm.Core
             };
         }
 
-        #endregion MakeStandardAction  创建标准动作
+        #endregion
 
         #region MakeAction 创建按钮
-
         /// <summary>
         /// 创建标准动作
         /// </summary>
@@ -252,7 +232,7 @@ namespace WalkingTec.Mvvm.Core
                 Area = areaName,
                 ControllerName = controllerName,
                 ActionName = actionName,
-                ParameterType = paraType,
+                ParameterType = paraType, 
                 IconCls = iconcls,
                 DialogWidth = dialogWidth ?? 800,
                 DialogHeight = dialogHeight,
@@ -284,17 +264,17 @@ namespace WalkingTec.Mvvm.Core
                 Area = "",
                 ControllerName = "",
                 ActionName = "ActionsGroup",
-                ParameterType = GridActionParameterTypesEnum.NoId,
+                ParameterType =  GridActionParameterTypesEnum.NoId, 
                 IconCls = iconcls,
                 DialogWidth = 0,
                 DialogHeight = 0,
                 ShowDialog = false,
                 whereStr = list.ToArray(),
-                SubActions = subActions
+                 SubActions= subActions
             };
         }
 
-        #endregion MakeAction 创建按钮
+        #endregion
 
         #region MakeStandardExportAction  创建标准导出按钮
 
@@ -337,7 +317,7 @@ namespace WalkingTec.Mvvm.Core
             return action;
         }
 
-        #endregion MakeStandardExportAction  创建标准导出按钮
+        #endregion
 
         #region Set Property
 
@@ -352,6 +332,7 @@ namespace WalkingTec.Mvvm.Core
             self.Max = Max;
             return self;
         }
+
 
         /// <summary>
         /// Set the dialog to be maximized
@@ -371,6 +352,8 @@ namespace WalkingTec.Mvvm.Core
             return self;
         }
 
+
+
         /// <summary>
         /// Set the dialog to be maximized
         /// </summary>
@@ -383,11 +366,12 @@ namespace WalkingTec.Mvvm.Core
             return self;
         }
 
-        public static GridAction SetIsExport(this GridAction self, bool isExport = true)
+        public static GridAction SetIsExport(this GridAction self, bool isExport= true)
         {
             self.IsExport = isExport;
             return self;
         }
+
 
         /// <summary>
         /// Set prompt message
@@ -401,6 +385,7 @@ namespace WalkingTec.Mvvm.Core
             return self;
         }
 
+
         /// <summary>
         /// 是否在每行都显示
         /// </summary>
@@ -412,7 +397,6 @@ namespace WalkingTec.Mvvm.Core
             self.ShowInRow = showInRow;
             return self;
         }
-
         /// <summary>
         /// 是否在工具栏上隐藏按钮
         /// </summary>
@@ -424,7 +408,6 @@ namespace WalkingTec.Mvvm.Core
             self.HideOnToolBar = hideOnToolBar;
             return self;
         }
-
         /// <summary>
         /// 把按钮当作容器,添加按钮的子按钮
         /// </summary>
@@ -448,7 +431,6 @@ namespace WalkingTec.Mvvm.Core
             self.whereStr = str;
             return self;
         }
-
-        #endregion Set Property
+        #endregion
     }
 }

@@ -17,7 +17,9 @@ namespace WalkingTec.Mvvm.Core.ConfigOptions
         /// </summary>
         public long UploadLimit { get; set; } = 20971520;
 
+
         public Dictionary<string, List<FileHandlerOptions>> Settings { get; set; }
+
     }
 
     public class FileHandlerOptions

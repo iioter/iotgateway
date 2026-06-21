@@ -15,4 +15,5 @@
         /// </summary>
         public string Value { get; set; }
     }
+
 }

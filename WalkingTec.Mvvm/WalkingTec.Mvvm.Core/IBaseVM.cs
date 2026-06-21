@@ -1,6 +1,6 @@
-using Microsoft.Extensions.Caching.Distributed;
 using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace WalkingTec.Mvvm.Core
 {
@@ -17,54 +17,45 @@ namespace WalkingTec.Mvvm.Core
         /// UniqueId
         /// </summary>
         string UniqueId { get; }
-
         /// <summary>
         /// WindowIds
         /// </summary>
-        string WindowIds { get; }
-
+        string WindowIds { get;}
         /// <summary>
         /// ViewDivId
         /// </summary>
         string ViewDivId { get; set; }
-
         /// <summary>
         /// DC
         /// </summary>
         IDataContext DC { get; set; }
-
         /// <summary>
         /// VMFullName
         /// </summary>
         string VMFullName { get; }
-
         /// <summary>
         /// CreatorAssembly
         /// </summary>
         string CreatorAssembly { get; set; }
-
         /// <summary>
         /// CurrentCS
         /// </summary>
         string CurrentCS { get; }
-
         /// <summary>
         /// FC
         /// </summary>
         Dictionary<string, object> FC { get; set; }
-
         /// <summary>
         /// Config
         /// </summary>
-        Configs ConfigInfo { get; }
+        Configs ConfigInfo { get;  }
 
-        ISessionService Session { get; }
+        ISessionService Session { get;  }
 
-        IDistributedCache Cache { get; }
+        IDistributedCache Cache { get;  }
 
         LoginUserInfo LoginUserInfo { get; }
-
-        #endregion Property
+        #endregion
 
         #region Event
 
@@ -72,16 +63,14 @@ namespace WalkingTec.Mvvm.Core
         /// InitVM 完成后触发的事件
         /// </summary>
         event Action<IBaseVM> OnAfterInit;
-
         /// <summary>
         /// ReInitVM 完成后触发的事件
         /// </summary>
         event Action<IBaseVM> OnAfterReInit;
 
-        #endregion Event
+        #endregion
 
         #region Method
-
         /// <summary>
         /// 调用 InitVM 并触发 OnAfterInit 事件
         /// </summary>
@@ -91,7 +80,6 @@ namespace WalkingTec.Mvvm.Core
         /// 调用 ReInitVM 并触发 OnAfterReInit 事件
         /// </summary>
         void DoReInit();
-
-        #endregion Method
+        #endregion
     }
 }

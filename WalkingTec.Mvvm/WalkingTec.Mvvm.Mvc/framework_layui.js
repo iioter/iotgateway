@@ -1,3 +1,4 @@
+
 /*eslint eqeqeq: ["error", "smart"]*/
 DONOTUSE_TABLAYID = undefined;
 if (typeof String.prototype.startsWith != 'function') {
@@ -61,6 +62,7 @@ window.ff = {
             }
             else {
                 return $.cookie(cookiePrefix + windowGuid + name);
+
             }
         }
         catch (e) { }
@@ -80,7 +82,7 @@ window.ff = {
 
     GetNonSelections: function (gridId) {
         var table = layui.table
-            , nums = 0
+            , nums = 0 
             , ids = [] // 未选中id
             , data = table.cache[gridId] || [];
         //计算未选中个数
@@ -160,51 +162,44 @@ window.ff = {
             if (para !== undefined) {
                 getpost = "Post";
             }
-            var child = window.open("/Home/PIndex/#" + url);
-            $(child.document).ready(function () {
-                setTimeout(function () {
-                    $(child.document).attr("title", title);
-                }, 500);
+            $.ajax({
+                type: getpost,
+                url: url,
+                data: para,
+                success: function (data, textStatus, request) {
+                    if (request.getResponseHeader('IsScript') === 'true') {
+                        eval(data);
+                    }
+                    else {
+                        data = '<div class="layui-card donotuse_pdiv"><div class="layui-card-body donotuse_pdiv" id=\"' + $.cookie("divid") + '\" >' + data + "</div></div>";
+                        var child = window.open("/Home/PIndex#/_framework/redirect");
+                        child.document.close();
+                        $(child.document).ready(function () {
+                            setTimeout(function () {
+                                $('#LAY_app_body', child.document).html(data);
+                                $(child.document).attr("title", title);
+                            }, 500);
+                        });
+                    }
+                    layer.close(index);
+                },
+                error: function (a, b, c) {
+                    layer.close(index);
+                    if (a.responseText !== undefined && a.responseText !== "") {
+                        layer.alert(a.responseText);
+                    }
+                    else {
+                        layer.alert(ff.DONOTUSE_Text_LoadFailed);
+                    }
+                }
             });
-            layer.close(index);
-            //    $.ajax({
-            //        type: getpost,
-            //        url: url,
-            //        data: para,
-            //        success: function (data, textStatus, request) {
-            //            if (request.getResponseHeader('IsScript') === 'true') {
-            //                eval(data);
-            //            }
-            //            else {
-            //                data = '<div class="layui-card donotuse_pdiv"><div class="layui-card-body donotuse_pdiv" id=\"' + $.cookie("divid") + '\" >' + data + "</div></div>";
-            //                var child = window.open("/Home/PIndex/#/_framework/redirect");
-            //                child.document.close();
-            //                $(child.document).ready(function () {
-            //                    setTimeout(function() {
-            //                        debugger;
-            //                        $('#LAY_app_body', child.document).html(data);
-            //                        $(child.document).attr("title", title);
-            //                    }, 500);
-            //                });
-            //            }
-            //            layer.close(index);
-            //        },
-            //        error: function (a, b, c) {
-            //            layer.close(index);
-            //            if (a.responseText !== undefined && a.responseText !== "") {
-            //                layer.alert(a.responseText);
-            //            }
-            //            else {
-            //                layer.alert(ff.DONOTUSE_Text_LoadFailed);
-            //            }
-            //        }
-            //    });
         }
         else {
             layer.close(index);
             location.hash = url;
         }
     },
+
 
     LoadPage1: function (url, where) {
         url = url.toLowerCase();
@@ -257,9 +252,9 @@ window.ff = {
 
     RenderForm: function (formId) {
         var comboxs = $(".layui-form[lay-filter=" + formId + "] div[wtm-ctype='combo']");
-        layui.use(['form'], function () {
-            var form = layui.form.render(null, formId);
-        });
+            layui.use(['form'], function () {
+                var form = layui.form.render(null, formId);
+            });
     },
 
     PostForm: function (url, formId, divid, searchervm) {
@@ -269,7 +264,7 @@ window.ff = {
             url = $("#" + formId).attr("action");
         }
         var d = null;
-        if ($("#" + formId).find("a[IsSearchButton]").length > 0) {
+        if (searchervm !== undefined && searchervm !== null && searchervm !== "") {
             d = ff.GetSearchFormData(formId, searchervm);
         }
         else {
@@ -337,6 +332,7 @@ window.ff = {
                 }
             }
         });
+
     },
 
     OpenDialog: function (url, windowid, title, width, height, para, maxed) {
@@ -420,7 +416,7 @@ window.ff = {
                         //}
                         , resizing: function (layero) {
                             ff.triggerResize();
-                            $(layero).find("div[ischart = '1']").each(
+                          $(layero).find("div[ischart = '1']").each(
                                 function (index) {
                                     eval($(this).attr('id') + 'Chart.resize();');
                                 }
@@ -434,9 +430,9 @@ window.ff = {
                                 }
                             );
                         }
-                        , restore: function (layero) {
+                        , restore : function (layero) {
                             ff.triggerResize();
-                            $(layero).find("div[ischart = '1']").each(
+                          $(layero).find("div[ischart = '1']").each(
                                 function (index) {
                                     eval($(this).attr('id') + 'Chart.resize();');
                                 }
@@ -451,7 +447,7 @@ window.ff = {
                     if (maxed === true) {
                         layer.full(oid);
                         ff.triggerResize();
-                    }
+                  }
                 }
             }
         });
@@ -541,6 +537,7 @@ window.ff = {
                 if (width > document.body.clientWidth) {
                     layer.full(oid);
                 }
+
             }
         });
     },
@@ -556,7 +553,7 @@ window.ff = {
             this.SetCookie("windowids", wids.join());
         }
         else {
-            if (layui.setter == undefined || layui.setter.pageTabs == undefined || window.location.href.toLocaleLowerCase().indexOf("/home/pindex/") > -1) {
+            if (layui.setter == undefined || layui.setter.pageTabs == undefined) {
                 window.close();
             }
             else if (layui.setter.pageTabs === false || $('.layadmin-tabsbody-item').length === 0) {
@@ -576,7 +573,7 @@ window.ff = {
             layui.use(['admin'], function () {
                 layui.admin.resize(function () {
                     {
-                        $("div[ischart = '1']").each(
+                       $("div[ischart = '1']").each(
                             function (index) {
                                 eval($(this).attr('id') + 'Chart.resize();');
                             }
@@ -590,9 +587,9 @@ window.ff = {
             layui.use(['admin'], function () {
                 layui.admin.resize(function () {
                     {
-                        $("#" + id).find("div[ischart = '1']").each(
+                        $("#"+id).find("div[ischart = '1']").each(
                             function (index) {
-                                eval($(this).attr('id') + 'Chart.resize();');
+                               eval($(this).attr('id') + 'Chart.resize();');
                             }
                         );
                     }
@@ -656,11 +653,7 @@ window.ff = {
                     var item = null;
 
                     if (controltype === "tree") {
-                        var df = [];
-                        if (usedefaultvalue == true) {
-                            df = eval(comboid + "defaultvalues");
-                        }
-                        window[comboid].update({ data: ff.getTreeItems(data.Data, df) });
+                        window[comboid].update({ data: ff.getTreeItems(data.Data) });
                     }
                     if (controltype === "transfer") {
                         layui.transfer.reload(targetid, {
@@ -671,30 +664,18 @@ window.ff = {
                     if (controltype === "combo") {
                         var df = [];
                         if (usedefaultvalue == true) {
-                            df = eval(comboid + "defaultvalues");
-                        }
-                        window[comboid].update({ data: ff.getComboItems(data.Data, df, usedefaultvalue) });
+                            df = eval(comboid + "defaultvalues"); 
+                      }
+                        window[comboid].update({ data: ff.getComboItems(data.Data,df) });
                     }
                     if (controltype === "checkbox") {
                         for (i = 0; i < data.Data.length; i++) {
                             item = data.Data[i];
-                            if (usedefaultvalue == true) {
-                                var df = [];
-                                df = eval(comboid + "defaultvalues");
-                                if (df.indexOf(item.Value) > -1) {
-                                    target.append("<input type='checkbox'  name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "' checked />");
-                                }
-                                else {
-                                    target.append("<input type='checkbox' name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "'  />");
-                                }
+                            if (item.Selected === true) {
+                                target.append("<input type='checkbox'  name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "' checked />");
                             }
                             else {
-                                if (item.Selected === true) {
-                                    target.append("<input type='checkbox'  name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "' checked />");
-                                }
-                                else {
-                                    target.append("<input type='checkbox' name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "'  />");
-                                }
+                                target.append("<input type='checkbox' name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "'  />");
                             }
                         }
                         form.render('checkbox', targetfilter);
@@ -702,27 +683,16 @@ window.ff = {
                     if (controltype === "radio") {
                         for (i = 0; i < data.Data.length; i++) {
                             item = data.Data[i];
-                            if (usedefaultvalue == true) {
-                                var df = [];
-                                df = eval(comboid + "defaultvalues");
-                                if (df.indexOf(item.Value) > -1) {
-                                    target.append("<input type='radio'  name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "' checked />");
-                                }
-                                else {
-                                    target.append("<input type='radio' name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "'  />");
-                                }
+                            if (item.Selected === true) {
+                                target.append("<input type='radio'  name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "' checked />");
                             }
                             else {
-                                if (item.Selected === true) {
-                                    target.append("<input type='radio'  name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "' checked />");
-                                }
-                                else {
-                                    target.append("<input type='radio' name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "'  />");
-                                }
+                                target.append("<input type='radio' name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "'  />");
                             }
                         }
                         form.render('radio', targetfilter);
                     }
+
                 }
                 else {
                     layer.alert(ff.DONOTUSE_Text_FailedLoadData);
@@ -733,67 +703,66 @@ window.ff = {
         ff.ChainChange("", target[0], "");
     },
 
-    LoadComboItems: function (controltype, url, controlid, targetname, svals, cb, disabled) {
+    LoadComboItems: function (controltype,url, controlid, targetname,svals, cb) {
         var target = $("#" + controlid);
         var targetfilter = target.attr("lay-filter");
         var ismulticombo = target.attr("wtm-combo") != undefined;
         if (svals == undefined || svals == null) {
             svals = [];
         }
-        $.get(url, {}, function (data, status) {
-            if (status === "success") {
-                var i = 0;
-                var item = null;
-                if (controltype === "tree") {
-                    var da = ff.getTreeItems(data.Data, svals);
+       $.get(url, {}, function (data, status) {
+           if (status === "success") {
+               var i = 0;
+               var item = null;
+               if (controltype === "tree") {
+                   var da = ff.getTreeItems(data.Data, svals);
+                   window[controlid].update({ data: da });
+                   if (cb !== undefined && cb != null) {
+                       cb();
+                   }
+               }
+               if (controltype == "transfer") {
+                   layui.transfer.reload(controlid, {
+                       data: ff.getTransferItems(data.Data, svals)
+                   });
+               }
+               if (controltype === "combo") {
+                   var da = ff.getComboItems(data.Data, svals);
                     window[controlid].update({ data: da });
-                    if (cb !== undefined && cb != null) {
-                        cb();
-                    }
-                }
-                if (controltype == "transfer") {
-                    layui.transfer.reload(controlid, {
-                        data: ff.getTransferItems(data.Data, svals)
-                    });
-                }
-                if (controltype === "combo") {
-                    var da = ff.getComboItems(data.Data, svals, undefined, disabled);
-                    window[controlid].update({ data: da });
-                }
-                if (controltype === "checkbox") {
-                    target[0].innerHTML = "";
-                    for (i = 0; i < data.Data.length; i++) {
-                        item = data.Data[i];
-                        var che = "";
-                        var dis = "";
-                        if (item.Selected === true || svals.indexOf(item.Value) > -1) {
-                            che = " checked ";
-                        }
-                        if (disabled == true) {
-                            dis = " disabled ";
-                        }
-                        target.append("<input type='checkbox'  name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "'" + che + dis + "/>");
-                    }
-                    layui.form.render('checkbox', targetfilter + "div");
-                }
-                if (controltype === "radio") {
-                    for (i = 0; i < data.Data.length; i++) {
-                        item = data.Data[i];
-                        if (item.Selected === true || svals.indexOf(item.Value) > -1) {
-                            target.append("<input type='radio'  name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "' checked />");
-                        }
-                        else {
-                            target.append("<input type='radio' name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "'  />");
-                        }
-                    }
-                    layui.form.render('radio', targetfilter + "div");
-                }
-            }
+               }
+               if (controltype === "checkbox") {
+                   target[0].innerHTML = "";
+                   for (i = 0; i < data.Data.length; i++) {
+                       item = data.Data[i];
+                       if (item.Selected === true || svals.indexOf(item.Value) > -1) {
+                           target.append("<input type='checkbox'  name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "' checked />");
+                       }
+                       else {
+                           target.append("<input type='checkbox' name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "'  />");
+                       }
+                   }
+                   layui.form.render('checkbox', targetfilter + "div");
+               }
+               if (controltype === "radio") {
+                   for (i = 0; i < data.Data.length; i++) {
+                       item = data.Data[i];
+                       if (item.Selected === true || svals.indexOf(item.Value) > -1) {
+                           target.append("<input type='radio'  name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "' checked />");
+                       }
+                       else {
+                           target.append("<input type='radio' name = '" + targetname + "' value = '" + item.Value + "' title = '" + item.Text + "'  />");
+                       }
+                   }
+                   layui.form.render('radio', targetfilter + "div");
+               }
+
+           }
 
             else {
                 layer.alert(ff.DONOTUSE_Text_FailedLoadData);
             }
         });
+
     },
 
     GetFormArray: function (formId) {
@@ -836,16 +805,16 @@ window.ff = {
         var xselect = searchForm.find("div[wtm-ctype='tree'],div[wtm-ctype='combo']");
         layui.each(xselect, function (_, item) {
             var val = window[item.id].getValue('value');
-            fieldElem = fieldElem.filter(function (index) {
-                return this.name != item.attributes["wtm-name"].value;
-            })
-            $.each(val, function (i, v) {
-                fieldElem.push({ name: item.attributes["wtm-name"].value, value: v });
-            });
+                fieldElem = fieldElem.filter(function (index) {
+                   return this.name != item.attributes["wtm-name"].value;
+                })
+                $.each(val, function (i, v) {
+                    fieldElem.push({ name: item.attributes["wtm-name"].value, value: v });
+                });
             if (val.length == 0) {
                 var ismulti = '';
                 try { ismulti = item.attributes["wtm-multi"].value } catch { }
-                fieldElem.push({ name: item.attributes["wtm-name"].value, value: ismulti == 'true' ? '' : null });
+                fieldElem.push({ name: item.attributes["wtm-name"].value, value: ismulti=='true'?'':null });
             }
         });
 
@@ -873,7 +842,7 @@ window.ff = {
             }
             if (/_DONOTUSE_(.*?)$/.test(itemname)) {
                 var name1 = RegExp.$1;
-                if (filterback.hasOwnProperty(name1) == false && filter.hasOwnProperty(name1) == false) {
+              if (filterback.hasOwnProperty(name1) == false && filter.hasOwnProperty(name1) == false) {
                     filterback[name1] = 1;
                 }
                 return;
@@ -928,25 +897,11 @@ window.ff = {
     },
 
     GetSearchFormData: function (formId, listvm) {
-        var data = ff.GetFormData(formId, listvm);
+        var data = ff.GetFormData(formId);
         for (var attr in data) {
             if (attr.startsWith(listvm + ".")) {
                 data[attr.replace(listvm + ".", "")] = data[attr];
                 delete data[attr];
-            }
-        }
-        var tc = $("#" + formId).closest("div[wtm-ctype='tc']")
-        if (tc.length > 0) {
-            var obj = eval(tc[0].id + "selected");
-            if (obj !== undefined && obj !== null) {
-                for (var item in obj) {
-                    if (listvm == "") {
-                        data["Searcher." + item] = obj[item];
-                    }
-                    else {
-                        data[item] = obj[item];
-                    }
-                }
             }
         }
         return data;
@@ -958,20 +913,9 @@ window.ff = {
             defaultcondition = {};
         }
         var tempwhere = {};
-        for (let item in defaultcondition) {
-            if (formData["Searcher." + item]) {
-            }
-            else {
-                tempwhere[item] = defaultcondition[item]
-            }
-        }
-        $.extend(tempwhere, formData);
-        for (let item in tempwhere) {
-            if (item.startsWith("Searcher.") == false) {
-                tempwhere["Searcher." + item] = tempwhere[item];
-            }
-        }
+        $.extend(tempwhere, defaultcondition);
 
+        $.extend(tempwhere, formData);
         var form = $('<form method="POST" action="' + url + '">');
         for (var attr in tempwhere) {
             if (tempwhere[attr] != null) {
@@ -1007,34 +951,29 @@ window.ff = {
         form.remove();
     },
 
-    RefreshChart: function (chartid, chartpre) {
+    RefreshChart: function (chartid) {
         var postdata = '';
 
         var searcher = $('form[chartlink*="' + chartid + '"]');
         if (searcher !== undefined && searcher.length > 0) {
-            if (chartpre) {
-                postdata = ff.GetSearchFormData(searcher[0].id, chartpre);
-            }
-            else {
-                postdata = ff.GetSearchFormData(searcher[0].id, "Searcher");
-            }
+            postdata = ff.GetFormData(searcher[0].id);
         }
-        $.ajax({
-            cache: false,
-            type: 'POST',
-            url: eval(chartid + "ChartUrl"),
-            data: postdata,
-            async: true,
-            success: function (data, textStatus, request) {
-                if (data.series != undefined) {
-                    data.series = data.series.replace(/"type":"charttype"/g, eval(chartid + 'ChartType'));
+            $.ajax({
+                cache: false,
+                type: 'POST',
+                url: eval(chartid+"ChartUrl"),
+                data: postdata,
+                async: true,
+                success: function (data, textStatus, request) {
+                    if (data.series != undefined) {
+                        data.series = data.series.replace(/"type":"charttype"/g, eval(chartid + 'ChartType'));
+                    }
+                    eval(chartid + 'Chart.setOption({dataset: JSON.parse(data.dataset),series: JSONfns.parse(data.series)},{replaceMerge:\'series\'});');
+                    if (eval(chartid + 'ChartLegend') == 'true') {
+                        eval(chartid + 'Chart.setOption({legend:JSON.parse(data.legend)});');
+                    }
                 }
-                eval(chartid + 'Chart.setOption({dataset: JSON.parse(data.dataset),series: JSONfns.parse(data.series)},{replaceMerge:\'series\'});');
-                if (eval(chartid + 'ChartLegend') == 'true') {
-                    eval(chartid + 'Chart.setOption({legend:JSON.parse(data.legend)});');
-                }
-            }
-        });
+            });
     },
 
     /**
@@ -1095,7 +1034,7 @@ window.ff = {
         layui.table.render(option);
     },
 
-    SetGridCellDate: function (id, dt) {
+    SetGridCellDate: function (id,dt) {
         layui.use('laydate', function () {
             var laydate = layui.laydate;
             laydate.render({
@@ -1140,12 +1079,7 @@ window.ff = {
                 if (typeof (loaddata[i][val]) == 'string') {
                     loaddata[i][val] = loaddata[i][val].replace(/\[\d+\]/ig, "[" + i + "]");
                     loaddata[i][val] = loaddata[i][val].replace(/_\d+_/ig, "_" + i + "_");
-                    if (/<input .*?\s*\/>.*?/.test(loaddata[i][val])) {
-                        loaddata[i][val] = loaddata[i][val].replace(/onchange=\".*?\"/ig, "onchange=\"ff.gridcellchange(this,'" + gridid + "'," + i + ",'" + val + "',0)\"");
-                    }
-                    if (/<select .*?\s*>.*?<\/select>/.test(loaddata[i][val])) {
-                        loaddata[i][val] = loaddata[i][val].replace(/onchange=\".*?\"/ig, "onchange=\"ff.gridcellchange(this,'" + gridid + "'," + i + ",'" + val + "',1)\"");
-                    }
+                    loaddata[i][val] = loaddata[i][val].replace("/onchange=\".*?\"/", "onchange=\"ff.gridcellchange(this,'" + gridid + "'," + i + ",'" + val + "')\"");
                 }
             }
         }
@@ -1165,6 +1099,7 @@ window.ff = {
             var re = new RegExp("(<option\\s*value\\s*=\\s*[\"']" + ele.value + "[\"'])\s*>", "ig");
             loaddata[row][col] = loaddata[row][col].replace(re, "$1 selected>");
         }
+
     },
 
     clearSelector: function (id) {
@@ -1231,7 +1166,7 @@ window.ff = {
         return rv;
     },
 
-    getTreeItems: function (data, svals) {
+    getTreeItems: function (data,svals) {
         var rv = [];
         if (svals == undefined || svals == null) {
             svals = [];
@@ -1253,24 +1188,22 @@ window.ff = {
         return rv;
     },
 
-    getComboItems: function (data, svals, useDefaultvalue, disabled) {
+    getComboItems: function (data, svals) {
         var rv = [];
         if (svals == undefined || svals == null) {
             svals = [];
         }
-        if (data != null) {
-            for (var i = 0; i < data.length; i++) {
-                var item = {};
-                item.value = data[i].Value;
-                item.name = data[i].Text;
-                item.disabled = disabled != undefined ? disabled : data[i].Disabled;
-                item.selected = useDefaultvalue == true ? svals.indexOf(data[i].Value) > -1 : (data[i].Selected || svals.indexOf(data[i].Value) > -1);
-                item.icon = data[i].Icon;
-                if (data[i].Children != null && data[i].Children.length > 0) {
-                    item.children = this.getTreeItems(data[i].Children, svals);
-                }
-                rv.push(item);
+        for (var i = 0; i < data.length; i++) {
+            var item = {};
+            item.value = data[i].Value;
+            item.name = data[i].Text;
+            item.disabled = data[i].Disabled;
+            item.selected = data[i].Selected || svals.indexOf(data[i].Value) > -1;
+            item.icon = data[i].Icon;
+            if (data[i].Children != null && data[i].Children.length > 0) {
+                item.children = this.getTreeItems(data[i].Children, svals);
             }
+            rv.push(item);
         }
         return rv;
     },
@@ -1291,6 +1224,7 @@ window.ff = {
         }
         return rv;
     },
+
 
     changeComboIcon: function (data) {
         for (var i = 0; i < data.elem.length; i++) {
@@ -1316,6 +1250,7 @@ window.ff = {
     },
 
     resetForm: function (formId) {
+
         $("#" + formId).find('input[type=text],select').each(function () {
             $(this).val('');
         });
@@ -1324,11 +1259,10 @@ window.ff = {
         // 多选下拉框
         var multiCombos = $('#' + formId + ' div[wtm-ctype=combo]').add($('#' + formId + ' div[wtm-ctype=tree]'));
         if (multiCombos && multiCombos.length > 0) {
-            multiCombos.each(function () {
-                let name = $(this).attr('id');
+            for (i = 0; i < multiCombos.length; i++) {
+                var name = multiCombos.attr('id');
                 window[name].setValue([]);
             }
-            );
         }
         for (var i = 0; i < hidAreas.length; i++) {
             var hiddenAreas = $('#' + formId + hidAreas[i]);

@@ -1,3 +1,10 @@
+using System;
+using System.Threading.Tasks;
+using Quartz;
+using WalkingTec.Mvvm.Core;
+using WalkingTec.Mvvm.Core.Extensions;
+using WalkingTec.Mvvm.Core.Support.Quartz;
+
 namespace WalkingTec.Mvvm.Mvc.Helper
 {
     //[QuartzRepeat(3600,0,true)]

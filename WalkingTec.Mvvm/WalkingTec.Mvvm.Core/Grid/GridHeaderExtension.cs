@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace WalkingTec.Mvvm.Core
 {
@@ -141,7 +142,6 @@ namespace WalkingTec.Mvvm.Core
             self.Width = width;
             return self;
         }
-
         /// <summary>
         /// 单元格事件名称
         /// </summary>
@@ -309,6 +309,6 @@ namespace WalkingTec.Mvvm.Core
             return self;
         }
 
-        #endregion GridColumn Property Setter
+        #endregion
     }
 }

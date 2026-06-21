@@ -29,6 +29,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         /// </summary>
         public string ChangeFunc { get; set; }
 
+
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "div";
@@ -66,6 +67,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 {
                     values = DefaultValue.Split(',').ToList();
                 }
+
             }
 
             if (string.IsNullOrEmpty(ItemUrl) == false)
@@ -95,6 +97,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                         }
                         listItems = Utils.GetBoolCombo(BoolComboTypes.Custom, df ?? (bool?)Field.Model, YesText, NoText);
                     }
+
                 }
                 else
                 {
@@ -128,14 +131,11 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 var item = listItems[i];
                 var selected = item.Selected ? " checked" : " ";
                 output.PostContent.AppendHtml($@"
-        <input type=""radio"" name=""{Field.Name}"" value=""{item.Value}"" title=""{item.Text}"" {selected} />
-        <script>
-         {Id}defaultvalues = {JsonSerializer.Serialize(values)};
-        </script>
-");
+        <input type=""radio"" name=""{Field.Name}"" value=""{item.Value}"" title=""{item.Text}"" {selected} />");
             }
 
             base.Process(context, output);
+
         }
 
         private void SetSelected(List<ComboSelectListItem> source, IList data)
@@ -179,6 +179,8 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                     }
                 }
             }
+
         }
+
     }
 }

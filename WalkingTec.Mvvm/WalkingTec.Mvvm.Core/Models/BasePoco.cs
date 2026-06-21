@@ -1,8 +1,10 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace WalkingTec.Mvvm.Core
 {
+
     public interface IBasePoco
     {
         DateTime? CreateTime { get; set; }
@@ -21,25 +23,22 @@ namespace WalkingTec.Mvvm.Core
         /// </summary>
         [Display(Name = "_Admin.CreateTime")]
         public DateTime? CreateTime { get; set; }
-
         /// <summary>
         /// CreateBy
         /// </summary>
         [Display(Name = "_Admin.CreateBy")]
-        [StringLength(50, ErrorMessage = "Validate.{0}stringmax{1}")]
+        [StringLength(50,ErrorMessage = "Validate.{0}stringmax{1}")]
         public string CreateBy { get; set; }
-
         /// <summary>
         /// UpdateTime
         /// </summary>
         [Display(Name = "_Admin.UpdateTime")]
         public DateTime? UpdateTime { get; set; }
-
         /// <summary>
         /// UpdateBy
         /// </summary>
         [Display(Name = "_Admin.UpdateBy")]
-        [StringLength(50, ErrorMessage = "Validate.{0}stringmax{1}")]
+        [StringLength(50,ErrorMessage = "Validate.{0}stringmax{1}")]
         public string UpdateBy { get; set; }
     }
 }

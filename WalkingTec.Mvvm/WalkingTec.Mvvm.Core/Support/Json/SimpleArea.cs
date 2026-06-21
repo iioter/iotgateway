@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace WalkingTec.Mvvm.Core.Support.Json
 {
@@ -10,5 +11,6 @@ namespace WalkingTec.Mvvm.Core.Support.Json
         public string Prefix { get; set; }
 
         public List<SimpleModule> Modules { get; set; }
+
     }
 }

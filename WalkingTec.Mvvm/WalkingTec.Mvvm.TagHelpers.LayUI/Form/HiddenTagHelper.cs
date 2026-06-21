@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Razor.TagHelpers;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 
@@ -15,14 +15,13 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
         public ModelExpression Field { get; set; }
         public string Name { get; set; }
         private string _id;
-
         public new string Id
         {
             get
             {
                 if (string.IsNullOrEmpty(_id))
                 {
-                    return Utils.GetIdByName(Field?.ModelExplorer.Container.ModelType.Name + "." + Field.Name) ?? string.Empty;
+                    return Utils.GetIdByName(Field?.ModelExplorer.Container.ModelType.Name+"."+Field.Name) ?? string.Empty;
                 }
                 else
                 {
@@ -34,7 +33,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 _id = value;
             }
         }
-
         public string DefaultValue { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
@@ -49,6 +47,8 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
 
                 output.Attributes.Add("name", string.IsNullOrEmpty(Name) ? Field.Name : Name);
 
+
+
                 if (DefaultValue != null)
                 {
                     output.Attributes.Add("value", DefaultValue);
@@ -58,7 +58,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                     output.Attributes.Add("value", value);
                 }
                 output.Attributes.Add("class", "layui-input");
-                output.Attributes.SetAttribute("id", Id);
             }
             else
             {
@@ -104,7 +103,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                                 sb.Append($@"<input type=""hidden"" name=""{(string.IsNullOrEmpty(Name) ? Field.Name : Name)}"" value=""{item}"" class=""layui-input""/>
 ");
                             }
-                        }
+                        }                        
                         output.PreContent.AppendHtml(sb.ToString());
                     }
                 }
@@ -118,7 +117,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
 
                     output.Attributes.Add("name", string.IsNullOrEmpty(Name) ? Field.Name : Name);
 
-                    if (string.IsNullOrEmpty(value) == false)
+                    if(string.IsNullOrEmpty(value) == false)
                     {
                         DefaultValue = null;
                     };

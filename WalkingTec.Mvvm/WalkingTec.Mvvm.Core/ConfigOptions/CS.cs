@@ -1,8 +1,9 @@
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace WalkingTec.Mvvm.Core
 {
@@ -16,7 +17,6 @@ namespace WalkingTec.Mvvm.Core
 
         public ConstructorInfo DcConstructor;
         private static List<ConstructorInfo> _cis;
-
         public static List<ConstructorInfo> Cis
         {
             get
@@ -24,7 +24,7 @@ namespace WalkingTec.Mvvm.Core
                 if (_cis == null)
                 {
                     var AllAssembly = Utils.GetAllAssembly();
-                    _cis = new List<ConstructorInfo>();
+                     _cis = new List<ConstructorInfo>();
                     if (AllAssembly != null)
                     {
                         foreach (var ass in AllAssembly)
@@ -50,7 +50,6 @@ namespace WalkingTec.Mvvm.Core
         }
 
         private static List<ConstructorInfo> _cisFull;
-
         public static List<ConstructorInfo> CisFull
         {
             get

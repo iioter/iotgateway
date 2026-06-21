@@ -12,11 +12,6 @@ namespace WalkingTec.Mvvm.Mvc
     [DebugOnly]
     public class _CodeGenController : BaseController
     {
-        public IActionResult Inner()
-        {
-            return View();
-        }
-
         [ActionDescription("代码生成器")]
         public IActionResult Index(UIEnum ui)
         {
@@ -34,7 +29,7 @@ namespace WalkingTec.Mvvm.Mvc
             if (vm.SelectedModel != null)
             {
                 Type modeltype = Type.GetType(vm.SelectedModel);
-                if (modeltype.IsSubclassOf(typeof(TopBasePoco)) == false)
+                if(modeltype.IsSubclassOf(typeof(TopBasePoco)) == false)
                 {
                     ModelState.AddModelError("SelectedModel", MvcProgram._localizer["Codegen.SelectedModelMustBeBasePoco"]);
                 }
@@ -43,6 +38,7 @@ namespace WalkingTec.Mvvm.Mvc
             {
                 vm.AllModels = GetAllModels().ToListItems(x => x.Name, x => x.AssemblyQualifiedName);
                 return View("Index", vm);
+
             }
             else
             {
@@ -55,6 +51,7 @@ namespace WalkingTec.Mvvm.Mvc
         [ActionDescription("生成确认")]
         public IActionResult Gen(CodeGenVM vm)
         {
+            
             return View(vm);
         }
 
@@ -74,12 +71,12 @@ namespace WalkingTec.Mvvm.Mvc
                 ViewData["filename"] = $"{vm.ModelName}{(vm.IsApi == true ? "Api" : "")}Controller.cs";
                 ViewData["code"] = vm.GenerateController();
             }
-            else if (vm.PreviewFile == "Searcher" || vm.PreviewFile.EndsWith("VM"))
+            else if(vm.PreviewFile == "Searcher" || vm.PreviewFile.EndsWith("VM"))
             {
-                ViewData["filename"] = vm.ModelName + $"{(vm.IsApi == true ? "Api" : "")}" + vm.PreviewFile.Replace("CrudVM", "VM") + ".cs";
+                ViewData["filename"] = vm.ModelName + $"{(vm.IsApi == true ? "Api" : "")}" + vm.PreviewFile.Replace("CrudVM","VM") + ".cs";
                 ViewData["code"] = vm.GenerateVM(vm.PreviewFile);
             }
-            else if (vm.UI == UIEnum.React)
+            else if(vm.UI == UIEnum.React)
             {
                 if (vm.PreviewFile == "storeindex")
                 {
@@ -97,33 +94,29 @@ namespace WalkingTec.Mvvm.Mvc
                 {
                     ViewData["code"] = vm.GenerateReactView(vm.PreviewFile);
                 }
+
             }
-            else if (vm.UI == UIEnum.VUE)
+            else if(vm.UI == UIEnum.VUE)
             {
                 List<string> apineeded = new List<string>();
-                ViewData["code"] = vm.GenerateVUEView(vm.PreviewFile, apineeded);
+                ViewData["code"] = vm.GenerateVUEView(vm.PreviewFile,apineeded);
             }
-            else if (vm.UI == UIEnum.VUE3)
-            {
-                List<string> apineeded = new List<string>();
-                ViewData["code"] = vm.GenerateVue3View(vm.PreviewFile);
-            }
-            else if (vm.UI == UIEnum.Blazor)
+            else if(vm.UI == UIEnum.Blazor)
             {
                 ViewData["code"] = vm.GenerateBlazorView(vm.PreviewFile);
             }
             else if (vm.PreviewFile.EndsWith("View"))
             {
-                ViewData["filename"] = vm.PreviewFile.Replace("ListView", "Index").Replace("View", "") + "cshtml";
+                ViewData["filename"] = vm.PreviewFile.Replace("ListView","Index").Replace("View","") + "cshtml";
                 ViewData["code"] = vm.GenerateView(vm.PreviewFile);
             }
             return PartialView(vm);
         }
 
-        private List<Type> GetAllModels()
+        private  List<Type> GetAllModels()
         {
             var models = new List<Type>();
-
+            
             //获取所有模型
             var pros = Wtm.ConfigInfo.Connections.SelectMany(x => x.DcConstructor.DeclaringType.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance));
             if (pros != null)
@@ -138,5 +131,6 @@ namespace WalkingTec.Mvvm.Mvc
             }
             return models;
         }
+
     }
 }

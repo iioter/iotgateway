@@ -4,7 +4,7 @@
 
 - Username: `admin`     Password: `iotgateway.net`
 
-> Cross-platform industrial IoT gateway based on .NET 8
+> Cross-platform industrial IoT gateway based on .NET 10
 >
 > B/S architecture with visual configuration
 >

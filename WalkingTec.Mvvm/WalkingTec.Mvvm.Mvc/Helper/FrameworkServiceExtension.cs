@@ -1,4 +1,14 @@
-using DUWENINK.Captcha.DI;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Globalization;
+using System.IdentityModel.Tokens.Jwt;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Reflection;
+using System.Runtime.Loader;
+using System.Text;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -19,24 +29,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.DependencyModel;
 using Microsoft.Extensions.DependencyModel.Resolution;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IdentityModel.Tokens.Jwt;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Loader;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Auth;
 using WalkingTec.Mvvm.Core.Extensions;
@@ -46,11 +42,18 @@ using WalkingTec.Mvvm.Mvc.Auth;
 using WalkingTec.Mvvm.Mvc.Filters;
 using WalkingTec.Mvvm.Mvc.Helper;
 using WalkingTec.Mvvm.TagHelpers.LayUI;
+using Microsoft.AspNetCore.SpaServices.Extensions;
+using Microsoft.Extensions.FileProviders;
+using WalkingTec.Mvvm.Core.Support.Quartz;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
+using Microsoft.OpenApi;
 
 namespace WalkingTec.Mvvm.Mvc
 {
     public static class FrameworkServiceExtension
     {
+
         //private static Configs _wtmconfigs;
         //private static Configs WtmConfigs
         //{
@@ -64,6 +67,9 @@ namespace WalkingTec.Mvvm.Mvc
         //        return _wtmconfigs;
         //    }
         //}
+
+
+
 
         private static GlobalData GetGlobalData()
         {
@@ -499,7 +505,6 @@ namespace WalkingTec.Mvvm.Mvc
 
         public static IServiceCollection AddWtmContext(this IServiceCollection services, IConfiguration config, Action<WtmContextOption> options = null)
         {
-            services.AddDUWENINKCaptcha();//使用验证码
             var conf = config.Get<Configs>();
             WtmContextOption op = new WtmContextOption();
             options?.Invoke(op);
@@ -521,29 +526,9 @@ namespace WalkingTec.Mvvm.Mvc
                 y.ValueLengthLimit = int.MaxValue - 20480;
                 y.MultipartBodyLengthLimit = conf.FileUploadOptions.UploadLimit;
             });
-            //services.AddHostedService<QuartzHostService>();
-            var cs = conf.Connections;
-            foreach (var item in cs)
-            {
-                var dc = item.CreateDC();
-                dc.EnsureCreate();
-            }
-            services.AddVersionedApiExplorer(o =>
-            {
-                o.GroupNameFormat = "'v'VVV";
-                o.SubstituteApiVersionInUrl = true;
-            });
-            services.AddApiVersioning(
-             options =>
-             {
-                 options.ReportApiVersions = true;
-                 options.DefaultApiVersion = ApiVersion.Default;
-                 options.AssumeDefaultVersionWhenUnspecified = true;
-             });
-
+            services.AddHostedService<QuartzHostService>();
             return services;
         }
-
         public static IServiceCollection AddWtmCrossDomain(this IServiceCollection services, IConfiguration config)
         {
             var conf = config.Get<Configs>();
@@ -580,7 +565,6 @@ namespace WalkingTec.Mvvm.Mvc
             });
             return services;
         }
-
         public static IServiceCollection AddWtmSession(this IServiceCollection services, int timeout, IConfiguration config)
         {
             var conf = config.Get<Configs>();
@@ -591,7 +575,6 @@ namespace WalkingTec.Mvvm.Mvc
             });
             return services;
         }
-
         public static IServiceCollection AddWtmAuthentication(this IServiceCollection services, IConfiguration config)
         {
             var conf = config.Get<Configs>();
@@ -617,7 +600,7 @@ namespace WalkingTec.Mvvm.Mvc
                              ValidAudience = jwtOptions.Audience,
 
                              ValidateIssuerSigningKey = true,
-                             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecurityKey)),
+                             IssuerSigningKey = new SymmetricSecurityKey(jwtOptions.GetSecurityKeyBytes()),
                              LifetimeValidator = (DateTime? notBefore, DateTime? expires, SecurityToken securityToken, TokenValidationParameters validationParameters) =>
                              {
                                  if (expires == null)
@@ -630,27 +613,6 @@ namespace WalkingTec.Mvvm.Mvc
                                  }
                              },
                              ValidateLifetime = true
-                         };
-                         options.Events = new JwtBearerEvents
-                         {
-                             OnMessageReceived = context =>
-                             {
-                                 var accessToken = context.Request.Query["access_token"];
-
-                                 // If the request is for our hub...
-                                 var path = context.HttpContext.Request.Path;
-                                 if (!string.IsNullOrEmpty(accessToken))
-                                 {
-                                     // Read the token out of the query string
-                                     context.Token = accessToken;
-                                 }
-                                 return Task.CompletedTask;
-                             },
-                             OnTokenValidated = (context) =>
-                             {
-                                 JsonWebToken token = context.SecurityToken as JsonWebToken;
-                                 return Task.FromResult(token);
-                             }
                          };
                      })
                    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
@@ -695,31 +657,32 @@ namespace WalkingTec.Mvvm.Mvc
         {
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "IoTGateway API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "eLink API", Version = "v1" });
                 var bearer = new OpenApiSecurityScheme()
                 {
                     Description = "JWT Bearer",
                     Name = "Authorization",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.ApiKey
+
                 };
                 c.AddSecurityDefinition("Bearer", bearer);
-                var sr = new OpenApiSecurityRequirement();
-                sr.Add(new OpenApiSecurityScheme
+                c.AddSecurityRequirement(document =>
                 {
-                    Reference = new OpenApiReference
+                    var requirement = new OpenApiSecurityRequirement();
+                    if (document.Components?.SecuritySchemes != null &&
+                        document.Components.SecuritySchemes.ContainsKey("Bearer"))
                     {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
+                        requirement.Add(new OpenApiSecuritySchemeReference("Bearer", document, null), new List<string>());
                     }
-                }, new string[] { });
-                c.AddSecurityRequirement(sr);
+
+                    return requirement;
+                });
                 c.SchemaFilter<SwaggerFilter>();
-                //Locate the XML file being generated by ASP.NET...
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                //... and tell Swagger to use those XML comments.
-                c.IncludeXmlComments(xmlPath, true);
+                if (useFullName == true)
+                {
+                    c.CustomSchemaIds(i => i.FullName);
+                }
             });
             return services;
         }
@@ -814,6 +777,7 @@ namespace WalkingTec.Mvvm.Mvc
                 var menuCacheKey = nameof(GlobalData.AllMenus);
                 if (cache.TryGetValue(menuCacheKey, out List<SimpleMenu> rv) == false)
                 {
+
                     var data = GetAllMenus(modules, configs.IsQuickDebug, configs.Connections);
                     cache.Add(menuCacheKey, data, new DistributedCacheEntryOptions() { AbsoluteExpirationRelativeToNow = new TimeSpan(1, 0, 0) });
                     menus = data;
@@ -847,7 +811,7 @@ namespace WalkingTec.Mvvm.Mvc
                             var _all = dc.Set<FrameworkTenant>().IgnoreQueryFilters().Where(x => x.Enabled).ToList();
                             foreach (var item in _all)
                             {
-                                if (tenants.Any(x => x.ID == item.ID) == false)
+                                if(tenants.Any(x=>x.ID == item.ID) == false)
                                 {
                                     tenants.Add(item);
                                 }
@@ -857,7 +821,7 @@ namespace WalkingTec.Mvvm.Mvc
                             {
                                 if (string.IsNullOrEmpty(item.TDomain) == false)
                                 {
-                                    Regex r = new Regex("(http://|https://)?(.+?)(/)?$");
+                                    Regex r = new Regex("(http://|https://)?(.+)(/)?");
                                     var m = r.Match(item.TDomain);
                                     if (m.Success)
                                     {
@@ -879,7 +843,9 @@ namespace WalkingTec.Mvvm.Mvc
                                             catch { }
                                         }
                                     }
+
                                 }
+
                             }
                         }
                     }
@@ -951,10 +917,10 @@ namespace WalkingTec.Mvvm.Mvc
                 {
                     fixdc.DataInit(gd.AllModule, isspa == true || test != null).Wait();
                 }
+
             }
             return app;
         }
-
         public static IApplicationBuilder UseWtmMultiLanguages(this IApplicationBuilder app)
         {
             var configs = app.ApplicationServices.GetRequiredService<IOptionsMonitor<Configs>>().CurrentValue;
@@ -971,7 +937,6 @@ namespace WalkingTec.Mvvm.Mvc
             }
             return app;
         }
-
         public static IApplicationBuilder UseWtmCrossDomain(this IApplicationBuilder app)
         {
             var configs = app.ApplicationServices.GetRequiredService<IOptionsMonitor<Configs>>().CurrentValue;
@@ -1001,15 +966,16 @@ namespace WalkingTec.Mvvm.Mvc
             return app;
         }
 
+
         public static IApplicationBuilder UseWtmSwagger(this IApplicationBuilder app, bool showInDebugOnly = true)
         {
             var configs = app.ApplicationServices.GetRequiredService<IOptions<Configs>>().Value;
-            if (true)//configs.IsQuickDebug == true || showInDebugOnly == false
+            if (configs.IsQuickDebug == true || showInDebugOnly == false)
             {
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "IoTGateway API V1");
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "eLink API V1");
                 });
             }
             return app;
@@ -1030,5 +996,8 @@ namespace WalkingTec.Mvvm.Mvc
 
             return app;
         }
+
     }
+
+
 }

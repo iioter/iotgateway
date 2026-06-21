@@ -6,19 +6,21 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
-using MySqlConnector;
+using Microsoft.Extensions.Logging.Console;
+using Microsoft.Extensions.Logging.Debug;
+using Microsoft.Extensions.Options;
+using MySql.Data.MySqlClient;
 using Npgsql;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using WalkingTec.Mvvm.Core.Extensions;
-using WalkingTec.Mvvm.Core.Models;
 using WalkingTec.Mvvm.Core.Support.Json;
 
 namespace WalkingTec.Mvvm.Core
@@ -36,14 +38,8 @@ namespace WalkingTec.Mvvm.Core
         public DbSet<FrameworkRole> BaseFrameworkRoles { get; set; }
         public DbSet<FrameworkUserRole> BaseFrameworkUserRoles { get; set; }
         public DbSet<FrameworkUserGroup> BaseFrameworkUserGroups { get; set; }
-        public DbSet<FrameworkWorkflow> FrameworkWorkflows { get; set; }
         public DbSet<ActionLog> BaseActionLogs { get; set; }
         public DbSet<FrameworkTenant> FrameworkTenants { get; set; }
-        public DbSet<Elsa_Bookmark> Elsa_Bookmarks { get; set; }
-        public DbSet<Elsa_Trigger> Elsa_Triggers { get; set; }
-        public DbSet<Elsa_WorkflowDefinition> Elsa_WorkflowDefinitions { get; set; }
-        public DbSet<Elsa_WorkflowExecutionLogRecord> Elsa_WorkflowExecutionLogRecords { get; set; }
-        public DbSet<Elsa_WorkflowInstance> Elsa_WorkflowInstances { get; set; }
 
         /// <summary>
         /// FrameworkContext
@@ -67,10 +63,7 @@ namespace WalkingTec.Mvvm.Core
         public FrameworkContext(CS cs) : base(cs)
         {
         }
-
-        public FrameworkContext(DbContextOptions options) : base(options)
-        {
-        }
+        public FrameworkContext(DbContextOptions options) : base(options) { }
 
         /// <summary>
         /// OnModelCreating
@@ -125,13 +118,14 @@ namespace WalkingTec.Mvvm.Core
             }
         }
 
+
         /// <summary>
         /// 数据初始化
         /// </summary>
         /// <param name="allModules"></param>
         /// <param name="IsSpa"></param>
         /// <returns>返回true表示需要进行初始化数据操作，返回false即数据库已经存在或不需要初始化数据</returns>
-        public override async Task<bool> DataInit(object allModules, bool IsSpa)
+        public async override Task<bool> DataInit(object allModules, bool IsSpa)
         {
             bool rv = await Database.EnsureCreatedAsync();
             //判断是否存在初始数据
@@ -203,8 +197,8 @@ namespace WalkingTec.Mvvm.Core
                                 if (item != null)
                                 {
                                     item.ModuleName += "Api";
-                                    item.ShowOnMenu = false;
                                     apifolder.Children.Add(item);
+
                                 }
                             }
                             Set<FrameworkMenu>().Add(apifolder);
@@ -228,6 +222,7 @@ namespace WalkingTec.Mvvm.Core
             }
             return rv;
         }
+
 
         private FrameworkMenu GetFolderMenu(string FolderText, bool isShowOnMenu = true, bool isInherite = false)
         {
@@ -341,6 +336,7 @@ namespace WalkingTec.Mvvm.Core
             }
             return menu;
         }
+
     }
 
     public partial class EmptyContext : DbContext, IDataContext
@@ -356,9 +352,7 @@ namespace WalkingTec.Mvvm.Core
         /// IsFake
         /// </summary>
         public bool IsFake { get; set; }
-
         private string _tenantCode;
-
         public string TenantCode
         {
             get
@@ -366,9 +360,7 @@ namespace WalkingTec.Mvvm.Core
                 return _tenantCode;
             }
         }
-
         public bool IsDebug { get; set; }
-
         /// <summary>
         /// CSName
         /// </summary>
@@ -378,7 +370,6 @@ namespace WalkingTec.Mvvm.Core
 
         public string Version { get; set; }
         public CS ConnectionString { get; set; }
-
         /// <summary>
         /// FrameworkContext
         /// </summary>
@@ -413,9 +404,7 @@ namespace WalkingTec.Mvvm.Core
             ConnectionString = cs;
         }
 
-        public EmptyContext(DbContextOptions options) : base(options)
-        {
-        }
+        public EmptyContext(DbContextOptions options) : base(options) { }
 
         public IDataContext CreateNew()
         {
@@ -429,7 +418,7 @@ namespace WalkingTec.Mvvm.Core
             }
         }
 
-        public IDataContext ReCreate(ILoggerFactory _logger = null)
+        public IDataContext ReCreate()
         {
             if (this?.Database?.CurrentTransaction != null)
             {
@@ -437,25 +426,16 @@ namespace WalkingTec.Mvvm.Core
             }
             else
             {
-                IDataContext rv = null;
                 if (ConnectionString != null)
                 {
-                    rv = (IDataContext)this.GetType().GetConstructor(new Type[] { typeof(CS) }).Invoke(new object[] { ConnectionString }); ;
+                    return (IDataContext)this.GetType().GetConstructor(new Type[] { typeof(CS) }).Invoke(new object[] { ConnectionString }); ;
                 }
                 else
                 {
-                    rv = (IDataContext)this.GetType().GetConstructor(new Type[] { typeof(string), typeof(DBTypeEnum) }).Invoke(new object[] { CSName, DBType });
+                    return (IDataContext)this.GetType().GetConstructor(new Type[] { typeof(string), typeof(DBTypeEnum) }).Invoke(new object[] { CSName, DBType });
                 }
-                rv.SetTenantCode(this.TenantCode);
-                if (_logger != null)
-                {
-                    rv.IsDebug = true;
-                    rv.SetLoggerFactory(_logger);
-                }
-                return rv;
             }
         }
-
         /// <summary>
         /// 将一个实体设为填加状态
         /// </summary>
@@ -524,6 +504,7 @@ namespace WalkingTec.Mvvm.Core
             else
             {
                 set.Remove(exist);
+
             }
         }
 
@@ -590,11 +571,6 @@ namespace WalkingTec.Mvvm.Core
             if (DBType == DBTypeEnum.Oracle)
             {
                 modelBuilder.Model.SetMaxIdentifierLength(30);
-                modelBuilder.Entity<Elsa_Bookmark>().ToTable("Bookmarks");
-                modelBuilder.Entity<Elsa_Trigger>().ToTable("Triggers");
-                modelBuilder.Entity<Elsa_WorkflowDefinition>().ToTable("WorkflowDefinitions");
-                modelBuilder.Entity<Elsa_WorkflowExecutionLogRecord>().ToTable("WorkflowExecutionLogRecords");
-                modelBuilder.Entity<Elsa_WorkflowInstance>().ToTable("WorkflowInstances");
             }
         }
 
@@ -607,36 +583,17 @@ namespace WalkingTec.Mvvm.Core
             switch (DBType)
             {
                 case DBTypeEnum.SqlServer:
-                    var ver = 120;
-                    if (string.IsNullOrEmpty(Version) == false)
-                    {
-                        int.TryParse(Version, out ver);
-                    }
-                    optionsBuilder.UseSqlServer(CSName, o => o.UseCompatibilityLevel(ver));
+                    optionsBuilder.UseSqlServer(CSName);
                     break;
-
                 case DBTypeEnum.MySql:
-                    ServerVersion sv = null;
-                    if (string.IsNullOrEmpty(Version) == false)
-                    {
-                        ServerVersion.TryParse(Version, out sv);
-                    }
-                    if (sv == null)
-                    {
-                        sv = ServerVersion.AutoDetect(CSName);
-                    }
-                    optionsBuilder.UseMySql(CSName, sv, b => b.SchemaBehavior(MySqlSchemaBehavior.Translate,
-    (schema, entity) => $"{entity}"));
+                    optionsBuilder.UseMySQL(CSName);
                     break;
-
                 case DBTypeEnum.PgSql:
                     optionsBuilder.UseNpgsql(CSName);
                     break;
-
                 case DBTypeEnum.Memory:
                     optionsBuilder.UseInMemoryDatabase(CSName);
                     break;
-
                 case DBTypeEnum.SQLite:
                     optionsBuilder.UseSqlite(CSName);
                     break;
@@ -646,27 +603,42 @@ namespace WalkingTec.Mvvm.Core
                 case DBTypeEnum.Oracle:
                     optionsBuilder.UseOracle(CSName, option =>
                     {
-                        switch (Version)
+                        // 需要引用定义 OracleSQLCompatibility 的命名空间（通常在 EF Core Oracle 包中）
+                        if (string.IsNullOrEmpty(Version) == false)
                         {
-                            case "19":
-                                option.UseOracleSQLCompatibility(OracleSQLCompatibility.DatabaseVersion19);
-                                break;
-
-                            case "21":
-                                option.UseOracleSQLCompatibility(OracleSQLCompatibility.DatabaseVersion21);
-                                break;
-
-                            case "23":
-                                option.UseOracleSQLCompatibility(OracleSQLCompatibility.DatabaseVersion23);
-                                break;
-
-                            default:
-                                option.UseOracleSQLCompatibility(OracleSQLCompatibility.DatabaseVersion19);
-                                break;
+                            // 尝试将 Version 字符串解析为枚举名（区分大小写可选）
+                            if (Enum.TryParse<OracleSQLCompatibility>(Version, true, out var compat))
+                            {
+                                option.UseOracleSQLCompatibility(compat);
+                            }
+                            else
+                            {
+                                // 如果你的 Version 是 "11"、"12" 之类的数字字符串，需要把它映射到枚举成员名
+                                // 下面示例是常见映射，按你项目中枚举成员实际命名调整：
+                                switch (Version.Split('.')[0])
+                                {
+                                    case "19":
+                                        option.UseOracleSQLCompatibility(OracleSQLCompatibility.DatabaseVersion19);
+                                        break;
+                                    case "21":
+                                        option.UseOracleSQLCompatibility(OracleSQLCompatibility.DatabaseVersion21);
+                                        break;
+                                    case "23":
+                                        option.UseOracleSQLCompatibility(OracleSQLCompatibility.DatabaseVersion23);
+                                        break;
+                                    default:
+                                        // 默认兼容级别（请按需修改）
+                                        option.UseOracleSQLCompatibility(OracleSQLCompatibility.DatabaseVersion19);
+                                        break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            option.UseOracleSQLCompatibility(OracleSQLCompatibility.DatabaseVersion19);
                         }
                     });
                     break;
-
                 default:
                     break;
             }
@@ -691,21 +663,19 @@ namespace WalkingTec.Mvvm.Core
         {
             this._tenantCode = code;
         }
-
         /// <summary>
         /// 数据初始化
         /// </summary>
         /// <param name="allModules"></param>
         /// <param name="IsSpa"></param>
         /// <returns>返回true表示需要进行初始化数据操作，返回false即数据库已经存在或不需要初始化数据</returns>
-        public virtual async Task<bool> DataInit(object allModules, bool IsSpa)
+        public async virtual Task<bool> DataInit(object allModules, bool IsSpa)
         {
             bool rv = await Database.EnsureCreatedAsync();
             return rv;
         }
 
         #region 执行存储过程返回datatable
-
         /// <summary>
         /// 执行存储过程，返回datatable结果集
         /// </summary>
@@ -716,8 +686,7 @@ namespace WalkingTec.Mvvm.Core
         {
             return Run(command, CommandType.StoredProcedure, paras);
         }
-
-        #endregion 执行存储过程返回datatable
+        #endregion
 
         public IEnumerable<TElement> RunSP<TElement>(string command, params object[] paras)
         {
@@ -725,21 +694,19 @@ namespace WalkingTec.Mvvm.Core
         }
 
         #region 执行Sql语句，返回datatable
-
         public DataTable RunSQL(string sql, params object[] paras)
         {
             return Run(sql, CommandType.Text, paras);
         }
-
-        #endregion 执行Sql语句，返回datatable
+        #endregion
 
         public IEnumerable<TElement> RunSQL<TElement>(string sql, params object[] paras)
         {
             return Run<TElement>(sql, CommandType.Text, paras);
         }
 
-        #region 执行存储过程或Sql语句返回DataTable
 
+        #region 执行存储过程或Sql语句返回DataTable
         /// <summary>
         /// 执行存储过程或Sql语句返回DataTable
         /// </summary>
@@ -781,8 +748,8 @@ namespace WalkingTec.Mvvm.Core
             }
             return table;
         }
+        #endregion
 
-        #endregion 执行存储过程或Sql语句返回DataTable
 
         public IEnumerable<TElement> Run<TElement>(string sql, CommandType commandType, params object[] paras)
         {
@@ -792,6 +759,7 @@ namespace WalkingTec.Mvvm.Core
             return entityList;
         }
 
+
         public object CreateCommandParameter(string name, object value, ParameterDirection dir)
         {
             object rv = null;
@@ -800,34 +768,27 @@ namespace WalkingTec.Mvvm.Core
                 case DBTypeEnum.SqlServer:
                     rv = new SqlParameter(name, value) { Direction = dir };
                     break;
-
                 case DBTypeEnum.MySql:
                     rv = new MySqlParameter(name, value) { Direction = dir };
                     break;
-
                 case DBTypeEnum.PgSql:
                     rv = new NpgsqlParameter(name, value) { Direction = dir };
                     break;
-
                 case DBTypeEnum.SQLite:
                     rv = new SqliteParameter(name, value) { Direction = dir };
                     break;
-
                 case DBTypeEnum.Oracle:
                     //rv = new OracleParameter(name, value) { Direction = dir };
                     break;
             }
             return rv;
         }
-
-        public void EnsureCreate()
-        {
-            this.Database.EnsureCreated();
-        }
     }
 
     public class NullContext : IDataContext
     {
+
+
         public string TenantCode { get; }
         public bool IsFake { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
@@ -871,9 +832,10 @@ namespace WalkingTec.Mvvm.Core
 
         public void Dispose()
         {
+
         }
 
-        public IDataContext ReCreate(ILoggerFactory _logger = null)
+        public IDataContext ReCreate()
         {
             throw new NotImplementedException();
         }
@@ -932,7 +894,6 @@ namespace WalkingTec.Mvvm.Core
         {
             throw new NotImplementedException();
         }
-
         public void SetTenantCode(string code)
         {
             throw new NotImplementedException();
@@ -957,10 +918,6 @@ namespace WalkingTec.Mvvm.Core
         {
             throw new NotImplementedException();
         }
-
-        public void EnsureCreate()
-        {
-            throw new NotImplementedException();
-        }
     }
+
 }

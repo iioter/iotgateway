@@ -1,12 +1,3 @@
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using MySqlConnector;
-using Npgsql;
-using NpgsqlTypes;
-using NPOI.HSSF.Util;
-using NPOI.SS.UserModel;
-using NPOI.SS.Util;
-using NPOI.XSSF.UserModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -19,6 +10,15 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using MySql.Data.MySqlClient;
+using Npgsql;
+using NpgsqlTypes;
+using NPOI.HSSF.Util;
+using NPOI.SS.UserModel;
+using NPOI.SS.Util;
+using NPOI.XSSF.UserModel;
 using WalkingTec.Mvvm.Core.Extensions;
 
 namespace WalkingTec.Mvvm.Core
@@ -48,6 +48,8 @@ namespace WalkingTec.Mvvm.Core
         where TModel : TopBasePoco
         where TSearcher : BaseSearcher
     {
+
+
         [JsonIgnore]
         public string TotalText { get; set; } = CoreProgram._localizer?["Sys.Total"];
 
@@ -145,7 +147,7 @@ namespace WalkingTec.Mvvm.Core
             //去掉ID列和Action列
             RemoveActionAndIdColumn();
 
-            var query = SearcherMode == ListVMSearchModeEnum.CheckExport ? GetCheckedExportQuery() : GetExportQuery();
+            var query = SearcherMode== ListVMSearchModeEnum.CheckExport? GetCheckedExportQuery() : GetExportQuery();
             int listcount = query.Count();
 
             //获取分成Excel的个数
@@ -162,7 +164,7 @@ namespace WalkingTec.Mvvm.Core
             {
                 Guid g = Guid.NewGuid();
                 var FileName = typeof(TModel).Name + "_" + DateTime.Now.ToString("yyyyMMddHHmmssffff");
-                //文件根目录
+                //文件根目录            
                 string RootPath = $"{Wtm.ConfigInfo.HostRoot}\\export{g}";
 
                 //文件夹目录
@@ -287,6 +289,7 @@ namespace WalkingTec.Mvvm.Core
                             {
                                 text = enumdisplay;
                             }
+
                             else
                             {
                                 if (int.TryParse(text, out int enumvalue))
@@ -297,15 +300,15 @@ namespace WalkingTec.Mvvm.Core
                         }
 
                         //建立excel单元格
-                        ICell cell = null;
+                        ICell cell;
                         if (col.FieldType?.IsNumber() == true)
                         {
-                            double trydouble = 0;
                             cell = DR.CreateCell(ColIndex, CellType.Numeric);
-                            if (double.TryParse(text, out trydouble))
+                            try
                             {
-                                cell.SetCellValue(trydouble);
+                                cell.SetCellValue(Convert.ToDouble(text));
                             }
+                            catch { }
                         }
                         else
                         {
@@ -316,7 +319,7 @@ namespace WalkingTec.Mvvm.Core
                         ColIndex++;
                     }
                 }
-            }
+            }            
             return book;
         }
 
@@ -387,10 +390,9 @@ namespace WalkingTec.Mvvm.Core
             return maxLevel;
         }
 
-        #endregion GenerateExcel
+        #endregion
 
         #region Old
-
         public SortInfo CreateSortInfo(Expression<Func<TModel, object>> pro, SortDir dir)
         {
             SortInfo rv = new SortInfo
@@ -410,9 +412,7 @@ namespace WalkingTec.Mvvm.Core
         ///记录批量操作时列表中选择的Id
         /// </summary>
         public List<string> Ids { get; set; }
-
         public string SelectorValueField { get; set; }
-
         /// <summary>
         /// 是否已经搜索过
         /// </summary>
@@ -421,7 +421,6 @@ namespace WalkingTec.Mvvm.Core
 
         [JsonIgnore]
         public bool PassSearch { get; set; }
-
         /// <summary>
         /// 查询模式
         /// </summary>
@@ -464,6 +463,7 @@ namespace WalkingTec.Mvvm.Core
         [JsonIgnore]
         public List<TModel> EntityList { get; set; }
 
+
         /// <summary>
         /// 搜索条件
         /// </summary>
@@ -478,6 +478,7 @@ namespace WalkingTec.Mvvm.Core
         {
             get { return this.UniqueId + "Searcher"; }
         }
+
 
         /// <summary>
         /// 替换查询条件，如果被赋值，则列表会使用里面的Lambda来替换原有Query里面的Where条件
@@ -511,6 +512,7 @@ namespace WalkingTec.Mvvm.Core
             return EntityList?.AsEnumerable();
         }
 
+
         /// <summary>
         /// 调用InitListVM并触发OnAfterInitList事件
         /// </summary>
@@ -519,6 +521,7 @@ namespace WalkingTec.Mvvm.Core
             InitListVM();
             OnAfterInitList?.Invoke(this);
         }
+
 
         /// <summary>
         /// 初始化ListVM，继承的类应该重载这个函数来设定数据的列和动作
@@ -645,27 +648,21 @@ namespace WalkingTec.Mvvm.Core
                     case ListVMSearchModeEnum.Search:
                         query = GetSearchQuery();
                         break;
-
                     case ListVMSearchModeEnum.Export:
                         query = GetExportQuery();
                         break;
-
                     case ListVMSearchModeEnum.Batch:
                         query = GetBatchQuery();
                         break;
-
                     case ListVMSearchModeEnum.MasterDetail:
                         query = GetMasterDetailsQuery();
                         break;
-
                     case ListVMSearchModeEnum.CheckExport:
                         query = GetCheckedExportQuery();
                         break;
-
                     case ListVMSearchModeEnum.Selector:
                         query = GetSelectorQuery();
                         break;
-
                     default:
                         query = GetSearchQuery();
                         break;
@@ -743,6 +740,7 @@ namespace WalkingTec.Mvvm.Core
             AfterDoSearcher();
         }
 
+
         private void ProcessCommand(DbCommand cmd)
         {
             object total;
@@ -751,7 +749,7 @@ namespace WalkingTec.Mvvm.Core
             {
                 Searcher.Page = 1;
             }
-            if (DC.Database.IsMySql())
+            if (DC!.DBType == DBTypeEnum.MySql)
             {
                 List<MySqlParameter> parms = new List<MySqlParameter>();
                 foreach (MySqlParameter item in cmd.Parameters)
@@ -833,6 +831,7 @@ namespace WalkingTec.Mvvm.Core
                 }
                 if (cmd.CommandType == CommandType.StoredProcedure)
                 {
+
                     parms.Add(new SqlParameter("@SearchMode", Enum.GetName(typeof(ListVMSearchModeEnum), SearcherMode)));
                     parms.Add(new SqlParameter("@NeedPage", (NeedPage && Searcher.Limit != -1)));
                     parms.Add(new SqlParameter("@CurrentPage", Searcher.Page));
@@ -858,6 +857,7 @@ namespace WalkingTec.Mvvm.Core
                 {
                     total = EntityList.Count;
                 }
+
             }
             if (NeedPage && Searcher.Limit != -1)
             {
@@ -875,6 +875,7 @@ namespace WalkingTec.Mvvm.Core
             {
                 Searcher.PageCount = EntityList.Count;
             }
+
         }
 
         public DateTime AddTime(DateTime dt, string type, int size)
@@ -883,22 +884,16 @@ namespace WalkingTec.Mvvm.Core
             {
                 case "year":
                     return dt.AddYears(size);
-
                 case "month":
                     return dt.AddMonths(size);
-
                 case "day":
                     return dt.AddDays(size);
-
                 case "hour":
                     return dt.AddHours(size);
-
                 case "minute":
                     return dt.AddMinutes(size);
-
                 case "second":
                     return dt.AddSeconds(size);
-
                 default:
                     return dt;
             }
@@ -1004,6 +999,7 @@ namespace WalkingTec.Mvvm.Core
             }
         }
 
+
         /// <summary>
         /// 添加Error列，主要为批量模式使用
         /// </summary>
@@ -1027,7 +1023,7 @@ namespace WalkingTec.Mvvm.Core
 
         public void ProcessListError(List<TModel> Entities)
         {
-            if (Entities == null)
+            if(Entities == null)
             {
                 return;
             }
@@ -1045,7 +1041,7 @@ namespace WalkingTec.Mvvm.Core
                 {
                     foreach (var item in MSD.Keys)
                     {
-                        if (item.StartsWith(DetailGridPrix + "["))
+                        if (item.StartsWith(DetailGridPrix+"["))
                         {
                             var errors = MSD[item];
                             if (errors.Count > 0)
@@ -1090,7 +1086,7 @@ namespace WalkingTec.Mvvm.Core
 
         public Type ModelType => typeof(TModel);
 
-        #endregion Old
+        #endregion
 
         public virtual void UpdateEntityList(bool updateAllFields = false)
         {
@@ -1102,7 +1098,7 @@ namespace WalkingTec.Mvvm.Core
                 foreach (var newitem in EntityList)
                 {
                     var subtype = newitem.GetType();
-                    if (typeof(IBasePoco).IsAssignableFrom(subtype))
+                    if (typeof(IBasePoco).IsAssignableFrom( subtype))
                     {
                         IBasePoco ent = newitem as IBasePoco;
                         if (ent.UpdateTime == null)
@@ -1168,7 +1164,7 @@ namespace WalkingTec.Mvvm.Core
                                     }
                                 }
                             }
-                            if (typeof(IBasePoco).IsAssignableFrom(item.GetType()))
+                            if ( typeof(IBasePoco).IsAssignableFrom( item.GetType()))
                             {
                                 DC.UpdateProperty(i, "UpdateTime");
                                 DC.UpdateProperty(i, "UpdateBy");
@@ -1180,7 +1176,7 @@ namespace WalkingTec.Mvvm.Core
                 foreach (var item in toremove)
                 {
                     //如果是PersistPoco，则把IsValid设为false，并不进行物理删除
-                    if (typeof(IPersistPoco).IsAssignableFrom(ftype))
+                    if (typeof(IPersistPoco).IsAssignableFrom( ftype))
                     {
                         (item as IPersistPoco).IsValid = false;
                         if (typeof(IBasePoco).IsAssignableFrom(ftype))
@@ -1207,7 +1203,7 @@ namespace WalkingTec.Mvvm.Core
                 //需要添加的数据
                 foreach (var item in toadd)
                 {
-                    if (typeof(IBasePoco).IsAssignableFrom(item.GetType()))
+                    if (typeof(IBasePoco).IsAssignableFrom( item.GetType()))
                     {
                         IBasePoco ent = item as IBasePoco;
                         if (ent.CreateTime == null)
@@ -1220,32 +1216,11 @@ namespace WalkingTec.Mvvm.Core
                         }
                     }
                     DC.AddEntity(item);
+
+
                 }
 
                 DC.SaveChanges();
-            }
-        }
-
-        public List<FrameworkWorkflow> GetMyApproves(string flowname = null)
-        {
-            var mt = ModelType.GetParentWorkflowPoco();
-            if (mt != null)
-            {
-                var roleids = Wtm.LoginUserInfo.Roles?.Select(x => "r:" + x.ID).ToList();
-                var groupids = Wtm.LoginUserInfo.Groups?.Select(x => "g:" + x.ID).ToList();
-
-                var ids = DC.Set<FrameworkWorkflow>()
-                     .CheckEqual(flowname, x => x.WorkflowName)
-                     .CheckEqual(mt.FullName, x => x.ModelType)
-                     .Where(x => x.UserCode == Wtm.LoginUserInfo.ITCode
-                        || roleids.Contains(x.UserCode)
-                        || groupids.Contains(x.UserCode))
-                     .Where(x => x.TenantCode == Wtm.LoginUserInfo.CurrentTenant).ToList();
-                return ids;
-            }
-            else
-            {
-                return new List<FrameworkWorkflow>();
             }
         }
     }

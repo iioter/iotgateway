@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,9 +7,11 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
+using Microsoft.EntityFrameworkCore;
 using WalkingTec.Mvvm.Core.Support.Json;
 
 namespace WalkingTec.Mvvm.Core.Extensions
@@ -21,7 +22,6 @@ namespace WalkingTec.Mvvm.Core.Extensions
     public static class DCExtension
     {
         #region 树形下拉
-
         /// <summary>
         /// 查询数据源，并转化成TreeSelectListItem列表
         /// </summary>
@@ -40,7 +40,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
         public static List<TreeSelectListItem> GetTreeSelectListItems<T>(this IQueryable<T> baseQuery
             , WTMContext wtmcontext
             , Expression<Func<T, string>> textField
-            , Expression<Func<T, object>> valueField = null
+            , Expression<Func<T, string>> valueField = null
             , Expression<Func<T, string>> iconField = null
             , Expression<Func<T, string>> urlField = null
             , Expression<Func<T, string>> tagField = null
@@ -70,7 +70,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
             {
                 valueField = x => x.GetID().ToString();
             }
-            Expression<Func<T, string>> idfield = x => x.GetID().ToString();
+            Expression<Func<T,string>> idfield = x => x.GetID().ToString();
             Expression<Func<T, string>> parentField = x => x.GetParentID().ToString();
 
             //定义PE
@@ -86,9 +86,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
 
             //绑定Value字段，形成类似 Value = valueField 的表达式
             var valueMI = typeof(TreeSelectListItem).GetMember("Value")[0];
-            var temp = cp.Change(valueField.Body, pe);
-            var tempp = Expression.Call(temp, "ToString", new Type[] { });
-            MemberBinding valueBind = Expression.Bind(valueMI, tempp);
+            MemberBinding valueBind = Expression.Bind(valueMI, cp.Change(valueField.Body, pe));
 
             //绑定ParentId字段，形成类似 Value = valueField 的表达式
             var parentMI = typeof(TreeSelectListItem).GetMember("ParentId")[0];
@@ -146,7 +144,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
             }
 
             //合并创建新类和绑定字段的表达式，形成类似 new SimpleTextAndValue{ Text = textField, Value = valueField} 的表达式
-            MemberInitExpression init = Expression.MemberInit(newItem, textBind, valueBind, iconBind, parentBind, urlBind, tagBind, expandBind, idBind);
+            MemberInitExpression init = Expression.MemberInit(newItem, textBind, valueBind, iconBind, parentBind, urlBind, tagBind, expandBind,idBind);
 
             //将最终形成的表达式转化为Lambda，形成类似 x=> new SimpleTextAndValue { Text = x.textField, Value = x.valueField} 的表达式
             var lambda = Expression.Lambda<Func<T, TreeSelectListItem>>(init, pe);
@@ -175,10 +173,9 @@ namespace WalkingTec.Mvvm.Core.Extensions
             return rv.ToList();
         }
 
-        #endregion 树形下拉
+        #endregion
 
         #region 下拉
-
         /// <summary>
         /// 查询数据源，并转化成SelectListItem列表
         /// </summary>
@@ -220,6 +217,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
             //    query = query.Provider.CreateQuery<T>(newExp) as IOrderedQueryable<T>;
             //}
 
+
             //定义PE
             ParameterExpression pe = Expression.Parameter(typeof(T));
             ChangePara cp = new ChangePara();
@@ -230,11 +228,10 @@ namespace WalkingTec.Mvvm.Core.Extensions
             var textMI = typeof(ComboSelectListItem).GetMember("Text")[0];
             MemberBinding textBind = Expression.Bind(textMI, cp.Change(textField.Body, pe));
 
+
             //绑定Value字段，形成类似 Value = valueField 的表达式
             var valueMI = typeof(ComboSelectListItem).GetMember("Value")[0];
-            var temp = cp.Change(valueField.Body, pe);
-            var tempp = Expression.Call(temp, "ToString", new Type[] { });
-            MemberBinding valueBind = Expression.Bind(valueMI, tempp);
+            MemberBinding valueBind = Expression.Bind(valueMI, cp.Change(valueField.Body, pe));
 
             //如果是树形结构，给ParentId赋值
             MemberBinding parentBind = null;
@@ -257,6 +254,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
             //将最终形成的表达式转化为Lambda，形成类似 x=> new SimpleTextAndValue { Text = x.textField, Value = x.valueField} 的表达式
             var lambda = Expression.Lambda<Func<T, ComboSelectListItem>>(init, pe);
 
+
             List<ComboSelectListItem> rv = new List<ComboSelectListItem>();
             //根据Text对下拉菜单数据排序
             if (SortByName == true)
@@ -271,7 +269,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
             return rv;
         }
 
-        #endregion 下拉
+        #endregion
 
         /// <summary>
         /// 拼接本表的数据权限过滤
@@ -309,7 +307,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
                         //}
                         //else
                         //{
-                        query = query.Where(Expression.Lambda<Func<T, bool>>(Expression.NotEqual(Expression.Constant(1), Expression.Constant(1)), pe));
+                            query = query.Where(Expression.Lambda<Func<T, bool>>(Expression.NotEqual(Expression.Constant(1), Expression.Constant(1)), pe));
                         //}
                     }
                     else
@@ -339,6 +337,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
         //    List<string> tableNameList = new List<string>();
         //    foreach (var IdField in IdFields)
         //    {
+
         //        //将外键 Id 用.分割，循环生成指向最终id的表达式，比如x=> x.a.b.Id
         //        var fieldName = IdField.GetPropertyName(false);
         //        //获取关联的类
@@ -370,7 +369,6 @@ namespace WalkingTec.Mvvm.Core.Extensions
         //}
 
         #region AddBy YOUKAI 20160310
-
         /// <summary>
         /// 为查询语句添加关联表的权限过滤
         /// </summary>
@@ -379,7 +377,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
         /// <param name="wtmcontext">wtm context</param>
         /// <param name="IdFields">关联表外键</param>
         /// <returns>修改后的查询语句</returns>
-        public static IQueryable<T> DPWhere<T>(this IQueryable<T> baseQuery, WTMContext wtmcontext, params Expression<Func<T, object>>[] IdFields) //where T : TopBasePoco
+        public static IQueryable<T> DPWhere<T>(this IQueryable<T> baseQuery, WTMContext wtmcontext, params Expression<Func<T, object>>[] IdFields) where T : TopBasePoco
         {
             var dps = wtmcontext?.LoginUserInfo?.DataPrivileges;
 
@@ -404,7 +402,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
                 ParameterExpression ipe = pe;
 
                 //格式化idfeild，保存在data中
-                for (int i = 0; i < splits.Length; i++)
+                for (int i=0;i<splits.Length;i++)
                 {
                     var item = splits[i];
                     var proname = item;
@@ -430,7 +428,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
                     {
                         petype = typeof(T);
                     }
-                    if (islist == true || i == splits.Length - 1)
+                    if(islist == true || i == splits.Length-1)
                     {
                         data.Add((iexp, ipe, islist));
                         ipe = Expression.Parameter(petype);
@@ -440,7 +438,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
 
                 //确定最终关联的表名
                 string tableName = "";
-                if (data.Count > 0)
+                if(data.Count > 0)
                 {
                     var last = data.Last().exp as MemberExpression;
                     string fieldname = last?.Member?.Name;
@@ -460,11 +458,11 @@ namespace WalkingTec.Mvvm.Core.Extensions
                         }
                     }
                 }
-
+                
                 //如果dps为空，则拼接一个返回假的表达式，这样就查询不出任何数据
                 if (dps == null)
                 {
-                    if (tableName == "")
+                    if(tableName == "")
                     {
                         continue;
                     }
@@ -490,7 +488,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
                         //}
                         //else
                         //{
-                        exp = falseExp;
+                            exp = falseExp;
                         //}
                     }
                     //如果有关联 Id
@@ -500,10 +498,10 @@ namespace WalkingTec.Mvvm.Core.Extensions
                         //如果关联 Id 包括null，则代表可以访问所有数据，就不需要再拼接where条件了
                         if (!ids.Contains(null))
                         {
-                            for (int i = data.Count - 1; i >= 0; i--)
+                            for(int i=data.Count-1; i>=0; i--)
                             {
                                 var d = data[i];
-                                if (d.islist == true)
+                                if(d.islist == true)
                                 {
                                     var lastd = data[i + 1];
                                     var queryable = Expression.Call(
@@ -518,6 +516,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
                                          new Type[] { lastd.pe.Type },
                                          queryable,
                                          Expression.Lambda(typeof(Func<,>).MakeGenericType(lastd.pe.Type, typeof(bool)), exp, new ParameterExpression[] { lastd.pe }));
+
                                 }
                                 else
                                 {
@@ -550,8 +549,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
                 return query;
             }
         }
-
-        #endregion AddBy YOUKAI 20160310
+        #endregion
 
         public static IOrderedQueryable<T> Sort<T>(this IQueryable<T> baseQuery, string sortInfo, params SortInfo[] defaultSorts) where T : TopBasePoco
         {
@@ -678,6 +676,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
             }
         }
 
+
         public static IQueryable<T> CheckIDs<T>(this IQueryable<T> baseQuery, List<string> val, Expression<Func<T, object>> member = null)
         {
             if (val == null || val.Count == 0)
@@ -699,6 +698,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
             return baseQuery.Where(Expression.Lambda<Func<T, bool>>(exp, pe));
         }
 
+
         public static IQueryable<T> CheckNotNull<T>(this IQueryable<T> baseQuery, Expression<Func<T, object>> member)
         {
             return baseQuery.CheckNotNull<T>(member.GetPropertyName());
@@ -711,6 +711,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
             Expression peid = Expression.Property(pe, idproperty);
             return baseQuery.Where(Expression.Lambda<Func<T, bool>>(Expression.NotEqual(peid, Expression.Constant(null)), pe));
         }
+
 
         public static IQueryable<T> CheckNull<T>(this IQueryable<T> baseQuery, Expression<Func<T, object>> member)
         {
@@ -806,6 +807,7 @@ namespace WalkingTec.Mvvm.Core.Extensions
             return baseQuery.CheckEqual(a, field);
         }
 
+
         public static IQueryable<T> CheckBetween<T, S>(this IQueryable<T> baseQuery, S? valMin, S? valMax, Expression<Func<T, S?>> field, bool includeMin = true, bool includeMax = true)
     where S : struct
         {
@@ -872,6 +874,7 @@ where S : struct
                 else
                 {
                     exp = Expression.Call(field.Body, "Contains", null, Expression.Constant(val));
+
                 }
                 var where = Expression.Lambda<Func<T, bool>>(exp, field.Parameters[0]);
                 return baseQuery.Where(where);
@@ -925,6 +928,7 @@ where S : struct
             return rv;
         }
 
+
         public static string GetTableName<T>(this IDataContext self)
         {
             return self.Model.FindEntityType(typeof(T)).GetTableName();
@@ -969,6 +973,7 @@ where S : struct
             }
         }
 
+
         /// <summary>
         /// 通过子表模型和模型关联到主表的属性名称来判断该属性对应的主键名称
         /// </summary>
@@ -996,7 +1001,7 @@ where S : struct
                 if (pro.GetCustomAttribute<NotMappedAttribute>() != null)
                 {
                     var idpro = sourceType.GetSingleProperty(FieldName + "Id");
-                    if (idpro != null)
+                    if(idpro != null)
                     {
                         return idpro.Name;
                     }
@@ -1030,6 +1035,7 @@ where S : struct
             return self.GetFieldName<T>(pname);
         }
 
+
         public static string GetFieldName<T>(this IDataContext self, string fieldname)
         {
             var rv = self.Model.FindEntityType(typeof(T)).FindProperty(fieldname);
@@ -1055,6 +1061,7 @@ where S : struct
                 return "";
             }
         }
+
 
         public static Expression<Func<TModel, bool>> GetContainIdExpression<TModel>(this List<string> Ids, Expression peid = null)
         {
@@ -1089,7 +1096,7 @@ where S : struct
             foreach (var item in Ids)
             {
                 object vv = PropertyHelper.ConvertValue(item, peid.Type);
-                add.Invoke(list, new object[] { vv });
+                add.Invoke(list,new object[] { vv });              
             }
             Expression dpleft = Expression.Constant(list);
             Expression dpcondition = Expression.Call(dpleft, listtype.GetMethod("Contains"), peid);
@@ -1135,6 +1142,7 @@ where S : struct
     {
         public static void AddParameter(this DbCommand command)
         {
+
         }
     }
 
@@ -1142,8 +1150,7 @@ where S : struct
     {
         internal static readonly FakeNestedTransaction DefaultTransaction = new FakeNestedTransaction();
 
-        private FakeNestedTransaction()
-        { }
+        private FakeNestedTransaction() { }
 
         public void Dispose()
         {

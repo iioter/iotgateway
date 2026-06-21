@@ -1,10 +1,13 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Localization;
-using System;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Json;
 using WalkingTec.Mvvm.Mvc.Binders;
@@ -38,6 +41,7 @@ namespace WalkingTec.Mvvm.Mvc
             options.ModelMetadataDetailsProviders.Add(new ExcludeBindingMetadataProvider(typeof(IUIService)));
             options.ModelMetadataDetailsProviders.Add(new ExcludeBindingMetadataProvider(typeof(IStringLocalizer)));
             options.EnableEndpointRouting = true;
+
         }
 
         public static void UseWtmJsonOptions(this JsonOptions options)
@@ -46,39 +50,19 @@ namespace WalkingTec.Mvvm.Mvc
             options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
             options.JsonSerializerOptions.NumberHandling = JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString;
             options.JsonSerializerOptions.AllowTrailingCommas = true;
-            options.JsonSerializerOptions.Converters.Add(new NullableConverter<int>());
-            options.JsonSerializerOptions.Converters.Add(new NullableConverter<long>());
-            options.JsonSerializerOptions.Converters.Add(new NullableConverter<decimal>());
-            options.JsonSerializerOptions.Converters.Add(new NullableConverter<short>());
-            options.JsonSerializerOptions.Converters.Add(new NullableConverter<float>());
-            options.JsonSerializerOptions.Converters.Add(new NullableConverter<double>());
-            options.JsonSerializerOptions.Converters.Add(new NullableConverter<bool>());
-            options.JsonSerializerOptions.Converters.Add(new NullableConverter<DateTime>());
-            options.JsonSerializerOptions.Converters.Add(new NullableConverter<Guid>());
-            options.JsonSerializerOptions.Converters.Add(new NullableEnumConverter());
-            options.JsonSerializerOptions.Converters.Add(new BoolStringConverter());
-            options.JsonSerializerOptions.Converters.Add(new DateRangeConverter());
             options.JsonSerializerOptions.Converters.Add(new DateTimeConverter());
             options.JsonSerializerOptions.Converters.Add(new StringIgnoreLTGTConverter());
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            options.JsonSerializerOptions.Converters.Add(new BoolStringConverter());
+            options.JsonSerializerOptions.Converters.Add(new DateRangeConverter());
             options.JsonSerializerOptions.Converters.Add(new PocoConverter());
             options.JsonSerializerOptions.Converters.Add(new TypeConverter());
             options.JsonSerializerOptions.Converters.Add(new DynamicDataConverter());
             Core.CoreProgram.DefaultJsonOption = options.JsonSerializerOptions;
             JsonSerializerOptions jsonOptions2 = new JsonSerializerOptions();
             jsonOptions2.PropertyNamingPolicy = null;
-            options.JsonSerializerOptions.NumberHandling = JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString;
+            jsonOptions2.NumberHandling = JsonNumberHandling.AllowReadingFromString | JsonNumberHandling.WriteAsString;
             jsonOptions2.AllowTrailingCommas = true;
-            jsonOptions2.Converters.Add(new NullableConverter<int>());
-            jsonOptions2.Converters.Add(new NullableConverter<long>());
-            jsonOptions2.Converters.Add(new NullableConverter<decimal>());
-            jsonOptions2.Converters.Add(new NullableConverter<short>());
-            jsonOptions2.Converters.Add(new NullableConverter<float>());
-            jsonOptions2.Converters.Add(new NullableConverter<double>());
-            jsonOptions2.Converters.Add(new NullableConverter<bool>());
-            jsonOptions2.Converters.Add(new NullableConverter<DateTime>());
-            jsonOptions2.Converters.Add(new NullableConverter<Guid>());
-            jsonOptions2.Converters.Add(new NullableEnumConverter());
             jsonOptions2.Converters.Add(new DateTimeConverter());
             jsonOptions2.Converters.Add(new JsonStringEnumConverter());
             jsonOptions2.Converters.Add(new BoolStringConverter());
@@ -88,7 +72,6 @@ namespace WalkingTec.Mvvm.Mvc
             jsonOptions2.Converters.Add(new DynamicDataConverter());
             CoreProgram.DefaultPostJsonOption = jsonOptions2;
         }
-
         public static void UseWtmApiOptions(this ApiBehaviorOptions options)
         {
             options.SuppressModelStateInvalidFilter = true;
@@ -97,5 +80,6 @@ namespace WalkingTec.Mvvm.Mvc
                 return new BadRequestObjectResult(a.ModelState.GetErrorJson());
             };
         }
+
     }
 }

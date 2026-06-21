@@ -5,7 +5,6 @@ using System.Web;
 namespace WalkingTec.Mvvm.Core
 {
     #region 列表动作类型
-
     /// <summary>
     /// 列表动作类型
     /// </summary>
@@ -15,35 +14,30 @@ namespace WalkingTec.Mvvm.Core
         /// 不需要传递Id
         /// </summary>
         NoId,
-
         /// <summary>
         /// 只传递一个Id
         /// </summary>
         SingleId,
-
         /// <summary>
         /// 传递多个Id
         /// </summary>
         MultiIds,
-
         /// <summary>
         /// 只传递一个Id，但 Id 可能为null
         /// </summary>
         SingleIdWithNull,
-
         /// <summary>
         /// 传递多个 Id 或 null
         /// </summary>
         MultiIdWithNull,
-
         AddRow,
         RemoveRow
     }
 
-    #endregion 列表动作类型
+    #endregion
+
 
     #region 标准列表动作
-
     /// <summary>
     /// 标准列表动作
     /// </summary>
@@ -61,24 +55,19 @@ namespace WalkingTec.Mvvm.Core
         ExportExcel,
         AddRow,
         RemoveRow,
-        ActionsGroup,
-        Approve
+        ActionsGroup
     }
-
-    #endregion 标准列表动作
+    #endregion
 
     #region 导出枚举
-
     public enum ExportEnum
     {
         [Display(Name = "Excel")]
         Excel = 0,
-
         [Display(Name = "PDF")]
         PDF = 1
     }
-
-    #endregion 导出枚举
+    #endregion
 
     /// <summary>
     /// 列表动作类，负责处理列表动作条中的动作按钮
@@ -111,7 +100,6 @@ namespace WalkingTec.Mvvm.Core
         /// 是否在每行都显示
         /// </summary>
         public bool ShowInRow { get; set; }
-
         /// <summary>
         /// 是否在工具栏上隐藏按钮
         /// </summary>
@@ -125,8 +113,7 @@ namespace WalkingTec.Mvvm.Core
         /// <summary>
         /// additional css class of button
         /// </summary>
-        public string ButtonClass { get; set; }
-
+        public string ButtonClass { get; set;}
         /// <summary>
         /// if the dialog need to be maximax
         /// </summary>
@@ -145,7 +132,6 @@ namespace WalkingTec.Mvvm.Core
         public string Area { get; set; }
 
         public bool IsExport { get; set; }
-
         /// <summary>
         /// 动作的Controller
         /// </summary>
@@ -161,8 +147,7 @@ namespace WalkingTec.Mvvm.Core
             get
             {
                 var rv = "";
-                if (string.IsNullOrEmpty(ControllerName) == false)
-                {
+                if(string.IsNullOrEmpty(ControllerName) == false){
                     rv = $"/{HttpUtility.UrlEncode(ControllerName)}/{HttpUtility.UrlEncode(ActionName)}";
                     if (!string.IsNullOrEmpty(Area))
                     {
@@ -181,7 +166,7 @@ namespace WalkingTec.Mvvm.Core
             }
         }
 
-        #endregion 请求链接相关
+        #endregion
 
         /// <summary>
         /// 是否跳转到新页面
@@ -199,36 +184,29 @@ namespace WalkingTec.Mvvm.Core
         public GridActionParameterTypesEnum ParameterType { get; set; }
 
         public bool ForcePost { get; set; }
-
-        #endregion Action属性
+        #endregion
 
         #region 暂时无用
-
         /// <summary>
         /// 是否可以resizable
         /// </summary>
         public bool Resizable { get; set; }
-
         /// <summary>
         /// 动作图标css
         /// </summary>
         public string IconCls { get; set; }
-
         /// <summary>
         /// 动作的QueryString
         /// </summary>
         public string QueryString { get; set; }
-
         /// <summary>
         /// 弹出窗口的宽度
         /// </summary>
         public int? DialogWidth { get; set; }
-
         /// <summary>
         /// 弹出窗口的高度
         /// </summary>
         public int? DialogHeight { get; set; }
-
         /// <summary>
         /// 是否需要弹出窗口
         /// </summary>
@@ -241,6 +219,6 @@ namespace WalkingTec.Mvvm.Core
 
         public string[] whereStr { get; set; }
 
-        #endregion 暂时无用
+        #endregion
     }
 }

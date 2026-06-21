@@ -1,10 +1,9 @@
-using Microsoft.AspNetCore.Razor.TagHelpers;
 using System;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace WalkingTec.Mvvm.TagHelpers.LayUI
 {
-    public enum TabStyleEnum
-    { Default, Simple }
+    public enum TabStyleEnum { Default, Simple }
 
     [HtmlTargetElement("wt:tab", TagStructure = TagStructure.NormalOrSelfClosing)]
     public class TabTagHelper : BaseElementTag
@@ -26,7 +25,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
             {
                 output.Attributes.SetAttribute("class", $"layui-tab layui-tab-brief");
             }
-            if (AllowClose == true)
+            if(AllowClose == true)
             {
                 output.Attributes.SetAttribute("lay-allowclose", "true");
             }
@@ -76,6 +75,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
     [HtmlTargetElement("wt:tabcontents", TagStructure = TagStructure.NormalOrSelfClosing)]
     public class TabContentsTagHelper : BaseElementTag
     {
+
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "div";
@@ -88,7 +88,6 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
     public class TabContentTagHelper : BaseElementTag
     {
         public string Url { get; set; }
-
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "div";

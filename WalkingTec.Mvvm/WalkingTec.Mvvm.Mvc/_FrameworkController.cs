@@ -1,15 +1,3 @@
-using DUWENINK.Captcha;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,6 +7,21 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using SixLabors.Fonts;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Drawing;
+using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 using WalkingTec.Mvvm.Core;
 using WalkingTec.Mvvm.Core.Extensions;
 using WalkingTec.Mvvm.Core.Models;
@@ -28,12 +31,8 @@ namespace WalkingTec.Mvvm.Mvc
 {
     [AllRights]
     [ActionDescription("Framework")]
-    public class _FrameworkController(ISecurityCodeHelper securityCode) : BaseController
+    public class _FrameworkController : BaseController
     {
-        /// <summary>
-        ///
-        /// </summary>
-        private readonly ISecurityCodeHelper _securityCode = securityCode;
 
         [HttpPost]
         [Public]
@@ -49,7 +48,7 @@ namespace WalkingTec.Mvvm.Mvc
             , string _DONOT_USE_CURRENTCS
         )
         {
-            string cs = _DONOT_USE_CURRENTCS;
+            string cs =_DONOT_USE_CURRENTCS;
             Wtm.CurrentCS = cs;
             var listVM = Wtm.CreateVM(_DONOT_USE_VMNAME, null, null, true) as IBasePagedListVM<TopBasePoco, ISearcher>;
 
@@ -70,9 +69,7 @@ namespace WalkingTec.Mvvm.Mvc
             ViewBag.LinkField = _DONOT_USE_LINK_FIELD;
             ViewBag.TriggerUrl = _DONOT_USE_TRIGGER_URL;
             ViewBag.CurrentCS = cs;
-
             #region 获取选中的数据
-
             ViewBag.SelectData = "[]";
             ViewBag.SelectorValueField = _DONOT_USE_VFIELD;
             if (listVM.Ids?.Count > 0)
@@ -94,8 +91,7 @@ namespace WalkingTec.Mvvm.Mvc
                 listVM.SearcherMode = ListVMSearchModeEnum.Selector;
                 listVM.NeedPage = originNeedPage;
             }
-
-            #endregion 获取选中的数据
+            #endregion
 
             return PartialView(listVM);
         }
@@ -112,6 +108,7 @@ namespace WalkingTec.Mvvm.Mvc
             };
             return rv;
         }
+
 
         /// <summary>
         /// 获取分页数据
@@ -153,16 +150,16 @@ namespace WalkingTec.Mvvm.Mvc
                     else if (typeof(FrameworkRole).IsAssignableFrom(listVM.ModelType))
                     {
                         url = "/api/_frameworkrole/search";
-                    }
+                    }                    
                 }
-                if (string.IsNullOrEmpty(url) == false)
+                if(string.IsNullOrEmpty(url) == false)
                 {
                     var result = Wtm.CallAPI<string>("mainhost", url, HttpMethodEnum.POST, listVM.Searcher, 10).Result;
                     var rv = new ContentResult
                     {
                         ContentType = "application/json",
                         Content = result.Data
-                    };
+                };
                     return rv;
                 }
                 else
@@ -180,6 +177,7 @@ namespace WalkingTec.Mvvm.Mvc
                 throw new Exception("Invalid Vm Name");
             }
         }
+
 
         /// <summary>
         /// 单元格编辑
@@ -228,7 +226,7 @@ namespace WalkingTec.Mvvm.Mvc
             }
             var instanceType = Type.GetType(_DONOT_USE_VMNAME);
 
-            Wtm.CurrentCS = _DONOT_USE_CS;
+            Wtm.CurrentCS =  _DONOT_USE_CS;
             var listVM = Wtm.CreateVM(_DONOT_USE_VMNAME) as IBasePagedListVM<TopBasePoco, ISearcher>;
 
             listVM.FC = qs;
@@ -270,7 +268,7 @@ namespace WalkingTec.Mvvm.Mvc
             return File(data, "application/vnd.ms-excel", fileName);
         }
 
-        #endregion Import/Export Excel
+        #endregion
 
         [AllowAnonymous]
         [ActionDescription("Sys.ErrorHandle")]
@@ -327,7 +325,7 @@ namespace WalkingTec.Mvvm.Mvc
 
         [HttpPost]
         [ActionDescription("UploadFileRoute")]
-        public IActionResult Upload([FromServices] WtmFileProvider fp, string sm = null, string groupName = null, string subdir = null, string extra = null, bool IsTemprory = true, string _DONOT_USE_CS = null)
+        public IActionResult Upload([FromServices] WtmFileProvider fp, string sm = null, string groupName = null, string subdir = null, string extra = null, bool IsTemprory = true, string _DONOT_USE_CS=null)
         {
             var FileData = Request.Form.Files[0];
             var file = fp.Upload(FileData.FileName, FileData.Length, FileData.OpenReadStream(), groupName, subdir, extra, sm, Wtm.CreateDC(cskey: _DONOT_USE_CS));
@@ -378,11 +376,14 @@ namespace WalkingTec.Mvvm.Mvc
             {
                 string url = $"/_Framework/GetFile?id={file.GetID()}&stream=true&_DONOT_USE_CS={CurrentCS}";
                 return Content($"{{\"code\": 0 , \"msg\": \"\", \"data\": {{\"src\": \"{url}\"}}}}");
+
             }
             else
             {
                 return Content($"{{\"code\": 1 , \"msg\": \"{MvcProgram._localizer["Sys.UploadFailed"]}\", \"data\": {{\"src\": \"\"}}}}");
+
             }
+
         }
 
         [ActionDescription("GetFileName")]
@@ -422,6 +423,7 @@ namespace WalkingTec.Mvvm.Mvc
                 }
                 else
                 {
+
                 }
             }
             catch { }
@@ -481,6 +483,7 @@ namespace WalkingTec.Mvvm.Mvc
                 html = $@"<img id='FileObject' style='flex:auto;{(string.IsNullOrEmpty(width) ? "" : $"width:{width}px")}'  border=0 src='/_Framework/GetFile?id={id}&stream=true&_DONOT_USE_CS={_DONOT_USE_CS}'/>";
             }
             return Content(html);
+
         }
 
         [Public]
@@ -518,6 +521,7 @@ namespace WalkingTec.Mvvm.Mvc
                 throw new Exception(MvcProgram._localizer["Sys.NoPrivilege"]);
             }
         }
+
 
         [HttpGet]
         public IActionResult Menu()
@@ -557,7 +561,7 @@ namespace WalkingTec.Mvvm.Mvc
         {
             return Wtm.ReadFromCache<string>("githubstar", () =>
             {
-                var s = Wtm.CallAPI<Github>("github", "/repos/dotnetcore/wtm").Result.Data;
+                var s = Wtm.CallAPI<github>("github", "/repos/dotnetcore/wtm").Result.Data;
                 return s == null ? "" : s.stargazers_count.ToString();
             }, 1800);
         }
@@ -568,7 +572,7 @@ namespace WalkingTec.Mvvm.Mvc
         {
             var rv = Wtm.ReadFromCache<string>("githubinfo", () =>
             {
-                var s = Wtm.CallAPI<Github>("github", "/repos/dotnetcore/wtm").Result;
+                var s = Wtm.CallAPI<github>("github", "/repos/dotnetcore/wtm").Result;
                 return JsonSerializer.Serialize(s);
             }, 1800);
             return Content(rv, "application/json");
@@ -581,7 +585,7 @@ namespace WalkingTec.Mvvm.Mvc
             return "";
         }
 
-        private class Github
+        private class github
         {
             public int stargazers_count { get; set; }
             public int forks_count { get; set; }
@@ -592,11 +596,58 @@ namespace WalkingTec.Mvvm.Mvc
         [AllowAnonymous]
         public ActionResult GetVerifyCode()
         {
-            var chkCode = _securityCode.GetRandomEnDigitalText(4);
+            int codeW = 80;
+            int codeH = 30;
+            int fontSize = 16;
+            string chkCode = string.Empty;
+            Color[] color = { Color.Black, Color.Red, Color.Blue, Color.Green, Color.Orange, Color.Brown, Color.DarkBlue, Color.PaleGreen };
+            string[] font = { "Times New Roman" };
+            char[] character = { '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'd', 'e', 'f', 'h', 'k', 'm', 'n', 'r', 'x', 'y', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'R', 'S', 'T', 'W', 'X', 'Y' };
+            //生成验证码字符串
+            Random rnd = new Random();
+            for (int i = 0; i < 4; i++)
+            {
+                chkCode += character[rnd.Next(character.Length)];
+            }
             //写入Session用于验证码校验，可以对校验码进行加密，提高安全性
             HttpContext.Session.Set<string>("verify_code", chkCode);
-            var imgbyte = _securityCode.GetEnDigitalCodeByte(chkCode);
-            return File(imgbyte, "image/png");
+
+            //创建画布
+            Image bmp = new Image<Rgba32>(codeW, codeH);
+
+            //画噪线
+            for (int i = 0; i < 3; i++)
+            {
+                float x1 = rnd.Next(codeW);
+                float y1 = rnd.Next(codeH);
+                float x2 = rnd.Next(codeW);
+                float y2 = rnd.Next(codeH);
+
+                Color clr = color[rnd.Next(color.Length)];
+                bmp.Mutate(x => x.DrawLine(clr, 1.0f, new PointF(x1, y1), new PointF(x2, y2)));
+            }
+            //画验证码
+            for (int i = 0; i < chkCode.Length; i++)
+            {
+                Font ft = new Font(SystemFonts.Get("Arial"), fontSize);
+                Color clr = color[rnd.Next(color.Length)];
+                bmp.Mutate(x => x.DrawText(chkCode[i].ToString(),ft,clr,new PointF((float)i * 18, (float)0)));
+            }
+            //将验证码写入图片内存流中，以image/png格式输出
+            MemoryStream ms = new MemoryStream();
+            try
+            {
+                bmp.SaveAsPng(ms);
+                return File(ms.ToArray(), "image/jpeg");
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            finally
+            {
+                bmp.Dispose();
+            }
         }
 
         [Public]
@@ -631,15 +682,21 @@ namespace WalkingTec.Mvvm.Mvc
                 MS.Dispose();
             }
 
+
+
             if (file != null)
             {
                 string url = $"/_Framework/GetFile?id={file.GetID()}&stream=true&_DONOT_USE_CS={CurrentCS}";
                 return Content($"{{\"Code\": 200 , \"Msg\": \"success\", \"Data\": {{\"src\": \"{url}\",\"FileName\":\"{file.FileName}\"}}}}");
+
             }
             else
             {
                 return Content($"{{\"code\": 1 , \"msg\": \"{MvcProgram._localizer["Sys.UploadFailed"]}\", \"data\": {{\"src\": \"\"}}}}");
+
             }
+
+
         }
 
         [Public]
@@ -674,6 +731,7 @@ namespace WalkingTec.Mvvm.Mvc
             return FFResult().AddCustomScript("location.reload();");
         }
 
+
         [Public]
         public IActionResult SetLanguageForBlazor(string culture, string redirect)
         {
@@ -685,6 +743,7 @@ namespace WalkingTec.Mvvm.Mvc
 
             return Content($"<script>window.location.href='{HttpUtility.UrlDecode(redirect)}';</script>", "text/html");
         }
+
 
         [Public]
         [HttpGet]

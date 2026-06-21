@@ -1,4 +1,5 @@
 using NPOI.HSSF.UserModel;
+using NPOI.OpenXmlFormats.Spreadsheet;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
@@ -14,9 +15,7 @@ namespace WalkingTec.Mvvm.Core
     public class ExcelPropety
     {
         #region 属性
-
         private string _columnName;
-
         /// <summary>
         /// 列名
         /// </summary>
@@ -53,7 +52,6 @@ namespace WalkingTec.Mvvm.Core
         public BackgroudColorEnum BackgroudColor { get; set; }
 
         private Type _resourceType;
-
         /// <summary>
         /// 多语言
         /// </summary>
@@ -64,7 +62,6 @@ namespace WalkingTec.Mvvm.Core
         }
 
         private ColumnDataType _dataType;
-
         /// <summary>
         /// 数据类型
         /// </summary>
@@ -75,7 +72,6 @@ namespace WalkingTec.Mvvm.Core
         }
 
         private Type _enumType;
-
         public Type EnumType
         {
             get { return _enumType; }
@@ -87,7 +83,6 @@ namespace WalkingTec.Mvvm.Core
         }
 
         private string _minValueOrLength;
-
         /// <summary>
         /// 最小长度
         /// </summary>
@@ -98,7 +93,6 @@ namespace WalkingTec.Mvvm.Core
         }
 
         private string _maxValuseOrLength;
-
         /// <summary>
         /// 最大长度
         /// </summary>
@@ -109,7 +103,6 @@ namespace WalkingTec.Mvvm.Core
         }
 
         private bool _isNullAble;
-
         /// <summary>
         /// 是否可以为空
         /// </summary>
@@ -120,7 +113,6 @@ namespace WalkingTec.Mvvm.Core
         }
 
         private IEnumerable<ComboSelectListItem> _listItems;
-
         /// <summary>
         /// 类表中数据
         /// </summary>
@@ -131,7 +123,6 @@ namespace WalkingTec.Mvvm.Core
         }
 
         private object _value;
-
         /// <summary>
         /// Value
         /// </summary>
@@ -142,7 +133,6 @@ namespace WalkingTec.Mvvm.Core
         }
 
         private List<ExcelPropety> _dynamicColumns;
-
         /// <summary>
         /// 动态列
         /// </summary>
@@ -155,16 +145,14 @@ namespace WalkingTec.Mvvm.Core
         public Type SubTableType { get; set; }
 
         public bool ReadOnly { get; set; }
-
         /// <summary>
         /// 字符数量
         /// </summary>
         public int CharCount { get; set; }
 
-        #endregion 属性
+        #endregion
 
         #region 设定Excel数据验证
-
         /// <summary>
         /// 设置Excel单元格样式（标题），数据格式
         /// </summary>
@@ -188,7 +176,6 @@ namespace WalkingTec.Mvvm.Core
                     //因为DateTime类型，添加Validation报错，所以去掉
                     dataStyle.DataFormat = dataFormat.GetFormat("yyyy-MM-dd HH:mm:ss");
                     break;
-
                 case ColumnDataType.Number:
                     this.MinValueOrLength = string.IsNullOrEmpty(this.MinValueOrLength) ? long.MinValue.ToString() : this.MinValueOrLength;
                     this.MaxValuseOrLength = string.IsNullOrEmpty(this.MaxValuseOrLength) ? long.MaxValue.ToString() : this.MaxValuseOrLength;
@@ -198,7 +185,6 @@ namespace WalkingTec.Mvvm.Core
                     dataStyle.DataFormat = dataFormat.GetFormat("0");
                     dataValidation.CreatePromptBox(CoreProgram._localizer?["Sys.PleaseInputNumberFormat"], CoreProgram._localizer?["Sys.DataRange", MinValueOrLength, MaxValuseOrLength]);
                     break;
-
                 case ColumnDataType.Float:
                     this.MinValueOrLength = string.IsNullOrEmpty(this.MinValueOrLength) ? decimal.MinValue.ToString() : this.MinValueOrLength;
                     this.MaxValuseOrLength = string.IsNullOrEmpty(this.MaxValuseOrLength) ? decimal.MaxValue.ToString() : this.MaxValuseOrLength;
@@ -208,14 +194,12 @@ namespace WalkingTec.Mvvm.Core
                     dataStyle.DataFormat = HSSFDataFormat.GetBuiltinFormat("0.00");
                     dataValidation.CreatePromptBox(CoreProgram._localizer?["Sys.PleaseInputDecimalFormat"], CoreProgram._localizer?["Sys.DataRange", MinValueOrLength, MaxValuseOrLength]);
                     break;
-
                 case ColumnDataType.Bool:
                     dvConstraint = (XSSFDataValidationConstraint)dvHelper.CreateFormulaListConstraint("Sheet1!$A$1:$B$1");
                     dataValidation = (XSSFDataValidation)dvHelper.CreateValidation(dvConstraint, CellRangeList);
                     dataValidation.CreateErrorBox(CoreProgram._localizer?["Sys.Error"], CoreProgram._localizer?["Sys.PleaseInputExistData"]);
                     dataValidation.CreatePromptBox(CoreProgram._localizer?["Sys.ComboBox"], CoreProgram._localizer?["Sys.PleaseInputExistData"]);
                     break;
-
                 case ColumnDataType.Text:
                     this.MinValueOrLength = string.IsNullOrEmpty(this.MinValueOrLength) ? "0" : this.MinValueOrLength;
                     this.MaxValuseOrLength = string.IsNullOrEmpty(this.MaxValuseOrLength) ? "2000" : this.MaxValuseOrLength;
@@ -225,7 +209,6 @@ namespace WalkingTec.Mvvm.Core
                     dataStyle.DataFormat = dataFormat.GetFormat("@");
                     dataValidation.CreatePromptBox(CoreProgram._localizer?["Sys.PleaseInputText"], CoreProgram._localizer?["Sys.DataRange", MinValueOrLength, MaxValuseOrLength]);
                     break;
-
                 case ColumnDataType.ComboBox:
                 case ColumnDataType.Enum:
                     int count = this.ListItems.Count() == 0 ? 1 : this.ListItems.Count();
@@ -255,7 +238,6 @@ namespace WalkingTec.Mvvm.Core
                     }
                     dataValidation.CreatePromptBox(CoreProgram._localizer?["Sys.ComboBox"], CoreProgram._localizer?["Sys.PleaseInputExistData"]);
                     break;
-
                 default:
                     dvConstraint = (XSSFDataValidationConstraint)dvHelper.CreateNumericConstraint(ValidationType.TEXT_LENGTH, OperatorType.BETWEEN, this.MinValueOrLength, this.MaxValuseOrLength);
                     dataValidation = (XSSFDataValidation)dvHelper.CreateValidation(dvConstraint, CellRangeList);
@@ -275,11 +257,9 @@ namespace WalkingTec.Mvvm.Core
             dataValidation.ShowErrorBox = true;
             sheet.AddValidationData(dataValidation);
         }
-
-        #endregion 设定Excel数据验证
+        #endregion
 
         #region 验证Excel数据
-
         /// <summary>
         /// 验证Value 并生成错误信息(edit by dufei 2014-06-12,修改了当列设置为不验证时候，下拉列表获取不到值的问题)
         /// </summary>
@@ -306,7 +286,6 @@ namespace WalkingTec.Mvvm.Core
                         }
                         this.Value = tryDateTimeResult;
                         break;
-
                     case ColumnDataType.Number:
                         int tryIntResult;
                         if (!int.TryParse(value, out tryIntResult))
@@ -315,7 +294,6 @@ namespace WalkingTec.Mvvm.Core
                         }
                         this.Value = tryIntResult;
                         break;
-
                     case ColumnDataType.Float:
                         decimal tryDecimalResult;
                         if (!decimal.TryParse(value, out tryDecimalResult))
@@ -324,7 +302,6 @@ namespace WalkingTec.Mvvm.Core
                         }
                         this.Value = tryDecimalResult;
                         break;
-
                     case ColumnDataType.Bool:
                         if (value == CoreProgram._localizer?["Sys.Yes"])
                         {
@@ -339,11 +316,9 @@ namespace WalkingTec.Mvvm.Core
                             err = new ErrorMessage { Index = rowIndex, Message = CoreProgram._localizer?["Sys.{0}formaterror", this.ColumnName] };
                         }
                         break;
-
                     case ColumnDataType.Text:
                         this.Value = value;
                         break;
-
                     case ColumnDataType.ComboBox:
                     case ColumnDataType.Enum:
                         if (!this.ListItems.Any(x => x.Text == value))
@@ -355,7 +330,6 @@ namespace WalkingTec.Mvvm.Core
                             this.Value = this.ListItems.Where(x => x.Text == value).FirstOrDefault().Value;
                         }
                         break;
-
                     default:
                         err = new ErrorMessage { Index = rowIndex, Message = CoreProgram._localizer?["Sys.{0}ValueTypeNotAllowed", this.ColumnName] };
                         break;
@@ -367,22 +341,19 @@ namespace WalkingTec.Mvvm.Core
                 }
             }
         }
-
-        #endregion 验证Excel数据
+        #endregion
 
         #region 自定义委托处理excel数据
-
         /// <summary>
         /// 处理为多列数据
         /// </summary>
         public CopyData FormatData;
-
         /// <summary>
         /// 处理为单列数据
         /// </summary>
         public CopySingleData FormatSingleData;
 
-        #endregion 自定义委托处理excel数据
+        #endregion
 
         public static ExcelPropety CreateProperty<T>(Expression<Func<T, object>> field, bool isDateTime = false)
         {
@@ -468,6 +439,7 @@ namespace WalkingTec.Mvvm.Core
             cp.CharCount = 20;
             return cp;
         }
+
     }
 
     #region 辅助类型
@@ -480,7 +452,6 @@ namespace WalkingTec.Mvvm.Core
     /// <param name="entityValue">实体的值</param>
     /// <param name="errorMsg">错误消息，没有错误为空</param>
     public delegate void CopySingleData(object excelValue, BaseTemplateVM excelTemplate, out string entityValue, out string errorMsg);
-
     /// <summary>
     /// 定义处理excel为多个字段的委托
     /// </summary>
@@ -495,7 +466,6 @@ namespace WalkingTec.Mvvm.Core
     public class ProcessResult
     {
         public List<EntityValue> EntityValues { get; set; }
-
         public ProcessResult()
         {
             EntityValues = new List<EntityValue>();
@@ -511,20 +481,17 @@ namespace WalkingTec.Mvvm.Core
         /// 字段名称
         /// </summary>
         public string FieldName { get; set; }
-
         /// <summary>
         /// 字段值
         /// </summary>
         public string FieldValue { get; set; }
-
         /// <summary>
         /// 错误消息
         /// </summary>
         public string ErrorMsg { get; set; }
     }
 
-    public enum ColumnDataType
-    { Text, Number, Date, Float, Bool, ComboBox, Enum, Dynamic, DateTime }
+    public enum ColumnDataType { Text, Number, Date, Float, Bool, ComboBox, Enum, Dynamic, DateTime }
 
-    #endregion 辅助类型
+    #endregion
 }

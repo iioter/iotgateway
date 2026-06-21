@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+using WalkingTec.Mvvm.Core.Extensions;
 
 namespace WalkingTec.Mvvm.Core.Json
 {
@@ -19,45 +22,25 @@ namespace WalkingTec.Mvvm.Core.Json
                 int level = 0;
                 while (true)
                 {
-                    if (reader.TokenType == JsonTokenType.StartObject)
-                    {
-                        if (level > 0)
+                    if(reader.TokenType == JsonTokenType.StartObject) {
+                        if(level > 0)
                         {
                             var inner = JsonSerializer.Deserialize<DynamicData>(ref reader, options);
                             rv.Fields.Add(currentkey, inner);
                         }
                         level++;
                     }
-                    if (reader.TokenType == JsonTokenType.EndObject)
+                    if(reader.TokenType == JsonTokenType.EndObject)
                     {
                         level--;
-                    }
-                    if (reader.TokenType == JsonTokenType.StartArray)
-                    {
-                        List<object> list = new List<object>();
-                        reader.Read();
-                        while (reader.TokenType != JsonTokenType.EndArray)
-                        {
-                            var inner = JsonSerializer.Deserialize<DynamicData>(ref reader, options);
-                            if (inner.Fields.Count == 1 && inner.Fields.First().Key == "")
-                            {
-                                list.Add(inner.Fields.First().Value);
-                            }
-                            else
-                            {
-                                list.Add(inner);
-                            }
-                            reader.Read();
-                        }
-                        rv.Fields.Add(currentkey, list);
                     }
                     if (reader.TokenType == JsonTokenType.PropertyName)
                     {
                         currentkey = reader.GetString();
                     }
-                    if (reader.TokenType == JsonTokenType.String || reader.TokenType == JsonTokenType.Number || reader.TokenType == JsonTokenType.True || reader.TokenType == JsonTokenType.False || reader.TokenType == JsonTokenType.Null)
+                    if(reader.TokenType == JsonTokenType.String || reader.TokenType == JsonTokenType.Number || reader.TokenType == JsonTokenType.True || reader.TokenType == JsonTokenType.False || reader.TokenType == JsonTokenType.Null)
                     {
-                        var val = JsonSerializer.Deserialize<object>(ref reader, options);
+                        var val = JsonSerializer.Deserialize<object>(ref reader,options);
                         rv.Fields.Add(currentkey, val);
                     }
                     if (reader.IsFinalBlock && level == 0)
@@ -86,7 +69,7 @@ namespace WalkingTec.Mvvm.Core.Json
                 writer.WriteStartObject();
                 foreach (var item in value.Fields)
                 {
-                    if (item.Value == null)
+                    if(item.Value == null)
                     {
                         if (options.DefaultIgnoreCondition == JsonIgnoreCondition.Never)
                         {
@@ -102,5 +85,6 @@ namespace WalkingTec.Mvvm.Core.Json
                 writer.WriteEndObject();
             }
         }
+
     }
 }

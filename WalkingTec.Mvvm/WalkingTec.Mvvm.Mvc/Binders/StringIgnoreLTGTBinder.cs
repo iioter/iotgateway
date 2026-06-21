@@ -1,9 +1,7 @@
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using System;
 using System.Linq;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -50,9 +48,8 @@ namespace WalkingTec.Mvvm.Mvc.Binders
                 .MethodInfo
                 .CustomAttributes
                 .Where(x => x.AttributeType == typeof(StringNeedLTGTAttribute)).Count();
-            var count2 = (bindingContext.ModelMetadata as DefaultModelMetadata)?.Attributes?.PropertyAttributes?
-                .Where(x => x.GetType() == typeof(JsonConverterAttribute)).Count();
-            if (count == 0 && (count2 == null || count2 == 0))
+
+            if (count == 0)
             {
                 value = HttpUtility.HtmlEncode(value);
             }

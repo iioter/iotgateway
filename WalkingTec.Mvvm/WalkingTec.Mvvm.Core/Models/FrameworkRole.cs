@@ -1,5 +1,8 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+using System.Xml.Serialization;
 
 namespace WalkingTec.Mvvm.Core
 {
@@ -8,7 +11,7 @@ namespace WalkingTec.Mvvm.Core
     /// </summary>
     [Table("FrameworkRoles")]
     [SoftKey(nameof(FrameworkRole.RoleCode))]
-    public class FrameworkRole : BasePoco, ITenant
+    public class FrameworkRole : BasePoco,ITenant
     {
         [Display(Name = "_Admin.RoleCode")]
         [Required(ErrorMessage = "Validate.{0}required")]
@@ -29,8 +32,11 @@ namespace WalkingTec.Mvvm.Core
         [StringLength(50, ErrorMessage = "Validate.{0}stringmax{1}")]
         public string TenantCode { get; set; }
 
+
         [NotMapped]
         [Display(Name = "_Admin.UsersCount")]
         public int UsersCount { get; set; }
+
+
     }
 }

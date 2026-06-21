@@ -24,7 +24,6 @@ namespace WalkingTec.Mvvm.Core
         bool IsDebug { get; set; }
         string TenantCode { get; }
         DBTypeEnum DBType { get; set; }
-
         /// <summary>
         /// AddEntity
         /// </summary>
@@ -105,7 +104,7 @@ namespace WalkingTec.Mvvm.Core
         /// <returns></returns>
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default(CancellationToken));
 
-        #endregion SaveChange
+        #endregion
 
         /// <summary>
         /// 初始化
@@ -115,11 +114,8 @@ namespace WalkingTec.Mvvm.Core
         /// <returns>返回true即数据新建完成，进入初始化操作，返回false即数据库已经存在</returns>
         Task<bool> DataInit(object AllModel, bool IsSpa);
 
-        void EnsureCreate();
-
         IDataContext CreateNew();
-
-        IDataContext ReCreate(ILoggerFactory _logger = null);
+        IDataContext ReCreate();
 
         /// <summary>
         /// 执行存储过程，返回datatable
@@ -128,7 +124,6 @@ namespace WalkingTec.Mvvm.Core
         /// <param name="paras">参数</param>
         /// <returns></returns>
         DataTable RunSP(string command, params object[] paras);
-
         IEnumerable<TElement> RunSP<TElement>(string command, params object[] paras);
 
         /// <summary>
@@ -138,17 +133,12 @@ namespace WalkingTec.Mvvm.Core
         /// <param name="paras">参数</param>
         /// <returns></returns>
         DataTable RunSQL(string command, params object[] paras);
-
         IEnumerable<TElement> RunSQL<TElement>(string sql, params object[] paras);
-
         DataTable Run(string sql, CommandType commandType, params object[] paras);
-
         IEnumerable<TElement> Run<TElement>(string sql, CommandType commandType, params object[] paras);
-
         object CreateCommandParameter(string name, object value, ParameterDirection dir);
 
         void SetLoggerFactory(ILoggerFactory factory);
-
         void SetTenantCode(string tc);
     }
 }

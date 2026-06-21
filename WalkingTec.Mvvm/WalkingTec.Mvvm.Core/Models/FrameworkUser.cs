@@ -1,7 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+using System.Xml.Serialization;
+using Microsoft.EntityFrameworkCore;
+using WalkingTec.Mvvm.Core.Support.Json;
 
 namespace WalkingTec.Mvvm.Core
 {
@@ -9,11 +15,11 @@ namespace WalkingTec.Mvvm.Core
     /// FrameworkUser
     /// </summary>
     [Table("FrameworkUsers")]
-    public abstract class FrameworkUserBase : BasePoco, ITenant
+    public  abstract class FrameworkUserBase : BasePoco,ITenant
     {
         [Display(Name = "_Admin.Account")]
         [Required(ErrorMessage = "Validate.{0}required")]
-        [StringLength(50, ErrorMessage = "Validate.{0}stringmax{1}")]
+        [StringLength(50,ErrorMessage = "Validate.{0}stringmax{1}")]
         [CanNotEdit]
         public string ITCode { get; set; }
 

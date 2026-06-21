@@ -2,9 +2,7 @@ using System;
 
 namespace WalkingTec.Mvvm.Core
 {
-    public enum DBOperationEnum
-    { Default, Read, Write }
-
+    public enum DBOperationEnum { Default, Read, Write }
     /// <summary>
     /// 标记Controller或Action使用固定的连接字符串，不受其他设定控制
     /// </summary>
@@ -47,5 +45,6 @@ namespace WalkingTec.Mvvm.Core
             this.Operation = Operation;
             this.DbType = DbType;
         }
+
     }
 }

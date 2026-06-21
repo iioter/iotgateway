@@ -8,5 +8,6 @@ namespace WalkingTec.Mvvm.Core
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class CanNotEditAttribute : Attribute
     {
+
     }
 }

@@ -31,7 +31,7 @@ namespace IoTGateway
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMcpServer().WithTools<DeviceTool>();
+            services.AddMcpServer().WithHttpTransport().WithTools<DeviceTool>();
             services.AddDistributedMemoryCache();
             services.AddWtmSession(360000, ConfigRoot);
             services.AddWtmCrossDomain(ConfigRoot);
@@ -98,15 +98,9 @@ namespace IoTGateway
             app.UseEndpoints(endpoints =>
             {
                 //MCP
-                app.UseEndpoints(endpoints =>
-                {
-                    endpoints.MapMcp(); //
-                });
+                endpoints.MapMcp("/cmp");
                 //MqttServer
-                app.UseEndpoints(endpoints =>
-                {
-                    endpoints.MapMqtt("/mqtt");
-                });
+                endpoints.MapMqtt("/mqtt");
 
                 endpoints.MapControllerRoute(
                    name: "areaRoute",

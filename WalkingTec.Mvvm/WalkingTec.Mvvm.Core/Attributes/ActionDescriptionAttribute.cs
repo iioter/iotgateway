@@ -1,5 +1,6 @@
-using Microsoft.Extensions.Localization;
 using System;
+using System.Linq;
+using Microsoft.Extensions.Localization;
 
 namespace WalkingTec.Mvvm.Core
 {
@@ -13,11 +14,9 @@ namespace WalkingTec.Mvvm.Core
         /// 描述
         /// </summary>
         public string Description { get; set; }
-
         public string ClassFullName { get; set; }
         public bool IsPage { get; set; }
         public IStringLocalizer _localizer { get; set; }
-
         /// <summary>
         /// 新建一个描述
         /// </summary>

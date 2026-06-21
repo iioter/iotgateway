@@ -1,14 +1,24 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Localization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+
 using WalkingTec.Mvvm.Core;
+using WalkingTec.Mvvm.Core.Auth;
 using WalkingTec.Mvvm.Core.Extensions;
+using WalkingTec.Mvvm.Core.Support.Json;
 
 namespace WalkingTec.Mvvm.Mvc
 {
@@ -17,6 +27,7 @@ namespace WalkingTec.Mvvm.Mvc
         [JsonIgnore]
         [BindNever]
         public WTMContext Wtm { get; set; }
+
 
         [JsonIgnore]
         [BindNever]
@@ -60,19 +71,18 @@ namespace WalkingTec.Mvvm.Mvc
         [BindNever]
         public IDataContext DC { get => Wtm?.DC; }
 
-        #endregion DataContext
+        #endregion
 
         #region URL
-
         [JsonIgnore]
         [BindNever]
         public string BaseUrl { get => Wtm?.BaseUrl; }
-
-        #endregion URL
+        #endregion
 
         [JsonIgnore]
         [BindNever]
         public IStringLocalizer Localizer { get => Wtm?.Localizer; }
+
 
         //-------------------------------------------方法------------------------------------//
 
@@ -259,6 +269,7 @@ namespace WalkingTec.Mvvm.Mvc
         //    return CreateVM(typeof(T), null, Ids, dir, passInit) as T;
         //}
 
+
         ///// <summary>
         ///// Create a ViewModel, and pass Session,cache,dc...etc to the viewmodel
         ///// </summary>
@@ -333,7 +344,6 @@ namespace WalkingTec.Mvvm.Mvc
         //#endregion
 
         #region ReInit model
-
         private void SetReInit(ModelStateDictionary msd, BaseVM model)
         {
             var reinit = model.GetType().GetTypeInfo().GetCustomAttributes(typeof(ReInitAttribute), false).Cast<ReInitAttribute>().SingleOrDefault();
@@ -353,11 +363,9 @@ namespace WalkingTec.Mvvm.Mvc
                 }
             }
         }
-
-        #endregion ReInit model
+        #endregion
 
         #region Validate model
-
         [NonAction]
         public Dictionary<string, string> RedoValidation(object item)
         {
@@ -374,11 +382,9 @@ namespace WalkingTec.Mvvm.Mvc
 
             return rv;
         }
-
-        #endregion Validate model
+        #endregion
 
         #region update viewmodel
-
         /// <summary>
         /// Set viewmodel's properties to the matching items posted by user
         /// </summary>
@@ -402,8 +408,7 @@ namespace WalkingTec.Mvvm.Mvc
                 return false;
             }
         }
-
-        #endregion update viewmodel
+        #endregion
 
         [NonAction]
         public FResult FFResult()
@@ -414,15 +419,17 @@ namespace WalkingTec.Mvvm.Mvc
             };
             try
             {
-                rv.Controller.Response?.Headers?.Append("IsScript", "true");
+                rv.Controller.Response?.Headers?.Add("IsScript", "true");
             }
             catch { }
             return rv;
         }
 
-        protected ActionResult JsonMore(object data, int statusCode = StatusCodes.Status200OK, string msg = "success")
+        protected JsonResult JsonMore(object data, int statusCode = StatusCodes.Status200OK, string msg = "success")
         {
-            return Ok(new { Msg = msg, Code = statusCode, Data = data });
+            return new JsonResult(new JsonResultT<object> { Msg = msg, Code = statusCode, Data = data });
         }
+
     }
+
 }

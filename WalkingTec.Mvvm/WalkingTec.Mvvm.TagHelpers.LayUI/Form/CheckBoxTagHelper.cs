@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using WalkingTec.Mvvm.Core;
+using WalkingTec.Mvvm.Core.Attributes;
 using WalkingTec.Mvvm.Core.Extensions;
 
 namespace WalkingTec.Mvvm.TagHelpers.LayUI
@@ -12,6 +14,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
     [HtmlTargetElement("wt:checkbox", Attributes = REQUIRED_ATTR_NAME, TagStructure = TagStructure.WithoutEndTag)]
     public class CheckBoxTagHelper : BaseFieldTag
     {
+
         /// <summary>
         /// 选项
         /// </summary>
@@ -87,11 +90,13 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                         Value = item?.ToString(),
                         Selected = true
                     });
+
                 }
-                output.PostElement.AppendHtml($"<script>ff.LoadComboItems('checkbox','{ItemUrl}','{Id}','{Field.Name}',{JsonSerializer.Serialize(values)},undefined,{Disabled.ToString().ToLower()})</script>");
+                output.PostElement.AppendHtml($"<script>ff.LoadComboItems('checkbox','{ItemUrl}','{Id}','{Field.Name}',{JsonSerializer.Serialize(values)})</script>");
             }
             else
             {
+
                 if (Items?.Model == null)
                 {
                     if (modelType.IsList())
@@ -132,6 +137,29 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                             });
                         }
                     }
+                    try
+                    {
+                        List<string> checkvalue = null;
+                        //如果是Entity.xxList[0].xxxid的格式，使用GetPropertySiblingValues方法获取Entity.xxxList.Select(x=>x.xxxid).ToList()的结果
+                        if (Field.Name.Contains("["))
+                        {
+                            //默认多对多不必填
+                            if (Required == null)
+                            {
+                                Required = false;
+                            }
+                        }
+                        else if (Field.Model is IList == false && Field.Model != null)
+                        {
+                            checkvalue = new List<string> { Field.Model.ToString() };
+                        }
+                        else
+                        {
+                        }
+                    }
+                    catch
+                    {
+                    }
                 }
                 SetSelected(listItems, values);
             }
@@ -151,15 +179,11 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                 var item = listItems[i];
                 var selected = item.Selected ? " checked" : " ";
                 output.PostContent.AppendHtml($@"
-<input type=""checkbox"" name=""{Field.Name}"" value=""{item.Value}"" title=""{item.Text}"" {selected} {(Disabled ? "disabled" : string.Empty)}/>");
+<input type=""checkbox"" name=""{Field.Name}"" value=""{item.Value}"" title=""{item.Text}"" {selected} {(Disabled ? "disabled=\"\"" : string.Empty)}/>");
             }
-            output.PostElement.AppendHtml($@"
-<input type=""hidden"" name=""_DONOTUSE_{Field.Name}"" value=""1"" />
-<script>
- {Id}defaultvalues = {JsonSerializer.Serialize(values)};
-</script>
-");
+            output.PostElement.AppendHtml($@"<input type=""hidden"" name=""_DONOTUSE_{Field.Name}"" value=""1"" />");
             base.Process(context, output);
+
         }
 
         private void SetSelected(List<ComboSelectListItem> source, IList data)
@@ -203,6 +227,7 @@ namespace WalkingTec.Mvvm.TagHelpers.LayUI
                     }
                 }
             }
+
         }
     }
 }

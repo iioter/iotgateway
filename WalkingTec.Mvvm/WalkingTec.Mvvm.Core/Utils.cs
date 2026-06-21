@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Distributed;
 using NPOI.HSSF.Util;
 using System;
 using System.Collections.Generic;
@@ -12,15 +13,16 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using WalkingTec.Mvvm.Core.Extensions;
+using WalkingTec.Mvvm.Core.Support;
 using WalkingTec.Mvvm.Core.Support.Json;
 
 namespace WalkingTec.Mvvm.Core
 {
     public class Utils
     {
+
         private static List<Assembly> _allAssemblies;
         private static List<Type> _allModels;
-
         public static string GetCurrentComma()
         {
             if (CultureInfo.CurrentUICulture.Name == "zh-cn")
@@ -95,6 +97,7 @@ namespace WalkingTec.Mvvm.Core
             return _allAssemblies;
         }
 
+        private static List<Type> _allModelTypes= new List<Type>();
         public static List<Type> GetAllModels()
         {
             if (_allModels == null)
@@ -129,29 +132,6 @@ namespace WalkingTec.Mvvm.Core
                 _allModels = allTypes;
             }
             return _allModels;
-        }
-
-        private static List<Type> _allVMs;
-
-        public static List<Type> GetAllVms()
-        {
-            if (_allVMs == null)
-            {
-                var modelAsms = Utils.GetAllAssembly();
-                var allTypes = new List<Type>();// 所有 DbSet<> 的泛型类型
-                                                // 获取所有 DbSet<T> 的泛型类型 T
-                foreach (var asm in modelAsms)
-                {
-                    try
-                    {
-                        var dcModule = asm.GetExportedTypes().Where(x => typeof(BaseVM).IsAssignableFrom(x)).ToList();
-                        allTypes.AddRange(dcModule);
-                    }
-                    catch { }
-                }
-                _allVMs = allTypes;
-            }
-            return _allVMs;
         }
 
         public static SimpleMenu FindMenu(string url, List<SimpleMenu> menus)
@@ -193,9 +173,10 @@ namespace WalkingTec.Mvvm.Core
             return menu;
         }
 
+
         public static string GetIdByName(string fieldName)
         {
-            return fieldName == null ? "" : fieldName.Replace(".", "_").Replace("[", "_").Replace("]", "_").Replace("-", "minus");
+            return fieldName == null ? "" : fieldName.Replace(".", "_").Replace("[", "_").Replace("]", "_").Replace("-","minus");
         }
 
         public static void CheckDifference<T>(IEnumerable<T> oldList, IEnumerable<T> newList, out IEnumerable<T> ToRemove, out IEnumerable<T> ToAdd) where T : TopBasePoco
@@ -275,6 +256,7 @@ namespace WalkingTec.Mvvm.Core
                 int g1 = Convert.ToInt16(c2, 16);
                 int b1 = Convert.ToInt16(c3, 16);
 
+
                 if (r == r1 && g == g1 && b == b1)
                 {
                     return (short)col.GetField("index").GetValue(null);
@@ -303,27 +285,22 @@ namespace WalkingTec.Mvvm.Core
                     yesText = CoreProgram._localizer?["Sys.Yes"];
                     noText = CoreProgram._localizer?["Sys.No"];
                     break;
-
                 case BoolComboTypes.ValidInvalid:
                     yesText = CoreProgram._localizer?["Sys.Valid"];
                     noText = CoreProgram._localizer?["Sys.Invalid"];
                     break;
-
                 case BoolComboTypes.MaleFemale:
                     yesText = CoreProgram._localizer?["Sys.Male"];
                     noText = CoreProgram._localizer?["Sys.Female"];
                     break;
-
                 case BoolComboTypes.HaveNotHave:
                     yesText = CoreProgram._localizer?["Sys.Have"];
                     noText = CoreProgram._localizer?["Sys.NotHave"];
                     break;
-
                 case BoolComboTypes.Custom:
                     yesText = trueText ?? CoreProgram._localizer?["Sys.Yes"];
                     noText = falseText ?? CoreProgram._localizer?["Sys.No"];
                     break;
-
                 default:
                     break;
             }
@@ -345,7 +322,7 @@ namespace WalkingTec.Mvvm.Core
             {
                 noItem.Selected = true;
             }
-            if (selectText != null)
+            if(selectText != null)
             {
                 rv.Add(new ComboSelectListItem { Text = selectText, Value = "" });
             }
@@ -354,8 +331,9 @@ namespace WalkingTec.Mvvm.Core
             return rv;
         }
 
+
         /// <summary>
-        ///
+        /// 
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -372,9 +350,8 @@ namespace WalkingTec.Mvvm.Core
             inputms.Dispose();
             return Convert.ToBase64String(rv);
         }
-
         /// <summary>
-        ///
+        /// 
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -391,9 +368,8 @@ namespace WalkingTec.Mvvm.Core
             outputms.Dispose();
             return Encoding.UTF8.GetString(rv);
         }
-
         /// <summary>
-        ///
+        /// 
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
@@ -410,7 +386,7 @@ namespace WalkingTec.Mvvm.Core
         }
 
         /// <summary>
-        ///
+        /// 
         /// </summary>
         /// <param name="path"></param>
         public static void DeleteFile(string path)
@@ -423,7 +399,6 @@ namespace WalkingTec.Mvvm.Core
         }
 
         #region 格式化文本  add by wuwh 2014.6.12
-
         /// <summary>
         /// 格式化文本
         /// </summary>
@@ -432,6 +407,7 @@ namespace WalkingTec.Mvvm.Core
         /// <returns></returns>
         public static string FormatText(string text, bool isCode = false)
         {
+
             if (isCode)
             {
                 return FormatCode(text);
@@ -439,7 +415,6 @@ namespace WalkingTec.Mvvm.Core
             else
             {
                 #region 截取需要格式化的代码段
-
                 List<int> listInt = new List<int>();
                 int index = 0;
                 int _index;
@@ -465,30 +440,25 @@ namespace WalkingTec.Mvvm.Core
                     listStr.Add(temp);
                     i++;
                 }
-
-                #endregion 截取需要格式化的代码段
+                #endregion
 
                 #region 格式化代码段
-
                 //先将 <  >以及空格替换掉，防止下面替换出现 html标签后出现问题
                 for (int i = 0; i < listStr.Count; i++)
                 {
                     //将 &&代码&&  替换成&&1&&
                     text = text.Replace("&&" + listStr[i] + "&&", FormatCode(listStr[i]));
                 }
-
-                #endregion 格式化代码段
+                #endregion
 
                 return text;
             }
         }
-
-        #endregion 格式化文本  add by wuwh 2014.6.12
+        #endregion
 
         #region 格式化代码  edit by wuwh
-
         /// <summary>
-        /// 格式化代码
+        /// 格式化代码 
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
@@ -517,7 +487,7 @@ namespace WalkingTec.Mvvm.Core
 
             Regex re = new Regex(rs, RegexOptions.None);
             code = Regex.Replace(code, rs, rr);
-            //替换换行符"\r\n"   以及"\r"  "\n"
+            //替换换行符"\r\n"   以及"\r"  "\n"  
             code = code.Replace("\r\n", "<br>").Replace("\n", "").Replace("\r", "<br>");
             //取消空标签
             //|<font color=#44C796></font>C#类的颜色
@@ -525,11 +495,9 @@ namespace WalkingTec.Mvvm.Core
 
             return code;
         }
-
-        #endregion 格式化代码  edit by wuwh
+        #endregion
 
         #region 读取txt文件
-
         /// <summary>
         /// 读取文件
         /// </summary>
@@ -552,8 +520,7 @@ namespace WalkingTec.Mvvm.Core
 
             return result;
         }
-
-        #endregion 读取txt文件
+        #endregion
 
         /// <summary>
         /// 得到目录下所有文件
@@ -568,7 +535,6 @@ namespace WalkingTec.Mvvm.Core
         }
 
         #region add by wuwh 2014.10.18  递归获取目录下所有文件
-
         /// <summary>
         /// 递归获取目录下所有文件
         /// </summary>
@@ -590,8 +556,8 @@ namespace WalkingTec.Mvvm.Core
 
             return allFiles;
         }
+        #endregion
 
-        #endregion add by wuwh 2014.10.18  递归获取目录下所有文件
 
         /// <summary>
         /// ConvertToColumnXType
@@ -615,9 +581,10 @@ namespace WalkingTec.Mvvm.Core
             return "textcolumn";
         }
 
+
         public static string GetCS(string cs, string mode, Configs config)
         {
-            if (cs == null)
+            if(cs == null)
             {
                 return null;
             }
@@ -651,12 +618,12 @@ namespace WalkingTec.Mvvm.Core
             if (fileAttachment != null)
             {
                 url = "/_Framework/GetFile/" + fileAttachmentId.ToString();
+
             }
             return url;
         }
 
         #region 加解密
-
         /// <summary>
         /// 通过密钥将内容加密
         /// </summary>
@@ -757,10 +724,9 @@ namespace WalkingTec.Mvvm.Core
             return dCrypter;
         }
 
-        #endregion 加解密
+        #endregion
 
         #region MD5加密
-
         /// <summary>
         /// 字符串MD5加密
         /// </summary>
@@ -768,7 +734,7 @@ namespace WalkingTec.Mvvm.Core
         /// <returns>返回大写32位MD5值</returns>
         public static string GetMD5String(string str)
         {
-            if (str == null)
+            if(str == null)
             {
                 return "";
             }
@@ -820,8 +786,7 @@ namespace WalkingTec.Mvvm.Core
             }
             return sb.ToString();
         }
-
-        #endregion MD5加密
+        #endregion
 
         /// <summary>
         /// 重新处理 返回所有ispage模块
@@ -888,7 +853,7 @@ namespace WalkingTec.Mvvm.Core
                                 {
                                     ModuleName = pages[j].ActionDes._localizer[pages[j].ActionDes.Description],
                                     NameSpace = m[i].NameSpace,
-                                    ClassName = pages[j].Module.ClassName + pages[j].MethodName,
+                                    ClassName = pages[j].MethodName,
                                     Actions = submit ? new List<SimpleAction>() : new List<SimpleAction>() { pages[j] },
                                     Area = m[i].Area
                                 });
@@ -901,5 +866,6 @@ namespace WalkingTec.Mvvm.Core
             toRemove.ForEach(x => m.Remove(x));
             return m;
         }
+
     }
 }

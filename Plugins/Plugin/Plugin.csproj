@@ -1,17 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DynamicExpresso.Core" Version="2.18.0" />
-		<PackageReference Include="Mono.Options" Version="6.12.0.148" />
-		<PackageReference Include="MQTTnet" Version="4.3.7.1207" />
-		<PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.3.7.1207" />
-		<PackageReference Include="System.IO.Ports" Version="8.0.0" />
+		<PackageReference Include="DynamicExpresso.Core" />
+		<PackageReference Include="IoTGateway.MQTTnet.Extensions.ManagedClient" />
+		<PackageReference Include="Mono.Options" />
+		<PackageReference Include="MQTTnet.AspNetCore" />
+		<PackageReference Include="System.IO.Ports" />
 	</ItemGroup>
 
 	<ItemGroup>
