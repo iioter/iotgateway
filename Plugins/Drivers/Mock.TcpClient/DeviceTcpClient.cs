@@ -20,6 +20,7 @@ namespace Mock.TcpClient
 
         public ILogger _logger { get; set; }
         private readonly string _device;
+        public event Func<object, DataReportEventArgs, Task>? OnDataReceived;
 
         #region 配置参数
 
@@ -92,7 +93,30 @@ namespace Mock.TcpClient
         {
             //如果收到的数据校验正确，则放在内存中
             if (e.Data.Length == 8 && e.Data[0] == 0x08)
-                _latestRcvData = e.Data;
+                _latestRcvData = e.Data
+                
+                var dataArgs = new DataReportEventArgs
+                {
+                    DeviceId = DeviceId,
+                    VariableName = "接收到数据",
+                    Address = "",
+                    Value = e.Data,
+                    Timestamp = DateTime.Now,
+                    StatusType = VaribaleStatusTypeEnum.Good,
+                    Message = ""
+                };
+                // 在后台线程中异步处理，避免阻塞调用方
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        await OnDataReceived.Invoke(this, dataArgs);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, $"触发式数据上报失败: {dataArgs.VariableName}");
+                    }
+                });
         }
 
         /// <summary>
